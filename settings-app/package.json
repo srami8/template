@@ -1,0 +1,10 @@
+{
+  "name": "@asteroid/settings-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.mjs",
+    "tunnel": "../.tools/cloudflared tunnel --no-autoupdate --url http://localhost:8787"
+  }
+}

@@ -2,11 +2,14 @@
   "name": "asteroid",
   "private": true,
   "workspaces": [
-    "theme"
+    "theme",
+    "settings-app"
   ],
   "scripts": {
     "build": "npm run build -w theme",
     "dev": "npm run dev -w theme",
-    "deploy": "npm run deploy -w theme"
+    "deploy": "npm run deploy -w theme",
+    "settings": "npm run start -w settings-app",
+    "tunnel": "npm run tunnel -w settings-app"
   }
 }

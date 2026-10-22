@@ -6,3 +6,5 @@ theme/src/scss/generated/
 !.env.example
 .DS_Store
 *.log
+.tools/
+settings-app/data/
