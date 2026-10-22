@@ -3,6 +3,7 @@
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
+@use "../tools/submenu";
 
 .as-theme {
   @include bp.desktop {
@@ -143,84 +144,9 @@
       }
 
       .menu-level-2 {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 40px 20px;
-        margin: 0;
         padding: 0;
-        list-style: none;
 
-        > li {
-          display: grid;
-          grid-template-columns: 64px minmax(0, 1fr);
-          column-gap: 24px;
-          align-items: start;
-        }
-
-        .menu-image {
-          grid-row: 1 / span 2;
-          display: block;
-          width: 64px;
-          height: 64px;
-          padding: 0;
-
-          img {
-            width: 100%;
-            height: 100%;
-            border-radius: 4px;
-            object-fit: contain;
-          }
-        }
-
-        > li > div {
-          min-width: 0;
-
-          > a {
-            display: block;
-            padding: 0;
-            color: var(--as-secondary-500);
-            font-size: var(--as-font-size-body);
-            font-weight: 500;
-            line-height: 1.2;
-            text-decoration: none;
-
-            &:hover {
-              color: var(--as-primary-600);
-              text-decoration: underline;
-            }
-          }
-        }
-      }
-
-      // Disco odděluje položky 3. úrovně čárkou, v návrhu jsou pod sebou.
-      .menu-level-3 {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        margin: 12px 0 0 -8px;
-        padding: 0;
-        list-style: none;
-
-        > li {
-          display: block;
-          font-size: 0;
-        }
-
-        a {
-          display: block;
-          padding: 2px 8px;
-          border-radius: var(--as-radius-pill);
-          color: var(--as-secondary-400);
-          font-size: var(--as-font-size-small);
-          line-height: 1.2;
-          text-decoration: none;
-
-          &:hover {
-            background: var(--as-primary-50);
-            color: var(--as-primary-600);
-            text-decoration: underline;
-          }
-        }
+        @include submenu.groups(3);
       }
     }
   }

@@ -3,6 +3,7 @@
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
+@use "../tools/submenu";
 
 .as-header-v1 {
   @include bp.desktop {
@@ -17,7 +18,7 @@
       font-family: var(--as-font-family);
     }
 
-    .menu-level-1 {
+    #navigation .menu-level-1 {
       display: flex;
       align-items: stretch;
 
@@ -49,11 +50,68 @@
         padding: 0;
         color: var(--as-secondary-300);
         font-size: 0;
+        transition: transform 0.2s ease;
 
         &::after {
           content: none;
         }
       }
+
+      // Otevřené podmenu (Figma: „Hover - menu“). Disco přidá položce třídu .exp a <body> .submenu-visible.
+      > li.ext.exp > a {
+        color: var(--as-primary-500);
+        box-shadow: inset 0 2px 0 var(--as-primary-500);
+
+        .submenu-arrow {
+          color: var(--as-primary-500);
+          transform: rotate(180deg);
+        }
+      }
+
+      > li.ext.exp > .menu-level-2 {
+        top: 100%;
+        padding: 40px 0 48px;
+        border-top: 0;
+        background: var(--as-white);
+
+        @include submenu.groups(4);
+
+        // Bílé pozadí přes celou šířku okna, obsah zůstává v kontejneru.
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: -100vmax;
+          bottom: 0;
+          left: -100vmax;
+          z-index: -1;
+          border-top: 1px solid var(--as-secondary-75);
+          background: var(--as-white);
+        }
+
+        // Ztmavení stránky pod panelem. Bez pointer-events, aby odjetí myší pod panel menu zavřelo.
+        &::after {
+          content: "";
+          position: absolute;
+          top: 100%;
+          right: -100vmax;
+          left: -100vmax;
+          height: 100vh;
+          background: rgba(46, 53, 69, 0.3);
+          pointer-events: none;
+        }
+      }
+    }
+
+    // Disco při otevřeném menu ztmaví celou stránku včetně hlavičky. V návrhu je ztmavené jen to,
+    // co je pod panelem, to zajišťuje ::after u .menu-level-2 výše.
+    body.navigation-hovered::before {
+      opacity: 0;
+    }
+
+    // Pozadí a ztmavení podmenu sahají do stran za okno, vodorovně je ořízneme (bez posuvníku).
+    #header {
+      overflow-x: clip;
     }
 
     // „Další“: Disco sem přesouvá položky, které se do řádku nevejdou.

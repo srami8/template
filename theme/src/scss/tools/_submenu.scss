@@ -1,0 +1,105 @@
+// Podkategorie z menu Disco (ul.menu-level-2) jako mřížka skupin podle Figmy:
+// obrázek 64 px, název kategorie a pod ním odkazy na další úroveň.
+// Používá rozbalené menu v1 (4 sloupce) i katalog v2 (3 sloupce). Volá se uvnitř selektoru .menu-level-2.
+
+@mixin groups($columns) {
+  display: grid;
+  grid-template-columns: repeat($columns, minmax(0, 1fr));
+  // Disco seznamu dává align-items: center, skupiny v řádku ale mají začínat nahoře.
+  align-items: start;
+  gap: 40px 20px;
+  margin: 0;
+  list-style: none;
+
+  > li {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    column-gap: 24px;
+    align-items: start;
+    width: auto;
+    padding: 0;
+  }
+
+  .menu-image {
+    grid-row: 1 / span 2;
+    display: block;
+    width: 64px;
+    height: 64px;
+    padding: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      object-fit: contain;
+    }
+  }
+
+  > li > div {
+    display: block;
+    justify-self: stretch;
+    width: auto;
+    min-width: 0;
+
+    > a {
+      display: block;
+      padding: 0;
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-body);
+      font-weight: 500;
+      line-height: 1.2;
+      text-decoration: none;
+
+      &::before {
+        content: none;
+      }
+
+      &:hover {
+        color: var(--as-primary-600);
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // Disco odděluje položky 3. úrovně čárkou, v návrhu jsou pod sebou.
+  .menu-level-3 {
+    display: flex;
+    flex-direction: column;
+    // Disco dává seznamu flex-wrap a pevnou výšku, položky by se jinak lámaly do sloupců.
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 4px;
+    height: auto;
+    max-height: none;
+    margin: 12px 0 0 -8px;
+    padding: 0;
+    list-style: none;
+    font-family: var(--as-font-family);
+
+    > li {
+      display: block;
+      font-size: 0;
+    }
+
+    // Disco přidává „…“ pro rozbalení zkráceného seznamu, my zobrazujeme všechny položky.
+    .more-items-trigger {
+      display: none;
+    }
+
+    a {
+      display: block;
+      padding: 2px 8px;
+      border-radius: var(--as-radius-pill);
+      color: var(--as-secondary-400);
+      font-size: var(--as-font-size-small);
+      line-height: 1.2;
+      text-decoration: none;
+
+      &:hover {
+        background: var(--as-primary-50);
+        color: var(--as-primary-600);
+        text-decoration: underline;
+      }
+    }
+  }
+}
