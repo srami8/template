@@ -192,6 +192,8 @@ const routes = {
 
 createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
+  // Jen názvy parametrů, hodnoty (code, state) jsou citlivé.
+  console.log(`${req.method} ${url.pathname} [${[...url.searchParams.keys()].join(',')}]`);
   const handler = routes[`${req.method} ${url.pathname}`];
   if (!handler) return send(res, 404, 'Nenalezeno');
 
