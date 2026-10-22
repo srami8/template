@@ -11,7 +11,9 @@ async function readJson(response, what) {
     throw new Error(`${what}: neočekávaná odpověď (HTTP ${response.status})`);
   }
   if (!response.ok) {
-    const detail = body.error_description || body.error || body.errors?.[0]?.message || '';
+    const detail = String(body.error_description || body.error || body.errors?.[0]?.message || '')
+      // Shoptet do některých chybových hlášek vkládá samotný token, do logu ho nepouštíme.
+      .replace(/"[^"]*\d+-[a-z]-\d+-[a-z0-9]+[^"]*"/gi, '"…"');
     throw new Error(`${what}: HTTP ${response.status} ${detail}`.trim());
   }
   return body;

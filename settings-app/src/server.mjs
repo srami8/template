@@ -9,13 +9,8 @@ import { createServer } from 'node:http';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { config } from './config.mjs';
 import { getInstallation, saveInstallation } from './store.mjs';
-import {
-  exchangeInstallCode,
-  getEshopInfo,
-  setHeaderSnippet,
-  adminAuthorizeUrl,
-  verifyAdmin,
-} from './shoptet.mjs';
+import { exchangeInstallCode, setHeaderSnippet, adminAuthorizeUrl, verifyAdmin } from './shoptet.mjs';
+import { finishInstall } from './install.mjs';
 import { DEFAULT_THEME_CONFIG, themeConfigFromForm, buildHeaderSnippet } from './theme-config.mjs';
 import { settingsPage, messagePage } from './views.mjs';
 
@@ -80,7 +75,7 @@ async function handleInstall(req, res, url) {
 
   const redirectUri = `${publicUrl(req)}/install`;
   const result = await exchangeInstallCode(code, redirectUri);
-  const installation = saveInstallation(result.eshopId, {
+  saveInstallation(result.eshopId, {
     oauthToken: result.access_token,
     eshopUrl: result.eshopUrl,
     installedAt: new Date().toISOString(),
@@ -88,21 +83,9 @@ async function handleInstall(req, res, url) {
   send(res, 200, 'OK');
   console.log(`instalace: e-shop ${result.eshopId} (${result.eshopUrl})`);
 
-  finishInstall(result.eshopId, installation).catch((error) =>
+  finishInstall(result.eshopId).catch((error) =>
     console.error(`instalace e-shopu ${result.eshopId}: ${error.message}`),
   );
-}
-
-async function finishInstall(eshopId, installation) {
-  const { data } = await getEshopInfo(installation);
-  const oauthUrl = data.urls?.find((u) => u.ident === 'oauth')?.url;
-  const updated = saveInstallation(eshopId, {
-    eshopName: data.contactInformation?.eshopName || data.name || installation.eshopUrl,
-    oauthBase: oauthUrl || `${installation.eshopUrl.replace(/\/$/, '')}/action/OAuthServer/`,
-    themeConfig: installation.themeConfig || DEFAULT_THEME_CONFIG,
-  });
-  await setHeaderSnippet(updated, buildHeaderSnippet(updated.themeConfig));
-  console.log(`instalace: e-shop ${eshopId} má výchozí nastavení šablony`);
 }
 
 async function handleSettingsGet(req, res, url) {
