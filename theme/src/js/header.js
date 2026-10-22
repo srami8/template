@@ -31,19 +31,28 @@ function renderAccountButton() {
   document.documentElement.classList.add('as-account-in-header');
 }
 
+// Telefon z nastavení e-shopu bereme z kontaktního boxu Shoptetu (patička).
+function shopPhone() {
+  const link = document.querySelector('.contact-box .tel a');
+  if (!link) return null;
+  return { number: link.textContent.trim(), href: link.getAttribute('href') };
+}
+
 // Telefon v horní liště: „+420 777 888 998 (po–pá: 9:00–17:00)“.
+// Číslo je z nastavení e-shopu, otevírací dobu vyplňuje obchodník v nastavení šablony.
 function renderPhone({ phone }) {
   const tools = document.querySelector('.top-navigation-bar .top-navigation-tools');
-  if (!phone || !phone.number || !tools) return;
+  const shop = shopPhone();
+  if (!shop || !shop.number || !tools) return;
 
   const link = document.createElement('a');
   link.className = 'as-topbar-phone';
-  link.href = `tel:${phone.number.replace(/\s+/g, '')}`;
+  link.href = shop.href || `tel:${shop.number.replace(/\s+/g, '')}`;
 
   const number = document.createElement('strong');
-  number.textContent = phone.number;
+  number.textContent = shop.number;
   link.append(number);
-  if (phone.hours) {
+  if (phone && phone.hours) {
     link.append(` (${phone.hours})`);
   }
 

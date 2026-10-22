@@ -109,12 +109,6 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, tok
 
   const phone = `<div class="v2form">
     <div class="v2FormField">
-      <label class="v2FormField__label" for="phoneNumber">Telefon</label>
-      <div class="v2FormField__input">
-        <input class="textField md" type="text" id="phoneNumber" name="phoneNumber" value="${escape(themeConfig.phone?.number)}" placeholder="+420 777 888 998" title="Telefonní číslo zobrazené v horní liště">
-      </div>
-    </div>
-    <div class="v2FormField">
       <label class="v2FormField__label" for="phoneHours">Otevírací doba</label>
       <div class="v2FormField__input">
         <input class="textField md" type="text" id="phoneHours" name="phoneHours" value="${escape(themeConfig.phone?.hours)}" placeholder="po–pá: 9:00–17:00" title="Zobrazí se za číslem v závorce">
@@ -149,7 +143,11 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, tok
         <input type="hidden" name="t" value="${escape(token)}">
         <input type="hidden" name="lang" value="${escape(lang)}">
         ${card('Vzhled hlavičky', variants, `E-shop ${eshopName} (ID ${eshopId})`)}
-        ${card('Telefon v horní liště', phone, 'Nechte prázdné, pokud se telefon nemá zobrazovat.')}
+        ${card(
+          'Telefon v horní liště',
+          phone,
+          'Telefonní číslo se přebírá z kontaktních údajů v nastavení e-shopu. Tady doplňte jen otevírací dobu, která se zobrazí za číslem.',
+        )}
         ${card(
           'Rychlé odkazy pod hlavičkou',
           `<div class="as-links as-links--quick"><span>Text</span><span>Odkaz</span><span>Ikona</span>${quickLinks}</div>`,

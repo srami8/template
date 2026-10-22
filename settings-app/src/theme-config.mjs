@@ -42,8 +42,9 @@ function safeUrl(value) {
 export function themeConfigFromForm(form) {
   const header = HEADER_VARIANTS.some((v) => v.value === form.get('header')) ? form.get('header') : 'v1';
 
-  const number = text(form.get('phoneNumber'), 40);
-  const phone = number ? { number, hours: text(form.get('phoneHours'), 60) } : null;
+  // Číslo telefonu bere šablona z nastavení e-shopu, tady se vyplňuje jen otevírací doba.
+  const hours = text(form.get('phoneHours'), 60);
+  const phone = hours ? { hours } : null;
 
   const quickLinks = [];
   for (let i = 0; i < MAX_QUICK_LINKS; i += 1) {

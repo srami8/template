@@ -34,9 +34,8 @@ Settings-app vkládá do e-shopu `window.asteroidConfig`. Všechny klíče jsou 
 window.asteroidConfig = {
   header: 'v1',                 // varianta hlavičky: 'v1' | 'v2' | 'v3'
   categoryLayout: 'default',    // layout kategorie
-  phone: {                      // telefon v horní liště
-    number: '+420 777 888 998',
-    hours: 'po–pá: 9:00–17:00',
+  phone: {                      // otevírací doba za telefonem v horní liště;
+    hours: 'po–pá: 9:00–17:00', // číslo se bere z kontaktních údajů v nastavení e-shopu
   },
   quickLinks: [                 // řádek rychlých odkazů pod hlavičkou
     { label: 'Novinky', url: '/novinky/', icon: 'local-fire-department' },
