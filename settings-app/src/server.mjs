@@ -1,29 +1,25 @@
 // Settings-app doplňku aSteroid.
 //
-//   GET  /install?code=…        instalace doplňku (volá Shoptet ze svých serverů)
-//   GET  /settings?eshopId=…    stránka nastavení (Addon settings url), vyžaduje ověřeného admina
-//   GET  /auth/callback         návrat z OAuth ověření admina
-//   POST /settings?eshopId=…    uložení nastavení a vložení kódu do e-shopu přes API
+//   GET  /install?code=…              instalace doplňku (volá Shoptet ze svých serverů)
+//   GET  /settings?eshopId=…&code=…   stránka nastavení v administraci Shoptetu (iframe, zjednodušené OAuth)
+//   GET  /settings?eshopId=…&t=…      stránka nastavení s platnou relací (podepsaný token)
+//   GET  /auth/callback               návrat z plného OAuth ověření admina (otevření mimo administraci)
+//   POST /settings?eshopId=…          uložení nastavení a vložení kódu do e-shopu přes API
 
 import { createServer } from 'node:http';
-import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
 import { config } from './config.mjs';
 import { getInstallation, saveInstallation } from './store.mjs';
 import { exchangeInstallCode, setHeaderSnippet, adminAuthorizeUrl, verifyAdmin } from './shoptet.mjs';
 import { finishInstall } from './install.mjs';
+import { createSessionToken, verifySessionToken } from './session.mjs';
 import { DEFAULT_THEME_CONFIG, themeConfigFromForm, buildHeaderSnippet } from './theme-config.mjs';
 import { settingsPage, messagePage } from './views.mjs';
 
-const SESSION_TTL = 2 * 60 * 60 * 1000;
 const STATE_TTL = 10 * 60 * 1000;
 
-// Přihlášení adminové a rozpracovaná OAuth ověření. V paměti stačí: po restartu se admin ověří znovu.
-const sessions = new Map(); // sessionId → { eshopId, csrf, expiresAt }
+// Rozpracovaná plná OAuth ověření (jen pro otevření mimo administraci). Po restartu stačí začít znovu.
 const pendingStates = new Map(); // state → { eshopId, expiresAt }
-
-function token() {
-  return randomBytes(24).toString('base64url');
-}
 
 function publicUrl(req) {
   if (config.publicUrl) return config.publicUrl.replace(/\/$/, '');
@@ -31,31 +27,38 @@ function publicUrl(req) {
   return `${proto}://${req.headers.host}`;
 }
 
-function send(res, status, body, headers = {}) {
-  res.writeHead(status, { 'Content-Type': 'text/html; charset=utf-8', ...headers });
+// Musí odpovídat poli „URL pro autorizaci uživatele“ v nastavení doplňku.
+function authRedirectUri(req) {
+  return `${publicUrl(req)}/auth/callback`;
+}
+
+// Stránku smí vložit jen administrace Shoptetu (e-shop může mít i vlastní doménu).
+function frameAncestors(installation) {
+  const sources = ["'self'", 'https://*.myshoptet.com'];
+  if (installation?.eshopUrl) sources.push(new URL(installation.eshopUrl).origin);
+  return sources.join(' ');
+}
+
+function send(res, status, body, { installation, headers = {} } = {}) {
+  res.writeHead(status, {
+    'Content-Type': 'text/html; charset=utf-8',
+    'Cache-Control': 'no-store',
+    // Token relace je v adrese, nesmí odejít v Refereru na CDN se styly.
+    'Referrer-Policy': 'no-referrer',
+    'Content-Security-Policy': `frame-ancestors ${frameAncestors(installation)}`,
+    ...headers,
+  });
   res.end(body);
 }
 
-function redirect(res, location, headers = {}) {
-  res.writeHead(302, { Location: location, ...headers });
+// Shoptet doporučuje pro stránky v administraci relativní Location.
+function redirect(res, location) {
+  res.writeHead(302, { Location: location, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' });
   res.end();
 }
 
-function readCookie(req, name) {
-  const match = (req.headers.cookie || '').match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
-  return match ? match[1] : null;
-}
-
-function getSession(req, eshopId) {
-  const session = sessions.get(readCookie(req, 'asteroid_session'));
-  if (!session || session.expiresAt < Date.now() || session.eshopId !== String(eshopId)) return null;
-  return session;
-}
-
-function safeEqual(a, b) {
-  const left = Buffer.from(String(a));
-  const right = Buffer.from(String(b));
-  return left.length === right.length && timingSafeEqual(left, right);
+function settingsUrl(eshopId, params = {}) {
+  return `/settings?${new URLSearchParams({ eshopId: String(eshopId), ...params })}`;
 }
 
 async function readForm(req) {
@@ -88,28 +91,49 @@ async function handleInstall(req, res, url) {
   );
 }
 
+// Ověří admina z OAuth kódu a vrátí token relace, nebo null, když účet k e-shopu nepatří.
+async function sessionFromCode(req, installation, eshopId, code) {
+  const admin = await verifyAdmin(installation.oauthBase, { code, redirectUri: authRedirectUri(req) });
+  if (String(admin.project?.id) !== String(eshopId)) return null;
+  return createSessionToken(eshopId);
+}
+
 async function handleSettingsGet(req, res, url) {
   const eshopId = url.searchParams.get('eshopId');
   const installation = eshopId && getInstallation(eshopId);
   if (!installation) {
     return send(res, 404, messagePage('Doplněk není nainstalovaný', 'Pro tento e-shop nemáme instalaci doplňku aSteroid.'));
   }
+  const lang = url.searchParams.get('lang') || 'cs';
 
-  const session = getSession(req, eshopId);
-  if (!session) {
-    const state = token();
-    pendingStates.set(state, { eshopId: String(eshopId), expiresAt: Date.now() + STATE_TTL });
-    return redirect(res, adminAuthorizeUrl(installation.oauthBase, { state, redirectUri: `${publicUrl(req)}/auth/callback` }));
+  // Administrace Shoptetu otevírá stránku rovnou s OAuth kódem (zástupný znak #OAUTH_CODE#).
+  const code = url.searchParams.get('code');
+  if (code) {
+    const token = await sessionFromCode(req, installation, eshopId, code);
+    if (!token) {
+      return send(res, 403, messagePage('Přístup odepřen', 'Přihlášený účet nepatří k tomuto e-shopu.'), { installation });
+    }
+    return redirect(res, settingsUrl(eshopId, { t: token, lang }));
+  }
+
+  const token = url.searchParams.get('t');
+  if (!verifySessionToken(token, eshopId)) {
+    // Mimo administraci (nebo po vypršení relace) projdeme plným OAuth ověřením.
+    const state = randomBytes(24).toString('base64url');
+    pendingStates.set(state, { eshopId: String(eshopId), lang, expiresAt: Date.now() + STATE_TTL });
+    return redirect(res, adminAuthorizeUrl(installation.oauthBase, { state, redirectUri: authRedirectUri(req) }));
   }
 
   const flash = url.searchParams.get('saved') === '1' ? { type: 'ok', message: 'Uloženo, e-shop už používá nové nastavení.' } : null;
   send(res, 200, settingsPage({
     eshopName: installation.eshopName,
     eshopId,
+    eshopOrigin: new URL(installation.eshopUrl).origin,
     themeConfig: installation.themeConfig || DEFAULT_THEME_CONFIG,
-    csrf: session.csrf,
+    token,
+    lang,
     flash,
-  }));
+  }), { installation });
 }
 
 async function handleAuthCallback(req, res, url) {
@@ -121,32 +145,22 @@ async function handleAuthCallback(req, res, url) {
   }
 
   const installation = getInstallation(pending.eshopId);
-  const admin = await verifyAdmin(installation.oauthBase, {
-    code: url.searchParams.get('code'),
-    redirectUri: `${publicUrl(req)}/auth/callback`,
-  });
-  if (String(admin.project?.id) !== pending.eshopId) {
-    return send(res, 403, messagePage('Přístup odepřen', 'Přihlášený účet nepatří k tomuto e-shopu.'));
+  const token = await sessionFromCode(req, installation, pending.eshopId, url.searchParams.get('code'));
+  if (!token) {
+    return send(res, 403, messagePage('Přístup odepřen', 'Přihlášený účet nepatří k tomuto e-shopu.'), { installation });
   }
-
-  const sessionId = token();
-  sessions.set(sessionId, { eshopId: pending.eshopId, csrf: token(), expiresAt: Date.now() + SESSION_TTL });
-  // SameSite=None: stránka nastavení se může otevírat v rámci administrace Shoptetu.
-  redirect(res, `/settings?eshopId=${encodeURIComponent(pending.eshopId)}`, {
-    'Set-Cookie': `asteroid_session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${SESSION_TTL / 1000}`,
-  });
+  redirect(res, settingsUrl(pending.eshopId, { t: token, lang: pending.lang }));
 }
 
 async function handleSettingsPost(req, res, url) {
   const eshopId = url.searchParams.get('eshopId');
-  const session = getSession(req, eshopId);
-  const installation = session && getInstallation(eshopId);
-  if (!installation) return send(res, 403, messagePage('Přístup odepřen', 'Otevřete nastavení znovu z administrace e-shopu.'));
-
+  const installation = eshopId && getInstallation(eshopId);
   const form = await readForm(req);
-  if (!safeEqual(form.get('csrf'), session.csrf)) {
-    return send(res, 403, messagePage('Přístup odepřen', 'Neplatný formulář, načtěte stránku znovu.'));
+  const token = form.get('t');
+  if (!installation || !verifySessionToken(token, eshopId)) {
+    return send(res, 403, messagePage('Relace vypršela', 'Otevřete nastavení doplňku znovu z administrace e-shopu.'), { installation });
   }
+  const lang = form.get('lang') || 'cs';
 
   const themeConfig = themeConfigFromForm(form);
   try {
@@ -156,14 +170,17 @@ async function handleSettingsPost(req, res, url) {
     return send(res, 502, settingsPage({
       eshopName: installation.eshopName,
       eshopId,
+      eshopOrigin: new URL(installation.eshopUrl).origin,
       themeConfig,
-      csrf: session.csrf,
+      token,
+      lang,
       flash: { type: 'err', message: `Nepodařilo se uložit do e-shopu: ${error.message}` },
-    }));
+    }), { installation });
   }
 
   saveInstallation(eshopId, { themeConfig });
-  redirect(res, `/settings?eshopId=${encodeURIComponent(eshopId)}&saved=1`);
+  console.log(`uložení: e-shop ${eshopId}, hlavička ${themeConfig.header}`);
+  redirect(res, settingsUrl(eshopId, { t: token, lang, saved: '1' }));
 }
 
 const routes = {
