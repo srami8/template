@@ -1,6 +1,8 @@
 // Volání Shoptetu: instalace doplňku, API tokeny, Shoptet API a ověření admina přes OAuth.
 
+import { createHash } from 'node:crypto';
 import { config } from './config.mjs';
+import { getApiToken, saveApiToken } from './store.mjs';
 
 async function readJson(response, what) {
   const text = await response.text();
@@ -36,18 +38,17 @@ export async function exchangeInstallCode(code, redirectUri) {
   return readJson(response, 'Výměna instalačního kódu');
 }
 
-// Krátkodobé API tokeny (platí 30 minut) si pamatujeme, Shoptet povoluje max. 5 platných současně.
-const apiTokens = new Map();
-
+// Krátkodobé API tokeny (platí 30 minut) si ukládáme, Shoptet povoluje max. 5 platných současně.
 async function getApiAccessToken(oauthToken) {
-  const cached = apiTokens.get(oauthToken);
+  const key = createHash('sha256').update(oauthToken).digest('hex').slice(0, 16);
+  const cached = getApiToken(key);
   if (cached && cached.expiresAt > Date.now() + 60_000) return cached.token;
 
   const response = await fetch(config.apiAccessTokenUrl, {
     headers: { Authorization: `Bearer ${oauthToken}` },
   });
   const body = await readJson(response, 'Získání API tokenu');
-  apiTokens.set(oauthToken, {
+  saveApiToken(key, {
     token: body.access_token,
     expiresAt: Date.now() + (Number(body.expires_in) || 1800) * 1000,
   });

@@ -21,6 +21,18 @@ function save(data) {
   renameSync(tmp, config.storeFile);
 }
 
+// Krátkodobé API tokeny. Ukládáme je, aby je sdílely všechny procesy (server i ruční skripty),
+// jinak každý proces bere nový a Shoptet povoluje nejvýš 5 platných tokenů na instalaci.
+export function getApiToken(key) {
+  return load().apiTokens?.[key] || null;
+}
+
+export function saveApiToken(key, value) {
+  const data = load();
+  data.apiTokens = { ...data.apiTokens, [key]: value };
+  save(data);
+}
+
 export function getInstallation(eshopId) {
   return load().installations[String(eshopId)] || null;
 }
