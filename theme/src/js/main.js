@@ -2,6 +2,7 @@
 // Konfiguraci vkládá settings-app přes Shoptet API (template-include) jako window.asteroidConfig.
 
 import { enhanceHeader } from './header';
+import { enhanceSearch } from './search';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
 
@@ -30,7 +31,10 @@ function start() {
     `as-category-${config.categoryLayout}`,
   );
 
-  const init = () => enhanceHeader(config);
+  const init = () => {
+    enhanceHeader(config);
+    enhanceSearch();
+  };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
