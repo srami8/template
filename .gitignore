@@ -1,5 +1,6 @@
 node_modules/
 dist/
+theme/src/scss/generated/
 .env
 .env.*
 !.env.example

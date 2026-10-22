@@ -26,6 +26,26 @@ E-shop (HTML Disco)
   └─ theme CSS podle tříd zobrazí zvolenou variantu
 ```
 
+## Konfigurace šablony
+
+Settings-app vkládá do e-shopu `window.asteroidConfig`. Všechny klíče jsou volitelné:
+
+```js
+window.asteroidConfig = {
+  header: 'v1',                 // varianta hlavičky: 'v1' | 'v2' | 'v3'
+  categoryLayout: 'default',    // layout kategorie
+  phone: {                      // telefon v horní liště
+    number: '+420 777 888 998',
+    hours: 'po–pá: 9:00–17:00',
+  },
+  quickLinks: [                 // řádek rychlých odkazů pod hlavičkou
+    { label: 'Novinky', url: '/novinky/', icon: 'local-fire-department' },
+  ],
+};
+```
+
+Ikony (`icon`) odpovídají souborům v [`theme/src/icons`](theme/src/icons/).
+
 ## Vývoj
 
 Požadavky: Node.js 18+.

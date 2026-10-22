@@ -1,0 +1,24 @@
+@use "sass:map";
+@use "../generated/icons" as generated;
+
+// Data ikon jako CSS proměnné (--as-icon-<název>), aby byla každá ikona v CSS jen jednou.
+@mixin custom-properties {
+  @each $name, $uri in generated.$icons {
+    --as-icon-#{$name}: url("#{$uri}");
+  }
+}
+
+// Vykreslí ikonu ze src/icons jako masku v barvě textu (currentColor).
+@mixin icon($name, $size: 16px) {
+  @if not map.has-key(generated.$icons, $name) {
+    @error "Neznámá ikona `#{$name}`. Přidejte ji do theme/src/icons.";
+  }
+
+  content: "";
+  display: inline-block;
+  flex-shrink: 0;
+  width: $size;
+  height: $size;
+  background-color: currentColor;
+  mask: var(--as-icon-#{$name}) center / contain no-repeat;
+}

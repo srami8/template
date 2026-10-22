@@ -1,0 +1,330 @@
+// Společné části hlavičky pro všechny varianty (Figma: Header, Verze=Default / v2 / v3):
+// horní lišta, hlavní řádek s logem, vyhledáváním, přihlášením a košíkem, řádek rychlých odkazů.
+// Staví nad HTML šablony Disco (.top-navigation-bar, #header). Disco používá selektory s #header,
+// proto je máme i tady, jinak by naše pravidla prohrála na specificitě.
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+.as-theme {
+  @include bp.desktop {
+    // Horní lišta: odkazy na stránky, telefon, měna, jazyk.
+    .top-navigation-bar {
+      border-top: 0;
+      border-bottom: 1px solid var(--as-secondary-75);
+      background: var(--as-page-bg);
+      font-family: var(--as-font-family);
+
+      .container {
+        min-height: 44px;
+      }
+
+      // Odkazy vlevo, telefon a nástroje (měna, jazyk) zarovnané doprava.
+      .top-navigation-menu {
+        flex: 1 1 auto;
+      }
+
+      .top-navigation-tools {
+        flex: 0 0 auto;
+      }
+
+      .top-navigation-bar-menu {
+        display: flex;
+        gap: 26px;
+
+        a {
+          padding: 0;
+          color: var(--as-secondary-400);
+          font-size: var(--as-font-size-small);
+          line-height: 20px;
+          text-decoration: none;
+
+          &:hover {
+            color: var(--as-primary-500);
+          }
+        }
+      }
+
+      .top-navigation-menu-trigger {
+        color: var(--as-secondary-400);
+        font-size: var(--as-font-size-small);
+      }
+
+      // Registrace je v okně přihlášení, v liště ji nezobrazujeme.
+      .top-nav-button-register {
+        display: none;
+      }
+    }
+
+    // Přihlášení / účet má kopii v hlavním řádku (viz js/header.js), původní v liště schováme.
+    &.as-account-in-header .top-navigation-tools {
+      .top-nav-button-login,
+      .top-nav-button-account {
+        display: none;
+      }
+    }
+
+    .as-topbar-phone {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 8px;
+      color: var(--as-secondary-400);
+      font-size: var(--as-font-size-small);
+      line-height: 20px;
+      text-decoration: none;
+      white-space: nowrap;
+
+      &::before {
+        @include icon(phone, 16px);
+        color: var(--as-secondary-500);
+      }
+
+      strong {
+        color: var(--as-secondary-500);
+        font-weight: 500;
+      }
+    }
+
+    // Hlavní řádek: logo, vyhledávání, akce uživatele, košík.
+    #header {
+      font-family: var(--as-font-family);
+      background: var(--as-page-bg);
+
+      .header-top {
+        padding: 0;
+        background: var(--as-page-bg);
+      }
+
+      // Pod řádkem rychlých odkazů už je oddělovač, druhý by byl navíc.
+      .as-quicklinks + .header-bottom {
+        border-top: 0;
+      }
+
+      .header-top-wrapper {
+        display: flex;
+        align-items: center;
+        min-height: 88px;
+
+        > .site-name {
+          flex: 0 0 240px;
+          margin: 0;
+        }
+
+        > .search {
+          flex: 0 1 682px;
+          max-width: 682px;
+          margin: 0;
+          padding: 0;
+        }
+
+        > .navigation-buttons {
+          display: flex;
+          flex: 0 0 auto;
+          align-items: center;
+          gap: 24px;
+          margin-left: auto;
+        }
+      }
+
+      .site-name img {
+        display: block;
+        max-width: 200px;
+        max-height: 48px;
+        width: auto;
+        height: auto;
+      }
+
+      .search-form {
+        width: 100%;
+      }
+
+      .search fieldset {
+        position: relative;
+        display: flex;
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+
+      .search-input-icon {
+        display: none;
+      }
+
+      .search-input {
+        box-sizing: border-box;
+        width: 100%;
+        height: 48px;
+        padding: 0 56px 0 24px;
+        border: 0;
+        border-radius: var(--as-radius-pill);
+        background: var(--as-secondary-50);
+        box-shadow: none;
+        color: var(--as-secondary-500);
+        font-family: var(--as-font-family);
+        font-size: var(--as-font-size-small);
+        line-height: 20px;
+
+        &::placeholder {
+          color: var(--as-secondary-300);
+        }
+      }
+
+      .search-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 48px;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--as-secondary-500);
+        font-size: 0;
+
+        &::before {
+          @include icon(search, 24px);
+        }
+      }
+
+      .navigation-buttons {
+        > a,
+        > button {
+          margin-left: 0;
+        }
+
+        // Ikona lupy a hamburger slouží jen pro mobil.
+        > [data-target="search"],
+        > [data-target="navigation"] {
+          display: none;
+        }
+
+        // Přihlášení / účet přesunuté z horní lišty.
+        .top-nav-button {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          height: auto;
+          padding: 0 0 0 24px;
+          border: 0;
+          border-left: 1px solid var(--as-secondary-75);
+          background: none;
+          color: var(--as-secondary-500);
+          font-family: var(--as-font-family);
+          font-size: var(--as-font-size-small);
+          line-height: 1.2;
+          text-decoration: none;
+          white-space: nowrap;
+
+          &::before {
+            @include icon(perm-identity, 32px);
+          }
+
+          &:hover {
+            color: var(--as-primary-500);
+          }
+        }
+
+        // Košík: bílá „pilulka“ s ikonou, počtem kusů a cenou.
+        .cart-count {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 12px;
+          width: auto;
+          height: 48px;
+          padding: 0 16px;
+          border: 0;
+          border-radius: var(--as-radius-pill);
+          background: var(--as-white);
+          color: var(--as-secondary-500);
+          line-height: 20px;
+          text-decoration: none;
+
+          &::before {
+            @include icon(shopping-cart, 32px);
+            position: static;
+            font-size: 0;
+          }
+
+          &::after {
+            @include icon(expand-more, 16px);
+            position: static;
+            color: var(--as-secondary-300);
+            font-size: 0;
+          }
+
+          // Počet kusů v košíku.
+          i {
+            position: absolute;
+            top: 4px;
+            left: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 4px;
+            border-radius: var(--as-radius-pill);
+            background: var(--as-primary-500);
+            color: var(--as-white);
+            font-size: 12px;
+            font-style: normal;
+            line-height: 20px;
+          }
+
+          .cart-price {
+            display: inline-block;
+            color: var(--as-secondary-500);
+            font-size: var(--as-font-size-body);
+            font-weight: 600;
+            line-height: 20px;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+
+    // Řádek rychlých odkazů pod hlavním řádkem (obsah z nastavení doplňku, viz js/header.js).
+    #header .as-quicklinks {
+      border-bottom: 1px solid var(--as-secondary-75);
+      background: var(--as-white);
+
+      // Disco dává kontejnerům v hlavičce min-height 50px.
+      .container {
+        min-height: 0;
+      }
+
+      ul {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        min-height: 36px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        display: block;
+      }
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--as-secondary-500);
+        font-size: var(--as-font-size-small);
+        line-height: 20px;
+        text-decoration: none;
+
+        &:hover {
+          color: var(--as-primary-500);
+        }
+      }
+    }
+  }
+}

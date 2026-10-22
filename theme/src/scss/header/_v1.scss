@@ -1,0 +1,93 @@
+// Hlavička v1 (Figma: Header, Verze=Default): kategorie vodorovně pod hlavičkou,
+// u kategorií s podkategoriemi šipka, přetékající položky schované pod „Další“.
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+.as-header-v1 {
+  @include bp.desktop {
+    #header .header-bottom {
+      border-bottom: 1px solid var(--as-secondary-75);
+      background: var(--as-white);
+    }
+
+    #navigation {
+      height: 60px;
+      background: var(--as-white);
+      font-family: var(--as-font-family);
+    }
+
+    .menu-level-1 {
+      display: flex;
+      align-items: stretch;
+
+      > li > a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 60px;
+        padding: 0 20px;
+        color: var(--as-secondary-500);
+        font-size: var(--as-font-size-body);
+        line-height: 20px;
+        text-decoration: none;
+        text-transform: none;
+        white-space: nowrap;
+
+        b {
+          font-weight: 400;
+        }
+
+        &:hover,
+        &[aria-expanded="true"] {
+          color: var(--as-primary-500);
+        }
+      }
+
+      > li.ext > a .submenu-arrow {
+        @include icon(expand-more, 16px);
+        padding: 0;
+        color: var(--as-secondary-300);
+        font-size: 0;
+
+        &::after {
+          content: none;
+        }
+      }
+    }
+
+    // „Další“: Disco sem přesouvá položky, které se do řádku nevejdou.
+    .menu-helper {
+      gap: 10px;
+      height: 60px;
+      padding: 0 20px;
+      color: var(--as-secondary-500);
+      font-family: var(--as-font-family);
+      font-size: var(--as-font-size-body);
+      font-weight: 400;
+
+      &::before {
+        @include icon(menu, 16px);
+      }
+
+      &::after {
+        @include icon(expand-more, 16px);
+        color: var(--as-secondary-300);
+      }
+
+      > span {
+        padding: 0;
+        font-size: var(--as-font-size-body);
+        line-height: 20px;
+
+        &::after {
+          content: none;
+        }
+      }
+
+      > ul {
+        top: 60px;
+      }
+    }
+  }
+}

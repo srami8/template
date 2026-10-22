@@ -1,0 +1,11 @@
+@use "../generated/icons" as generated;
+@use "../tools/icon" as *;
+
+// Ikony pro markup vkládaný z JS (např. rychlé odkazy): <span class="as-icon as-icon--schedule"></span>.
+.as-icon {
+  @each $name, $_ in generated.$icons {
+    &--#{$name} {
+      @include icon($name, 16px);
+    }
+  }
+}

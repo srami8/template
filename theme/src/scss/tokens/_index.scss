@@ -19,6 +19,7 @@
     --as-#{$name}: #{$value};
   }
   --as-white: #{colors.$white};
+  --as-page-bg: #{colors.$page-bg};
 
   --as-font-family: #{typography.$font-family};
   @each $level, $size in typography.$headings {
