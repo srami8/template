@@ -6,6 +6,7 @@
   ],
   "scripts": {
     "build": "npm run build -w theme",
-    "dev": "npm run dev -w theme"
+    "dev": "npm run dev -w theme",
+    "deploy": "npm run deploy -w theme"
   }
 }

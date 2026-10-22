@@ -54,4 +54,7 @@ Požadavky: Node.js 18+.
 npm install
 npm run build   # sestaví theme/dist
 npm run dev     # sleduje změny v theme/src
+npm run deploy  # sestaví a nahraje theme/dist na SFTP testovacího e-shopu
 ```
+
+`npm run deploy` čte přístupy z `.env` v kořeni repozitáře (`FTP_HOST`, `FTP_USER`, `FTP_PASSWORD`) a nahrává do složky `asteroid/`, tedy na `https://313980.myshoptet.com/user/documents/asteroid/`. Soubor `.env` se necommituje.
