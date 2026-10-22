@@ -1,0 +1,54 @@
+// Hlavička v2 (Figma: Header, Verze=v2): pod hlavičkou modré tlačítko „Katalog produktů“
+// s rozbalovacím katalogem a vedle něj textové odkazy na stránky z nastavení doplňku.
+
+@use "../tools/breakpoints" as bp;
+
+.as-header-v2 {
+  @include bp.desktop {
+    #header .header-bottom {
+      border-bottom: 1px solid var(--as-secondary-75);
+      background: var(--as-white);
+
+      > .container {
+        position: relative;
+        display: flex;
+        align-items: stretch;
+        min-height: 60px;
+      }
+    }
+
+    // Menu Disco nahrazuje katalog (js/catalog.js si z něj bere kategorie).
+    #navigation,
+    .menu-helper {
+      display: none;
+    }
+
+    .as-navlinks {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        display: block;
+      }
+
+      a {
+        display: flex;
+        align-items: center;
+        height: 60px;
+        padding: 0 24px;
+        color: var(--as-secondary-500);
+        font-family: var(--as-font-family);
+        font-size: var(--as-font-size-body);
+        line-height: 20px;
+        text-decoration: none;
+        white-space: nowrap;
+
+        &:hover {
+          color: var(--as-primary-500);
+        }
+      }
+    }
+  }
+}

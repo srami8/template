@@ -1,5 +1,7 @@
 // Úpravy HTML hlavičky Disco, které nejdou udělat jen v CSS.
 
+import { renderCatalog } from './catalog';
+
 // Přihlášení (nebo účet u přihlášeného zákazníka) patří podle návrhu do hlavního řádku vedle košíku.
 // Původní tlačítko nepřesouváme: Shoptet po přesunu do #header přestane otevírat okno přihlášení.
 // Do hlavičky dáme kopii, která kliká na původní tlačítko schované v horní liště.
@@ -84,8 +86,38 @@ function renderQuickLinks({ quickLinks }) {
   headerBottom.before(wrapper);
 }
 
+// Textové odkazy na stránky vedle katalogu (v2), položky přicházejí z nastavení doplňku.
+function renderNavLinks(container, { navLinks }) {
+  if (!Array.isArray(navLinks) || navLinks.length === 0) return;
+
+  const list = document.createElement('ul');
+  list.className = 'as-navlinks';
+  navLinks.forEach(({ label, url }) => {
+    if (!label || !url) return;
+    const link = document.createElement('a');
+    link.href = url;
+    link.textContent = label;
+    const item = document.createElement('li');
+    item.append(link);
+    list.append(item);
+  });
+
+  const nav = document.createElement('nav');
+  nav.setAttribute('aria-label', 'Informace');
+  nav.append(list);
+  container.append(nav);
+}
+
+function enhanceV2(config) {
+  const container = document.querySelector('#header .header-bottom > .container');
+  if (!container) return;
+  renderCatalog(container);
+  renderNavLinks(container, config);
+}
+
 export function enhanceHeader(config) {
   renderAccountButton();
   renderPhone(config);
   renderQuickLinks(config);
+  if (config.header === 'v2') enhanceV2(config);
 }

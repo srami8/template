@@ -13,11 +13,13 @@ export const HEADER_VARIANTS = [
 export const QUICK_LINK_ICONS = ['local-fire-department', 'local-offer', 'filter-vintage', 'schedule'];
 
 export const MAX_QUICK_LINKS = 6;
+export const MAX_NAV_LINKS = 8;
 
 export const DEFAULT_THEME_CONFIG = {
   header: 'v1',
   phone: null,
   quickLinks: [],
+  navLinks: [],
 };
 
 const SNIPPET_LIMIT = 8192;
@@ -52,7 +54,15 @@ export function themeConfigFromForm(form) {
     quickLinks.push({ label, url, ...(QUICK_LINK_ICONS.includes(icon) ? { icon } : {}) });
   }
 
-  return { header, phone, quickLinks };
+  // Odkazy vedle „Katalogu produktů“ (hlavička v2).
+  const navLinks = [];
+  for (let i = 0; i < MAX_NAV_LINKS; i += 1) {
+    const label = text(form.get(`navLinks[${i}][label]`), 40);
+    const url = safeUrl(form.get(`navLinks[${i}][url]`));
+    if (label && url) navLinks.push({ label, url });
+  }
+
+  return { header, phone, quickLinks, navLinks };
 }
 
 // JSON vložený do <script>: znak < escapujeme, aby text nemohl ukončit script tag.

@@ -1,0 +1,227 @@
+// „Katalog produktů“ (Figma: Header v2/v3, „Hover - menu_left“): tlačítko a rozbalovací panel
+// se seznamem kategorií vlevo a podkategoriemi vpravo. Markup skládá js/catalog.js z menu Disco.
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+.as-theme {
+  @include bp.desktop {
+    // Tlačítko zůstává nad ztmavením, stejně jako v návrhu.
+    .as-catalog {
+      position: relative;
+      z-index: 1102;
+      display: flex;
+    }
+
+    .as-catalog__toggle {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 60px;
+      padding: 0 24px;
+      border: 0;
+      background: var(--as-primary-500);
+      color: var(--as-white);
+      font-family: var(--as-font-family);
+      font-size: var(--as-font-size-body);
+      font-weight: 500;
+      line-height: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+
+      &::before {
+        @include icon(menu, 16px);
+      }
+
+      &::after {
+        @include icon(expand-more, 16px);
+        transition: transform 0.2s ease;
+      }
+
+      &[aria-expanded="true"] {
+        background: var(--as-white);
+        color: var(--as-primary-600);
+        box-shadow: inset 1px 0 0 var(--as-secondary-75), inset -1px 0 0 var(--as-secondary-75);
+
+        &::before {
+          @include icon(close, 16px);
+        }
+
+        &::after {
+          transform: rotate(180deg);
+        }
+      }
+    }
+
+    // Ztmavení stránky pod otevřeným katalogem. Disco dává tlačítkům v hlavičce z-index 1001,
+    // ztmavení i panel proto musí být výš.
+    .as-catalog__backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      background: rgba(46, 53, 69, 0.3);
+    }
+
+    .as-catalog__panel {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      z-index: 1101;
+      display: flex;
+      align-items: stretch;
+      margin: 0 auto;
+
+      &[hidden] {
+        display: none;
+      }
+    }
+
+    // Seznam kategorií vlevo.
+    .as-catalog__categories {
+      flex: 0 0 246px;
+      margin: 0;
+      padding: 0;
+      border: 1px solid var(--as-secondary-75);
+      background: var(--as-primary-50);
+      list-style: none;
+
+      > li {
+        display: block;
+      }
+
+      > li > a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--as-primary-100);
+        color: var(--as-secondary-500);
+        font-size: var(--as-font-size-small);
+        line-height: 20px;
+        text-decoration: none;
+
+        b {
+          font-weight: 400;
+        }
+
+        &::after {
+          @include icon(chevron-right, 16px);
+          color: var(--as-secondary-200);
+        }
+      }
+
+      > li:last-child > a {
+        border-bottom: 0;
+      }
+
+      > li.is-active > a {
+        background: var(--as-white);
+        color: var(--as-primary-600);
+
+        &::after {
+          color: var(--as-primary-600);
+        }
+      }
+
+      // Podkategorie se zobrazují v pravém panelu (viz níže), tady je schováme.
+      .menu-level-2 {
+        display: none;
+      }
+    }
+
+    // Podkategorie vpravo: mřížka se 3 sloupci, obrázek, název a odkazy na další úroveň.
+    .as-catalog__sub {
+      flex: 1 1 auto;
+      padding: 40px;
+      border-radius: 0 8px 8px 0;
+      background: var(--as-white);
+
+      &:empty {
+        display: none;
+      }
+
+      .menu-level-2 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 40px 20px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        > li {
+          display: grid;
+          grid-template-columns: 64px minmax(0, 1fr);
+          column-gap: 24px;
+          align-items: start;
+        }
+
+        .menu-image {
+          grid-row: 1 / span 2;
+          display: block;
+          width: 64px;
+          height: 64px;
+          padding: 0;
+
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+            object-fit: contain;
+          }
+        }
+
+        > li > div {
+          min-width: 0;
+
+          > a {
+            display: block;
+            padding: 0;
+            color: var(--as-secondary-500);
+            font-size: var(--as-font-size-body);
+            font-weight: 500;
+            line-height: 1.2;
+            text-decoration: none;
+
+            &:hover {
+              color: var(--as-primary-600);
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+
+      // Disco odděluje položky 3. úrovně čárkou, v návrhu jsou pod sebou.
+      .menu-level-3 {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin: 12px 0 0 -8px;
+        padding: 0;
+        list-style: none;
+
+        > li {
+          display: block;
+          font-size: 0;
+        }
+
+        a {
+          display: block;
+          padding: 2px 8px;
+          border-radius: var(--as-radius-pill);
+          color: var(--as-secondary-400);
+          font-size: var(--as-font-size-small);
+          line-height: 1.2;
+          text-decoration: none;
+
+          &:hover {
+            background: var(--as-primary-50);
+            color: var(--as-primary-600);
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}

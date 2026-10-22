@@ -15,8 +15,11 @@
       background: var(--as-header-bg);
       font-family: var(--as-font-family);
 
+      // Disco dává liště vlastní okraje 20 px, v návrhu lícuje s hlavičkou.
       .container {
         min-height: 44px;
+        padding-right: 0;
+        padding-left: 0;
       }
 
       // Odkazy vlevo, telefon a nástroje (měna, jazyk) zarovnané doprava.
@@ -53,6 +56,99 @@
       // Registrace je v okně přihlášení, v liště ji nezobrazujeme.
       .top-nav-button-register {
         display: none;
+      }
+
+      // Výběr měny (Figma: Header, „Hover - měna“): oddělovače, ikona, kód měny, šipka, bílá nabídka.
+      .top-navigation-tools .dropdown {
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 44px;
+        margin: 0 0 0 16px;
+        padding: 0 16px;
+        border-right: 1px solid var(--as-secondary-75);
+        border-left: 1px solid var(--as-secondary-75);
+
+        + .dropdown {
+          margin-left: 0;
+          border-left: 0;
+        }
+
+        // „Ceny v:“ – v návrhu jen ikona.
+        > span {
+          display: none;
+        }
+
+        > button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 0;
+          border: 0;
+          background: none;
+          color: var(--as-secondary-500);
+          font-family: var(--as-font-family);
+          font-size: var(--as-font-size-small);
+          line-height: 20px;
+          cursor: pointer;
+
+          &::before {
+            @include icon(account-balance-wallet, 16px);
+          }
+
+          .caret {
+            @include icon(expand-more, 16px);
+            position: static;
+            margin: 0;
+            border: 0;
+            color: var(--as-secondary-200);
+            transition: transform 0.2s ease;
+
+            &::before {
+              content: none;
+            }
+          }
+        }
+
+        &.open > button .caret {
+          transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+          top: 100%;
+          right: auto;
+          left: -8px;
+          min-width: calc(100% + 16px);
+          margin: -1px 0 0;
+          padding: 8px;
+          border: 0;
+          border-top: 1px solid var(--as-secondary-75);
+          border-radius: 0 0 8px 8px;
+          background: var(--as-white);
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+
+          a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            color: var(--as-secondary-500);
+            font-size: var(--as-font-size-small);
+            line-height: 20px;
+
+            // Disco kreslí před položky tečku.
+            &::before {
+              content: none;
+            }
+
+            &:hover,
+            &:focus-visible {
+              background: var(--as-primary-50);
+              color: var(--as-primary-600);
+            }
+          }
+        }
       }
     }
 

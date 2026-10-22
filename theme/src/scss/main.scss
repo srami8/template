@@ -7,8 +7,10 @@
 @use "components/input";
 @use "components/price";
 @use "components/icon" as icon-component;
+@use "components/catalog";
 @use "layout/header";
 @use "header/v1";
+@use "header/v2";
 
 :root {
   @include tokens.custom-properties;

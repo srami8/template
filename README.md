@@ -41,10 +41,15 @@ window.asteroidConfig = {
   quickLinks: [                 // řádek rychlých odkazů pod hlavičkou
     { label: 'Novinky', url: '/novinky/', icon: 'local-fire-department' },
   ],
+  navLinks: [                   // v2: odkazy vedle „Katalogu produktů“
+    { label: 'Kontakt', url: '/kontakty/' },
+  ],
 };
 ```
 
 Ikony (`icon`) odpovídají souborům v [`theme/src/icons`](theme/src/icons/).
+
+Náhled jiné varianty hlavičky bez změny nastavení: přidejte k adrese e-shopu `?asteroid-header=v2`.
 
 ## Vývoj
 
