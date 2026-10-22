@@ -12,7 +12,7 @@
     .top-navigation-bar {
       border-top: 0;
       border-bottom: 1px solid var(--as-secondary-75);
-      background: var(--as-page-bg);
+      background: var(--as-header-bg);
       font-family: var(--as-font-family);
 
       .container {
@@ -89,11 +89,11 @@
     // Hlavní řádek: logo, vyhledávání, akce uživatele, košík.
     #header {
       font-family: var(--as-font-family);
-      background: var(--as-page-bg);
+      background: var(--as-header-bg);
 
       .header-top {
         padding: 0;
-        background: var(--as-page-bg);
+        background: var(--as-header-bg);
       }
 
       // Pod řádkem rychlých odkazů už je oddělovač, druhý by byl navíc.
@@ -139,9 +139,12 @@
         width: 100%;
       }
 
+      // Disco dělá z formuláře flex kontejner, bez flex: 1 by se pole smrsklo na šířku obsahu.
       .search fieldset {
         position: relative;
         display: flex;
+        flex: 1 1 auto;
+        width: 100%;
         margin: 0;
         padding: 0;
         border: 0;
