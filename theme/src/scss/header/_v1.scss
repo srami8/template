@@ -7,8 +7,15 @@
 
 .as-header-v1 {
   @include bp.desktop {
+    // Disco podtrhává název položky při najetí (#navigation .navigation-in ul li:hover > a > b),
+    // v návrhu je místo toho linka nad položkou (box-shadow níže).
+    #navigation .navigation-in .menu-level-1 > li:hover > a > b {
+      text-decoration: none;
+    }
+
+    // V návrhu v1 nemá řádek menu spodní čáru.
     #header .header-bottom {
-      border-bottom: 1px solid var(--as-secondary-75);
+      border-bottom: 0;
       background: var(--as-white);
     }
 
@@ -40,8 +47,10 @@
         }
 
         &:hover,
+        &:focus-visible,
         &[aria-expanded="true"] {
           color: var(--as-primary-500);
+          box-shadow: inset 0 2px 0 var(--as-primary-500);
         }
       }
 
@@ -58,7 +67,8 @@
       }
 
       // Otevřené podmenu (Figma: „Hover - menu“). Disco přidá položce třídu .exp a <body> .submenu-visible.
-      > li.ext.exp > a {
+      // Linka a barva zůstávají, i když je myš už v panelu podmenu.
+      > li.exp > a {
         color: var(--as-primary-500);
         box-shadow: inset 0 2px 0 var(--as-primary-500);
 
