@@ -39,10 +39,14 @@ export async function exchangeInstallCode(code, redirectUri) {
 }
 
 // Krátkodobé API tokeny (platí 30 minut) si ukládáme, Shoptet povoluje max. 5 platných současně.
-async function getApiAccessToken(oauthToken) {
-  const key = createHash('sha256').update(oauthToken).digest('hex').slice(0, 16);
+function tokenKey(oauthToken) {
+  return createHash('sha256').update(oauthToken).digest('hex').slice(0, 16);
+}
+
+async function getApiAccessToken(oauthToken, { fresh = false } = {}) {
+  const key = tokenKey(oauthToken);
   const cached = getApiToken(key);
-  if (cached && cached.expiresAt > Date.now() + 60_000) return cached.token;
+  if (!fresh && cached && cached.expiresAt > Date.now() + 60_000) return cached.token;
 
   const response = await fetch(config.apiAccessTokenUrl, {
     headers: { Authorization: `Bearer ${oauthToken}` },
@@ -56,15 +60,21 @@ async function getApiAccessToken(oauthToken) {
 }
 
 export async function api(installation, method, path, payload) {
-  const token = await getApiAccessToken(installation.oauthToken);
-  const response = await fetch(`${config.apiBase}${path}`, {
-    method,
-    headers: {
-      'Shoptet-Access-Token': token,
-      'Content-Type': 'application/json',
-    },
-    body: payload ? JSON.stringify(payload) : undefined,
-  });
+  const request = (token) =>
+    fetch(`${config.apiBase}${path}`, {
+      method,
+      headers: {
+        'Shoptet-Access-Token': token,
+        'Content-Type': 'application/json',
+      },
+      body: payload ? JSON.stringify(payload) : undefined,
+    });
+
+  let response = await request(await getApiAccessToken(installation.oauthToken));
+  // Uložený token může Shoptet zneplatnit dřív (např. přeinstalace doplňku). Vezmeme nový a zkusíme to znovu.
+  if (response.status === 401) {
+    response = await request(await getApiAccessToken(installation.oauthToken, { fresh: true }));
+  }
   return readJson(response, `${method} ${path}`);
 }
 
