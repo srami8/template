@@ -1,0 +1,17 @@
+{
+  "name": "@asteroid/theme",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:css && npm run build:js",
+    "build:css": "sass src/scss/main.scss dist/asteroid.css --style=compressed --no-source-map",
+    "build:js": "esbuild src/js/main.js --bundle --minify --target=es2018 --outfile=dist/asteroid.js",
+    "dev": "npm run dev:css & npm run dev:js",
+    "dev:css": "sass src/scss/main.scss dist/asteroid.css --watch",
+    "dev:js": "esbuild src/js/main.js --bundle --target=es2018 --outfile=dist/asteroid.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "sass": "~1.83.4"
+  }
+}

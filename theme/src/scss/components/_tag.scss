@@ -1,0 +1,41 @@
+// Komponenta „Tag“ ze Styleguide: štítky produktů (Novinka, Akce, Doprava zdarma, Náš tip, sleva v %).
+
+$variants: (
+  new: var(--as-primary-500),
+  sale: var(--as-danger),
+  free-shipping: var(--as-success),
+  tip: var(--as-highlight),
+);
+
+@mixin base {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: var(--as-radius-pill);
+  background: var(--as-primary-500);
+  color: var(--as-white);
+  font-family: var(--as-font-family);
+  font-size: var(--as-font-size-caption);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.as-tag {
+  @include base;
+
+  @each $name, $color in $variants {
+    &--#{$name} {
+      background: $color;
+    }
+  }
+
+  // Kulatý štítek se slevou („-20 %“).
+  &--discount {
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    background: var(--as-danger);
+  }
+}

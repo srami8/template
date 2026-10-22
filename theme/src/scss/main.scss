@@ -1,0 +1,11 @@
+// Vstupní bod CSS šablony aSteroid. Načítá se nad CSS šablony Disco.
+
+@use "tokens";
+@use "components/button";
+@use "components/tag";
+@use "components/input";
+@use "components/price";
+
+:root {
+  @include tokens.custom-properties;
+}

@@ -1,0 +1,11 @@
+{
+  "name": "asteroid",
+  "private": true,
+  "workspaces": [
+    "theme"
+  ],
+  "scripts": {
+    "build": "npm run build -w theme",
+    "dev": "npm run dev -w theme"
+  }
+}

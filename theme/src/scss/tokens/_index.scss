@@ -1,0 +1,33 @@
+@use "sass:map";
+@use "colors";
+@use "typography";
+@use "shape";
+
+@forward "colors";
+@forward "typography";
+@forward "shape";
+
+// Tokeny jako CSS proměnné, ať je jde přepsat z nastavení doplňku bez nového buildu.
+@mixin custom-properties {
+  @each $step, $value in colors.$primary {
+    --as-primary-#{$step}: #{$value};
+  }
+  @each $step, $value in colors.$secondary {
+    --as-secondary-#{$step}: #{$value};
+  }
+  @each $name, $value in colors.$status {
+    --as-#{$name}: #{$value};
+  }
+  --as-white: #{colors.$white};
+
+  --as-font-family: #{typography.$font-family};
+  @each $level, $size in typography.$headings {
+    --as-font-size-#{$level}: #{$size};
+  }
+  @each $name, $size in typography.$font-sizes {
+    --as-font-size-#{$name}: #{$size};
+  }
+
+  --as-radius-pill: #{shape.$radius-pill};
+  --as-control-height: #{shape.$control-height};
+}

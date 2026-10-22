@@ -1,0 +1,34 @@
+// Barvy ze Styleguide ve Figmě (stránka „Styleguide“, proměnné $-Primary-* a $-Secondary-*).
+
+$primary: (
+  50: #e9f6fd,
+  100: #d2ecfa,
+  200: #a5d9f6,
+  300: #78c5f1,
+  400: #4bb2ed,
+  500: #1e9fe8,
+  600: #1777ae,
+  700: #0f5074,
+  800: #08283a,
+  900: #031017,
+);
+
+$secondary: (
+  50: #f4f4f4,
+  75: #e6e8eb,
+  100: #d5d7da,
+  200: #abaeb5,
+  300: #82868f,
+  400: #585d6a,
+  500: #2e3545,
+  600: #232834,
+);
+
+// Barvy štítků (komponenta „Tag“).
+$status: (
+  success: #38ba0a,
+  danger: #ef2828,
+  highlight: #9927c1,
+);
+
+$white: #fff;

@@ -1,0 +1,27 @@
+// Typografie ze Styleguide ve Figmě. Font: Rubik.
+
+$font-family: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+$weight-regular: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+
+$line-height-heading: 1.2;
+$line-height-body: 1.7;
+
+// Heading/H1–H6 (Rubik Medium, line-height 1.2).
+$headings: (
+  h1: 36px,
+  h2: 28px,
+  h3: 24px,
+  h4: 20px,
+  h5: 18px,
+  h6: 16px,
+);
+
+// Body/Default, Body/Small, Caption/Extra small.
+$font-sizes: (
+  body: 16px,
+  small: 14px,
+  caption: 13px,
+);
