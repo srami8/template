@@ -1,20 +1,25 @@
 // „Katalog produktů“ (Figma: Header v2/v3, „Hover - menu_left“): tlačítko a rozbalovací panel
-// se seznamem kategorií vlevo a podkategoriemi vpravo. Markup skládá js/catalog.js z menu Disco.
+// se seznamem kategorií vlevo a podkategoriemi vpravo. Panel je původní menu Disco (#navigation):
+// otevřené je při body.navigation-window-visible (přepíná Disco, viz js/catalog.js), podkategorie
+// ukazuje Disco při najetí na kategorii (li.ext.exp > .menu-level-2).
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
 @use "../tools/submenu";
 
-.as-theme {
-  @include bp.desktop {
-    // Tlačítko zůstává nad ztmavením, stejně jako v návrhu.
-    .as-catalog {
-      position: relative;
-      z-index: 1102;
-      display: flex;
-    }
+$categories-width: 246px;
 
+.as-header-v2 {
+  // Na mobilu otevírá menu Disco jeho vlastní hamburger v hlavičce.
+  .as-catalog__toggle {
+    display: none;
+  }
+
+  @include bp.desktop {
+    // Tlačítko zůstává nad ztmavením (Disco ho kreslí přes body::before se z-indexem 1002).
     .as-catalog__toggle {
+      position: relative;
+      z-index: 1003;
       display: flex;
       align-items: center;
       gap: 16px;
@@ -54,41 +59,56 @@
       }
     }
 
-    // Ztmavení stránky pod otevřeným katalogem. Disco dává tlačítkům v hlavičce z-index 1001,
-    // ztmavení i panel proto musí být výš.
-    .as-catalog__backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 1100;
+    // Ztmavení stránky pod otevřeným katalogem: overlay Disca (body::before), který Disco používá
+    // při hledání a najetí na menu. Barva z návrhu, stejná pro oba stavy, aby při najetí neproblikla.
+    body.navigation-window-visible::before,
+    body.navigation-window-visible.navigation-hovered::before {
+      z-index: 1002;
       background: rgba(46, 53, 69, 0.3);
+      opacity: 1;
     }
 
-    .as-catalog__panel {
+    // Zavřený katalog: menu Disco není vidět.
+    #navigation {
+      display: none;
+    }
+
+    // Otevřený panel přes šířku kontejneru pod lištou. Prázdná plocha vpravo (kategorie bez
+    // podkategorií) propouští kliky na ztmavení, které katalog zavře.
+    body.navigation-window-visible #navigation {
       position: absolute;
       top: 100%;
       right: 0;
       left: 0;
-      z-index: 1101;
-      display: flex;
-      align-items: stretch;
-      margin: 0 auto;
+      z-index: 1003;
+      display: block;
+      height: auto;
+      background: none;
+      font-family: var(--as-font-family);
+      pointer-events: none;
 
-      &[hidden] {
-        display: none;
+      // Disco má .navigation-in absolutně, podmenu se pak měří k ní. Měříme ho k celému panelu.
+      .navigation-in {
+        position: static;
+        width: $categories-width;
+        pointer-events: auto;
       }
     }
 
     // Seznam kategorií vlevo.
-    .as-catalog__categories {
-      flex: 0 0 246px;
+    #navigation .menu-level-1 {
+      display: block;
       margin: 0;
       padding: 0;
       border: 1px solid var(--as-secondary-75);
       background: var(--as-primary-50);
-      list-style: none;
 
       > li {
         display: block;
+        float: none;
+        // Disco schovává (visibility: hidden) položky, které se nevešly do vodorovného řádku.
+        // Ve svislém seznamu se vejdou všechny.
+        visibility: visible;
       }
 
       > li > a {
@@ -96,15 +116,22 @@
         align-items: center;
         justify-content: space-between;
         gap: 8px;
+        height: auto;
         padding: 16px 20px;
         border-bottom: 1px solid var(--as-primary-100);
         color: var(--as-secondary-500);
         font-size: var(--as-font-size-small);
         line-height: 20px;
         text-decoration: none;
+        text-transform: none;
 
         b {
           font-weight: 400;
+        }
+
+        // Šipku Disca nahrazuje šipka doprava z návrhu.
+        .submenu-arrow {
+          display: none;
         }
 
         &::after {
@@ -117,7 +144,14 @@
         border-bottom: 0;
       }
 
-      > li.is-active > a {
+      // Disco podtrhává název při najetí (#navigation .navigation-in ul li:hover > a > b).
+      > li:hover > a > b {
+        text-decoration: none;
+      }
+
+      > li:hover > a,
+      > li.exp > a,
+      > li > a:focus-visible {
         background: var(--as-white);
         color: var(--as-primary-600);
 
@@ -126,25 +160,18 @@
         }
       }
 
-      // Podkategorie se zobrazují v pravém panelu (viz níže), tady je schováme.
-      .menu-level-2 {
-        display: none;
-      }
-    }
-
-    // Podkategorie vpravo: mřížka se 3 sloupci, obrázek, název a odkazy na další úroveň.
-    .as-catalog__sub {
-      flex: 1 1 auto;
-      padding: 40px;
-      border-radius: 0 8px 8px 0;
-      background: var(--as-white);
-
-      &:empty {
-        display: none;
-      }
-
-      .menu-level-2 {
-        padding: 0;
+      // Podkategorie vpravo vedle seznamu: mřížka se 3 sloupci, obrázek, název a odkazy na další úroveň.
+      > li.ext.exp > .menu-level-2 {
+        top: 0;
+        right: 0;
+        left: $categories-width;
+        width: auto;
+        min-height: 100%;
+        padding: 40px;
+        border: 0;
+        border-radius: 0 8px 8px 0;
+        background: var(--as-white);
+        box-shadow: none;
 
         @include submenu.groups(3);
       }

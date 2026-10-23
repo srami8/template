@@ -17,8 +17,8 @@
       }
     }
 
-    // Menu Disco nahrazuje katalog (js/catalog.js si z něj bere kategorie).
-    #navigation,
+    // Menu Disco se zobrazuje jako panel katalogu (components/_catalog.scss). „Další“ pro položky,
+    // které se nevejdou do vodorovného řádku, ve svislém katalogu není potřeba.
     .menu-helper {
       display: none;
     }
