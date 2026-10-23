@@ -26,6 +26,10 @@ Ověřeno 23. 10. 2026 na `313980.myshoptet.com`, šablona 13 (Disco). V testova
 
 Referenční stylesheet: `cdn.myshoptet.com/prj/dist/master/shop/dist/main-13.less.c8a6415be4516e0585b7.css`. Při další změně nejprve znovu ověř chování aktuální verze Disca. Nepřidávej vlastní mobilní menu, obsluhu hledání ani další breakpoint jen podle desktopového obrázku.
 
+## Banner Střed vedle produktové sekce
+
+Varianta `left` / `right` (nastavení šablony) staví doplňkový banner Shoptetu s pozicí Střed (`#content > .body-banners`, Disco ho vykreslí za první produktovou sekcí) vedle následující sekce až od 1200 px: banner 434 px obtéká, sekce za ním má `display: flow-root` a slider v ní o dva produkty méně (nejméně 3). Počet karet slider určí při spuštění, proto o sníženém počtu rozhoduje šířka okna při načtení. Pod 1200 px zůstává banner nad sekcí přes celou šířku, na telefonu s textem pod obrázkem. Shoptet může mít pro mobil samostatný banner (jinak se blok na mobilu nevykreslí).
+
 ## Multibanner přes šířku displeje
 
 Varianta `cards` používá na mobilu i desktopu pás přes celou šířku displeje. První karta a pozice přichycení lícují s obsahem původního sloupce Disca. Při posunu karty projíždějí za levou hranou displeje, na konci poslední karta lícuje s pravým okrajem obsahu. JavaScript pouze měří původní sloupec pro odsazení a zachování desktopové velikosti karet; nepřesouvá DOM. Šipky posouvají původní `.carousel-inner` vždy o šířku jedné karty včetně mezery (jako na Starnails); na konci se krok omezí dostupným místem. Mobil používá swipe s přichycením po jednotlivých kartách.

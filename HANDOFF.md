@@ -1,3 +1,16 @@
+# Aktualizace (Claude): banner Střed vedle produktové sekce
+
+Nové nastavení šablony „Banner mezi produkty na úvodní stránce“ (`middleBanners`: `default` | `left` | `right`, třída `.as-middle-banners-*`, náhled `?asteroid-middle-banners=left`). Obsah jsou doplňkové bannery Shoptetu s pozicí Střed, nic se neprogramuje navíc.
+
+- Disco blok `#content > .row.banners-content.body-banners` vykreslí za první produktovou sekcí. Od 1200 px ho `components/_body-banners.scss` obteče (`float`, 434 px), sekce za ním (`.homepage-group-title` + `.products-wrapper`) má `display: flow-root; width: auto` (Disco obalu dává `width: 100 %`, jinak by spadl pod banner), další obsah `clear: both`. DOM se nemění.
+- `js/homepage-products.js`: slider sekce vedle banneru dostane o 2 produkty méně (min. 3), jen když je okno při načtení ≥ 1200 px.
+- Vzhled banneru podle Figmy: obrázek přes celou plochu (`object-fit: cover`), zaoblení 8 px, nadpis H1 36 px a text nahoře, tlačítko 44 px nad spodkem; nová sdílená varianta `button.light` (použita i u tlačítka v carouselu, které mělo stejné barvy).
+- Testy: 81 prošlých, nový `tests/responsive/body-banners.spec.cjs` (vlastní minimální stránka podle skutečného pořadí v `#content`).
+- Ověřeno na e-shopu (náhledový parametr): 1920 px vlevo i vpravo – banner 434 × 509 px, sekce 904 px se 4 kartami 226 px, výška sekce 518 px, další sekce o 72 px níž; 1024 px banner nad sekcí, slider 6 → 5; mobil: Shoptet blok nevykreslí (banner je nastavený pro desktop, mobilní je skrytý), bez přetékání.
+- Neověřeno: víc bannerů Střed najednou (na e-shopu je viditelný jeden), uložení v administraci (jen náhled), dotykový posun.
+
+---
+
 # Aktualizace (Claude): převzetí feature/responsive, výška tlačítka v kartě
 
 Navazuje na předchozí aktualizace Codexu. Větev nasazena na testovací e-shop (SFTP).

@@ -80,6 +80,20 @@ $sizes: (
   }
 }
 
+// Bílé s tmavým textem, na obrázku banneru (Figma: tlačítka v bannerech).
+@mixin light {
+  border-color: var(--as-white);
+  background: var(--as-white);
+  color: var(--as-secondary-500);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--as-secondary-50);
+    background: var(--as-secondary-50);
+    color: var(--as-secondary-500);
+  }
+}
+
 // Šipka za textem („Pokračovat do košíku ›“).
 @mixin chevron {
   &::after {

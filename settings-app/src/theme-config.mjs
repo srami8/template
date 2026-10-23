@@ -37,6 +37,14 @@ export const BANNER_LAYOUTS = [
 // Ikony dostupné v theme/src/icons pro rychlé odkazy.
 export const QUICK_LINK_ICONS = ['local-fire-department', 'local-offer', 'filter-vintage', 'schedule'];
 
+// Doplňkové bannery Shoptetu s pozicí Střed: Disco je vykreslí přes šířku obsahu za první produktovou
+// sekcí, šablona je umí postavit vedle následující sekce.
+export const MIDDLE_BANNER_LAYOUTS = [
+  { value: 'default', label: 'Přes šířku obsahu', hint: 'Tak, jak je zobrazí Shoptet.' },
+  { value: 'left', label: 'Vedle produktové sekce vlevo', hint: 'Banner 434 px vedle nadpisu a produktů sekce za ním (na širokém displeji, na menších nad sekcí). Doporučený obrázek na výšku 868 × 1018 px.' },
+  { value: 'right', label: 'Vedle produktové sekce vpravo', hint: 'Stejně jako vlevo, jen banner je napravo od produktů.' },
+];
+
 // Počet produktů vedle sebe v produktových sekcích úvodní stránky (Shoptet sám umí jen 3 nebo 4).
 export const PRODUCT_COLUMNS = [4, 5, 6];
 
@@ -56,6 +64,7 @@ export const DEFAULT_THEME_CONFIG = {
   navLinks: [],
   homeCategories: { title: HOME_CATEGORIES_TITLE, items: [] },
   productColumns: 4,
+  middleBanners: 'default',
 };
 
 const SNIPPET_LIMIT = 8192;
@@ -163,7 +172,11 @@ export function themeConfigFromForm(form, { categories, previous } = {}) {
   const columns = Number(form.get('productColumns'));
   const productColumns = PRODUCT_COLUMNS.includes(columns) ? columns : DEFAULT_THEME_CONFIG.productColumns;
 
-  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns };
+  const middleBanners = MIDDLE_BANNER_LAYOUTS.some((v) => v.value === form.get('middleBanners'))
+    ? form.get('middleBanners')
+    : DEFAULT_THEME_CONFIG.middleBanners;
+
+  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, middleBanners };
 }
 
 // JSON vložený do <script>: znak < escapujeme, aby text nemohl ukončit script tag.

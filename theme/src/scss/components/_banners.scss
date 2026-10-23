@@ -188,9 +188,9 @@
       height: 60px;
       margin-top: 8px;
       padding: 0 40px;
+      border: 1px solid transparent;
       border-radius: var(--as-radius-pill);
-      background: var(--as-white);
-      color: var(--as-secondary-500);
+      @include button.light;
       font-size: var(--as-font-size-body);
       font-weight: 500;
       pointer-events: auto;

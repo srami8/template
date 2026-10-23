@@ -51,6 +51,7 @@ window.asteroidConfig = {
   ],
   productCard: 'default',       // vzhled karet produktů (zatím jen 'default', třída .as-product-card-*)
   productColumns: 6,            // produkty vedle sebe v sekcích úvodní stránky: 4 | 5 | 6 (bez hodnoty podle Shoptetu)
+  middleBanners: 'left',        // doplňkové bannery Střed: 'default' (přes šířku) | 'left' | 'right' (vedle sekce za nimi)
   homeCategories: {             // kategorie na úvodní stránce (víc než 6 = carousel);
     title: 'Tohle u nás zrovna frčí', // název, odkaz a obrázek převezme settings-app z API při uložení
     items: [
@@ -62,7 +63,7 @@ window.asteroidConfig = {
 
 Ikony (`icon`) odpovídají souborům v [`theme/src/icons`](theme/src/icons/).
 
-Náhled jiné varianty bez změny nastavení: přidejte k adrese e-shopu `?asteroid-header=v2`, `?asteroid-banners=cards` nebo `?asteroid-columns=6`.
+Náhled jiné varianty bez změny nastavení: přidejte k adrese e-shopu `?asteroid-header=v2`, `?asteroid-banners=cards`, `?asteroid-columns=6` nebo `?asteroid-middle-banners=left`.
 
 ## Vývoj
 

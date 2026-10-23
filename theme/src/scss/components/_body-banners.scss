@@ -1,0 +1,138 @@
+// Banner mezi produkty na úvodní stránce (Figma: Homepage – „Nejprodávanější“ s bannerem vlevo / vpravo).
+// Obsah jsou doplňkové bannery Shoptetu s pozicí Střed: Disco je vykreslí jako blok
+// #content > .row.banners-content.body-banners (.banner-wrapper > a > img + .extended-banner-texts)
+// za první produktovou sekcí. Při .as-middle-banners-left / -right (nastavení šablony) blok od 1200 px
+// obteče (float) a sekce za ním (nadpis a slider) se zúží vedle něj. DOM se nemění, užší slider má
+// o dva produkty méně (js/homepage-products.js). Pod 1200 px zůstává banner nad sekcí přes celou
+// šířku, na telefonu s textem pod obrázkem (components/_banners.scss).
+
+@use "../tools/breakpoints" as bp;
+@use "../tools/button";
+
+$banner-width: 434px;
+$gap: 40px;
+$section-gap: 72px;
+
+@mixin beside($side) {
+  $other: if($side == left, right, left);
+
+  #content > .body-banners {
+    float: $side;
+    width: $banner-width;
+    margin: 0 0 $section-gap;
+    margin-#{$other}: $gap;
+    padding: 0;
+
+    > [class*="col-"] {
+      float: none;
+      width: auto;
+      padding: 0;
+    }
+
+    .banner-wrapper {
+      margin: 0;
+    }
+
+    // Obrázek přes celou plochu banneru, texty nahoře, tlačítko dole (vše z administrace).
+    // Flex: výška z poměru stran se pro height: 100 % textů nepočítá, texty se roztáhnou přes flex.
+    a {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      aspect-ratio: 434 / 509;
+      border-radius: 8px;
+      overflow: hidden;
+      color: var(--as-white);
+      text-decoration: none;
+    }
+
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .extended-banner-texts {
+      position: relative;
+      z-index: 1;
+      inset: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1 1 auto;
+      gap: 8px;
+      width: 100%;
+      height: auto;
+      max-width: none;
+      margin: 0;
+      padding: 48px 32px 44px;
+      background: none;
+      text-align: center;
+      transform: none;
+
+      > * {
+        position: static;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        transform: none;
+      }
+
+      > :empty {
+        display: none;
+      }
+    }
+
+    .extended-banner-title {
+      color: var(--as-white);
+      font-family: var(--as-font-family-headings);
+      font-size: var(--as-font-size-h1);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .extended-banner-text {
+      color: var(--as-white);
+      font-size: var(--as-font-size-body);
+      line-height: 1.7;
+    }
+
+    // Tlačítko dole (margin-top: auto až za button.base, ten nastavuje margin: 0).
+    .extended-banner-link {
+      @include button.base;
+      @include button.light;
+      margin-top: auto;
+      padding: 15px 39px;
+      font-size: var(--as-font-size-h5);
+      line-height: 1.2;
+      white-space: normal;
+    }
+  }
+
+  // Sekce za bannerem: nový formátovací kontext ji zúží vedle banneru (slider změří užší šířku).
+  // Disco obalu slideru dává width: 100 %, ten by se vedle banneru nevešel a spadl pod něj.
+  #content > .body-banners + .homepage-group-title,
+  #content > .body-banners + .homepage-group-title + .products-wrapper {
+    display: flow-root;
+    width: auto;
+  }
+
+  // Další obsah už pod bannerem.
+  #content > .body-banners + .homepage-group-title + .products-wrapper + * {
+    clear: both;
+  }
+}
+
+.as-theme.as-middle-banners-left {
+  @media (min-width: bp.$wide) {
+    @include beside(left);
+  }
+}
+
+.as-theme.as-middle-banners-right {
+  @media (min-width: bp.$wide) {
+    @include beside(right);
+  }
+}
