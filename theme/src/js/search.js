@@ -5,6 +5,7 @@
 // Prvky Shoptetu nepřesouváme ani nenahrazujeme.
 
 import { categoryItem } from './home-categories';
+import { contactFromShop, contactCard } from './contact';
 
 const CONTACT_CLASS = 'as-whisperer-contact';
 const CATEGORIES_CLASS = 'as-whisperer-categories';
@@ -14,47 +15,6 @@ function el(tag, className, text) {
   if (className) node.className = className;
   if (text) node.textContent = text;
   return node;
-}
-
-// Údaje bereme z kontaktního boxu Shoptetu, tedy z nastavení e-shopu.
-function contactFromShop() {
-  const box = document.querySelector('.contact-box');
-  if (!box) return null;
-  const img = box.querySelector('img');
-  const mail = box.querySelector('.mail a');
-  const tel = box.querySelector('.tel a');
-  const contact = {
-    photo: img ? img.dataset.src || img.getAttribute('src') : null,
-    email: mail ? mail.textContent.trim() : null,
-    emailHref: mail ? mail.getAttribute('href') : null,
-    phone: tel ? tel.textContent.trim() : null,
-    phoneHref: tel ? tel.getAttribute('href') : null,
-  };
-  return contact.email || contact.phone ? contact : null;
-}
-
-function contactCard(contact) {
-  const card = el('div', CONTACT_CLASS);
-  if (contact.photo && !contact.photo.startsWith('data:')) {
-    const photo = el('img', `${CONTACT_CLASS}__photo`);
-    photo.src = contact.photo;
-    photo.alt = '';
-    card.append(photo);
-  }
-  card.append(
-    el('div', `${CONTACT_CLASS}__title`, 'Potřebujete poradit?'),
-    el('div', `${CONTACT_CLASS}__text`, 'Obraťte se na naši ochotnou zákaznickou podporu'),
-  );
-  [
-    [contact.email, contact.emailHref, 'mail'],
-    [contact.phone, contact.phoneHref, 'phone'],
-  ].forEach(([label, href, type]) => {
-    if (!label || !href) return;
-    const link = el('a', `${CONTACT_CLASS}__link ${CONTACT_CLASS}__link--${type}`, label);
-    link.href = href;
-    card.append(link);
-  });
-  return card;
 }
 
 // Kategorie z úvodní stránky v markupu podkategorií Disca, nadpis stejný jako na úvodní stránce.
@@ -75,7 +35,7 @@ function addToEmptyState(whisperer, { contact, categories }) {
     whisperer.append(categoriesBlock(categories));
   }
   if (contact && !whisperer.querySelector(`:scope > .${CONTACT_CLASS}`)) {
-    whisperer.append(contactCard(contact));
+    whisperer.append(contactCard(contact, CONTACT_CLASS));
   }
 }
 

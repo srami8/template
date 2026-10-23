@@ -6,6 +6,7 @@ import { enhanceSearch } from './search';
 import { enhanceBanners } from './banners';
 import { renderHomeCategories } from './home-categories';
 import { enhanceLogin } from './login';
+import { enhanceCart } from './cart';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
 const BANNER_LAYOUTS = ['default', 'content', 'fullwidth', 'cards'];
@@ -49,6 +50,7 @@ function start() {
     enhanceBanners(config);
     renderHomeCategories(config);
     enhanceLogin();
+    enhanceCart();
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

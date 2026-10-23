@@ -1,0 +1,421 @@
+// Okno košíku (Figma: „Košík - hover“, „Košík - hover - prázdný“). Markup Disca:
+//   #cart-widget.popup-widget > .cart-widget-inner(.full)
+//     > .cart-widget-products > .cart-widget-products-inner > .cart-widget-product
+//         (-image, -name, -amount: form.quantity-form s input.amount, .increase, .decrease,
+//          -unit, -price, -delete: button.remove-item)
+//     > .cart-widget-bottom > .cart-widget-button > a.btn.btn-conversion
+//   Prázdný košík: .cart-widget-inner bez .full, v .cart-widget-product jen text Shoptetu.
+// Doplněk .as-cart-contact a pozici okna (--as-popup-top / --as-popup-right) přidává js/cart.js.
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+.as-theme {
+  @include bp.desktop {
+    // Ztmavení stránky pod oknem: overlay Disca (body::before) jako u hledání a přihlášení.
+    body.cart-window-visible::before {
+      z-index: 1002;
+      background: rgba(46, 53, 69, 0.3);
+      opacity: 1;
+    }
+
+    // Otevřený košík: tlačítko je nad ztmavením a navazuje na okno (zaoblené jen nahoře).
+    body.cart-window-visible #header .navigation-buttons .cart-count {
+      z-index: 1003;
+      border-radius: 8px 8px 0 0;
+
+      &::after {
+        transform: rotate(180deg);
+      }
+    }
+
+    // Disco okno umísťuje pevně pod svou hlavičku se šipkou, u nás přiléhá k tlačítku košíku.
+    #cart-widget.popup-widget {
+      top: var(--as-popup-top, 128px);
+      right: var(--as-popup-right, auto);
+      left: auto;
+      z-index: 1003;
+      width: 580px;
+      max-height: none;
+      margin: 0;
+      padding: 0;
+      // Disco okno ohraničuje rámečkem a stínem, v návrhu leží na ztmavené stránce bez nich.
+      border: 0;
+      box-shadow: none;
+
+      &::before {
+        content: none;
+      }
+    }
+
+    #cart-widget .cart-widget-inner {
+      width: auto;
+      padding: 0;
+      border: 0;
+      border-radius: 8px 0 8px 8px;
+      background: var(--as-white);
+      box-shadow: none;
+      font-family: var(--as-font-family);
+      overflow: hidden;
+    }
+
+    // Seznam produktů se při delším košíku posouvá (výšku omezuje Disco).
+    #cart-widget .cart-widget-products {
+      max-height: calc(100vh - 360px);
+    }
+
+    // Řádek produktu: obrázek 48 px, název, počítadlo, cena, odebrání.
+    #cart-widget .cart-widget-product {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 0;
+      padding: 16px 16px 16px 32px;
+      border-bottom: 1px solid var(--as-secondary-75);
+    }
+
+    #cart-widget .cart-widget-product-image {
+      flex: 0 0 48px;
+      width: 48px;
+      height: 48px;
+      margin: 0;
+      padding: 0;
+
+      a,
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      img {
+        object-fit: contain;
+      }
+    }
+
+    #cart-widget .cart-widget-product-name {
+      flex: 1 1 auto;
+      min-width: 0;
+      margin: 0 8px 0 0;
+      padding: 0;
+
+      strong {
+        font-weight: 400;
+      }
+
+      a {
+        color: var(--as-secondary-500);
+        font-size: var(--as-font-size-small);
+        line-height: 1.2;
+        text-decoration: none;
+
+        &:hover {
+          color: var(--as-primary-600);
+          text-decoration: underline;
+        }
+      }
+    }
+
+    // Počítadlo: bílá pilulka, v ní − množství + (Disco má tlačítka v pořadí +, −).
+    #cart-widget .cart-widget-product-amount {
+      flex: 0 0 auto;
+      // Disco dává počítadlu pevnou šířku.
+      width: auto;
+      margin: 0;
+      padding: 0;
+
+      .quantity {
+        display: inline-grid;
+        grid-template-columns: 24px 34px 24px;
+        align-items: center;
+        gap: 0;
+        width: auto;
+        height: 36px;
+        padding: 0 6px;
+        border: 0;
+        border-radius: var(--as-radius-pill);
+        background: var(--as-white);
+      }
+
+      label {
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0;
+      }
+
+      .amount {
+        width: 100%;
+        height: 24px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--as-secondary-400);
+        font-family: var(--as-font-family);
+        font-size: var(--as-font-size-caption);
+        font-weight: 500;
+        line-height: 1.2;
+        text-align: center;
+        appearance: textfield;
+
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+          margin: 0;
+          appearance: none;
+        }
+      }
+
+      .increase,
+      .decrease {
+        position: static;
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: var(--as-primary-50);
+        color: var(--as-primary-500);
+        font-size: var(--as-font-size-caption);
+        font-weight: 500;
+        line-height: 1;
+
+        &:hover {
+          background: var(--as-primary-100);
+        }
+
+        // Disco kreslí + a − písmem ikon a textové znaménko (span) skrývá. V návrhu je znaménko
+        // písmem šablony, proto obráceně.
+        &::before {
+          content: none;
+        }
+
+        span {
+          display: block;
+          font-family: var(--as-font-family);
+          font-size: var(--as-font-size-caption);
+          line-height: 1;
+        }
+      }
+
+      .decrease {
+        grid-column: 1;
+      }
+
+      .increase {
+        grid-column: 3;
+      }
+    }
+
+    // Jednotka (ks) v návrhu není, množství je v počítadle.
+    #cart-widget .cart-widget-product-unit {
+      display: none;
+    }
+
+    #cart-widget .cart-widget-product-price {
+      flex: 0 0 auto;
+      min-width: 88px;
+      margin: 0;
+      padding: 0;
+      text-align: right;
+
+      strong {
+        color: var(--as-secondary-500);
+        font-size: var(--as-font-size-body);
+        font-weight: 600;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+    }
+
+    // Odebrání: šedý křížek 16 px (Disco tlačítko kreslí písmem ikon).
+    #cart-widget .cart-widget-product-delete {
+      flex: 0 0 16px;
+      margin: 0;
+      padding: 0;
+
+      .remove-item {
+        display: flex;
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--as-secondary-200);
+        cursor: pointer;
+
+        &::before {
+          @include icon(close, 16px);
+          font-size: 0;
+        }
+
+        &::after {
+          content: none;
+        }
+
+        &:hover {
+          color: var(--as-secondary-500);
+        }
+      }
+    }
+
+    // „Pokračovat do košíku“: tlačítko Disca .btn.btn-conversion vpravo, se šipkou.
+    #cart-widget .cart-widget-bottom {
+      display: flex;
+      justify-content: flex-end;
+      margin: 0;
+      padding: 24px 32px 32px;
+      border: 0;
+      background: none;
+    }
+
+    #cart-widget .cart-widget-button {
+      width: auto;
+      margin: 0;
+      padding: 0;
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: auto;
+        height: auto;
+        padding: 16px 32px;
+        border: 0;
+        border-radius: var(--as-radius-pill);
+        background: var(--as-conversion);
+        color: var(--as-white);
+        font-family: var(--as-font-family);
+        font-size: var(--as-font-size-body);
+        font-weight: 500;
+        line-height: 20px;
+        text-transform: none;
+
+        &::after {
+          @include icon(chevron-right, 20px);
+        }
+
+        &:hover {
+          background: var(--as-conversion-hover);
+        }
+      }
+    }
+
+    // Prázdný košík: ikona, nadpis (text Shoptetu) a vysvětlení, pod čarou kontakt.
+    #cart-widget .cart-widget-inner:not(.full) {
+      padding: 40px;
+
+      .cart-widget-products {
+        max-height: none;
+        overflow: visible;
+      }
+
+      .cart-widget-product {
+        display: grid;
+        grid-template-columns: 64px minmax(0, 1fr);
+        column-gap: 20px;
+        row-gap: 8px;
+        align-items: start;
+        align-content: start;
+        // Disco dává hlášce o prázdném košíku pevnou minimální výšku.
+        min-height: 0;
+        padding: 0 0 32px;
+        border-bottom: 1px solid var(--as-secondary-75);
+        color: var(--as-secondary-500);
+        font-family: var(--as-font-family-headings);
+        font-size: var(--as-font-size-h4);
+        font-weight: 500;
+        line-height: 1.2;
+
+        &::before {
+          @include icon(shopping-cart, 64px);
+          grid-row: 1 / span 2;
+          color: var(--as-secondary-100);
+        }
+
+        // Vysvětlující věta z návrhu. Shoptet ji neposílá, proto jen pro češtinu.
+        &:lang(cs)::after {
+          content: "Pokud si nevíte rady s výběrem, neváhejte nás kontaktovat. Naši specialisté vám poradí.";
+          color: var(--as-secondary-400);
+          font-family: var(--as-font-family);
+          font-size: var(--as-font-size-small);
+          font-weight: 400;
+          line-height: 1.7;
+        }
+      }
+    }
+
+    // Kontakt z nastavení e-shopu (Figma: fotka 64 px vlevo, vpravo nadpis, text a odkazy).
+    #cart-widget .as-cart-contact {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      column-gap: 20px;
+      align-items: start;
+      padding-top: 32px;
+    }
+
+    #cart-widget .as-cart-contact__photo {
+      grid-row: 1 / span 4;
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    #cart-widget .as-cart-contact__title {
+      grid-column: 2;
+      color: var(--as-secondary-500);
+      font-family: var(--as-font-family-headings);
+      font-size: var(--as-font-size-h4);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    #cart-widget .as-cart-contact__text {
+      grid-column: 2;
+      margin: 4px 0 24px;
+      color: var(--as-secondary-400);
+      font-size: var(--as-font-size-small);
+      line-height: 1.2;
+    }
+
+    #cart-widget .as-cart-contact__link {
+      grid-column: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-self: start;
+      gap: 12px;
+      margin-bottom: 11px;
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-h5);
+      font-weight: 500;
+      line-height: 1.2;
+      text-decoration: none;
+
+      &::before {
+        color: var(--as-primary-500);
+      }
+
+      &--mail::before {
+        @include icon(mail-outline, 24px);
+      }
+
+      &--phone::before {
+        @include icon(phone, 24px);
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        color: var(--as-primary-600);
+      }
+    }
+  }
+}
