@@ -25,7 +25,7 @@ export const BANNER_LAYOUTS = [
   {
     value: 'fullwidth',
     label: 'Jeden banner přes celou šířku obrazovky',
-    hint: 'Bannery carouselu od okraje k okraji okna, postranní se skryjí. Doporučený rozměr 2880 × 960 px (poměr 3 : 1).',
+    hint: 'Bannery carouselu od okraje k okraji okna v původním poměru stran (bez ořezu), postranní se skryjí. Doporučujeme široký obrázek, např. 2880 × 960 px (poměr 3 : 1).',
   },
   {
     value: 'cards',
