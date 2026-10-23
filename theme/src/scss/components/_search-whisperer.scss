@@ -4,10 +4,12 @@
 //                    > .searchWhisperer__additionalResults kategorie, značky, články (nadpisy --category/--brand/--article)
 //                    > .searchWhisperer__buttonWrapper     „Zobrazit všechny výsledky“
 //                    > .searchWhisperer__content--empty    nic nenalezeno
-// Jediný doplněk je .as-whisperer-contact (kontakt z nastavení e-shopu u „nic nenalezeno“, viz js/search.js).
+// Doplňky u „nic nenalezeno“ (viz js/search.js): .as-whisperer-categories (kategorie z úvodní stránky)
+// a .as-whisperer-contact (kontakt z nastavení e-shopu).
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
+@use "../tools/category-card";
 
 .as-theme {
   @include bp.desktop {
@@ -304,9 +306,44 @@
         }
       }
 
-      // Doplněk: kontakt z nastavení e-shopu vedle „nic nenalezeno“.
+      // Doplněk: kategorie z úvodní stránky pod „nic nenalezeno“ (Figma: mřížka 6 × 155 px, mezera 10 px).
+      .as-whisperer-categories {
+        grid-column: 1;
+        padding: 32px 40px 40px;
+        border-top: 1px solid var(--as-secondary-75);
+
+        @include category-card.card;
+
+        .subcategories {
+          display: grid;
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+          gap: 8px 10px;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+
+        .subcategories li {
+          float: none;
+          width: auto;
+          margin: 0;
+          padding: 0;
+        }
+      }
+
+      .as-whisperer-categories__title {
+        margin: 0 0 24px;
+        color: var(--as-secondary-500);
+        font-family: var(--as-font-family-headings);
+        font-size: var(--as-font-size-h4);
+        font-weight: 500;
+        line-height: 1.2;
+      }
+
+      // Doplněk: kontakt z nastavení e-shopu vedle „nic nenalezeno“ (a kategorií pod ním).
       .as-whisperer-contact {
         grid-column: 2;
+        grid-row: 1 / span 2;
         align-self: stretch;
         display: flex;
         flex-direction: column;

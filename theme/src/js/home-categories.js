@@ -18,7 +18,8 @@ function el(tag, className, text) {
   return node;
 }
 
-function categoryItem({ name, url, image }) {
+// Karta kategorie (li) v markupu podkategorií Disca. Používá ji i našeptávač (js/search.js).
+export function categoryItem({ name, url, image }) {
   const img = el('img');
   img.src = image || PLACEHOLDER;
   img.alt = '';

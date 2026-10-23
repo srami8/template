@@ -45,7 +45,7 @@ function start() {
 
   const init = () => {
     enhanceHeader(config);
-    enhanceSearch();
+    enhanceSearch(config);
     enhanceBanners(config);
     renderHomeCategories(config);
     enhanceLogin();

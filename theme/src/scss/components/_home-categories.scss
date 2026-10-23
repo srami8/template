@@ -4,6 +4,7 @@
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
+@use "../tools/category-card";
 
 $gap: 20px;
 $image-height: 164px;
@@ -68,91 +69,7 @@ $image-height: 164px;
     }
   }
 
-  // Karta: celá je odkaz.
-  .subcategories a {
-    display: flex;
-    flex-direction: column;
-    // Disco u podkategorií obsah karty centruje, pole obrázku má být přes celou šířku karty.
-    align-items: stretch;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 4px;
-    background: none;
-    color: var(--as-secondary-500);
-    text-decoration: none;
-    overflow: hidden;
-  }
-
-  .subcategories .image {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: auto;
-    height: $image-height;
-    margin: 0;
-    padding: 0;
-    border-radius: 4px;
-    background: var(--as-secondary-50);
-    overflow: hidden;
-
-    img {
-      width: 120px;
-      max-width: 100%;
-      height: 120px;
-      // Disco omezuje obrázky podkategorií na výšku 60 px.
-      max-height: none;
-      object-fit: contain;
-      mix-blend-mode: multiply;
-      transition: transform 0.3s ease;
-    }
-  }
-
-  .subcategories .text {
-    display: block;
-    width: auto;
-    // Disco dává textu podkategorie max. 65 % šířky (vedle obrázku), tady je pod ním.
-    max-width: none;
-    margin: 0;
-    padding: 16px 8px;
-    color: inherit;
-    font-family: var(--as-font-family);
-    font-size: var(--as-font-size-body);
-    font-weight: 400;
-    line-height: 1.2;
-    text-align: center;
-  }
-
-  // Najetí (Figma: první karta): podklad v primární barvě, bílý název, šipka nahoru u obrázku
-  // a lehké přiblížení obrázku.
-  .subcategories a:hover,
-  .subcategories a:focus-visible {
-    background: var(--as-primary-500);
-    color: var(--as-white);
-    // Disco odkazy při najetí podtrhává, v návrhu karta podtržení nemá.
-    text-decoration: none;
-
-    .image {
-      border-radius: 4px 4px 0 0;
-
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        border-width: 0 7px 9px;
-        border-style: solid;
-        border-color: transparent transparent var(--as-primary-500);
-        transform: translateX(-50%);
-      }
-    }
-
-    img {
-      transform: scale(1.05);
-    }
-  }
+  @include category-card.card($image-height);
 
   // Šipky slideru (Disco: button.product-slider-navigation): bílé kruhy 40 px na krajích,
   // svisle na středu obrázku.
