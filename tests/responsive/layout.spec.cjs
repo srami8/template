@@ -480,3 +480,22 @@ test('conversion buttons use the admin conversion color with white text everywhe
   });
   for (const button of look) expect(button).toEqual({bg:'rgb(10, 120, 60)',color:'rgb(255, 255, 255)'});
 });
+
+test('headings follow the design everywhere and the size from settings, smaller on a phone', async ({page}) => {
+  await load(page);
+  const measure=()=>page.evaluate(()=>{
+    let host=document.querySelector('#as-headings-test');
+    if(!host){host=document.createElement('div');host.id='as-headings-test';host.innerHTML='<h1>H1</h1><h2>H2</h2><h4>H4</h4><div class="h3">H3 třídou</div>';document.querySelector('#content').append(host);}
+    return [...host.children].map(el=>[parseFloat(getComputedStyle(el).fontSize),getComputedStyle(el).fontWeight]);
+  });
+  await page.setViewportSize({width:1280,height:900});
+  expect(await measure()).toEqual([[36,'500'],[28,'500'],[20,'500'],[24,'500']]);
+  // Hodnota z nastavení šablony (vkládaný kód).
+  await page.addStyleTag({content:':root{--as-heading-size-h1:40px}'});
+  expect((await measure())[0][0]).toBe(40);
+  await page.setViewportSize({width:375,height:800});
+  const mobile=await measure();
+  expect(mobile[0][0]).toBeCloseTo(40*0.78,1);
+  expect(mobile[1][0]).toBeCloseTo(28*0.86,1);
+  expect(mobile[2][0]).toBe(20);
+});

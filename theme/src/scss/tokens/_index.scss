@@ -46,13 +46,25 @@ $primary-shades: (700: 50%, 800: 25%, 900: 10%);
   // Písmo textu a nadpisů z administrace. Font načítá Shoptet, šablona si žádný nenačítá.
   --as-font-family: var(--template-font, #{typography.$font-family-fallback}), #{typography.$font-stack};
   --as-font-family-headings: var(--template-headings-font, #{typography.$font-family-fallback}), #{typography.$font-stack};
+  // Nadpisy H1–H6: velikost (výchozí z Figmy, obchodník ji může přepsat v nastavení šablony
+  // proměnnou --as-heading-size-hN ve vkládaném kódu) × měřítko pro telefon.
   @each $level, $size in typography.$headings {
-    --as-font-size-#{$level}: #{$size};
+    --as-heading-size-#{$level}: #{$size};
+    --as-heading-scale-#{$level}: 1;
+    --as-font-size-#{$level}: calc(var(--as-heading-size-#{$level}) * var(--as-heading-scale-#{$level}));
   }
+
   @each $name, $size in typography.$font-sizes {
     --as-font-size-#{$name}: #{$size};
   }
 
   --as-radius-pill: #{shape.$radius-pill};
   --as-control-height: #{shape.$control-height};
+
+  // Měřítko nadpisů na telefonu (až za deklaracemi, Sass jinak hlásí mixed-decls).
+  @media (max-width: 767px) {
+    @each $level, $scale in typography.$heading-mobile-scale {
+      --as-heading-scale-#{$level}: #{$scale};
+    }
+  }
 }

@@ -21,6 +21,14 @@ $headings: (
   h6: 16px,
 );
 
+// Na telefonu (pod 768 px) se velké nadpisy zmenší poměrem k velikosti, takže zmenšení platí
+// i pro velikosti nastavené obchodníkem v nastavení šablony (36 → 28, 28 → 24, 24 → 20 px).
+$heading-mobile-scale: (
+  h1: 0.78,
+  h2: 0.86,
+  h3: 0.84,
+);
+
 // Body/Default, Body/Small, Caption/Extra small.
 $font-sizes: (
   body: 16px,

@@ -1,0 +1,29 @@
+// Nadpisy H1–H6 všude na e-shopu (Figma: Styleguide „Heading H1–H6“): písmo nadpisů z administrace,
+// Medium, výška řádku 1,2, velikost z tokenů --as-font-size-hN (výchozí podle návrhu, obchodník je
+// může změnit v nastavení šablony, na telefonu se velké nadpisy zmenší). Platí pro značky h1–h6
+// i třídy Disca .h1–.h6 (např. nadpis košíku, sekce úvodní stránky). Barvu nadpisů necháváme Discu
+// (proměnná z administrace). Místa s vlastním návrhem nadpis přebíjí vyšší specificitou
+// (sekce úvodní stránky, okno přihlášení …).
+
+@use "../tokens/typography";
+
+.as-theme {
+  @each $level, $size in typography.$headings {
+    :is(#{$level}, .#{$level}) {
+      font-family: var(--as-font-family-headings);
+      font-size: var(--as-font-size-#{$level});
+      font-weight: typography.$weight-medium;
+      line-height: typography.$line-height-heading;
+    }
+  }
+
+  // Doplněk názvu produktu (Shoptet ho vypisuje v nadpisu): o dvě úrovně menší, písmo textu.
+  $appendix: (h1: h3, h2: h4, h3: h5, h4: h6);
+  @each $level, $smaller in $appendix {
+    :is(#{$level}, .#{$level}) .product-appendix {
+      font-family: var(--as-font-family);
+      font-size: var(--as-font-size-#{$smaller});
+      font-weight: typography.$weight-regular;
+    }
+  }
+}

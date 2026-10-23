@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { config } from './config.mjs';
 import { styleFiles } from '../../theme/src/js/styles.mjs';
+import { HEADING_SIZES, headingOverrides, headingStyle } from '../../theme/src/js/typography.mjs';
 
 export const HEADER_VARIANTS = [
   { value: 'v1', label: 'Kategorie v řádku pod hlavičkou' },
@@ -60,7 +61,10 @@ export const DEFAULT_THEME_CONFIG = {
   navLinks: [],
   homeCategories: { title: HOME_CATEGORIES_TITLE, items: [] },
   productColumns: 4,
+  headings: {},
 };
+
+export { HEADING_SIZES };
 
 const SNIPPET_LIMIT = 8192;
 
@@ -167,7 +171,12 @@ export function themeConfigFromForm(form, { categories, previous } = {}) {
   const columns = Number(form.get('productColumns'));
   const productColumns = PRODUCT_COLUMNS.includes(columns) ? columns : DEFAULT_THEME_CONFIG.productColumns;
 
-  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns };
+  // Velikosti nadpisů: ukládáme jen změněné, prázdné pole = výchozí z návrhu.
+  const headings = headingOverrides(Object.fromEntries(
+    Object.keys(HEADING_SIZES).map((level) => [level, form.get(`headings[${level}]`)]),
+  ));
+
+  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, headings };
 }
 
 function escapeAttribute(value) {
@@ -201,7 +210,7 @@ export function buildHeaderSnippet(themeConfig) {
     .join('\n');
   const html = `<!-- aSteroid -->
 <script>window.asteroidConfig = ${inlineJson(themeConfig)};</script>
-${styles}
+${styles}${headingStyle(themeConfig.headings) ? `\n${headingStyle(themeConfig.headings)}` : ''}
 <script src="${url('asteroid.js')}"></script>`;
 
   if (html.length > SNIPPET_LIMIT) {

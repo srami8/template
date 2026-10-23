@@ -5,6 +5,7 @@
 @use "tokens";
 @use "tools/icon";
 @use "components/icon" as icon-component;
+@use "components/headings";
 @use "components/product-elements";
 @use "components/buttons";
 @use "components/mobile-header";
@@ -21,6 +22,7 @@
 @use "layout/header";
 
 :root {
-  @include tokens.custom-properties;
+  // Ikony před tokeny: tokeny končí blokem @media (měřítko nadpisů na telefonu).
   @include icon.custom-properties;
+  @include tokens.custom-properties;
 }

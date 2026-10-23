@@ -1,3 +1,32 @@
+# Aktualizace (Claude): nadpisy podle Figmy globálně a velikosti v nastavení šablony
+
+**Zadání:** nadpisy podle Figmy (H1 36, H2 28, H3 24, H4 20, H5 18, H6 16 px, Medium, výška řádku 1,2) všude. Obchodník je může měnit v administraci šablony, mobil se automaticky zmenší.
+
+**(1) Disco:**
+- `.h1,…,h6 {font-weight:700;line-height:1.1}` a velikosti 34/24/20/18/16/14 px,
+- barva `--colors-foregrounds-headlines-primary` (z administrace, necháváme),
+- kontextová pravidla: `.popup-widget h2`, `ul.manufacturers h2`, `.recapitulation-wrapper h4`.
+- Inventura nadpisů na 7 stránkách × 2 šířky: `h1` (detail, kontakty), `h1.category-title`, `h1.h1.cart-heading`, `div.h1` (mobilní hlavička detailu), `.homepage-group-title.h4`, `h2`/`h3` v obsahu i patičce, `h4.search-products-heading`.
+
+**(2) Změny**
+- Tokeny: `--as-heading-size-hN` (výchozí z návrhu) × `--as-heading-scale-hN` (pod 768 px: H1 0,78, H2 0,86, H3 0,84) = `--as-font-size-hN`. Zmenšení tak platí i pro velikosti z nastavení. Blok `@media` je na konci `:root` (kvůli mixed-decls jsou ikony v `main.scss` před tokeny).
+- Nový `components/_headings.scss`: `h1`–`h6` a `.h1`–`.h6` (písmo nadpisů z administrace, 500, 1,2, velikost z tokenu). `.product-appendix` je o dvě úrovně menší.
+- `theme/src/js/typography.mjs`:
+  - `HEADING_SIZES` (sdílí settings-app),
+  - `headingOverrides` (12–72 px, jen změněné),
+  - `headingStyle` → `<style>:root{--as-heading-size-h1:40px}</style>` ve vkládaném kódu (bez JS a dalšího souboru).
+- settings-app: `themeConfig.headings`, karta „Velikosti nadpisů“ (6 polí, náhled velikosti, „Vrátit výchozí“, upozornění, když pořadí neklesá).
+- `tools/_submenu.scss`: přesun skrytí mobilních řádků za deklarace (mixed-decls).
+
+**(3) Ověření**
+- Testy: 95 prošlých. Nové: výchozí v nastavení = tokeny v CSS, `headingStyle`, nadpisy podle návrhu, hodnota z nastavení a zmenšení na telefonu.
+- Snímky před a po: změny jen u nadpisů (detail, košík, přihlášení, hledání, sekce úvodní stránky na mobilu), ostatní stejné.
+- E-shop přes celý řetězec (dočasně H1 40 px v uloženém nastavení → publish-snippets): desktop 40 px / 500, mobil 31,2 px. Pak vráceno na výchozí: 36 px / 28,08 px.
+
+**Odchylka:** nadpisy značek (`ul.manufacturers h2`, Disco 30 px / 900) jsou teď H2 podle návrhu.
+
+---
+
 # Aktualizace (Claude): konverzní tlačítko globálně, barvy z administrace
 
 **Zadání:** barvy z administrace e-shopu. U `btn-conversion` všude bílý text.

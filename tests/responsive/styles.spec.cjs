@@ -15,3 +15,13 @@ test('every variant style file is listed and every listed variant is built', asy
   // Neznámá hodnota → výchozí varianta.
   expect(styleFiles({header: 'v9'})).toEqual(['asteroid', 'header-v1', 'banners-default', 'product-card-default']);
 });
+
+test('heading defaults are the same in the settings and in the CSS tokens', async () => {
+  const {HEADING_SIZES, headingStyle} = await import('../../theme/src/js/typography.mjs');
+  const css = fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8');
+  for (const [level, size] of Object.entries(HEADING_SIZES)) {
+    expect(css).toContain(`--as-heading-size-${level}: ${size}px`);
+  }
+  expect(headingStyle({})).toBe('');
+  expect(headingStyle({h1: 40, h2: 28, h3: 'x', h4: 500})).toBe('<style>:root{--as-heading-size-h1:40px}</style>');
+});

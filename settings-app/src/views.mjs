@@ -11,6 +11,7 @@ import {
   MAX_HOME_CATEGORIES,
   HOME_CATEGORIES_TITLE,
   PRODUCT_COLUMNS,
+  HEADING_SIZES,
 } from './theme-config.mjs';
 
 const SHOPTET_UI_CSS = 'https://cdn.jsdelivr.net/npm/@shoptet/ui@0.23.0-beta/dist/index.css';
@@ -68,6 +69,10 @@ function layout(title, body, { eshopOrigin } = {}) {
   .as-intro p { margin: 0; opacity: 0.75; }
   .as-page .card { margin-bottom: 16px; }
   .as-variant { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; cursor: pointer; }
+  .as-headings { display: grid; gap: 8px; max-width: 420px; }
+  .as-heading-field { display: grid; grid-template-columns: minmax(0, 1fr) 96px auto; align-items: center; gap: 12px; }
+  .as-heading-field .textField { width: 96px; }
+  .as-headings__reset { justify-self: start; margin-top: 8px; }
   .as-variant strong { display: block; }
   .as-links { display: grid; gap: 8px; align-items: center; }
   .as-links--quick { grid-template-columns: 1fr 1.4fr 1fr; }
@@ -100,6 +105,38 @@ function intro() {
       <p>Vyberte vzhled hlavičky a doplňte, co se v ní má zobrazit. Po uložení se změny hned projeví na e-shopu.</p>
     </div>
   </header>`;
+}
+
+// Velikosti nadpisů H1–H6 (px). Prázdné / výchozí pole = velikost z návrhu. Skript hlídá, aby
+// nadpisy šly od největšího, a umí vrátit výchozí hodnoty.
+function headingsCard(headings = {}) {
+  const fields = Object.entries(HEADING_SIZES).map(([level, size]) => `<label class="as-heading-field">
+      <span style="font-size:${Math.min(headings[level] || size, 36)}px;font-weight:500;line-height:1.2">${level.toUpperCase()}</span>
+      <input class="textField" type="number" name="headings[${level}]" min="12" max="72" step="1"
+        value="${escape(String(headings[level] || size))}" data-default="${size}" aria-label="Velikost ${level.toUpperCase()} v px"> px
+    </label>`).join('');
+  return `<div class="as-headings">
+    ${fields}
+    <p class="v2FormField__hint as-headings__warning" hidden>Pozor: nadpis vyšší úrovně by měl být větší než nadpis nižší (H1 &gt; H2 &gt; … &gt; H6).</p>
+    <button type="button" class="btn btn-default btn-sm as-headings__reset">Vrátit výchozí velikosti</button>
+  </div>
+  <script>
+  (function () {
+    var box = document.currentScript.previousElementSibling;
+    var inputs = [].slice.call(box.querySelectorAll('input[name^="headings"]'));
+    var warning = box.querySelector('.as-headings__warning');
+    function check() {
+      var sizes = inputs.map(function (input) { return Number(input.value) || Number(input.dataset.default); });
+      warning.hidden = sizes.every(function (size, i) { return i === 0 || size <= sizes[i - 1]; });
+    }
+    inputs.forEach(function (input) { input.addEventListener('input', check); });
+    box.querySelector('.as-headings__reset').addEventListener('click', function () {
+      inputs.forEach(function (input) { input.value = input.dataset.default; });
+      check();
+    });
+    check();
+  })();
+  </script>`;
 }
 
 function card(title, content, hint) {
@@ -244,6 +281,11 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, cat
           'Produkty na úvodní stránce',
           productColumns,
           'Kolik produktů je vidět vedle sebe v produktových sekcích úvodní stránky (na širokém displeji, na menších se počet sám sníží). Ostatní produkty se posouvají šipkami. Výpis kategorie řídí nastavení e-shopu.',
+        )}
+        ${card(
+          'Velikosti nadpisů',
+          headingsCard(themeConfig.headings),
+          'Velikost nadpisů H1–H6 na celém e-shopu (název produktu a kategorie, nadpisy sekcí, patička …). Výchozí hodnoty jsou z návrhu šablony. Na telefonu se velké nadpisy (H1–H3) samy zmenší asi o 15–20 %.',
         )}
         ${card(
           'Bannery na úvodní stránce podle názvu',
