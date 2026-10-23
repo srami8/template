@@ -1,69 +1,62 @@
 // Bannery na výšku (varianta „cards“). Bannery i jejich texty zadává obchodník v administraci
-// Shoptetu jako bannery carouselu. Tady z nich složíme vodorovně posuvný pás karet.
+// Shoptetu jako bannery carouselu. Pás karet je původní #carousel Disca: CSS ukáže všechny
+// snímky (.item) vedle sebe ve vodorovně posuvném .carousel-inner. JS jen vypne přepínání snímků
+// a šipky .carousel-control přesměruje na posun pásu. DOM carouselu se nemění.
 // Ostatní varianty (default / content / fullwidth) řeší jen CSS.
 
-function el(tag, className) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  return node;
+const AT_START = 'as-cards-at-start';
+const AT_END = 'as-cards-at-end';
+
+// Bootstrap carousel (Disco ho spouští přes data-ride po načtení stránky) by snímky dál přepínal
+// a šipkami posouval aktivní snímek. Nastavíme mu interval a klávesy přes data atributy, a když
+// už běží, i do jeho instance.
+function stopCycling(carousel) {
+  carousel.dataset.interval = 'false';
+  carousel.dataset.keyboard = 'false';
+  const instance = window.jQuery?.(carousel).data('bs.carousel');
+  if (!instance) return;
+  instance.options.interval = false;
+  instance.options.keyboard = false;
+  instance.pause();
 }
 
-// Neaktivní snímky carouselu Shoptet načítá líně (data-src), v kartách je potřeba hned.
-function prepareImages(root) {
-  root.querySelectorAll('img').forEach((img, index) => {
-    if (img.dataset.src) img.src = img.dataset.src;
-    img.removeAttribute('data-src');
-    img.loading = index < 4 ? 'eager' : 'lazy';
+// Neaktivní snímky Shoptet načítá líně (obrázek v data-src), v pásu jsou vidět hned.
+function loadImages(carousel) {
+  carousel.querySelectorAll('.carousel-inner > .item img[data-src]').forEach((img) => {
+    if (img.getAttribute('src') !== img.dataset.src) img.src = img.dataset.src;
   });
 }
 
-function buildCard(item) {
-  const card = el('li', 'as-bcard');
-  const content = item.querySelector(':scope > a') || item.querySelector(':scope > img');
-  if (!content) return null;
-  card.append(content.cloneNode(true));
-  return card;
-}
-
-function updateArrows(track, prev, next) {
+function updateEnds(carousel, track) {
   const max = track.scrollWidth - track.clientWidth - 1;
-  prev.hidden = track.scrollLeft <= 1;
-  next.hidden = track.scrollLeft >= max;
+  carousel.classList.toggle(AT_START, track.scrollLeft <= 1);
+  carousel.classList.toggle(AT_END, track.scrollLeft >= max);
 }
 
 export function enhanceBanners(config) {
   if (config.banners !== 'cards') return;
 
-  // Karty jsou jen z bannerů pozice Carousel, ostatní pozice bannerů do pásu nepatří.
-  const row = document.querySelector('.banners-row');
-  const items = row ? [...row.querySelectorAll('#carousel .carousel-inner > .item')] : [];
-  if (!items.length) return;
+  // Karty jsou jen z bannerů pozice Carousel, ostatní pozice bannerů do pásu nepatří (skryje CSS).
+  const carousel = document.querySelector('.banners-row #carousel');
+  const track = carousel?.querySelector(':scope > .carousel-inner');
+  if (!track) return;
 
-  const track = el('ul', 'as-bcards__track');
-  items.map(buildCard).filter(Boolean).forEach((card) => track.append(card));
-  prepareImages(track);
+  stopCycling(carousel);
+  window.addEventListener('load', () => stopCycling(carousel), { once: true });
+  loadImages(carousel);
 
-  const prev = el('button', 'as-bcards__arrow as-bcards__arrow--prev');
-  prev.type = 'button';
-  prev.setAttribute('aria-label', 'Předchozí bannery');
-  const next = el('button', 'as-bcards__arrow as-bcards__arrow--next');
-  next.type = 'button';
-  next.setAttribute('aria-label', 'Další bannery');
+  // Šipky Disca: jejich klik obsluhuje Bootstrap delegovaně na documentu ([data-slide]). Klik
+  // zastavíme na šipce, takže se snímek nepřepne, a místo toho posuneme pás o viditelnou šířku.
+  carousel.querySelectorAll(':scope > .carousel-control[data-slide]').forEach((control) => {
+    control.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const direction = control.dataset.slide === 'prev' ? -1 : 1;
+      track.scrollBy({ left: direction * track.clientWidth * 0.9 });
+    });
+  });
 
-  // Posun o šířku viditelné části, aby se nové karty zobrazily celé.
-  const scrollByPage = (direction) => track.scrollBy({ left: direction * track.clientWidth * 0.9 });
-  prev.addEventListener('click', () => scrollByPage(-1));
-  next.addEventListener('click', () => scrollByPage(1));
-  track.addEventListener('scroll', () => updateArrows(track, prev, next), { passive: true });
-
-  const section = el('section', 'as-bcards');
-  section.setAttribute('aria-label', 'Akce a novinky');
-  section.append(prev, track, next);
-  row.after(section);
-
-  // Původní carousel Disco už není potřeba (a nemá zbytečně přepínat snímky na pozadí).
-  row.remove();
-
-  updateArrows(track, prev, next);
-  window.addEventListener('resize', () => updateArrows(track, prev, next), { passive: true });
+  track.addEventListener('scroll', () => updateEnds(carousel, track), { passive: true });
+  window.addEventListener('resize', () => updateEnds(carousel, track), { passive: true });
+  updateEnds(carousel, track);
 }
