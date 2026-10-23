@@ -1,3 +1,26 @@
+# Aktualizace (Claude): stejné ikony hlavičky na mobilu i desktopu
+
+**Úkol (majitel):** ikony v hlavičce se na mobilu lišily od desktopu, což je neakceptovatelné. Co se přepíše na desktopu, musí platit i na mobilu.
+
+**Příčina:** `layout/_header.scss` nahrazoval ikony písma `shoptet` našimi maskami jen uvnitř `bp.desktop`. Na mobilu zůstaly ikony Disca: lupa, košík, hamburger / křížek, křížek v otevřeném hledání a šipka podkategorií v menu.
+
+**(1) Prvky Disca:** `#header .navigation-buttons > [data-target=search|cart|navigation]::before`, `body.navigation-window-visible` (křížek místo hamburgeru), `.search-input-icon::before` (zavření hledání na mobilu), `.search-button::before`, `#navigation .submenu-arrow::after` (Disco ji při rozbalení otáčí o 180°, otočení zůstává).
+
+**(2) Vlastní doplňky:**
+- Glyfy jsou nově na začátku `_header.scss`, mimo breakpointy: lupa `search`, košík `shopping-cart`, menu `menu`, otevřené menu `close`, zavření hledání `close`, šipka `expand-more`.
+- Desktop mění jen velikost (košík a účet 32 px).
+- Na mobilu jsou původní tlačítka 50 / 80 px `display: flex` a ikonu centrují. Disco ji centroval výškou řádku písma. Kopie účtu `.as-account-button` je z toho vyjmutá a zůstává skrytá.
+- Nové pravidlo v `AGENTS.md`: ikony jsou na všech zařízeních stejné.
+
+**(3) Ověření:**
+- Testy: 83 prošlých, nový `header icons are the same on mobile and desktop` (375 vs. 1280 px, stejná maska).
+- Skutečný e-shop 375 px: lupa, košík a hamburger jsou naše ikony 24 px, otevřené menu ukazuje náš křížek. Při kontrole v hlavičce ani v menu nezůstala ikona písma `shoptet` bez masky.
+- 1920 px beze změny: košík a účet 32 px, lupa 24 px.
+
+**Neověřeno:** šířka 481–767 px (tlačítka Disca 80 px) jen výpočtem, ne vizuálně. Plný košík na mobilu (odznak počtu kusů vedle nové ikony).
+
+---
+
 # Aktualizace (Claude): bannery Střed přiřazené k sekcím podle názvu
 
 Nahrazuje globální nastavení `middleBanners` (`default` / `left` / `right`), které umělo jen jeden banner vedle sekce za prvním blokem. Majitel chce u každé sekce zvolit vlastní banner, např. dvě sekce pod sebou, obě s bannerem vlevo.

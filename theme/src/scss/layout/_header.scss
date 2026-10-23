@@ -25,6 +25,36 @@
     display: none;
   }
 
+  // Ikony akcí v hlavičce jsou na všech zařízeních stejné. Disco je kreslí písmem ikon Shoptetu
+  // (na desktopu ho přepisujeme, na mobilu by zůstalo), proto glyf určujeme tady, mimo breakpointy.
+  // Breakpointy mění jen velikost a rozložení tlačítek.
+  #header .navigation-buttons {
+    > [data-target="search"]::before { @include icon(search, 24px); }
+    > [data-target="cart"]::before { @include icon(shopping-cart, 24px); }
+    > [data-target="navigation"]::before { @include icon(menu, 24px); }
+  }
+
+  // Otevřené menu: Disco místo hamburgeru ukazuje křížek.
+  .navigation-window-visible #header .navigation-buttons > [data-target="navigation"]::before {
+    @include icon(close, 24px);
+  }
+
+  // Zavření otevřeného hledání na mobilu (na desktopu je skryté).
+  #header .search-input-icon::before { @include icon(close, 24px); }
+
+  // Šipka podkategorií v menu (Disco ji při rozbalení otáčí o 180°).
+  #navigation .submenu-arrow::after {
+    @include icon(expand-more, 18px);
+    vertical-align: middle;
+  }
+
+  // Tlačítko hledání ve formuláři (desktop v řádku, mobil v otevřeném hledání).
+  #header .search-button {
+    font-size: 0;
+
+    &::before { @include icon(search, 24px); }
+  }
+
   // Doplňkové odkazy jsou přístupné i na mobilu, posouvá se jen jejich řádek.
   #header .as-quicklinks {
     background: var(--as-white);
@@ -80,6 +110,14 @@
       }
 
       .as-icon { flex-shrink: 0; }
+    }
+
+    // Ikona uprostřed tlačítka (Disco ji centroval výškou řádku písma ikon).
+    // Jen původní tlačítka Disca, kopie účtu (.as-account-button) zůstává na mobilu skrytá.
+    #header .navigation-buttons > [data-target]:not(.as-account-button) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     // Disco rezervuje fixních 50 / 80 px, doplněné odkazy by zakryly informační lištu a obsah.
@@ -400,10 +438,6 @@
         background: none;
         color: var(--as-secondary-500);
         font-size: 0;
-
-        &::before {
-          @include icon(search, 24px);
-        }
       }
 
       .navigation-buttons {
@@ -463,9 +497,12 @@
           line-height: 20px;
           text-decoration: none;
 
+          // Ikona je společná (viz začátek souboru), na desktopu větší podle návrhu.
           &::before {
-            @include icon(shopping-cart, 32px);
             position: static;
+            width: 32px;
+            height: 32px;
+            margin: 0;
             font-size: 0;
           }
 

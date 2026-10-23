@@ -321,3 +321,23 @@ test('product card button keeps the design height on desktop and a touch target 
   expect(await minHeight(1280)).not.toBe('44px');
   expect(await minHeight(390)).toBe('44px');
 });
+
+test('header icons are the same on mobile and desktop', async ({page}) => {
+  await load(page);
+  const read=()=>page.evaluate(()=>{
+    const mask=(selector,pseudo='::before')=>getComputedStyle(document.querySelector(selector),pseudo).maskImage;
+    return {
+      search:mask('#header .navigation-buttons [data-target="search"]'),
+      searchButton:mask('#header .search-button'),
+      cart:mask('#header .navigation-buttons [data-target="cart"]'),
+      menu:mask('#header .navigation-buttons [data-target="navigation"]'),
+    };
+  });
+  await page.setViewportSize({width:375,height:800});
+  const mobile=await read();
+  await page.setViewportSize({width:1280,height:900});
+  const desktop=await read();
+  for (const icon of Object.values(mobile)) expect(icon).toContain('svg');
+  expect(mobile).toEqual(desktop);
+  expect(mobile.search).toBe(mobile.searchButton);
+});
