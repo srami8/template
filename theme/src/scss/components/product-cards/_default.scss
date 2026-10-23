@@ -139,7 +139,8 @@ $image-inset: 12px;
       align-items: baseline;
       justify-content: center;
       // Disco ceny zalamuje pod sebe (aktuální cena má plnou šířku).
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
+      max-width: 100%;
       gap: 12px;
       margin: 12px 0 0;
       line-height: 1.2;
@@ -207,6 +208,8 @@ $image-inset: 12px;
       font-size: var(--as-font-size-caption);
       font-weight: 500;
       line-height: 1.2;
+      max-width: 100%;
+      overflow-wrap: anywhere;
     }
 
     // Počítadlo a „Do košíku“ / „Detail“ dole v kartě.
@@ -233,6 +236,10 @@ $image-inset: 12px;
         @include button.base;
         @include button.size(sm);
         @include button.conversion-outline;
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        min-height: 44px;
 
         // Úzká karta: s menším okrajem se tlačítko vejde vedle počítadla.
         @container product-card (max-width: 240px) {

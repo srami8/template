@@ -1,9 +1,23 @@
 // Breakpointy podle šablony Disco. Desktopová hlavička se v Disco zapíná od 768px.
 
 $desktop: 768px;
+$wide: 1200px;
 
 @mixin desktop {
   @media (min-width: $desktop) {
+    @content;
+  }
+}
+
+// Mezi mobilním ovládáním Disca a širokým desktopem potřebují bloky méně sloupců.
+@mixin compact {
+  @media (min-width: $desktop) and (max-width: ($wide - 1px)) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: ($desktop - 1px)) {
     @content;
   }
 }

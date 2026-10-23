@@ -47,11 +47,17 @@ $image-height: 164px;
     row-gap: $gap;
 
     @include bp.desktop {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @media (min-width: bp.$wide) {
       grid-template-columns: repeat(6, minmax(0, 1fr));
     }
   }
 
   @include category-card.card($image-height);
+
+  .subcategories .text { overflow-wrap: anywhere; }
 
   // Šipky svisle na středu obrázku, 20 px přes kraj obsahu (obal je o polovinu mezery širší).
   @include slider.arrows(($image-height * 0.5) - 20px, -20px + $gap * 0.5);

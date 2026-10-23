@@ -6,6 +6,7 @@
 
 import { categoryItem } from './home-categories';
 import { contactFromShop, contactCard } from './contact';
+import { availableViewportHeight } from './viewport';
 
 const CONTACT_CLASS = 'as-whisperer-contact';
 const CATEGORIES_CLASS = 'as-whisperer-categories';
@@ -44,12 +45,24 @@ export function enhanceSearch(config) {
   const search = document.querySelector('#header .search');
   const contact = contactFromShop();
   const categories = config.homeCategories?.items?.length ? config.homeCategories : null;
-  if (!search || (!contact && !categories)) return;
+  if (!search) return;
+
+  const fitPanel = () => {
+    const panel = search.querySelector('.searchWhisperer.active');
+    if (!panel) return;
+    panel.style.setProperty('--as-search-available-height', `${availableViewportHeight(panel.getBoundingClientRect().top)}px`);
+  };
 
   const update = () => {
     const whisperer = search.querySelector('.searchWhisperer');
     if (whisperer) addToEmptyState(whisperer, { contact, categories });
+    fitPanel();
   };
-  new MutationObserver(update).observe(search, { childList: true, subtree: true });
+  new MutationObserver(update).observe(search, {
+    childList: true, subtree: true, attributes: true, attributeFilter: ['class'],
+  });
+  new ResizeObserver(fitPanel).observe(document.querySelector('#header .header-top-wrapper') || search);
+  window.addEventListener('resize', fitPanel, { passive: true });
+  window.visualViewport?.addEventListener('resize', fitPanel, { passive: true });
   update();
 }

@@ -19,6 +19,48 @@
 }
 
 .as-theme {
+  // Mobilní ovládání zůstává Discu; kopie účtu je jen pro desktopovou hlavičku.
+  #header .as-account-button,
+  .as-topbar-phone {
+    display: none;
+  }
+
+  // Doplňkové odkazy jsou přístupné i na mobilu, posouvá se jen jejich řádek.
+  #header .as-quicklinks {
+    background: var(--as-white);
+
+    ul {
+      display: flex;
+      gap: 16px;
+      margin: 0;
+      padding: 4px 0;
+      list-style: none;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    li { flex: 0 0 auto; }
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      color: var(--as-secondary-500);
+      white-space: nowrap;
+    }
+  }
+
+  @include bp.mobile {
+    // Disco rezervuje fixních 50 / 80 px, doplněné odkazy by zakryly informační lištu a obsah.
+    .overall-wrapper { padding-top: var(--as-mobile-header-height, 50px); }
+    #navigation {
+      top: var(--as-mobile-header-height, 50px);
+      bottom: 0;
+      height: auto;
+    }
+  }
+
   @include bp.desktop {
     // Horní lišta: odkazy na stránky, telefon, měna, jazyk.
     .top-navigation-bar {
@@ -29,14 +71,22 @@
 
       // Disco dává liště vlastní okraje 20 px, v návrhu lícuje s hlavičkou.
       .container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 16px;
         min-height: 44px;
         padding-right: 0;
         padding-left: 0;
+
+        &::before,
+        &::after { content: none; }
       }
 
       // Odkazy vlevo, telefon a nástroje (měna, jazyk) zarovnané doprava.
       .top-navigation-menu {
-        flex: 1 1 auto;
+        flex: 1 1 240px;
+        min-width: 0;
       }
 
       .top-navigation-tools {
@@ -45,7 +95,10 @@
 
       .top-navigation-bar-menu {
         display: flex;
-        gap: 26px;
+        flex-wrap: wrap;
+        gap: 8px clamp(12px, 2vw, 26px);
+        padding-top: 8px;
+        padding-bottom: 8px;
 
         a {
           padding: 0;
@@ -174,14 +227,15 @@
 
     .as-topbar-phone {
       display: inline-flex;
-      flex: 0 0 auto;
+      flex: 0 1 auto;
       align-items: center;
       gap: 8px;
       color: var(--as-header-muted);
       font-size: var(--as-font-size-small);
       line-height: 20px;
       text-decoration: none;
-      white-space: nowrap;
+      max-width: 100%;
+      overflow-wrap: anywhere;
 
       &::before {
         @include icon(phone, 16px);
@@ -210,17 +264,32 @@
       }
 
       .header-top-wrapper {
+        position: relative;
         display: flex;
+        // Stejně jako Disco držíme od 768 px logo, hledání a akce v jednom řádku.
+        flex-wrap: nowrap;
         align-items: center;
+        gap: 16px clamp(16px, 2vw, 32px);
         min-height: 88px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+
+        // Pomocné clearfixy .container nesmějí zabírat další mezery ve flex řádku.
+        &::before,
+        &::after { content: none; }
 
         > .site-name {
-          flex: 0 0 240px;
+          flex: 0 1 clamp(160px, 17vw, 240px);
+          min-width: 0;
           margin: 0;
         }
 
         > .search {
-          flex: 0 1 682px;
+          // min-width: auto by drželo vnitřní šířku formuláře i při flex-shrink.
+          position: static;
+          flex: 1 1 280px;
+          min-width: 0;
+          width: auto;
           max-width: 682px;
           margin: 0;
           padding: 0;
@@ -230,14 +299,18 @@
           display: flex;
           flex: 0 0 auto;
           align-items: center;
-          gap: 24px;
+          gap: clamp(12px, 1.5vw, 24px);
+          min-width: 0;
+          max-width: 100%;
           margin-left: auto;
+          // Disco rezervuje 20 px před samotným košíkem; mezery mezi našimi akcemi řeší gap.
+          padding-left: 0;
         }
       }
 
       .site-name img {
         display: block;
-        max-width: 200px;
+        max-width: min(200px, 100%);
         max-height: 48px;
         width: auto;
         height: auto;
@@ -253,6 +326,7 @@
         display: flex;
         flex: 1 1 auto;
         width: 100%;
+        min-width: 0;
         margin: 0;
         padding: 0;
         border: 0;
@@ -265,6 +339,7 @@
       .search-input {
         box-sizing: border-box;
         width: 100%;
+        min-width: 0;
         height: 48px;
         padding: 0 56px 0 24px;
         border: 0;
@@ -319,7 +394,8 @@
           align-items: center;
           gap: 8px;
           height: auto;
-          padding: 0 0 0 24px;
+          max-width: 240px;
+          padding: 0 0 0 clamp(12px, 1.5vw, 24px);
           border: 0;
           border-left: 1px solid var(--as-secondary-75);
           background: none;
@@ -328,10 +404,12 @@
           font-size: var(--as-font-size-small);
           line-height: 1.2;
           text-decoration: none;
-          white-space: nowrap;
+          white-space: normal;
+          overflow-wrap: anywhere;
 
           &::before {
             @include icon(perm-identity, 32px);
+            flex-shrink: 0;
           }
 
           &:hover {
@@ -388,7 +466,7 @@
           }
 
           .cart-price {
-            display: inline-block;
+            // Viditelnost řídí původní .visible-lg-inline-block Disca (od 1200 px).
             color: var(--as-secondary-500);
             font-size: var(--as-font-size-body);
             font-weight: 600;
@@ -436,6 +514,14 @@
           color: var(--as-primary-500);
         }
       }
+    }
+  }
+
+  @include bp.compact {
+    // Disco zde nechává hledání v řádku a košík zobrazuje bez ceny.
+    // Účet je doplněk aSteroidu; delší jméno zalomíme uvnitř tlačítka.
+    #header .navigation-buttons .top-nav-button {
+      max-width: 160px;
     }
   }
 }

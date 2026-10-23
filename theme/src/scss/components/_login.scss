@@ -83,6 +83,8 @@
 }
 
 .as-theme {
+  #login.popup-widget { max-width: calc(100% - 32px); }
+
   @include bp.desktop {
     // Ztmavení stránky pod oknem: overlay Disca (body::before), který Disco používá při hledání.
     body.login-window-visible::before {
@@ -95,14 +97,15 @@
     // v návrhu je to okno na středu obrazovky.
     #login.popup-widget {
       position: fixed;
-      top: 64px;
+      top: clamp(16px, 6vh, 64px);
       right: auto;
       bottom: auto;
       left: 50%;
       z-index: 1003;
       width: 460px;
       max-height: none;
-      margin: 0 0 0 -230px;
+      margin: 0;
+      transform: translateX(-50%);
       padding: 0;
 
       &::before {
@@ -112,7 +115,7 @@
 
     #login .popup-widget-inner {
       width: auto;
-      max-height: calc(100vh - 128px);
+      max-height: calc(100dvh - clamp(16px, 6vh, 64px) - 16px);
       padding: 40px;
       border: 0;
       border-radius: 12px;

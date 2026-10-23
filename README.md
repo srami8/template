@@ -9,6 +9,7 @@ Zadání a principy vývoje (barvy a fonty z administrace, obsah z administrace,
 ## Struktura
 
 Pokyny pro vývoj a spolupráci: [AGENTS.md](AGENTS.md).
+Responzivní chování a jeho ověřování: [docs/responzivita.md](docs/responzivita.md).
 
 | Složka | Co obsahuje |
 |---|---|

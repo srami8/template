@@ -9,6 +9,7 @@ import { enhanceLogin } from './login';
 import { enhanceCart } from './cart';
 import { enhanceProductCards } from './product-cards';
 import { setHomepageProductColumns } from './homepage-products';
+import { trackViewportWidth } from './viewport';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
 const BANNER_LAYOUTS = ['default', 'content', 'fullwidth', 'cards'];
@@ -44,6 +45,7 @@ function previewOverrides() {
 }
 
 function start() {
+  trackViewportWidth();
   const config = { ...DEFAULTS, ...(window.asteroidConfig || {}), ...previewOverrides() };
 
   // Třídy na <html> řídí, kterou variantu CSS zobrazí (např. .as-header-v2).

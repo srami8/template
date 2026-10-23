@@ -6,6 +6,7 @@
 //   kontakt z nastavení e-shopu v prázdném košíku.
 
 import { contactFromShop, contactCard } from './contact';
+import { availableViewportHeight } from './viewport';
 
 const OPEN_CLASS = 'cart-window-visible';
 const CONTACT_CLASS = 'as-cart-contact';
@@ -23,7 +24,8 @@ function placeWidget(widget, button) {
   const box = parent.getBoundingClientRect();
   const rect = button.getBoundingClientRect();
   widget.style.setProperty('--as-popup-top', `${rect.bottom - box.top}px`);
-  widget.style.setProperty('--as-popup-right', `${box.right - rect.right}px`);
+  widget.style.setProperty('--as-popup-right', `${Math.max(16, box.right - rect.right)}px`);
+  widget.style.setProperty('--as-popup-available-height', `${availableViewportHeight(rect.bottom)}px`);
 }
 
 // Shoptet obsah okna při každém otevření načte znovu, kontakt proto doplňujeme po každé změně.
@@ -44,6 +46,9 @@ export function enhanceCart() {
   };
   new MutationObserver(place).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   window.addEventListener('resize', place, { passive: true });
+  window.visualViewport?.addEventListener('resize', place, { passive: true });
+  new ResizeObserver(place).observe(document.getElementById('header'));
+  place();
 
   // Prázdný košík: Disco při najetí okno nezobrazí, otevřeme ho jeho vlastní funkcí.
   button.addEventListener('mouseenter', () => {

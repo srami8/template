@@ -32,6 +32,9 @@ Předání ke kontrole navíc uvádí: (1) které prvky, třídy a funkce Disca 
 - **Varianty vzhledu** (hlavička, bannery, karty produktů) jsou třídy na `<html>` (`.as-header-v2`, `.as-product-card-default`). Styly varianty jsou jen pod její třídou, další varianta = nový soubor (např. `components/product-cards/_<varianta>.scss`) a hodnota v nastavení.
 - **Napojení na Disco:** viz závazné pravidlo výše; selektory vždy ověřit na skutečném HTML testovacího e-shopu. Disco používá selektory s `#header` / `#navigation`, naše pravidla proto často potřebují stejnou specificitu. Obcházení stylů Disco komentovat (co Disco dělá a proč to přebíjíme).
 - **Desktop:** `@include bp.desktop` (od 768 px, jako Disco). Mobilní návrhy zatím ve Figmě nejsou.
+- **Hlavička podle Disca:** od 768 px logo, hledání a akce v jednom řádku; pod 1200 px cenu košíku řídí původní `.visible-lg-inline-block`. Na mobilu se hledání otevírá původní lupou. Nezavádět trvalý druhý řádek hledání na tabletu. Referenční chování a způsob ověření jsou v `docs/responzivita.md`.
+- **Responzivita je součást každé změny.** Když chybí mobilní návrh, rozhodni rozložení samostatně podle obsahu a UX; na běžné volby breakpointů nečekej na schválení. Zachovej ovládání a data Disca. Při nedostatku místa nejdřív zmenši mezery, potom přeskup nebo zalom bloky; důležité akce a obsah neschovávej. Pevné rozměry z desktopové Figmy jsou cílové maximum, nikoli minimální šířka.
+- **Ověřování responzivity:** žádné překryvy loga, vyhledávání, účtu a košíku; hledání zůstává použitelné, dlouhé názvy a ceny se vejdou a otevřené panely umožní dosáhnout celého obsahu. Žádné globální `overflow-x: hidden` k maskování chyb. Testuj mezi breakpointy i při změně šířky už otevřené stránky. Pravidla a příkazy: [docs/responzivita.md](docs/responzivita.md).
 - **Obsah z administrace má přednost** před vlastním nastavením doplňku. Údaje se nezadávají dvakrát.
 - **Bezpečnost settings-app:** relace jako podepsaný token (ne cookie), CSRF řeší token ve formuláři, všechny výstupy přes `escape()`, JSON v `<script>` přes `inlineJson()`, z chyb Shoptetu se odstraňují tokeny.
 - Komentáře česky, stručně: proč, ne co.
@@ -41,13 +44,14 @@ Předání ke kontrole navíc uvádí: (1) které prvky, třídy a funkce Disca 
 ```bash
 npm install
 npm run build            # theme/dist
+npm run test:responsive  # build + Chromium: geometrie, dlouhý obsah, panely, změny šířky
 npm run deploy           # build + nahrání na SFTP testovacího e-shopu (potřebuje .env)
 npm run settings         # settings-app na http://localhost:8787 (potřebuje SHOPTET_CLIENT_SECRET v .env)
 npm run tunnel           # dočasná veřejná adresa (cloudflared v .tools/)
 node --check settings-app/src/*.mjs
 ```
 
-Automatické testy zatím nejsou. Úspěšný build nedokládá správný vzhled ani integraci se Shoptetem.
+Lokální testy responzivity používají izolované HTML a náhradní obsluhu rozhraní Disca. Úspěšný build ani tyto testy nedokládají správný vzhled a skutečnou integraci se Shoptetem; tu ověř na testovacím e-shopu.
 
 ## Ověření změn
 

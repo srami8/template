@@ -8,3 +8,5 @@ theme/src/scss/generated/
 *.log
 .tools/
 settings-app/data/
+test-results/
+playwright-report/

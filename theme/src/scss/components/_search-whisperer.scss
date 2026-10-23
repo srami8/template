@@ -27,6 +27,7 @@
     #header .search {
       // Panel přes celou šířku obsahu, těsně pod vyhledávacím polem (pole je svisle na středu řádku).
       .searchWhisperer {
+        z-index: 1003;
         top: calc(50% + 26px);
         right: 0;
         left: 0;
@@ -38,6 +39,9 @@
         box-shadow: none;
         font-family: var(--as-font-family);
         overflow: hidden;
+        max-height: var(--as-search-available-height, 60dvh);
+        overflow-y: auto;
+        overscroll-behavior: contain;
 
         // Disco tu má flex se změnou pořadí (order), mřížka dá sloupce podle návrhu.
         &.active {
@@ -164,6 +168,7 @@
         color: var(--as-secondary-500);
         font-size: var(--as-font-size-small);
         line-height: 1.2;
+        overflow-wrap: anywhere;
       }
 
       // Barvu dostupnosti nastavuje obchodník v Shoptetu (inline styl), necháváme ji.
@@ -218,6 +223,8 @@
         font-weight: 600;
         line-height: 1.2;
         text-decoration: none;
+        max-width: 100%;
+        overflow-wrap: anywhere;
 
         &:hover,
         &:focus-visible {
@@ -370,6 +377,8 @@
         font-weight: 500;
         line-height: 1.2;
         text-decoration: none;
+        max-width: 100%;
+        overflow-wrap: anywhere;
 
         &::before {
           color: var(--as-primary-500);
@@ -387,6 +396,69 @@
           color: var(--as-primary-600);
         }
       }
+    }
+  }
+
+  @include bp.compact {
+    #header .search {
+      .searchWhisperer.active:has(> .searchWhisperer__products):has(> .searchWhisperer__additionalResults),
+      .searchWhisperer.active:has(> .searchWhisperer__content--empty):has(> .as-whisperer-contact) {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .searchWhisperer__products__list { grid-template-columns: minmax(0, 1fr); }
+
+      .searchWhisperer:has(> .searchWhisperer__products) > .searchWhisperer__additionalResults,
+      .as-whisperer-contact {
+        grid-column: 1;
+        grid-row: auto;
+        border-left: 0;
+        border-top: 1px solid var(--as-secondary-75);
+      }
+
+      .as-whisperer-categories .subcategories { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+  }
+
+  @include bp.mobile {
+    // Výsledky a ovládání zůstávají mobilnímu Discu. Tyto bloky přidává jen náš doplněk.
+    #header .search {
+      .searchWhisperer {
+        max-height: var(--as-search-available-height, 60dvh);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+
+      .as-whisperer-categories,
+      .as-whisperer-contact {
+        padding: 20px 16px;
+        border-top: 1px solid var(--as-secondary-75);
+        overflow-wrap: anywhere;
+      }
+
+      .as-whisperer-categories {
+        @include category-card.card;
+
+        .subcategories {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+
+        .subcategories li { min-width: 0; width: auto; padding: 0; margin: 0; }
+      }
+
+      .as-whisperer-contact {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .as-whisperer-contact__photo { width: 64px; height: 64px; object-fit: cover; }
+      .as-whisperer-contact__link { min-height: 44px; }
     }
   }
 }

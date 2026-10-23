@@ -13,6 +13,11 @@
 @use "../tools/quantity";
 
 .as-theme {
+  #cart-widget.popup-widget {
+    max-width: calc(var(--as-viewport-width, 100vw) - 32px);
+    overflow-wrap: anywhere;
+  }
+
   @include bp.desktop {
     // Ztmavení stránky pod oknem: overlay Disca (body::before) jako u hledání a přihlášení.
     body.cart-window-visible::before {
@@ -41,12 +46,16 @@
 
     // Disco okno umísťuje pevně pod svou hlavičku se šipkou, u nás přiléhá k tlačítku košíku.
     #cart-widget.popup-widget {
+      // Pod 992 px má Disco fixed + bottom: 0; desktopová bublina má výšku podle obsahu.
+      position: absolute;
       top: var(--as-popup-top, 128px);
       right: var(--as-popup-right, auto);
+      bottom: auto;
       left: auto;
       z-index: 1003;
       width: 580px;
-      max-height: none;
+      height: auto;
+      max-height: var(--as-popup-available-height, calc(100dvh - 160px));
       margin: 0;
       padding: 0;
       // Disco okno ohraničuje rámečkem a stínem, v návrhu leží na ztmavené stránce bez nich.
@@ -55,7 +64,9 @@
       // Bílé pozadí má od Disca i samo okno (.cart-widget), zaoblení proto patří sem. Pravý horní
       // roh navazuje na tlačítko košíku.
       border-radius: 8px 0 8px 8px;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
 
       &::before {
         content: none;
@@ -64,6 +75,7 @@
 
     #cart-widget .cart-widget-inner {
       width: auto;
+      height: auto;
       padding: 0;
       border: 0;
       border-radius: 8px 0 8px 8px;
@@ -75,7 +87,9 @@
 
     // Seznam produktů se při delším košíku posouvá (výšku omezuje Disco).
     #cart-widget .cart-widget-products {
-      max-height: calc(100vh - 360px);
+      // Posouvá se celé okno, aby zůstaly dosažitelné i tlačítko a kontakt na nízkém displeji.
+      max-height: none;
+      height: auto;
     }
 
     // Řádek produktu: obrázek 48 px, název, počítadlo, cena, odebrání.
@@ -328,5 +342,18 @@
         color: var(--as-primary-600);
       }
     }
+  }
+
+  @include bp.mobile {
+    // Vlastní kontakt vkládáme i do mobilního košíku; zbytek vzhledu a ovládání patří Discu.
+    #cart-widget .as-cart-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    #cart-widget .as-cart-contact__photo { width: 64px; height: 64px; object-fit: cover; }
+    #cart-widget .as-cart-contact__link { min-height: 44px; }
   }
 }

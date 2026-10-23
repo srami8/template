@@ -129,4 +129,19 @@ export function enhanceHeader(config) {
   renderPhone(config);
   renderQuickLinks(config);
   if (config.header === 'v2') enhanceV2(config);
+
+  // Mobilní Disco má pevnou hlavičku a ve .overall-wrapper rezervuje jen 50 / 80 px.
+  // Rychlé odkazy nebo otevřené hledání ji zvýší; obsah i menu musí začínat až pod ní.
+  const header = document.getElementById('header');
+  if (header) {
+    let previous;
+    const syncHeight = () => {
+      const height = header.getBoundingClientRect().height;
+      if (height === previous) return;
+      previous = height;
+      document.documentElement.style.setProperty('--as-mobile-header-height', `${height}px`);
+    };
+    new ResizeObserver(syncHeight).observe(header);
+    syncHeight();
+  }
 }

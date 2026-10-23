@@ -7,7 +7,7 @@
 @use "../tools/breakpoints" as bp;
 @use "../tools/submenu";
 
-$categories-width: 246px;
+$categories-width: clamp(180px, 24vw, 246px);
 
 .as-header-v2 {
   // Na mobilu otevírá menu Disco jeho vlastní hamburger v hlavičce.
@@ -19,8 +19,9 @@ $categories-width: 246px;
     // Tlačítko zůstává nad ztmavením (Disco ho kreslí přes body::before se z-indexem 1002).
     .as-catalog__toggle {
       position: relative;
-      z-index: 1003;
+      z-index: auto;
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       gap: 16px;
       height: 60px;
@@ -59,6 +60,9 @@ $categories-width: 246px;
       }
     }
 
+    // Nad ztmavením patří tlačítko jen při otevřeném katalogu, jinak by zakrývalo našeptávač.
+    body.navigation-window-visible .as-catalog__toggle { z-index: 1003; }
+
     // Ztmavení stránky pod otevřeným katalogem: overlay Disca (body::before), který Disco používá
     // při hledání a najetí na menu. Barva z návrhu, stejná pro oba stavy, aby při najetí neproblikla.
     body.navigation-window-visible::before,
@@ -73,8 +77,8 @@ $categories-width: 246px;
       display: none;
     }
 
-    // Otevřený panel přes šířku kontejneru pod lištou. Prázdná plocha vpravo (kategorie bez
-    // podkategorií) propouští kliky na ztmavení, které katalog zavře.
+    // Otevřený panel přes šířku kontejneru pod lištou. Výšku měří JS i podle absolutního podmenu,
+    // celý původní panel se na nízkém displeji posouvá. Klik na prázdnou plochu ho zavře.
     body.navigation-window-visible #navigation {
       position: absolute;
       top: 100%;
@@ -82,10 +86,13 @@ $categories-width: 246px;
       left: 0;
       z-index: 1003;
       display: block;
-      height: auto;
+      height: min(var(--as-navigation-content-height, 65dvh), var(--as-navigation-available-height, 65dvh));
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       background: none;
       font-family: var(--as-font-family);
-      pointer-events: none;
+      pointer-events: auto;
 
       // Disco má .navigation-in absolutně, podmenu se pak měří k ní. Měříme ho k celému panelu.
       .navigation-in {
@@ -124,6 +131,7 @@ $categories-width: 246px;
         line-height: 20px;
         text-decoration: none;
         text-transform: none;
+        overflow-wrap: anywhere;
 
         b {
           font-weight: 400;
@@ -174,6 +182,8 @@ $categories-width: 246px;
         box-shadow: none;
 
         @include submenu.groups(3);
+
+        @include bp.compact { padding: 24px; }
       }
     }
   }

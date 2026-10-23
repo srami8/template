@@ -8,6 +8,55 @@
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
+@use "../tools/button";
+
+// Obsahové bannery Disca mají na telefonu příliš nízký obrázek pro nadpis, text i tlačítko.
+// Původní textový blok se proto zobrazí pod obrázkem, celý banner zůstává původním odkazem.
+.as-theme .body-banners .banner-wrapper {
+  max-width: 100%;
+
+  @include bp.mobile {
+    > a { display: block; }
+
+    img { display: block; width: 100%; height: auto; }
+
+    .extended-banner-texts {
+      position: static;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      max-width: 100%;
+      padding: 16px;
+      background: var(--as-white);
+      color: var(--as-secondary-500);
+      text-align: left;
+      transform: none;
+      overflow-wrap: anywhere;
+
+      > * {
+        position: static;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        background: none;
+        color: inherit;
+        white-space: normal;
+        transform: none;
+      }
+    }
+
+    .extended-banner-title { font-size: 24px; line-height: 1.2; }
+    .extended-banner-text { font-size: var(--as-font-size-small); line-height: 1.5; }
+    .extended-banner-link {
+      @include button.base;
+      @include button.size(sm);
+      @include button.secondary;
+      white-space: normal;
+      min-height: 44px;
+    }
+  }
+}
 
 .as-theme {
   @include bp.desktop {
@@ -107,7 +156,7 @@
       align-items: flex-start;
       gap: 16px;
       max-width: 50%;
-      padding: 40px 56px;
+      padding: clamp(16px, 3vw, 40px) clamp(16px, 4vw, 56px);
       pointer-events: none;
 
       > * {
@@ -121,13 +170,14 @@
 
     .banners-row .extended-banner-title {
       font-family: var(--as-font-family-headings);
-      font-size: 56px;
+      font-size: clamp(24px, 3.8vw, 56px);
+      overflow-wrap: anywhere;
       font-weight: 700;
       line-height: 1.1;
     }
 
     .banners-row .extended-banner-text {
-      font-size: 22px;
+      font-size: clamp(16px, 1.6vw, 22px);
       font-weight: 400;
       line-height: 1.3;
     }
@@ -144,6 +194,11 @@
       font-size: var(--as-font-size-body);
       font-weight: 500;
       pointer-events: auto;
+      max-width: 100%;
+      height: auto;
+      min-height: 44px;
+      padding: 12px clamp(16px, 3vw, 40px);
+      overflow-wrap: anywhere;
     }
 
     .next-to-carousel-banners {
@@ -181,6 +236,15 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) 460px;
       gap: 20px;
+
+      @include bp.compact {
+        grid-template-columns: minmax(0, 1fr);
+
+        .next-to-carousel-banners {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
     }
 
     // Jen velký banner (přes obsah, nebo přes celé okno): postranní bannery se nezobrazují.
@@ -193,8 +257,8 @@
 
     &.as-banners-fullwidth {
       .banners-row {
-        width: 100vw;
-        margin-left: calc(50% - 50vw);
+        width: var(--as-viewport-width, 100vw);
+        margin-left: calc(50% - var(--as-viewport-width, 100vw) / 2);
       }
 
       // Obrázek se neořezává, drží svůj poměr stran. Výšku tedy určuje nahraný obrázek
@@ -305,7 +369,7 @@
     align-items: flex-start;
     gap: 12px;
     max-width: none;
-    padding: 96px 32px 32px;
+    padding: 64px clamp(16px, 2vw, 32px) clamp(16px, 2vw, 32px);
     background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
 
     &:not(:has(:not(:empty))) {
@@ -331,7 +395,7 @@
 
   .banners-row .extended-banner-title {
     font-family: var(--as-font-family-headings);
-    font-size: 26px;
+    font-size: clamp(18px, 2vw, 26px);
     font-weight: 600;
     line-height: 1.2;
   }

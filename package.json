@@ -7,9 +7,13 @@
   ],
   "scripts": {
     "build": "npm run build -w theme",
+    "test:responsive": "npm run build && playwright test --config tests/responsive/playwright.config.cjs",
     "dev": "npm run dev -w theme",
     "deploy": "npm run deploy -w theme",
     "settings": "npm run start -w settings-app",
     "tunnel": "npm run tunnel -w settings-app"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1"
   }
 }
