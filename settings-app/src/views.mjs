@@ -68,6 +68,7 @@ function layout(title, body, { eshopOrigin } = {}) {
   .as-flash { margin-bottom: 16px; padding: 12px 16px; border-radius: 8px; }
   .as-flash--ok { background: #e7f7e1; color: #1f6a05; }
   .as-flash--err { background: #fde8e8; color: #9b1c1c; }
+  .as-flash--info { background: #e9f6fd; color: #0f5074; }
   body.theme-dark .as-logo { color: #fff; }
 </style>
 </head>
@@ -167,6 +168,7 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, tok
   );
 }
 
-export function messagePage(title, message) {
-  return layout(title, `<main class="as-page">${intro()}<div class="as-flash as-flash--err" role="alert"><strong>${escape(title)}</strong><br>${escape(message)}</div></main>`);
+export function messagePage(title, message, { type = 'err' } = {}) {
+  const role = type === 'err' ? 'alert' : 'status';
+  return layout(title, `<main class="as-page">${intro()}<div class="as-flash as-flash--${type}" role="${role}"><strong>${escape(title)}</strong><br>${escape(message)}</div></main>`);
 }

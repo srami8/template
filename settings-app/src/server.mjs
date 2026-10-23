@@ -183,7 +183,17 @@ async function handleSettingsPost(req, res, url) {
   redirect(res, settingsUrl(eshopId, { t: token, lang, saved: '1' }));
 }
 
+// Kořen adresy: bez ID e-shopu nevíme, čí nastavení otevřít, tak jen poradíme, kudy dál.
+async function handleRoot(req, res) {
+  send(res, 200, messagePage(
+    'Nastavení se otevírá z administrace',
+    'Otevřete administraci svého e-shopu a v části Propojení → aSteroid (nebo ve Správci doplňků) klikněte na nastavení doplňku.',
+    { type: 'info' },
+  ));
+}
+
 const routes = {
+  'GET /': handleRoot,
   'GET /install': handleInstall,
   'GET /settings': handleSettingsGet,
   'POST /settings': handleSettingsPost,
