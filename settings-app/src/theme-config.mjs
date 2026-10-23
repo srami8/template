@@ -40,12 +40,18 @@ export const QUICK_LINK_ICONS = ['local-fire-department', 'local-offer', 'filter
 export const MAX_QUICK_LINKS = 6;
 export const MAX_NAV_LINKS = 8;
 
+// Kategorie na úvodní stránce: víc než 6 se zobrazí jako carousel. Strop hlídá i velikost kódu
+// vkládaného do e-shopu (Shoptet povoluje 8192 znaků).
+export const MAX_HOME_CATEGORIES = 16;
+export const HOME_CATEGORIES_TITLE = 'Tohle u nás zrovna frčí';
+
 export const DEFAULT_THEME_CONFIG = {
   header: 'v1',
   banners: 'default',
   phone: null,
   quickLinks: [],
   navLinks: [],
+  homeCategories: { title: HOME_CATEGORIES_TITLE, items: [] },
 };
 
 const SNIPPET_LIMIT = 8192;
@@ -65,7 +71,66 @@ function safeUrl(value) {
   }
 }
 
-export function themeConfigFromForm(form) {
+// Adresy z API jsou absolutní na doméně e-shopu, ukládáme jen cestu (kratší kód, funguje i na vlastní doméně).
+function pathOf(value) {
+  try {
+    const url = new URL(value);
+    return url.pathname + url.search;
+  } catch {
+    return '';
+  }
+}
+
+// Kategorie pro výběr v nastavení: jen viditelné, ve stromovém pořadí jako v administraci,
+// s cestou k nadřazeným kategoriím v popisku („Produkty › Šperky“).
+export function categoryChoices(categories) {
+  const visible = categories.filter((c) => c.visible !== false);
+  const byParent = new Map();
+  visible.forEach((c) => {
+    const key = c.parentGuid || '';
+    if (!byParent.has(key)) byParent.set(key, []);
+    byParent.get(key).push(c);
+  });
+
+  const choices = [];
+  const walk = (parentGuid, path) => {
+    (byParent.get(parentGuid) || [])
+      .sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
+      .forEach((c) => {
+        const label = [...path, c.name].join(' › ');
+        choices.push({ guid: c.guid, label });
+        walk(c.guid, [...path, c.name]);
+      });
+  };
+  walk('', []);
+  return choices;
+}
+
+// Údaje kategorie pro šablonu: název, odkaz a náhled obrázku z administrace e-shopu.
+function homeCategoryFromApi(category) {
+  return {
+    guid: category.guid,
+    name: text(category.name, 80),
+    url: pathOf(category.url),
+    image: category.image ? pathOf(category.image) : '',
+  };
+}
+
+// Vybrané kategorie (pole homeCategories, v pořadí formuláře). Údaje bereme z aktuálních kategorií
+// e-shopu (smazané a skryté vypadnou). Když je API zrovna nedostupné, ponecháme dříve uložené.
+function homeCategoriesFromForm(form, { categories, previous }) {
+  const fromApi = new Map((categories || []).filter((c) => c.visible !== false).map((c) => [c.guid, c]));
+  const fromPrevious = new Map((previous?.items || []).map((item) => [item.guid, item]));
+  const items = [];
+  for (const guid of new Set(form.getAll('homeCategories'))) {
+    if (items.length >= MAX_HOME_CATEGORIES) break;
+    const item = categories ? fromApi.has(guid) && homeCategoryFromApi(fromApi.get(guid)) : fromPrevious.get(guid);
+    if (item?.name && item.url) items.push(item);
+  }
+  return { title: text(form.get('homeCategoriesTitle'), 80), items };
+}
+
+export function themeConfigFromForm(form, { categories, previous } = {}) {
   const header = HEADER_VARIANTS.some((v) => v.value === form.get('header')) ? form.get('header') : 'v1';
   const banners = BANNER_LAYOUTS.some((v) => v.value === form.get('banners')) ? form.get('banners') : 'default';
 
@@ -90,7 +155,9 @@ export function themeConfigFromForm(form) {
     if (label && url) navLinks.push({ label, url });
   }
 
-  return { header, banners, phone, quickLinks, navLinks };
+  const homeCategories = homeCategoriesFromForm(form, { categories, previous: previous?.homeCategories });
+
+  return { header, banners, phone, quickLinks, navLinks, homeCategories };
 }
 
 // JSON vložený do <script>: znak < escapujeme, aby text nemohl ukončit script tag.

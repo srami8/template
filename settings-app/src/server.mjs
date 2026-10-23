@@ -10,10 +10,10 @@ import { createServer } from 'node:http';
 import { randomBytes } from 'node:crypto';
 import { config } from './config.mjs';
 import { getInstallation, saveInstallation } from './store.mjs';
-import { exchangeInstallCode, setHeaderSnippet, adminAuthorizeUrl, verifyAdmin } from './shoptet.mjs';
+import { exchangeInstallCode, setHeaderSnippet, getCategories, adminAuthorizeUrl, verifyAdmin } from './shoptet.mjs';
 import { finishInstall } from './install.mjs';
 import { createSessionToken, verifySessionToken } from './session.mjs';
-import { DEFAULT_THEME_CONFIG, themeConfigFromForm, buildHeaderSnippet } from './theme-config.mjs';
+import { DEFAULT_THEME_CONFIG, themeConfigFromForm, buildHeaderSnippet, categoryChoices } from './theme-config.mjs';
 import { settingsPage, messagePage } from './views.mjs';
 
 const STATE_TTL = 10 * 60 * 1000;
@@ -59,6 +59,16 @@ function redirect(res, location) {
 
 function settingsUrl(eshopId, params = {}) {
   return `/settings?${new URLSearchParams({ eshopId: String(eshopId), ...params })}`;
+}
+
+// Kategorie e-shopu pro výběr na úvodní stránku. Chyba API nesmí zablokovat zbytek nastavení.
+async function loadCategories(installation, eshopId) {
+  try {
+    return await getCategories(installation);
+  } catch (error) {
+    console.error(`kategorie e-shopu ${eshopId}: ${error.message}`);
+    return null;
+  }
 }
 
 async function readForm(req) {
@@ -125,11 +135,13 @@ async function handleSettingsGet(req, res, url) {
   }
 
   const flash = url.searchParams.get('saved') === '1' ? { type: 'ok', message: 'Uloženo, e-shop už používá nové nastavení.' } : null;
+  const categories = await loadCategories(installation, eshopId);
   send(res, 200, settingsPage({
     eshopName: installation.eshopName,
     eshopId,
     eshopOrigin: new URL(installation.eshopUrl).origin,
-    themeConfig: installation.themeConfig || DEFAULT_THEME_CONFIG,
+    themeConfig: { ...DEFAULT_THEME_CONFIG, ...installation.themeConfig },
+    categoryChoices: categories && categoryChoices(categories),
     token,
     lang,
     flash,
@@ -162,7 +174,8 @@ async function handleSettingsPost(req, res, url) {
   }
   const lang = form.get('lang') || 'cs';
 
-  const themeConfig = themeConfigFromForm(form);
+  const categories = await loadCategories(installation, eshopId);
+  const themeConfig = themeConfigFromForm(form, { categories, previous: installation.themeConfig });
   try {
     await setHeaderSnippet(installation, buildHeaderSnippet(themeConfig));
   } catch (error) {
@@ -172,6 +185,7 @@ async function handleSettingsPost(req, res, url) {
       eshopId,
       eshopOrigin: new URL(installation.eshopUrl).origin,
       themeConfig,
+      categoryChoices: categories && categoryChoices(categories),
       token,
       lang,
       flash: { type: 'err', message: `Nepodařilo se uložit do e-shopu: ${error.message}` },
@@ -179,7 +193,7 @@ async function handleSettingsPost(req, res, url) {
   }
 
   saveInstallation(eshopId, { themeConfig });
-  console.log(`uložení: e-shop ${eshopId}, hlavička ${themeConfig.header}`);
+  console.log(`uložení: e-shop ${eshopId}, hlavička ${themeConfig.header}, kategorií na úvodní stránce ${themeConfig.homeCategories.items.length}`);
   redirect(res, settingsUrl(eshopId, { t: token, lang, saved: '1' }));
 }
 

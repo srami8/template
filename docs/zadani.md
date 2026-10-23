@@ -50,7 +50,8 @@ U každého nového prvku se nejdřív ověří, jestli ho jde naplnit z adminis
 | Výběr měny, košík, přihlášení | Shoptet |
 | Výsledky našeptávače, barvy dostupnosti | Shoptet / administrace |
 | Bannery na úvodu (obrázky, odkazy, nadpis, text, tlačítko) | administrace (Bannery: carousel a vedle carouselu) |
-| Varianta hlavičky, zobrazení bannerů, otevírací doba, rychlé odkazy, odkazy vedle katalogu (v2) | nastavení doplňku (v Shoptetu nejsou) |
+| Kategorie na úvodní stránce: název, obrázek, odkaz | administrace (kategorie, přes API při uložení nastavení) |
+| Varianta hlavičky, zobrazení bannerů, otevírací doba, rychlé odkazy, odkazy vedle katalogu (v2), výběr kategorií na úvod a nadpis bloku | nastavení doplňku (v Shoptetu nejsou) |
 
 Dál z administrace půjde brát (při kódování dalších částí):
 - informační proužek nad hlavičkou (Figma „Lišta“),

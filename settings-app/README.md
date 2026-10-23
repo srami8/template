@@ -37,4 +37,4 @@ Propojení → API partner → Doplňky → doplněk aSteroid:
 - **URL pro získání OAuth kódu (instalace):** `<veřejná adresa>/install`
 - **URL pro autorizaci uživatele:** `<veřejná adresa>/auth/callback`
 - **Odkaz na externí nastavení doplňku (záložka Popis):** `<veřejná adresa>/settings?eshopId=#SHOP_ID#&code=#OAUTH_CODE#&lang=#LANGUAGE#`
-- **Práva:** HTML kódy v šabloně (template-include) zápis, informace o e-shopu čtení
+- **Práva:** HTML kódy v šabloně (template-include) zápis, informace o e-shopu čtení, kategorie (skupina Produkty) čtení. Po přidání práva vracelo API ještě několik minut 403, settings-app si pak při 403 vezme nový API token.

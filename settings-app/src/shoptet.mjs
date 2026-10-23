@@ -71,8 +71,9 @@ export async function api(installation, method, path, payload) {
     });
 
   let response = await request(await getApiAccessToken(installation.oauthToken));
-  // Uložený token může Shoptet zneplatnit dřív (např. přeinstalace doplňku). Vezmeme nový a zkusíme to znovu.
-  if (response.status === 401) {
+  // Uložený token může Shoptet zneplatnit dřív (např. přeinstalace doplňku), nebo nemá práva přidaná
+  // v nastavení doplňku po jeho vydání (403). Vezmeme nový a zkusíme to znovu.
+  if (response.status === 401 || response.status === 403) {
     response = await request(await getApiAccessToken(installation.oauthToken, { fresh: true }));
   }
   return readJson(response, `${method} ${path}`);
@@ -80,6 +81,17 @@ export async function api(installation, method, path, payload) {
 
 export function getEshopInfo(installation) {
   return api(installation, 'GET', '/api/eshop');
+}
+
+// Všechny kategorie produktů e-shopu (stránkování po 1000, víc kategorií mají e-shopy výjimečně).
+export async function getCategories(installation) {
+  const categories = [];
+  for (let page = 1; page <= 20; page += 1) {
+    const body = await api(installation, 'GET', `/api/categories?itemsPerPage=1000&page=${page}`);
+    categories.push(...(body.data?.categories ?? []));
+    if (page >= (body.data?.paginator?.pageCount ?? 1)) break;
+  }
+  return categories;
 }
 
 export function setHeaderSnippet(installation, html) {

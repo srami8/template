@@ -2,7 +2,15 @@
 // Stránka se zobrazuje v administraci Shoptetu (iframe), proto používá knihovnu Shoptet UI,
 // skript iframe-resizer (výška rámu) a přebírá motiv administrace (světlý / tmavý).
 
-import { HEADER_VARIANTS, BANNER_LAYOUTS, QUICK_LINK_ICONS, MAX_QUICK_LINKS, MAX_NAV_LINKS } from './theme-config.mjs';
+import {
+  HEADER_VARIANTS,
+  BANNER_LAYOUTS,
+  QUICK_LINK_ICONS,
+  MAX_QUICK_LINKS,
+  MAX_NAV_LINKS,
+  MAX_HOME_CATEGORIES,
+  HOME_CATEGORIES_TITLE,
+} from './theme-config.mjs';
 
 const SHOPTET_UI_CSS = 'https://cdn.jsdelivr.net/npm/@shoptet/ui@0.23.0-beta/dist/index.css';
 const IFRAME_RESIZER = 'https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.contentWindow.min.js';
@@ -65,6 +73,9 @@ function layout(title, body, { eshopOrigin } = {}) {
   .as-links--nav { grid-template-columns: 1fr 1.4fr; }
   .as-links > span { font-size: 13px; opacity: 0.7; }
   .as-links .textField, .as-links select { width: 100%; }
+  .as-categories { display: grid; gap: 8px; margin: 16px 0; padding: 0; list-style: none; }
+  .as-categories li { display: flex; gap: 8px; align-items: center; }
+  .as-categories select { flex: 1; }
   .as-flash { margin-bottom: 16px; padding: 12px 16px; border-radius: 8px; }
   .as-flash--ok { background: #e7f7e1; color: #1f6a05; }
   .as-flash--err { background: #fde8e8; color: #9b1c1c; }
@@ -100,7 +111,66 @@ function card(title, content, hint) {
   </section>`;
 }
 
-export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, token, lang, flash }) {
+// Kategorie na úvodní stránce: jeden výběr na řádek, „Přidat další kategorie“ přidá další řádek
+// (šablona <template>, skript níže). Bez načtených kategorií (chyba API) zůstanou uložené kategorie
+// ve skrytých polích, aby se uložením ostatních nastavení neztratily.
+function homeCategoriesCard(homeCategories, choices) {
+  const items = homeCategories?.items || [];
+  const title = homeCategories?.title ?? HOME_CATEGORIES_TITLE;
+  const titleField = `<div class="v2form">
+    <div class="v2FormField">
+      <label class="v2FormField__label" for="homeCategoriesTitle">Nadpis</label>
+      <div class="v2FormField__input">
+        <input class="textField md" type="text" id="homeCategoriesTitle" name="homeCategoriesTitle" value="${escape(title)}" placeholder="${escape(HOME_CATEGORIES_TITLE)}" maxlength="80">
+      </div>
+    </div>
+  </div>`;
+
+  if (!choices) {
+    const kept = items.map((item) => `<input type="hidden" name="homeCategories" value="${escape(item.guid)}">`).join('');
+    const names = items.map((item) => escape(item.name)).join(', ') || 'žádné';
+    return `${titleField}${kept}
+      <div class="as-flash as-flash--err" role="alert">Kategorie e-shopu se nepodařilo načíst, výběr teď nejde změnit. Uložené kategorie: ${names}.</div>`;
+  }
+
+  const select = (selected) => `<select class="textField" name="homeCategories" aria-label="Kategorie">
+      ${choices.map((c) => `<option value="${escape(c.guid)}" ${c.guid === selected ? 'selected' : ''}>${escape(c.label)}</option>`).join('')}
+    </select>`;
+  const row = (selected) => `<li>${select(selected)}
+      <button class="btn btn-secondary btn-sm" type="button" data-remove-category>Odebrat</button></li>`;
+
+  // Kategorie, které už v e-shopu nejsou (smazané, skryté), ve výběru nenabízíme a při uložení vypadnou.
+  const known = new Set(choices.map((c) => c.guid));
+  const rows = items.filter((item) => known.has(item.guid)).map((item) => row(item.guid)).join('');
+
+  return `${titleField}
+    <ul class="as-categories" data-categories data-max="${MAX_HOME_CATEGORIES}">${rows}</ul>
+    <template data-category-row>${row('')}</template>
+    <button class="btn btn-secondary btn-md" type="button" data-add-category>Přidat další kategorie</button>
+    <script>
+    (function () {
+      var list = document.querySelector('[data-categories]');
+      var template = document.querySelector('[data-category-row]');
+      var add = document.querySelector('[data-add-category]');
+      var max = Number(list.dataset.max);
+      function update() { add.hidden = list.children.length >= max; }
+      add.addEventListener('click', function () {
+        list.appendChild(template.content.cloneNode(true));
+        list.lastElementChild.querySelector('select').focus();
+        update();
+      });
+      list.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-remove-category]');
+        if (!button) return;
+        button.closest('li').remove();
+        update();
+      });
+      update();
+    })();
+    </script>`;
+}
+
+export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, categoryChoices, token, lang, flash }) {
   const variants = HEADER_VARIANTS.map(
     (v) => `<label class="as-variant" title="${escape(v.label)}">
       <input class="radioField" type="radio" name="header" value="${v.value}" ${themeConfig.header === v.value ? 'checked' : ''}>
@@ -155,6 +225,11 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, tok
           'Bannery na úvodní stránce',
           bannerLayouts,
           'Bannery nahráváte jako obvykle v administraci Shoptetu (Vzhled a obsah → Bannery). Tady zvolíte, jak se zobrazí.',
+        )}
+        ${card(
+          'Kategorie na úvodní stránce',
+          homeCategoriesCard(themeConfig.homeCategories, categoryChoices),
+          'Vybrané kategorie se zobrazí pod bannery s názvem, obrázkem a odkazem z administrace e-shopu. Víc než 6 kategorií se posouvá jako carousel. Po přejmenování kategorie nebo změně jejího obrázku nastavení znovu uložte.',
         )}
         ${card(
           'Telefon v horní liště',

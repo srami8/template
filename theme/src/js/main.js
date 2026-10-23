@@ -4,6 +4,7 @@
 import { enhanceHeader } from './header';
 import { enhanceSearch } from './search';
 import { enhanceBanners } from './banners';
+import { renderHomeCategories } from './home-categories';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
 const BANNER_LAYOUTS = ['default', 'content', 'fullwidth', 'cards'];
@@ -15,6 +16,7 @@ const DEFAULTS = {
   phone: null,
   quickLinks: [],
   navLinks: [],
+  homeCategories: null,
 };
 
 // Náhled jiné varianty bez změny nastavení: ?asteroid-header=v2, ?asteroid-banners=cards
@@ -44,6 +46,7 @@ function start() {
     enhanceHeader(config);
     enhanceSearch();
     enhanceBanners(config);
+    renderHomeCategories(config);
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
