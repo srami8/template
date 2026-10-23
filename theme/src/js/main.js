@@ -13,6 +13,7 @@ import { enhanceProductCards } from './product-cards';
 import { setHomepageProductColumns } from './homepage-products';
 import { placeHomepageBanners } from './homepage-banners';
 import { trackViewportWidth } from './viewport';
+import { styleFiles } from './styles.mjs';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
 const BANNER_LAYOUTS = ['default', 'content', 'fullwidth', 'cards'];
@@ -47,9 +48,36 @@ function previewOverrides() {
   };
 }
 
+// Skript šablony (adresa pro dočítání stylů). currentScript platí jen při prvním spuštění skriptu.
+const ownScript = document.currentScript;
+
+// Styly zvolených variant vkládá do stránky už kód z nastavení šablony (link[data-as-style]).
+// Chybějící dočteme: náhled jiné varianty (?asteroid-header=v2) nebo starší vložený kód, který
+// načítal jen asteroid.css. Vedle souboru šablony, se stejnou verzí jako skript.
+function ensureStyles(config) {
+  const source = ownScript?.src ? new URL(ownScript.src) : null;
+  if (!source) return;
+  const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
+  const loaded = new Set(links.map((link) => link.dataset.asStyle).filter(Boolean));
+  const base = links.find((link) => link.dataset.asStyle === 'asteroid' || /\/asteroid\.css(\?|$)/.test(link.href));
+  if (base) loaded.add('asteroid');
+  let last = links.filter((link) => link.dataset.asStyle).pop() || base;
+
+  styleFiles(config).filter((name) => !loaded.has(name)).forEach((name) => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = new URL(`${name}.css${source.search}`, source).href;
+    link.dataset.asStyle = name;
+    if (last) last.after(link);
+    else document.head.append(link);
+    last = link;
+  });
+}
+
 function start() {
   trackViewportWidth();
   const config = { ...DEFAULTS, ...(window.asteroidConfig || {}), ...previewOverrides() };
+  ensureStyles(config);
 
   // Třídy na <html> řídí, kterou variantu CSS zobrazí (např. .as-header-v2).
   // Dáváme je na <html>, protože ten existuje hned a varianta se tak nepřepne až po načtení stránky.

@@ -1,0 +1,14 @@
+// Varianta bannerů „content“ (.as-banners-content): jen velký banner přes šířku obsahu,
+// postranní bannery se nezobrazují. Společný vzhled je v components/_banners.scss.
+
+@use "../tools/breakpoints" as bp;
+
+.as-theme {
+  @include bp.desktop {
+    &.as-banners-content {
+      .banners-row > [class*="col-"]:has(.next-to-carousel-banners) {
+        display: none;
+      }
+    }
+  }
+}

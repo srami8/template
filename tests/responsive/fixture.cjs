@@ -3,7 +3,9 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '../..');
 const dist = process.env.RESPONSIVE_THEME_DIST || path.join(root, 'theme/dist');
-const css = fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8');
+// Základ a všechny soubory variant (platí jen se svou třídou na <html>, jako na e-shopu).
+const css = ['asteroid.css', ...fs.readdirSync(dist).filter((file) => file.endsWith('.css') && file !== 'asteroid.css').sort()]
+  .map((file) => fs.readFileSync(path.join(dist, file), 'utf8')).join('\n');
 const js = fs.readFileSync(path.join(dist, 'asteroid.js'), 'utf8');
 const image = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="240" height="100" viewBox="0 0 240 100"%3E%3Crect width="240" height="100" fill="%23e6e8eb"/%3E%3C/svg%3E';
 const img = (className = '') => `<img class="${className}" src='${image}' alt="">`;

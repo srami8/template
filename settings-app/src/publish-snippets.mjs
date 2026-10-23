@@ -10,7 +10,7 @@ let failed = 0;
 for (const { eshopId, installation } of listInstallations()) {
   try {
     await setHeaderSnippet(installation, buildHeaderSnippet(installation.themeConfig || DEFAULT_THEME_CONFIG));
-    console.log(`kód šablony: e-shop ${eshopId} má verzi ${assetsVersion()}`);
+    console.log(`kód šablony: e-shop ${eshopId}, základ ${assetsVersion()}`);
   } catch (error) {
     failed += 1;
     console.error(`kód šablony: e-shop ${eshopId} selhal (${error.message})`);

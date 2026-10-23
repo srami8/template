@@ -1,0 +1,36 @@
+// Varianta bannerů „fullwidth“ (.as-banners-fullwidth): jen velký banner přes celou šířku okna,
+// postranní bannery se nezobrazují. Společný vzhled je v components/_banners.scss.
+
+@use "../tools/breakpoints" as bp;
+
+.as-theme {
+  @include bp.desktop {
+    &.as-banners-fullwidth {
+      .banners-row > [class*="col-"]:has(.next-to-carousel-banners) {
+        display: none;
+      }
+    }
+
+    &.as-banners-fullwidth {
+      .banners-row {
+        width: var(--as-viewport-width, 100vw);
+        margin-left: calc(50% - var(--as-viewport-width, 100vw) / 2);
+      }
+
+      // Obrázek se neořezává, drží svůj poměr stran. Výšku tedy určuje nahraný obrázek
+      // (proto v nastavení doporučujeme široký formát).
+      #carousel {
+        border-radius: 0;
+      }
+
+      // Šipky lícují s pravým okrajem obsahu.
+      #carousel .carousel-control.right {
+        right: max(32px, calc((100vw - 1418px) / 2));
+      }
+
+      #carousel .carousel-control.left {
+        right: calc(max(32px, calc((100vw - 1418px) / 2)) + 48px);
+      }
+    }
+  }
+}

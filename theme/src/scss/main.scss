@@ -1,9 +1,10 @@
-// Vstupní bod CSS šablony aSteroid. Načítá se nad CSS šablony Disco.
+// Vstupní bod CSS šablony aSteroid (dist/asteroid.css): základ společný všem e-shopům. Načítá se nad
+// CSS šablony Disco. Varianty (hlavička, bannery, karty produktů) jsou samostatné soubory
+// scss/variants/*.scss → dist/<varianta>.css, e-shop načte jen zvolené (js/styles.mjs).
 
 @use "tokens";
 @use "tools/icon";
 @use "components/icon" as icon-component;
-@use "components/catalog";
 @use "components/mobile-header";
 @use "components/mobile-menu";
 @use "components/search-whisperer";
@@ -13,12 +14,9 @@
 @use "components/cart-widget";
 @use "components/body-banners";
 @use "components/banner-mosaic";
-@use "components/product-cards/default" as product-card-default;
 @use "layout/site-msg";
 @use "layout/homepage";
 @use "layout/header";
-@use "header/v1";
-@use "header/v2";
 
 :root {
   @include tokens.custom-properties;

@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { config } from './config.mjs';
+import { styleFiles } from '../../theme/src/js/styles.mjs';
 
 export const HEADER_VARIANTS = [
   { value: 'v1', label: 'Kategorie v řádku pod hlavičkou' },
@@ -178,27 +179,30 @@ function inlineJson(value) {
   return JSON.stringify(value).replace(/</g, '\\u003c');
 }
 
-// Otisk obsahu sestavených souborů (stejné nahrává npm run deploy). Nová verze = nová adresa,
-// jinak prohlížeč soubory bere z mezipaměti.
-export function assetsVersion() {
+// Otisk obsahu sestaveného souboru (stejné nahrává npm run deploy). Nový obsah = nová adresa,
+// jinak prohlížeč soubor bere z mezipaměti. Každý soubor má vlastní verzi: změna jedné varianty
+// nevynutí nové stažení ostatních.
+export function assetsVersion(file = 'asteroid.css') {
   if (config.assetsVersion) return config.assetsVersion;
-  const hash = createHash('sha256');
-  for (const file of ['asteroid.css', 'asteroid.js']) hash.update(readFileSync(join(config.themeDist, file)));
-  return hash.digest('hex').slice(0, 12);
+  return createHash('sha256').update(readFileSync(join(config.themeDist, file))).digest('hex').slice(0, 12);
 }
 
 export function buildHeaderSnippet(themeConfig) {
   const base = escapeAttribute(config.assetsBase);
-  const version = encodeURIComponent(assetsVersion());
+  const url = (file) => `${base}${file}?v=${encodeURIComponent(assetsVersion(file))}`;
 
   // Soubory jako obyčejné značky (ne document.write): prohlížeč je najde hned při čtení hlavičky.
-  // Skript zůstává blokující: třídy variant na <html> nastaví před prvním vykreslením a jeho
-  // DOMContentLoaded běží před sliderem Shoptetu (js/homepage-products.js).
+  // Styly: základ a jen soubory zvolených variant (theme/src/js/styles.mjs), data-as-style pro
+  // náhled jiné varianty (js/main.js). Skript zůstává blokující: třídy variant na <html> nastaví
+  // před prvním vykreslením a jeho DOMContentLoaded běží před sliderem Shoptetu.
   // Font si šablona nenačítá: použije písmo zvolené v administraci, které načítá Shoptet.
+  const styles = styleFiles(themeConfig)
+    .map((name) => `<link rel="stylesheet" href="${url(`${name}.css`)}" data-as-style="${name}">`)
+    .join('\n');
   const html = `<!-- aSteroid -->
 <script>window.asteroidConfig = ${inlineJson(themeConfig)};</script>
-<link rel="stylesheet" href="${base}asteroid.css?v=${version}">
-<script src="${base}asteroid.js?v=${version}"></script>`;
+${styles}
+<script src="${url('asteroid.js')}"></script>`;
 
   if (html.length > SNIPPET_LIMIT) {
     throw new Error(`Kód pro e-shop má ${html.length} znaků, Shoptet povoluje nejvýš ${SNIPPET_LIMIT}.`);

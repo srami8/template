@@ -1,0 +1,23 @@
+// Varianta bannerů „default“ (nastavení šablony, .as-banners-default): velký banner a vedle sloupec
+// 460 px se dvěma postranními (jen když jsou nahrané). Společný vzhled je v components/_banners.scss.
+
+@use "../tools/breakpoints" as bp;
+
+.as-theme {
+  @include bp.desktop {
+    &.as-banners-default .banners-row:has(.next-to-carousel-banners .banner-wrapper) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 460px;
+      gap: 20px;
+
+      @include bp.compact {
+        grid-template-columns: minmax(0, 1fr);
+
+        .next-to-carousel-banners {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    }
+  }
+}

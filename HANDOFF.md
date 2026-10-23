@@ -1,3 +1,31 @@
+# Aktualizace (Claude): styly rozdělené na základ a soubory variant
+
+**Zadání majitele:** variant (karty produktů aj.) časem přibude, e-shop má stahovat jen styly zvolených variant.
+
+**Změny**
+- `theme/src/scss/variants/*.scss` → `dist/<název>.css`:
+  - `header-v1` (`header/_v1`),
+  - `header-v2` (`components/_catalog` + `header/_v2`),
+  - `banners-default`, `banners-content`, `banners-fullwidth` (vyňato z rozložení v `_banners.scss`),
+  - `banners-cards` (blok `.as-banners-cards`),
+  - `product-card-default`.
+  - `main.scss` = základ.
+  - Build: `sass main.scss:dist/asteroid.css variants:dist`.
+- `theme/src/js/styles.mjs`: `VARIANT_STYLES` a `styleFiles(config)`, jediný seznam pro šablonu i settings-app (`.mjs`, protože balíček theme není ESM).
+- settings-app: vkládaný kód = `<link data-as-style>` pro základ a zvolené varianty, každý soubor s vlastní verzí (otisk obsahu). `publish-snippets` po deployi.
+- `js/main.js` `ensureStyles`: dočte chybějící soubory variant, a to pro náhled přes `?asteroid-…` i pro starší vložený kód, který měl jen `asteroid.css`.
+- Testy: fixture skládá základ a všechny varianty, nový `styles.spec.cjs` kontroluje seznam proti `dist` a výchozí hodnoty. AGENTS.md: pravidlo „varianta = vlastní soubor“.
+
+**Ověření**
+- Testy: 90 prošlých.
+- CSS pravidla před a po jsou totožná, liší se jen seskupení `@media` u tří variant bannerů.
+- E-shop (uložené v2 + cards) načte `asteroid` + `header-v2` + `banners-cards` + `product-card-default`. Náhled v1/default dočte `header-v1` a `banners-default`.
+- Screenshoty před a po (hlavička, bannery, produkty, mozaika, kategorie; 1920 a 390; uloženo i náhled v1/default) jsou shodné na pixel. U náhledu v1 jiný hash PNG, ale žádný pixel rozdílný o víc než 16/255.
+
+**Velikost:** úspora teď jen ~2–3 KB po kompresi (styly nepoužitých variant), roste s každou další variantou.
+
+---
+
 # Aktualizace (Claude): mozaika bannerů a bannery ze Zápatí podle značky v názvu
 
 **Zjištění:** Shoptet posílá na e-shop nejvýš **2 bannery Střed** (Disco je dává jako 1/3 + 2/3). 4 testovací bannery tak vytlačily i bannery `[L]`/`[R]` u sekcí. Pozice **Zápatí** má víc bannerů (ověřeno 8 viditelných, Disco mění šířku sloupců `col-lg-2` → `col-lg-1.5`). Jsou jen na úvodní stránce, v `#content > .footer-banners > .footer-banner` (img s `data-src` líně, odkaz s `data-ec-promo-id`, když má banner URL). Majitel přepnul bannery na Zápatí.
