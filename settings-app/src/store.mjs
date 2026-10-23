@@ -33,6 +33,10 @@ export function saveApiToken(key, value) {
   save(data);
 }
 
+export function listInstallations() {
+  return Object.entries(load().installations).map(([eshopId, installation]) => ({ eshopId, installation }));
+}
+
 export function getInstallation(eshopId) {
   return load().installations[String(eshopId)] || null;
 }

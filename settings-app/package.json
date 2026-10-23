@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/server.mjs",
-    "tunnel": "../.tools/cloudflared tunnel --no-autoupdate --url http://localhost:8787"
+    "tunnel": "../.tools/cloudflared tunnel --no-autoupdate --url http://localhost:8787",
+    "publish-snippets": "node src/publish-snippets.mjs"
   }
 }

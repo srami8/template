@@ -341,3 +341,13 @@ test('header icons are the same on mobile and desktop', async ({page}) => {
   expect(mobile).toEqual(desktop);
   expect(mobile.search).toBe(mobile.searchButton);
 });
+
+test('quick links row has its space reserved before the script inserts it', async ({page}) => {
+  await page.setViewportSize({width:1280,height:900});
+  await load(page);
+  const top=()=>page.evaluate(()=>Math.round(document.querySelector('#header .header-bottom').getBoundingClientRect().top));
+  const inserted=await top();
+  // Stav před DOMContentLoaded: třída z konfigurace už je na <html>, řádek ještě ne.
+  await page.evaluate(()=>document.querySelector('#header .as-quicklinks').remove());
+  expect(await top()).toBe(inserted);
+});

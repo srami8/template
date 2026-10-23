@@ -1,6 +1,9 @@
 // Nastavení šablony: výchozí hodnoty, validace formuláře a kód, který se vkládá do e-shopu.
 // Tvar konfigurace odpovídá window.asteroidConfig v theme/src/js/main.js.
 
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { config } from './config.mjs';
 
 export const HEADER_VARIANTS = [
@@ -166,26 +169,36 @@ export function themeConfigFromForm(form, { categories, previous } = {}) {
   return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns };
 }
 
+function escapeAttribute(value) {
+  return String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
 // JSON vložený do <script>: znak < escapujeme, aby text nemohl ukončit script tag.
 function inlineJson(value) {
   return JSON.stringify(value).replace(/</g, '\\u003c');
 }
 
-export function buildHeaderSnippet(themeConfig) {
-  const base = config.assetsBase;
-  const version = config.assetsVersion === 'dev' ? 'Date.now()' : JSON.stringify(config.assetsVersion);
+// Otisk obsahu sestavených souborů (stejné nahrává npm run deploy). Nová verze = nová adresa,
+// jinak prohlížeč soubory bere z mezipaměti.
+export function assetsVersion() {
+  if (config.assetsVersion) return config.assetsVersion;
+  const hash = createHash('sha256');
+  for (const file of ['asteroid.css', 'asteroid.js']) hash.update(readFileSync(join(config.themeDist, file)));
+  return hash.digest('hex').slice(0, 12);
+}
 
+export function buildHeaderSnippet(themeConfig) {
+  const base = escapeAttribute(config.assetsBase);
+  const version = encodeURIComponent(assetsVersion());
+
+  // Soubory jako obyčejné značky (ne document.write): prohlížeč je najde hned při čtení hlavičky.
+  // Skript zůstává blokující: třídy variant na <html> nastaví před prvním vykreslením a jeho
+  // DOMContentLoaded běží před sliderem Shoptetu (js/homepage-products.js).
   // Font si šablona nenačítá: použije písmo zvolené v administraci, které načítá Shoptet.
   const html = `<!-- aSteroid -->
-<script>
-window.asteroidConfig = ${inlineJson(themeConfig)};
-(function () {
-  var base = ${JSON.stringify(base)};
-  var v = ${version};
-  document.write('<link rel="stylesheet" href="' + base + 'asteroid.css?v=' + v + '">');
-  document.write('<script src="' + base + 'asteroid.js?v=' + v + '"><\\/script>');
-})();
-</script>`;
+<script>window.asteroidConfig = ${inlineJson(themeConfig)};</script>
+<link rel="stylesheet" href="${base}asteroid.css?v=${version}">
+<script src="${base}asteroid.js?v=${version}"></script>`;
 
   if (html.length > SNIPPET_LIMIT) {
     throw new Error(`Kód pro e-shop má ${html.length} znaků, Shoptet povoluje nejvýš ${SNIPPET_LIMIT}.`);

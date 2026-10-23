@@ -6,6 +6,9 @@
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
 
+// Řádek rychlých odkazů na desktopu: odkaz 44 px (dotykový cíl) + spodní linka.
+$quicklinks-height: 45px;
+
 // Barva textu v hlavičce podle pozadí hlavičky z administrace. Shoptet podle něj přidá na <html>
 // třídu .header-background-light / .header-background-dark.
 .as-theme {
@@ -544,8 +547,17 @@
       }
     }
 
+    // Místo pro řádek rychlých odkazů, než ho JS vloží (prohlížeč stránku vykreslí dřív než
+    // DOMContentLoaded). Bez něj hlavička i obsah po vložení poskočí (CLS).
+    &.as-has-quicklinks #header:not(:has(.as-quicklinks)) .header-bottom {
+      margin-top: $quicklinks-height;
+    }
+
     // Řádek rychlých odkazů pod hlavním řádkem (obsah z nastavení doplňku, viz js/header.js).
+    // Výška je pevná, aby šlo místo pro řádek vyhradit už před jeho vložením (viz výše).
     #header .as-quicklinks {
+      box-sizing: border-box;
+      height: $quicklinks-height;
       border-bottom: 1px solid var(--as-secondary-75);
       background: var(--as-white);
 

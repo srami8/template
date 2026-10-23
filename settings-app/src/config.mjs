@@ -38,8 +38,10 @@ export const config = {
 
   // Kde na e-shopu leží sestavené theme (npm run deploy).
   assetsBase: env.ASSETS_BASE || '/user/documents/asteroid/',
-  // 'dev' = načítat vždy nejnovější soubory (cache busting při každém načtení stránky).
-  assetsVersion: env.ASSETS_VERSION || 'dev',
+  // Verze v adrese souborů (?v=…). Bez ní otisk obsahu sestavených souborů v themeDist: mění se
+  // jen s novým obsahem, prohlížeč tak soubory drží v mezipaměti (Shoptet je posílá s max-age rok).
+  assetsVersion: env.ASSETS_VERSION || null,
+  themeDist: join(repoRoot, 'theme', 'dist'),
 
   storeFile: join(appRoot, 'data', 'store.json'),
 };

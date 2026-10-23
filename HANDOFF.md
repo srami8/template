@@ -1,3 +1,44 @@
+# Aktualizace (Claude): výkon – mezipaměť souborů šablony a posun hlavičky
+
+Z revize výkonu (měřeno na testovacím e-shopu, headless Chromium) majitel schválil opravu dvou kritických bodů.
+
+**1. CSS a JS se neukládaly do mezipaměti**
+- Problém: kód v e-shopu načítal soubory s `?v=Date.now()` přes `document.write`. Každé zobrazení stránky tak stahovalo 23 KB znovu, i když Shoptet posílá `max-age` na rok.
+- `settings-app/src/theme-config.mjs`:
+  - `assetsVersion()` = SHA-256 obsahu `theme/dist/asteroid.css` a `.js` (12 znaků), `ASSETS_VERSION` v .env ji může přepsat.
+  - Kód do e-shopu jsou obyčejné značky `<link>` a `<script src>`, bez `document.write`. Skript zůstává blokující: třídy variant na `<html>` se musí nastavit před vykreslením a DOMContentLoaded musí běžet před sliderem Shoptetu.
+- Nový `settings-app/src/publish-snippets.mjs` (`npm run publish-snippets -w settings-app`) zapíše kód s novou verzí do všech instalací v úložišti (`listInstallations()` ve `store.mjs`). Kořenový `npm run deploy` ho spouští po nahrání souborů.
+
+**2. Posun stránky po vykreslení (CLS 0,163 na desktopu)**
+- Problém: řádek rychlých odkazů vkládá JS až na DOMContentLoaded, po prvním vykreslení. Hlavička i obsah pak sjely o 45 px.
+- `main.js` dá na `<html>` třídu `as-has-quicklinks` (skript běží v hlavičce, před vykreslením).
+- `layout/_header.scss`:
+  - řádek má pevnou výšku `$quicklinks-height: 45px` (odkaz 44 + linka),
+  - dokud v `#header` chybí, `.header-bottom` má `margin-top` stejné výšky (`#header:not(:has(.as-quicklinks))`),
+  - jen na desktopu, na mobilu jsou odkazy v menu.
+
+**Ověření**
+- Testy: 84 prošlých, nový `quick links row has its space reserved before the script inserts it`.
+- Měření na e-shopu:
+
+| | Před | Po |
+|---|---|---|
+| 2. návštěva, přenos CSS + JS | 23,3 KB, 40–450 ms | 0 B, 1–3 ms |
+| CLS desktop | 0,163 | 0,020 |
+| CLS mobil, 2. návštěva | 0,018 | 0 |
+
+- Kód v e-shopu ověřen: `<link …asteroid.css?v=9dfecb5ae64b>` a `<script …asteroid.js?v=9dfecb5ae64b>`, žádný `document.write`. Rychlé odkazy, kategorie i bannery u sekcí fungují.
+
+**Zbývá z revize (neopravováno):**
+- CLS 0,02 z vložení kategorií na úvodní stránce, pod hranicí 0,1.
+- Vzhled přihlášení, našeptávače a mobilního menu na mobilu.
+- Líné načítání obrázků v multibanneru `cards`.
+- Drobnosti v `banners.js`, `viewport.js` a `product-cards.js`.
+
+**Riziko:** `publish-snippets` zapisuje do všech instalací v lokálním `settings-app/data`. Při hostingu aplikace s nastavením se musí spouštět tam, kde jsou instalace uložené.
+
+---
+
 # Aktualizace (Claude): stejné ikony hlavičky na mobilu i desktopu
 
 **Úkol (majitel):** ikony v hlavičce se na mobilu lišily od desktopu, což je neakceptovatelné. Co se přepíše na desktopu, musí platit i na mobilu.

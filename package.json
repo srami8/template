@@ -9,7 +9,7 @@
     "build": "npm run build -w theme",
     "test:responsive": "npm run build && playwright test --config tests/responsive/playwright.config.cjs",
     "dev": "npm run dev -w theme",
-    "deploy": "npm run deploy -w theme",
+    "deploy": "npm run deploy -w theme && npm run publish-snippets -w settings-app",
     "settings": "npm run start -w settings-app",
     "tunnel": "npm run tunnel -w settings-app"
   },

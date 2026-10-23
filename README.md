@@ -74,7 +74,9 @@ Požadavky: Node.js 18+.
 npm install
 npm run build   # sestaví theme/dist
 npm run dev     # sleduje změny v theme/src
-npm run deploy  # sestaví a nahraje theme/dist na SFTP testovacího e-shopu
+npm run deploy  # sestaví a nahraje theme/dist na SFTP testovacího e-shopu, pak zapíše do e-shopů kód s novou verzí
 ```
 
 `npm run deploy` čte přístupy z `.env` v kořeni repozitáře (`FTP_HOST`, `FTP_USER`, `FTP_PASSWORD`) a nahrává do složky `asteroid/`, tedy na `https://313980.myshoptet.com/user/documents/asteroid/`. Soubor `.env` se necommituje.
+
+Verze v adrese souborů (`asteroid.css?v=…`) je otisk jejich obsahu. Shoptet soubory posílá s mezipamětí na rok, prohlížeč je tak stáhne jen jednou po každém nasazení. Po nahrání proto `deploy` přes API zapíše do všech e-shopů v `settings-app/data` kód s novou verzí (`npm run publish-snippets -w settings-app`). Bez toho by e-shopy načítaly starou verzi z mezipaměti.

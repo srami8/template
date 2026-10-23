@@ -58,6 +58,11 @@ function start() {
     `as-banners-${BANNER_LAYOUTS.includes(config.banners) ? config.banners : 'default'}`,
     `as-product-card-${PRODUCT_CARDS.includes(config.productCard) ? config.productCard : 'default'}`,
   );
+  // Řádek rychlých odkazů vzniká až na DOMContentLoaded; CSS mu podle třídy drží místo předem,
+  // aby hlavička a obsah po prvním vykreslení neposkočily (layout/_header.scss).
+  if (Array.isArray(config.quickLinks) && config.quickLinks.some((link) => link?.label && link?.url)) {
+    document.documentElement.classList.add('as-has-quicklinks');
+  }
 
   const init = () => {
     // Před spuštěním slideru Shoptetu (ten běží na DOMContentLoaded po nás). Bannery k sekcím

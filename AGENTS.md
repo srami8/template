@@ -47,7 +47,7 @@ Předání ke kontrole navíc uvádí: (1) které prvky, třídy a funkce Disca 
 npm install
 npm run build            # theme/dist
 npm run test:responsive  # build + Chromium: geometrie, dlouhý obsah, panely, změny šířky
-npm run deploy           # build + nahrání na SFTP testovacího e-shopu (potřebuje .env)
+npm run deploy           # build, nahrání na SFTP testovacího e-shopu a zápis kódu s novou verzí souborů do e-shopů (potřebuje .env)
 npm run settings         # settings-app na http://localhost:8787 (potřebuje SHOPTET_CLIENT_SECRET v .env)
 npm run tunnel           # dočasná veřejná adresa (cloudflared v .tools/)
 node --check settings-app/src/*.mjs

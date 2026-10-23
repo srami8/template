@@ -28,7 +28,7 @@ npm run tunnel     # dočasná veřejná adresa přes Cloudflare (https://….tr
 Potřebné hodnoty v `.env` v kořeni repozitáře:
 
 - `SHOPTET_CLIENT_SECRET`: OAuth Client secret (Propojení → API partner → Přístup k API)
-- volitelně `SHOPTET_CLIENT_ID`, `SHOPTET_PARTNER_ESHOP`, `PUBLIC_URL`, `PORT`, `ASSETS_VERSION`
+- volitelně `SHOPTET_CLIENT_ID`, `SHOPTET_PARTNER_ESHOP`, `PUBLIC_URL`, `PORT`, `ASSETS_VERSION` (bez ní otisk obsahu `theme/dist`)
 
 ## Nastavení doplňku v administraci partnerského e-shopu
 
