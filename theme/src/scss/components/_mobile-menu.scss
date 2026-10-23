@@ -1,0 +1,64 @@
+// Mobilní menu Disca (#navigation při body.navigation-window-visible, pod 768 px): kategorie,
+// rozbalení podkategorií (li.exp, přepíná Disco), rychlé odkazy (js/header.js) a akce (měna,
+// přihlášení). Písmo a barvy jsou stejné jako v menu na desktopu (tools/menu), tady je jen
+// rozložení: řádky přes šířku s oddělovačem a dotykovou výškou.
+
+@use "../tools/breakpoints" as bp;
+@use "../tools/menu";
+
+.as-theme {
+  @include bp.mobile {
+    // .navigation-in kvůli specificitě: Disco barví otevřenou položku selektorem s ní.
+    #navigation .navigation-in .menu-level-1 > li > a,
+    #navigation .navigation-in .navigationActions > li > a {
+      @include menu.item;
+      display: flex;
+      align-items: center;
+      min-height: 52px;
+      // Vpravo místo pro šipku Disca (50 px).
+      padding: 16px 50px 16px 20px;
+      border-bottom: 1px solid var(--as-secondary-75);
+
+      // Disco dává názvu svislé odsazení 20 px pro svou výšku řádku.
+      b {
+        padding: 0;
+      }
+
+      // Šipka Disca (pole 50 px vpravo) přes celou výšku řádku, ikona na středu.
+      .submenu-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        line-height: normal;
+      }
+
+      &:hover,
+      &:focus-visible {
+        @include menu.item-active;
+      }
+    }
+
+    #navigation .navigation-in .menu-level-1 > li.exp > a,
+    #navigation .navigation-in .navigationActions > li.exp > a {
+      @include menu.item-active;
+
+      .submenu-arrow::after {
+        color: var(--as-primary-500);
+      }
+    }
+
+    // Rozbalené podkategorie: odsazené pod kategorií, obrázky Disco na mobilu skrývá.
+    #navigation .navigation-in .menu-level-1 > li > .menu-level-2 {
+      padding: 4px 0 8px;
+      border-bottom: 1px solid var(--as-secondary-75);
+      background: var(--as-primary-50);
+
+      > li > div > a {
+        @include menu.sublink;
+        display: block;
+        padding: 12px 20px 12px 32px;
+      }
+    }
+  }
+}

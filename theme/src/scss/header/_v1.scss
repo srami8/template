@@ -4,6 +4,7 @@
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
 @use "../tools/submenu";
+@use "../tools/menu";
 
 .as-header-v1 {
   @include bp.desktop {
@@ -30,26 +31,18 @@
       align-items: stretch;
 
       > li > a {
+        @include menu.item;
         display: flex;
         align-items: center;
         gap: 10px;
         height: 60px;
         padding: 0 20px;
-        color: var(--as-secondary-500);
-        font-size: var(--as-font-size-body);
-        line-height: 20px;
-        text-decoration: none;
-        text-transform: none;
         white-space: nowrap;
-
-        b {
-          font-weight: 400;
-        }
 
         &:hover,
         &:focus-visible,
         &[aria-expanded="true"] {
-          color: var(--as-primary-500);
+          @include menu.item-active;
           box-shadow: inset 0 2px 0 var(--as-primary-500);
         }
       }

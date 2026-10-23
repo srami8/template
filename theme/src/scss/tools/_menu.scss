@@ -1,0 +1,43 @@
+// Položky menu kategorií Disca (#navigation). Stejné písmo a barvy na desktopu (menu v1, podmenu)
+// i v mobilním menu, breakpointy mění jen rozložení (components/_mobile-menu.scss, header/_v1.scss).
+
+// Kategorie 1. úrovně.
+@mixin item {
+  color: var(--as-secondary-500);
+  font-family: var(--as-font-family-headings);
+  font-size: var(--as-font-size-body);
+  line-height: 20px;
+  text-decoration: none;
+  text-transform: none;
+
+  // Disco název obaluje <b> a na mobilu ho podtrhává.
+  b {
+    font-weight: 400;
+    text-decoration: none;
+  }
+}
+
+// Najetí, fokus a otevřená kategorie.
+@mixin item-active {
+  color: var(--as-primary-500);
+}
+
+// Název podkategorie (2. úroveň).
+@mixin sublink {
+  color: var(--as-secondary-500);
+  font-family: var(--as-font-family-headings);
+  font-size: var(--as-font-size-body);
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+
+  &::before {
+    content: none;
+  }
+
+  &:hover {
+    color: var(--as-primary-600);
+    text-decoration: underline;
+  }
+}

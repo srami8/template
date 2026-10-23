@@ -47,7 +47,8 @@ $quicklinks-height: 45px;
 
   // Šipka podkategorií v menu (Disco ji při rozbalení otáčí o 180°).
   #navigation .submenu-arrow::after {
-    @include icon(expand-more, 18px);
+    @include icon(expand-more, 16px);
+    color: var(--as-secondary-300);
     vertical-align: middle;
   }
 
@@ -80,6 +81,11 @@ $quicklinks-height: 45px;
       gap: 8px;
       min-height: 44px;
       color: var(--as-secondary-500);
+      // Písmo jako v řádku na desktopu, i v mobilním menu (to má vlastní větší písmo).
+      font-family: var(--as-font-family);
+      font-size: var(--as-font-size-small);
+      line-height: 20px;
+      text-decoration: none;
       white-space: nowrap;
     }
   }

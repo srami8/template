@@ -351,3 +351,29 @@ test('quick links row has its space reserved before the script inserts it', asyn
   await page.evaluate(()=>document.querySelector('#header .as-quicklinks').remove());
   expect(await top()).toBe(inserted);
 });
+
+test('login form and search results share their look on mobile and desktop', async ({page}) => {
+  await load(page);
+  await showSearch(page);
+  const snapshots=[];
+  for (const width of [375,1280]) {
+    await page.setViewportSize({width,height:900});
+    snapshots.push(await page.evaluate(()=>{
+      const read=(selector,pseudo)=>{
+        const style=getComputedStyle(document.querySelector(selector),pseudo);
+        return Object.fromEntries(['borderRadius','backgroundColor','color','fontFamily','fontSize','fontWeight','maskImage'].map(key=>[key,style[key]]));
+      };
+      return {
+        input:{...read('#login input[name="email"]'),height:getComputedStyle(document.querySelector('#login input[name="email"]')).height},
+        inputIcon:read('#login .form-control-wrapper','::before'),
+        submit:read('#login .submit-wrapper .btn'),
+        productName:read('.searchWhisperer__product__name'),
+        price:read('.searchWhisperer__product__price'),
+        tag:read('.searchWhisperer__additionalResults__link'),
+        button:read('.searchWhisperer__button'),
+      };
+    }));
+  }
+  expect(snapshots[0]).toEqual(snapshots[1]);
+  expect(snapshots[0].inputIcon.maskImage).toContain('svg');
+});

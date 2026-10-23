@@ -13,18 +13,371 @@
 @use "../tools/category-card";
 
 .as-theme {
-  @include bp.desktop {
-    // Ztmavení stránky při hledání dělá Disco (body.search-focused::before), jen mu dáme barvu z návrhu.
-    body.search-focused::before {
-      background: rgba(46, 53, 69, 0.3);
+  // Společný vzhled na všech zařízeních. Disco stylí našeptávač selektory s .search / #header,
+  // proto je máme taky. Rozložení panelu (sloupce, odsazení) je v breakpointech níže.
+  #header .search {
+    .searchWhisperer {
+      margin: 0;
+      padding: 0;
+      background: var(--as-white);
+      box-shadow: none;
+      font-family: var(--as-font-family);
+      max-height: var(--as-search-available-height, 60dvh);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+
+      // Disco tu má flex se změnou pořadí (order), mřížka dá sloupce podle návrhu.
+      &.active {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+      }
     }
 
+    .searchWhisperer__products,
+    .searchWhisperer__buttonWrapper,
+    .searchWhisperer__additionalResults,
+    .searchWhisperer__content--empty,
+    .as-whisperer-categories {
+      grid-column: 1;
+    }
+
+    .searchWhisperer__buttonWrapper {
+      display: flex;
+      justify-content: center;
+      margin: 0;
+    }
+
+    .searchWhisperer__additionalResults {
+      align-self: stretch;
+      margin: 0;
+      border-right: 0;
+    }
+
+    // Nadpisy sekcí: Produkty, Kategorie, Značky, Články.
+    .searchWhisperer__products__heading,
+    .searchWhisperer__additionalResults__heading {
+      margin: 0 0 20px;
+      color: var(--as-secondary-500);
+      font-family: var(--as-font-family-headings);
+      font-size: var(--as-font-size-body);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    // Další sekce oddělí čára přes celou šířku bloku (vyrovnává jeho odsazení --as-whisperer-pad).
+    .searchWhisperer__additionalResults__heading ~ .searchWhisperer__additionalResults__heading {
+      margin: 32px calc(-1 * var(--as-whisperer-pad)) 20px;
+      padding: 32px var(--as-whisperer-pad) 0;
+      border-top: 1px solid var(--as-secondary-75);
+    }
+
+    .searchWhisperer__products__list {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .searchWhisperer__products__listItem {
+      width: auto;
+      margin: 0;
+      padding: 0;
+    }
+
+    .searchWhisperer__product {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--as-whisperer-product-gap, 22px);
+      min-height: 89px;
+      padding: 12px 25px 12px 12px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--as-secondary-500);
+      text-align: left;
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        border-color: var(--as-secondary-75);
+
+        .searchWhisperer__product__name {
+          color: var(--as-primary-600);
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .searchWhisperer__product__image {
+      flex: 0 0 64px;
+      width: 64px;
+      height: 64px;
+      margin: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        mix-blend-mode: multiply;
+      }
+    }
+
+    .searchWhisperer__product__infoWrapper {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .searchWhisperer__product__name {
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-small);
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    // Barvu dostupnosti nastavuje obchodník v Shoptetu (inline styl), necháváme ji.
+    .searchWhisperer__product__availability {
+      font-size: var(--as-font-size-caption);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    // Disco dává ceně horní okraj, v návrhu je svisle na středu.
+    .searchWhisperer__product__price {
+      flex: 0 0 auto;
+      min-width: 0;
+      margin: 0;
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-body);
+      font-weight: 600;
+      line-height: 1.2;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    // „Zobrazit všechny výsledky“ (.btn.btn-default od Disca): sekundární tlačítko se šipkou.
+    .searchWhisperer__button {
+      @include button.base;
+      @include button.size(md);
+      @include button.secondary;
+      @include button.chevron;
+    }
+
+    // Kategorie a značky jako štítky.
+    .searchWhisperer__additionalResults__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .searchWhisperer__additionalResults__listItem {
+      margin: 0;
+      padding: 0;
+    }
+
+    .searchWhisperer__additionalResults__link {
+      display: inline-block;
+      max-width: 100%;
+      padding: 8px 16px;
+      border-radius: var(--as-radius-pill);
+      background: var(--as-primary-50);
+      color: var(--as-primary-500);
+      font-size: var(--as-font-size-small);
+      font-weight: 600;
+      line-height: 1.2;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+
+      &:hover,
+      &:focus-visible {
+        background: var(--as-primary-500);
+        color: var(--as-white);
+      }
+    }
+
+    // Články jako seznam s ikonou dokumentu (seznam hned za nadpisem --article).
+    .searchWhisperer__additionalResults__heading--article + .searchWhisperer__additionalResults__list {
+      flex-direction: column;
+      gap: 12px;
+
+      .searchWhisperer__additionalResults__link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0;
+        border-radius: 0;
+        background: none;
+        color: var(--as-secondary-500);
+        font-weight: 400;
+
+        &::before {
+          @include icon(text-snippet, 24px);
+          color: var(--as-primary-500);
+        }
+
+        &:hover,
+        &:focus-visible {
+          background: none;
+          color: var(--as-primary-600);
+          text-decoration: underline;
+        }
+      }
+    }
+
+    // Nic nenalezeno: text hlášky je od Shoptetu (přeložený), ikona přes ::before.
+    .searchWhisperer__content--empty {
+      display: grid;
+      grid-template-columns: var(--as-whisperer-empty-icon, 64px) minmax(0, 1fr);
+      column-gap: var(--as-whisperer-product-gap, 24px);
+      align-items: start;
+      padding: var(--as-whisperer-pad);
+      color: var(--as-secondary-500);
+      font-family: var(--as-font-family-headings);
+      font-size: var(--as-font-size-h3);
+      font-weight: 500;
+      line-height: 1.2;
+      text-align: left;
+
+      &::before {
+        @include icon(search-off, 64px);
+        grid-row: 1 / span 2;
+        width: var(--as-whisperer-empty-icon, 64px);
+        height: var(--as-whisperer-empty-icon, 64px);
+        color: var(--as-secondary-100);
+      }
+
+      // Vysvětlující věta z návrhu. Shoptet ji neposílá, proto jen pro češtinu, ostatní jazyky
+      // zobrazí jen přeloženou hlášku Shoptetu.
+      &:lang(cs)::after {
+        content: "Je nám líto, ale na zadaný dotaz se nám nepovedlo nic nalézt. Zkuste zkontrolovat, zda v dotazu nemáte překlep.";
+        margin-top: 8px;
+        color: var(--as-secondary-400);
+        font-family: var(--as-font-family);
+        font-size: var(--as-font-size-body);
+        font-weight: 400;
+        line-height: 1.7;
+      }
+    }
+
+    // Doplněk: kategorie z úvodní stránky pod „nic nenalezeno“ (Figma: mřížka 6 × 155 px, mezera 10 px).
+    .as-whisperer-categories {
+      border-top: 1px solid var(--as-secondary-75);
+
+      @include category-card.card;
+
+      .subcategories {
+        display: grid;
+        grid-template-columns: repeat(var(--as-whisperer-category-columns, 6), minmax(0, 1fr));
+        gap: 8px 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .subcategories li {
+        float: none;
+        min-width: 0;
+        width: auto;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .as-whisperer-categories__title {
+      margin: 0 0 24px;
+      color: var(--as-secondary-500);
+      font-family: var(--as-font-family-headings);
+      font-size: var(--as-font-size-h4);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    // Doplněk: kontakt z nastavení e-shopu u „nic nenalezeno“.
+    .as-whisperer-contact {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--as-whisperer-pad);
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .as-whisperer-contact__photo {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 24px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .as-whisperer-contact__title {
+      color: var(--as-secondary-500);
+      font-family: var(--as-font-family-headings);
+      font-size: var(--as-font-size-h5);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .as-whisperer-contact__text {
+      max-width: 280px;
+      margin: 4px 0 16px;
+      color: var(--as-secondary-400);
+      font-size: var(--as-font-size-small);
+      line-height: 1.2;
+    }
+
+    .as-whisperer-contact__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 100%;
+      min-height: 44px;
+      margin-top: 4px;
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-h5);
+      font-weight: 500;
+      line-height: 1.2;
+      text-decoration: none;
+
+      &::before {
+        color: var(--as-primary-500);
+      }
+
+      &--mail::before {
+        @include icon(mail-outline, 24px);
+      }
+
+      &--phone::before {
+        @include icon(phone, 24px);
+      }
+
+      &:hover {
+        color: var(--as-primary-600);
+      }
+    }
+  }
+
+  // Ztmavení stránky při hledání dělá Disco (body.search-focused::before, i na mobilu), jen mu dáme
+  // barvu z návrhu.
+  body.search-focused::before {
+    background: rgba(46, 53, 69, 0.3);
+  }
+
+  @include bp.desktop {
     body.search-focused #header .search-input {
       background: var(--as-white);
     }
 
-    // Disco stylí našeptávač selektory s .search / #header, proto je máme taky.
     #header .search {
+      --as-whisperer-pad: 40px;
+
       // Panel přes celou šířku obsahu, těsně pod vyhledávacím polem (pole je svisle na středu řádku).
       .searchWhisperer {
         z-index: 1003;
@@ -32,23 +385,7 @@
         right: 0;
         left: 0;
         width: auto;
-        margin: 0;
-        padding: 0;
         border-radius: 12px;
-        background: var(--as-white);
-        box-shadow: none;
-        font-family: var(--as-font-family);
-        overflow: hidden;
-        max-height: var(--as-search-available-height, 60dvh);
-        overflow-y: auto;
-        overscroll-behavior: contain;
-
-        // Disco tu má flex se změnou pořadí (order), mřížka dá sloupce podle návrhu.
-        &.active {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr);
-          align-items: start;
-        }
 
         // Vpravo sloupec 360 px: další výsledky vedle produktů, nebo kontakt vedle „nic nenalezeno“.
         &.active:has(> .searchWhisperer__products):has(> .searchWhisperer__additionalResults),
@@ -57,26 +394,9 @@
         }
       }
 
-      .searchWhisperer__products {
-        grid-column: 1;
-        padding: 32px 40px 0;
-      }
-
-      .searchWhisperer__buttonWrapper {
-        grid-column: 1;
-        display: flex;
-        justify-content: center;
-        margin: 0;
-        padding: 32px 40px 40px;
-      }
-
-      .searchWhisperer__additionalResults {
-        grid-column: 1;
-        align-self: stretch;
-        margin: 0;
-        padding: 32px 40px;
-        border-right: 0;
-      }
+      .searchWhisperer__products { padding: 32px 40px 0; }
+      .searchWhisperer__buttonWrapper { padding: 32px 40px 40px; }
+      .searchWhisperer__additionalResults { padding: 32px 40px; }
 
       // Vedle produktů jde blok do pravého sloupce přes celou výšku panelu.
       .searchWhisperer:has(> .searchWhisperer__products) > .searchWhisperer__additionalResults {
@@ -85,316 +405,18 @@
         border-left: 1px solid var(--as-secondary-75);
       }
 
-      // Nadpisy sekcí: Produkty, Kategorie, Značky, Články.
-      .searchWhisperer__products__heading,
-      .searchWhisperer__additionalResults__heading {
-        margin: 0 0 20px;
-        color: var(--as-secondary-500);
-        font-family: var(--as-font-family-headings);
-        font-size: var(--as-font-size-body);
-        font-weight: 500;
-        line-height: 1.2;
-      }
-
-      // Další sekce v pravém sloupci oddělí čára přes celou šířku sloupce (vyrovnává odsazení 40 px).
-      .searchWhisperer__additionalResults__heading ~ .searchWhisperer__additionalResults__heading {
-        margin: 32px -40px 20px;
-        padding: 32px 40px 0;
-        border-top: 1px solid var(--as-secondary-75);
-      }
-
       // Produkty: mřížka 2 × N.
-      .searchWhisperer__products__list {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
+      .searchWhisperer__products__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .searchWhisperer__product__price { flex-basis: 100px; }
 
-      .searchWhisperer__products__listItem {
-        width: auto;
-        margin: 0;
-        padding: 0;
-      }
+      .as-whisperer-categories { padding: 32px 40px 40px; }
 
-      .searchWhisperer__product {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 22px;
-        min-height: 89px;
-        padding: 12px 25px 12px 12px;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        color: var(--as-secondary-500);
-        text-align: left;
-        text-decoration: none;
-
-        &:hover,
-        &:focus-visible {
-          border-color: var(--as-secondary-75);
-
-          .searchWhisperer__product__name {
-            color: var(--as-primary-600);
-            text-decoration: underline;
-          }
-        }
-      }
-
-      .searchWhisperer__product__image {
-        flex: 0 0 64px;
-        width: 64px;
-        height: 64px;
-        margin: 0;
-
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          mix-blend-mode: multiply;
-        }
-      }
-
-      .searchWhisperer__product__infoWrapper {
-        display: flex;
-        flex: 1 1 auto;
-        flex-direction: column;
-        gap: 8px;
-        min-width: 0;
-      }
-
-      .searchWhisperer__product__name {
-        color: var(--as-secondary-500);
-        font-size: var(--as-font-size-small);
-        line-height: 1.2;
-        overflow-wrap: anywhere;
-      }
-
-      // Barvu dostupnosti nastavuje obchodník v Shoptetu (inline styl), necháváme ji.
-      .searchWhisperer__product__availability {
-        font-size: var(--as-font-size-caption);
-        font-weight: 500;
-        line-height: 1.2;
-      }
-
-      // Disco dává ceně horní okraj, v návrhu je svisle na středu.
-      .searchWhisperer__product__price {
-        flex: 0 0 100px;
-        margin: 0;
-        color: var(--as-secondary-500);
-        font-size: var(--as-font-size-body);
-        font-weight: 600;
-        line-height: 1.2;
-        text-align: right;
-        white-space: nowrap;
-      }
-
-      // „Zobrazit všechny výsledky“ (.btn.btn-default od Disca): sekundární tlačítko se šipkou.
-      .searchWhisperer__button {
-        @include button.base;
-        @include button.size(md);
-        @include button.secondary;
-        @include button.chevron;
-      }
-
-      // Kategorie a značky jako štítky.
-      .searchWhisperer__additionalResults__list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .searchWhisperer__additionalResults__listItem {
-        margin: 0;
-        padding: 0;
-      }
-
-      .searchWhisperer__additionalResults__link {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: var(--as-radius-pill);
-        background: var(--as-primary-50);
-        color: var(--as-primary-500);
-        font-size: var(--as-font-size-small);
-        font-weight: 600;
-        line-height: 1.2;
-        text-decoration: none;
-        max-width: 100%;
-        overflow-wrap: anywhere;
-
-        &:hover,
-        &:focus-visible {
-          background: var(--as-primary-500);
-          color: var(--as-white);
-        }
-      }
-
-      // Články jako seznam s ikonou dokumentu (seznam hned za nadpisem --article).
-      .searchWhisperer__additionalResults__heading--article + .searchWhisperer__additionalResults__list {
-        flex-direction: column;
-        gap: 12px;
-
-        .searchWhisperer__additionalResults__link {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 0;
-          border-radius: 0;
-          background: none;
-          color: var(--as-secondary-500);
-          font-weight: 400;
-
-          &::before {
-            @include icon(text-snippet, 24px);
-            color: var(--as-primary-500);
-          }
-
-          &:hover,
-          &:focus-visible {
-            background: none;
-            color: var(--as-primary-600);
-            text-decoration: underline;
-          }
-        }
-      }
-
-      // Nic nenalezeno: text hlášky je od Shoptetu (přeložený), ikona přes ::before.
-      .searchWhisperer__content--empty {
-        grid-column: 1;
-        display: grid;
-        grid-template-columns: 64px minmax(0, 1fr);
-        column-gap: 24px;
-        align-items: start;
-        padding: 40px;
-        color: var(--as-secondary-500);
-        font-family: var(--as-font-family-headings);
-        font-size: var(--as-font-size-h3);
-        font-weight: 500;
-        line-height: 1.2;
-        text-align: left;
-
-        &::before {
-          @include icon(search-off, 64px);
-          grid-row: 1 / span 2;
-          color: var(--as-secondary-100);
-        }
-
-        // Vysvětlující věta z návrhu. Shoptet ji neposílá, proto jen pro češtinu, ostatní jazyky
-        // zobrazí jen přeloženou hlášku Shoptetu.
-        &:lang(cs)::after {
-          content: "Je nám líto, ale na zadaný dotaz se nám nepovedlo nic nalézt. Zkuste zkontrolovat, zda v dotazu nemáte překlep.";
-          margin-top: 8px;
-          color: var(--as-secondary-400);
-          font-family: var(--as-font-family);
-          font-size: var(--as-font-size-body);
-          font-weight: 400;
-          line-height: 1.7;
-        }
-      }
-
-      // Doplněk: kategorie z úvodní stránky pod „nic nenalezeno“ (Figma: mřížka 6 × 155 px, mezera 10 px).
-      .as-whisperer-categories {
-        grid-column: 1;
-        padding: 32px 40px 40px;
-        border-top: 1px solid var(--as-secondary-75);
-
-        @include category-card.card;
-
-        .subcategories {
-          display: grid;
-          grid-template-columns: repeat(6, minmax(0, 1fr));
-          gap: 8px 10px;
-          margin: 0;
-          padding: 0;
-          list-style: none;
-        }
-
-        .subcategories li {
-          float: none;
-          width: auto;
-          margin: 0;
-          padding: 0;
-        }
-      }
-
-      .as-whisperer-categories__title {
-        margin: 0 0 24px;
-        color: var(--as-secondary-500);
-        font-family: var(--as-font-family-headings);
-        font-size: var(--as-font-size-h4);
-        font-weight: 500;
-        line-height: 1.2;
-      }
-
-      // Doplněk: kontakt z nastavení e-shopu vedle „nic nenalezeno“ (a kategorií pod ním).
+      // Kontakt vpravo vedle „nic nenalezeno“ a kategorií pod ním.
       .as-whisperer-contact {
         grid-column: 2;
         grid-row: 1 / span 2;
         align-self: stretch;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 40px;
         border-left: 1px solid var(--as-secondary-75);
-        text-align: center;
-      }
-
-      .as-whisperer-contact__photo {
-        width: 64px;
-        height: 64px;
-        margin-bottom: 24px;
-        border-radius: 10px;
-        object-fit: cover;
-      }
-
-      .as-whisperer-contact__title {
-        color: var(--as-secondary-500);
-        font-family: var(--as-font-family-headings);
-        font-size: var(--as-font-size-h5);
-        font-weight: 500;
-        line-height: 1.2;
-      }
-
-      .as-whisperer-contact__text {
-        max-width: 280px;
-        margin: 4px 0 16px;
-        color: var(--as-secondary-400);
-        font-size: var(--as-font-size-small);
-        line-height: 1.2;
-      }
-
-      .as-whisperer-contact__link {
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        margin-top: 12px;
-        color: var(--as-secondary-500);
-        font-size: var(--as-font-size-h5);
-        font-weight: 500;
-        line-height: 1.2;
-        text-decoration: none;
-        max-width: 100%;
-        overflow-wrap: anywhere;
-
-        &::before {
-          color: var(--as-primary-500);
-        }
-
-        &--mail::before {
-          @include icon(mail-outline, 24px);
-        }
-
-        &--phone::before {
-          @include icon(phone, 24px);
-        }
-
-        &:hover {
-          color: var(--as-primary-600);
-        }
       }
     }
   }
@@ -416,49 +438,34 @@
         border-top: 1px solid var(--as-secondary-75);
       }
 
-      .as-whisperer-categories .subcategories { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .as-whisperer-categories { --as-whisperer-category-columns: 4; }
     }
   }
 
+  // Telefon: panel pod polem hledání (umístění Disca), jeden sloupec a menší okraje.
   @include bp.mobile {
-    // Výsledky a ovládání zůstávají mobilnímu Discu. Tyto bloky přidává jen náš doplněk.
     #header .search {
-      .searchWhisperer {
-        max-height: var(--as-search-available-height, 60dvh);
-        overflow-y: auto;
-        overscroll-behavior: contain;
+      --as-whisperer-pad: 16px;
+      --as-whisperer-product-gap: 12px;
+      --as-whisperer-empty-icon: 48px;
+
+      .searchWhisperer__products { padding: 20px 16px 0; }
+      .searchWhisperer__buttonWrapper { padding: 20px 16px 24px; }
+      .searchWhisperer__additionalResults { padding: 20px 16px; border-top: 1px solid var(--as-secondary-75); }
+
+      .searchWhisperer__product {
+        min-height: 0;
+        padding: 8px;
       }
 
-      .as-whisperer-categories,
-      .as-whisperer-contact {
-        padding: 20px 16px;
-        border-top: 1px solid var(--as-secondary-75);
-        overflow-wrap: anywhere;
-      }
+      .searchWhisperer__content--empty { font-size: var(--as-font-size-h4); }
 
       .as-whisperer-categories {
-        @include category-card.card;
-
-        .subcategories {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 12px;
-          margin: 0;
-          padding: 0;
-          list-style: none;
-        }
-
-        .subcategories li { min-width: 0; width: auto; padding: 0; margin: 0; }
+        --as-whisperer-category-columns: 2;
+        padding: 20px 16px;
       }
 
-      .as-whisperer-contact {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .as-whisperer-contact__photo { width: 64px; height: 64px; object-fit: cover; }
-      .as-whisperer-contact__link { min-height: 44px; }
+      .as-whisperer-contact { border-top: 1px solid var(--as-secondary-75); }
     }
   }
 }

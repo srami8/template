@@ -82,9 +82,128 @@
   }
 }
 
+// Formulář přihlášení: stejný vzhled v okně (#login, desktop) i na stránce /login/ (#formLogin,
+// kam vede přihlášení z mobilního menu Disca). Oba používají stejný markup Shoptetu (.login-form).
+$forms: "#login .login-form, #formLogin.login-form";
+
 .as-theme {
   #login.popup-widget { max-width: calc(100% - 32px); }
 
+  // Pole: zaoblená, 52 px, ikona vlevo. Rozměry řídí proměnné Shoptetu. Dopočítané hodnoty
+  // (--*-computed-*) Shoptet počítá na :root, proto je tu nastavujeme taky:
+  // pole s popiskem = řádek 20 + rámeček 2 + okraje 2 × 10, k tomu místo na zmenšený popisek.
+  #{$forms} {
+    --form-controls-font-size: var(--as-font-size-small);
+    --form-controls-line-height: 1.4286;
+    --form-controls-computed-line-height: 20px;
+    --form-controls-padding-y: 10px;
+    --form-controls-padding-x: 48px;
+    --form-controls-computed-height: 42px;
+    --smart-labels-computed-height: 52px;
+    --form-controls-border-radius: var(--as-radius-pill);
+    --colors-forms-border: var(--as-secondary-100);
+    --colors-forms-activated: var(--as-primary-500);
+
+    // Odkazy vlevo, tlačítko vpravo pod poli (Disco je má pod sebou, v okně i na stránce v jiném pořadí).
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 16px;
+    align-items: center;
+    margin: 0;
+    font-family: var(--as-font-family);
+
+    > .smart-label-wrapper {
+      grid-column: 1 / -1;
+      margin: 0 0 16px;
+
+      label {
+        color: var(--as-secondary-300);
+      }
+    }
+
+    // Ikona pole (e-mail / zámek). Pole s heslem může být po zobrazení typu text, proto podle name.
+    .form-control-wrapper:has(> input[name="email"])::before,
+    .form-control-wrapper:has(> input[name="password"])::before {
+      position: absolute;
+      top: calc(var(--smart-labels-computed-height) / 2);
+      left: 16px;
+      z-index: 2;
+      color: var(--as-secondary-400);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .form-control-wrapper:has(> input[name="email"])::before {
+      @include icon(mail-outline, 16px);
+    }
+
+    .form-control-wrapper:has(> input[name="password"])::before {
+      @include icon(lock, 16px);
+    }
+
+    .alternative-links {
+      grid-row: 3;
+      grid-column: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+
+      a {
+        margin: 0;
+        padding: 0;
+        color: var(--as-secondary-500);
+        font-size: var(--as-font-size-small);
+        line-height: 1.2;
+        text-decoration: underline;
+
+        &::before,
+        &::after {
+          content: none;
+        }
+
+        &:hover {
+          color: var(--as-primary-600);
+        }
+      }
+    }
+
+    // Tlačítko Disca .btn.btn-primary jako sekundární tlačítko z návrhu (sdílená komponenta tools/button).
+    .submit-wrapper {
+      grid-row: 3;
+      grid-column: 2;
+      margin: 0;
+      padding: 0;
+
+      .btn {
+        @include button.base;
+        @include button.size(md);
+        @include button.secondary;
+      }
+    }
+  }
+
+  // Stránka přihlášení: formulář nejvýš tak široký jako okno. Disco mu dává pevných 440 px,
+  // na telefonu by přetékal.
+  #formLogin.login-form {
+    width: auto;
+    max-width: 460px;
+  }
+
+  #login h2 {
+    margin: 0 0 32px;
+    color: var(--as-secondary-500);
+    font-family: var(--as-font-family-headings);
+    font-size: var(--as-font-size-h3);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  // Rozložení okna: na desktopu modální okno uprostřed (na mobilu ho Disco neotevírá,
+  // přihlášení z menu vede na stránku /login/).
   @include bp.desktop {
     // Ztmavení stránky pod oknem: overlay Disca (body::before), který Disco používá při hledání.
     body.login-window-visible::before {
@@ -121,112 +240,6 @@
       border-radius: 12px;
       box-shadow: none;
       overflow-y: auto;
-    }
-
-    #login h2 {
-      margin: 0 0 32px;
-      color: var(--as-secondary-500);
-      font-family: var(--as-font-family-headings);
-      font-size: var(--as-font-size-h3);
-      font-weight: 500;
-      line-height: 1.2;
-    }
-
-    // Pole: zaoblená, 52 px, ikona vlevo. Rozměry řídí proměnné Shoptetu. Dopočítané hodnoty
-    // (--*-computed-*) Shoptet počítá na :root, proto je tu nastavujeme taky:
-    // pole s popiskem = řádek 20 + rámeček 2 + okraje 2 × 10, k tomu místo na zmenšený popisek.
-    #login .login-form {
-      --form-controls-font-size: var(--as-font-size-small);
-      --form-controls-line-height: 1.4286;
-      --form-controls-computed-line-height: 20px;
-      --form-controls-padding-y: 10px;
-      --form-controls-padding-x: 48px;
-      --form-controls-computed-height: 42px;
-      --smart-labels-computed-height: 52px;
-      --form-controls-border-radius: var(--as-radius-pill);
-      --colors-forms-border: var(--as-secondary-100);
-      --colors-forms-activated: var(--as-primary-500);
-
-      // Odkazy vlevo, tlačítko vpravo pod poli (Disco je má pod sebou).
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      column-gap: 16px;
-      align-items: center;
-      margin: 0;
-      font-family: var(--as-font-family);
-    }
-
-    #login .login-form > .smart-label-wrapper {
-      grid-column: 1 / -1;
-      margin: 0 0 16px;
-
-      label {
-        color: var(--as-secondary-300);
-      }
-    }
-
-    // Ikona pole (e-mail / zámek). Pole s heslem může být po zobrazení typu text, proto podle name.
-    #login .form-control-wrapper:has(> input[name="email"])::before,
-    #login .form-control-wrapper:has(> input[name="password"])::before {
-      position: absolute;
-      top: calc(var(--smart-labels-computed-height) / 2);
-      left: 16px;
-      z-index: 2;
-      color: var(--as-secondary-400);
-      transform: translateY(-50%);
-      pointer-events: none;
-    }
-
-    #login .form-control-wrapper:has(> input[name="email"])::before {
-      @include icon(mail-outline, 16px);
-    }
-
-    #login .form-control-wrapper:has(> input[name="password"])::before {
-      @include icon(lock, 16px);
-    }
-
-    #login .alternative-links {
-      grid-row: 3;
-      grid-column: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      margin: 0;
-      padding: 0;
-      text-align: left;
-
-      a {
-        margin: 0;
-        padding: 0;
-        color: var(--as-secondary-500);
-        font-size: var(--as-font-size-small);
-        line-height: 1.2;
-        text-decoration: underline;
-
-        &::before,
-        &::after {
-          content: none;
-        }
-
-        &:hover {
-          color: var(--as-primary-600);
-        }
-      }
-    }
-
-    // Tlačítko Disca .btn.btn-primary jako sekundární tlačítko z návrhu (sdílená komponenta tools/button).
-    #login .submit-wrapper {
-      grid-row: 3;
-      grid-column: 2;
-      margin: 0;
-      padding: 0;
-
-      .btn {
-        @include button.base;
-        @include button.size(md);
-        @include button.secondary;
-      }
     }
   }
 }

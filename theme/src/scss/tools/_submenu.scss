@@ -1,4 +1,5 @@
 @use "breakpoints" as bp;
+@use "menu";
 
 // Podkategorie z menu Disco (ul.menu-level-2) jako mřížka skupin podle Figmy:
 // obrázek 64 px, název kategorie a pod ním odkazy na další úroveň.
@@ -57,24 +58,9 @@
     min-width: 0;
 
     > a {
+      @include menu.sublink;
       display: block;
       padding: 0;
-      color: var(--as-secondary-500);
-      font-family: var(--as-font-family-headings);
-      font-size: var(--as-font-size-body);
-      font-weight: 500;
-      line-height: 1.2;
-      text-decoration: none;
-      overflow-wrap: anywhere;
-
-      &::before {
-        content: none;
-      }
-
-      &:hover {
-        color: var(--as-primary-600);
-        text-decoration: underline;
-      }
     }
   }
 

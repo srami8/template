@@ -1,3 +1,39 @@
+# Aktualizace (Claude): stejný vzhled přihlášení, našeptávače a mobilního menu
+
+Bod 3 z revize, schválil majitel. Podle pravidla „vzhled mimo breakpointy, breakpoint mění jen rozložení“.
+
+**(1) Prvky Disca a Shoptetu**
+- Přihlášení: `#login .login-form` (okno, na mobilu ho Disco neotevírá) a `#formLogin.login-form` na stránce `/login/`, kam vede „Přihlášení“ z mobilního menu. Stejný markup, `.smart-label-wrapper`, `.alternative-links`, `.submit-wrapper .btn`.
+- Našeptávač: `.searchWhisperer*`, overlay `body.search-focused::before` (Disco ho má i na mobilu).
+- Mobilní menu: `#navigation .navigation-in .menu-level-1 > li > a` (název v `<b>` s Disco paddingem 20 px), `li.exp` (rozbalení, přepíná Disco), `.menu-level-2 > li > div > a`, `.navigationActions` (měna, přihlášení), `.submenu-arrow` (pole 50 px).
+
+**(2) Vlastní doplňky**
+- `components/_login.scss`: vzhled formuláře (proměnné polí Shoptetu, ikony, odkazy, tlačítko `button.secondary`) je mimo breakpointy pro okno i stránku. `#formLogin` má `width: auto; max-width: 460px`, protože Disco mu dává pevných 440 px a na 375 px přetékal. V `bp.desktop` zůstalo jen modální umístění okna a overlay.
+- `components/_search-whisperer.scss` přepsán na tři části:
+  - společný vzhled,
+  - rozložení desktop / compact / mobil,
+  - rozdíly přes proměnné `--as-whisperer-pad`, `--as-whisperer-product-gap`, `--as-whisperer-empty-icon` a `--as-whisperer-category-columns`.
+  - Na mobilu: jeden sloupec, odsazení 16 px, kategorie po 2, kontakt pod nimi.
+- Nový `tools/_menu.scss`: mixiny `item`, `item-active` a `sublink`, používají je `header/_v1.scss` (desktop) a `tools/_submenu.scss`.
+- Nový `components/_mobile-menu.scss`: jen rozložení mobilního menu (řádky 52 px s oddělovačem, `b { padding: 0 }`, šipka přes výšku řádku, podkategorie odsazené na `primary-50`).
+- Šipka podkategorií 16 px `secondary-300` jako v menu v1.
+- Rychlé odkazy mají písmo `small` i v mobilním menu (selektor bez `#header` v `layout/_header.scss`).
+
+**(3) Ověření**
+- Testy: 85 prošlých, nový `login form and search results share their look on mobile and desktop` (375 vs. 1280 px: pole, ikona, tlačítko, produkt, cena, štítek, tlačítko výsledků).
+- Skutečný e-shop 375 px:
+  - mobilní menu: řádky 53 px, otevřená kategorie v primární barvě (na e-shopu skoro černá z administrace), podkategorie jako na desktopu,
+  - `/login/`: stejný vzhled jako okno, stránka nepřetéká (scrollWidth 375),
+  - našeptávač s výsledky i „nic nenalezeno“ s kategoriemi a kontaktem.
+- 1920 px beze změny: našeptávač ve sloupcích `1058px 360px`, okno přihlášení 460 px, pole 52 px s ikonou.
+
+**Neověřeno / zbývá**
+- Mobilní menu má typografii menu v1 i u hlavičky v2: katalog v2 na desktopu má menší písmo, sjednotit podle varianty.
+- **Nalezeno při ověření (mimo zadání):** u varianty bannerů `default` je na mobilu carousel ve stylu Disca (text 34 px přes obrázek, překrývá se). Náš vzhled carouselu je jen od 768 px, stejný typ problému.
+- Newsletter a captcha na stránce `/login/` jsou Disco formuláře bez našeho vzhledu.
+
+---
+
 # Aktualizace (Claude): výkon – mezipaměť souborů šablony a posun hlavičky
 
 Z revize výkonu (měřeno na testovacím e-shopu, headless Chromium) majitel schválil opravu dvou kritických bodů.
