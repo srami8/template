@@ -30,7 +30,7 @@ export const BANNER_LAYOUTS = [
   {
     value: 'cards',
     label: 'Bannery na výšku (posuvný pás)',
-    hint: 'Bannery carouselu i postranní bannery jako karty na výšku vedle sebe, posouvají se šipkami nebo prstem. Nadpis, text a odkaz banneru se zobrazí na kartě. Doporučený rozměr 900 × 1200 px (poměr 3 : 4).',
+    hint: 'Bannery z pozice Carousel jako karty na výšku vedle sebe (postranní bannery se nezobrazí), posouvají se šipkami nebo prstem. Nadpis, text a odkaz banneru se zobrazí na kartě. Doporučený rozměr 900 × 1200 px (poměr 3 : 4).',
   },
 ];
 

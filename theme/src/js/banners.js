@@ -34,12 +34,9 @@ function updateArrows(track, prev, next) {
 export function enhanceBanners(config) {
   if (config.banners !== 'cards') return;
 
-  // Karty skládáme z bannerů carouselu a za ně i z postranních bannerů, aby se nic, co obchodník
-  // v administraci nahrál, neztratilo.
+  // Karty jsou jen z bannerů pozice Carousel, ostatní pozice bannerů do pásu nepatří.
   const row = document.querySelector('.banners-row');
-  const items = row
-    ? [...row.querySelectorAll('#carousel .carousel-inner > .item, .next-to-carousel-banners .banner-wrapper')]
-    : [];
+  const items = row ? [...row.querySelectorAll('#carousel .carousel-inner > .item')] : [];
   if (!items.length) return;
 
   const track = el('ul', 'as-bcards__track');
