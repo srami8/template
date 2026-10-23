@@ -222,7 +222,7 @@ $image-inset: 12px;
         margin: 0;
         @include button.base;
         @include button.size(sm);
-        @include button.secondary;
+        @include button.conversion-outline;
       }
     }
   }

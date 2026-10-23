@@ -66,6 +66,20 @@ $sizes: (
   }
 }
 
+// Bílé s rámečkem a textem v konverzní barvě (nákupní tlačítka v kartách produktů).
+@mixin conversion-outline {
+  border-color: var(--as-conversion);
+  background: var(--as-white);
+  color: var(--as-conversion);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--as-conversion);
+    background: color-mix(in srgb, var(--as-conversion) 10%, #fff);
+    color: var(--as-conversion);
+  }
+}
+
 // Šipka za textem („Pokračovat do košíku ›“).
 @mixin chevron {
   &::after {
