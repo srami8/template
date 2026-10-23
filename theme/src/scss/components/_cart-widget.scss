@@ -50,6 +50,10 @@
       // Disco okno ohraničuje rámečkem a stínem, v návrhu leží na ztmavené stránce bez nich.
       border: 0;
       box-shadow: none;
+      // Bílé pozadí má od Disca i samo okno (.cart-widget), zaoblení proto patří sem. Pravý horní
+      // roh navazuje na tlačítko košíku.
+      border-radius: 8px 0 8px 8px;
+      overflow: hidden;
 
       &::before {
         content: none;
