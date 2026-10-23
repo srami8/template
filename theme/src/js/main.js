@@ -9,6 +9,7 @@ import { enhanceLogin } from './login';
 import { enhanceCart } from './cart';
 import { enhanceProductCards } from './product-cards';
 import { setHomepageProductColumns } from './homepage-products';
+import { placeSectionBanners } from './section-banners';
 import { trackViewportWidth } from './viewport';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
@@ -16,7 +17,6 @@ const BANNER_LAYOUTS = ['default', 'content', 'fullwidth', 'cards'];
 // Vzhledy karet produktů (zatím jen výchozí, další přibudou v nastavení šablony).
 const PRODUCT_CARDS = ['default'];
 const PRODUCT_COLUMNS = [4, 5, 6];
-const MIDDLE_BANNER_LAYOUTS = ['default', 'left', 'right'];
 
 const DEFAULTS = {
   header: 'v1',
@@ -29,22 +29,19 @@ const DEFAULTS = {
   productCard: 'default',
   // Bez nastavení necháváme počet podle Shoptetu (rozvržení se 3 nebo 4 produkty).
   productColumns: null,
-  middleBanners: 'default',
 };
 
 // Náhled jiné varianty bez změny nastavení: ?asteroid-header=v2, ?asteroid-banners=cards,
-// ?asteroid-columns=6, ?asteroid-middle-banners=left
+// ?asteroid-columns=6
 function previewOverrides() {
   const params = new URLSearchParams(window.location.search);
   const header = params.get('asteroid-header');
   const banners = params.get('asteroid-banners');
   const columns = Number(params.get('asteroid-columns'));
-  const middleBanners = params.get('asteroid-middle-banners');
   return {
     ...(HEADER_VARIANTS.includes(header) ? { header } : {}),
     ...(BANNER_LAYOUTS.includes(banners) ? { banners } : {}),
     ...(PRODUCT_COLUMNS.includes(columns) ? { productColumns: columns } : {}),
-    ...(MIDDLE_BANNER_LAYOUTS.includes(middleBanners) ? { middleBanners } : {}),
   };
 }
 
@@ -60,11 +57,12 @@ function start() {
     `as-category-${config.categoryLayout}`,
     `as-banners-${BANNER_LAYOUTS.includes(config.banners) ? config.banners : 'default'}`,
     `as-product-card-${PRODUCT_CARDS.includes(config.productCard) ? config.productCard : 'default'}`,
-    `as-middle-banners-${MIDDLE_BANNER_LAYOUTS.includes(config.middleBanners) ? config.middleBanners : 'default'}`,
   );
 
   const init = () => {
-    // Před spuštěním slideru Shoptetu (ten běží na DOMContentLoaded po nás).
+    // Před spuštěním slideru Shoptetu (ten běží na DOMContentLoaded po nás). Bannery k sekcím
+    // nejdřív, sekce vedle banneru má méně produktů.
+    placeSectionBanners();
     setHomepageProductColumns(config);
     enhanceHeader(config);
     enhanceSearch(config);

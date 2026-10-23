@@ -1,3 +1,36 @@
+# Aktualizace (Claude): bannery Střed přiřazené k sekcím podle názvu
+
+Nahrazuje globální nastavení `middleBanners` (`default` / `left` / `right`), které umělo jen jeden banner vedle sekce za prvním blokem. Majitel chce u každé sekce zvolit vlastní banner, např. dvě sekce pod sebou, obě s bannerem vlevo.
+
+**Úkol:** banner Střed se zobrazí vedle sekce, jejíž nadpis má v názvu, se značkou `[L]` (vlevo) nebo `[P]` / `[R]` (vpravo).
+
+**(1) Využité prvky Disca a Shoptetu**
+- `#trackingScript[data-products]`: měřicí data Shoptetu, `banners[promoId] = {id: 'bannerN', name: <interní název>, position: 'indexPageBody'}`. Klíč odpovídá `data-ec-promo-id` odkazu banneru. Nejde o dokumentované API; když zmizí, použije se `alt` / nadpis.
+- Blok `#content > .row.banners-content.body-banners > .col-* > .banner-wrapper` (všechny bannery Střed za 1. sekcí), `.homepage-group-title` + `.products-wrapper`, `data-columns` slideru.
+- Banner bez cílové URL nemá `<a>` ani promo ID, jen `<img>`. Značku pak bereme z `alt`.
+
+**(2) Vlastní doplňky**
+- `js/section-banners.js` (nový): hledá značku v interním názvu, pak v `alt` a nadpisu banneru. Shoda s nadpisem sekce ignoruje velikost písmen i mezery. Značku odstraní z `alt` a nadpisu. Přiřazený `.banner-wrapper` **přesune** do nového `div.banners-content.body-banners.as-section-banner--left|right` před nadpis sekce. Přesun je zdůvodněný: Shoptet bannery jinam vykreslit neumí, prvek zůstává původní (měření promo akcí funguje). Prázdné sloupce a prázdný původní blok odstraní.
+- `main.js`: `placeSectionBanners()` před `setHomepageProductColumns`. Odstraněny `MIDDLE_BANNER_LAYOUTS`, třída `.as-middle-banners-*` a náhled `?asteroid-middle-banners`.
+- `homepage-products.js`: −2 produkty pro **každou** sekci za `.as-section-banner`, od 992 px.
+- `_body-banners.scss`: přepsáno na `.as-section-banner`. Vzhled (obrázek přes plochu, texty, tlačítko `button.light`) je od 768 px. Rámeček je na `.banner-wrapper` (kvůli bannerům bez odkazu), poměr 434 : 509 se neořezává (text v obrázku). Float od 992 px (300 px, od 1200 px 434 px). Tablet: nad sekcí, 434 px uprostřed. Nový breakpoint `bp.$large` (992 px, šířka `.container` Disca).
+- settings-app: karta s volbou nahrazena návodem k pojmenování, `middleBanners` odstraněno z konfigurace.
+
+**(3) Ověření**
+- Testy: 82 prošlých. `body-banners.spec.cjs` přepsán: dva bannery (interní název přes `#trackingScript`, banner bez odkazu přes `alt`), banner bez značky zůstává, odstranění značky, `data-columns` 4/4/6; 1024 px (300 px, nad sebou nic neořezané), 800 px (nad sekcí, uprostřed), 375 px bez přetékání.
+- Skutečný e-shop (`?asteroid-columns=6`): 1920 px, „Omrkni nové kousky [L]“ (značka v nadpisu banneru) vlevo od 1. sekce, „Novinky, které musíš mít [R]“ (bez odkazu, značka v `alt`) vpravo od 2. sekce. 3. sekce je pod oběma, sloupce 4/4/6. 1024 px: banner 300 × 352, 4/4/6. 800 px: 434 × 509 uprostřed. 375 px: vykreslil se jen banner viditelný na mobilu, 355 px, bez přetékání.
+
+**Ruční kroky:** majitel pojmenovává bannery v administraci. Značku je lepší dávat do interního „Název“: když je v „Název banneru“, zobrazí se jako nadpis přes obrázek (po odstranění značky).
+
+**Rizika:**
+- `#trackingScript` je interní kód Shoptetu.
+- Po přejmenování sekce je potřeba přejmenovat i banner.
+- Počet sloupců se určuje podle šířky při načtení.
+
+**Neověřeno:** dotykový posun, uložení nastavení v administraci (bez vlivu, nastavení odpadlo).
+
+---
+
 # Aktualizace (Claude): banner Střed vedle produktové sekce
 
 Nové nastavení šablony „Banner mezi produkty na úvodní stránce“ (`middleBanners`: `default` | `left` | `right`, třída `.as-middle-banners-*`, náhled `?asteroid-middle-banners=left`). Obsah jsou doplňkové bannery Shoptetu s pozicí Střed, nic se neprogramuje navíc.

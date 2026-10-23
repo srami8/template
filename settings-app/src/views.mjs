@@ -11,7 +11,6 @@ import {
   MAX_HOME_CATEGORIES,
   HOME_CATEGORIES_TITLE,
   PRODUCT_COLUMNS,
-  MIDDLE_BANNER_LAYOUTS,
 } from './theme-config.mjs';
 
 const SHOPTET_UI_CSS = 'https://cdn.jsdelivr.net/npm/@shoptet/ui@0.23.0-beta/dist/index.css';
@@ -194,12 +193,6 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, cat
     </label>`,
   ).join('');
 
-  const middleBanners = MIDDLE_BANNER_LAYOUTS.map(
-    (v) => `<label class="as-variant" title="${escape(v.hint)}">
-      <input class="radioField" type="radio" name="middleBanners" value="${v.value}" ${(themeConfig.middleBanners || 'default') === v.value ? 'checked' : ''}>
-      <span><strong>${escape(v.label)}</strong><span class="v2FormField__hint">${escape(v.hint)}</span></span>
-    </label>`,
-  ).join('');
 
   const phone = `<div class="v2form">
     <div class="v2FormField">
@@ -253,9 +246,9 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, cat
           'Kolik produktů je vidět vedle sebe v produktových sekcích úvodní stránky (na širokém displeji, na menších se počet sám sníží). Ostatní produkty se posouvají šipkami. Výpis kategorie řídí nastavení e-shopu.',
         )}
         ${card(
-          'Banner mezi produkty na úvodní stránce',
-          middleBanners,
-          'Doplňkové bannery s pozicí Střed (Vzhled a obsah → Bannery → Doplňkové bannery). Nadpis, text a tlačítko banneru se vyplňují tamtéž.',
+          'Banner vedle produktové sekce',
+          `<p class="v2FormField__hint">Doplňkový banner s pozicí Střed (Vzhled a obsah → Bannery → Doplňkové bannery) pojmenujte stejně jako nadpis produktové sekce a na konec přidejte <strong>[L]</strong> pro banner vlevo nebo <strong>[P]</strong> vpravo, např. „Omrkni nové kousky [L]“. Banner se pak na širokém displeji zobrazí vedle sekce (na menších nad ní). Doporučený obrázek na výšku 868 × 1018 px.</p>`,
+          'Nadpis, text a tlačítko banneru se vyplňují v administraci Shoptetu. Banner bez značky zůstává tam, kam ho dává Shoptet.',
         )}
         ${card(
           'Telefon v horní liště',

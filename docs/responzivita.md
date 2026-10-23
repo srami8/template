@@ -28,7 +28,14 @@ Referenční stylesheet: `cdn.myshoptet.com/prj/dist/master/shop/dist/main-13.le
 
 ## Banner Střed vedle produktové sekce
 
-Varianta `left` / `right` (nastavení šablony) staví doplňkový banner Shoptetu s pozicí Střed (`#content > .body-banners`, Disco ho vykreslí za první produktovou sekcí) vedle následující sekce až od 1200 px: banner 434 px obtéká, sekce za ním má `display: flow-root` a slider v ní o dva produkty méně (nejméně 3). Počet karet slider určí při spuštění, proto o sníženém počtu rozhoduje šířka okna při načtení. Pod 1200 px zůstává banner nad sekcí přes celou šířku, na telefonu s textem pod obrázkem. Shoptet může mít pro mobil samostatný banner (jinak se blok na mobilu nevykreslí).
+Doplňkový banner Shoptetu s pozicí Střed obchodník přiřadí sekci názvem „Nadpis sekce [L]“ / „[P]“ / „[R]“ (interní název, popis obrázku nebo nadpis banneru; značku zákazník nevidí). Disco vykreslí všechny bannery Střed v jednom bloku `#content > .body-banners` za první sekcí, `js/section-banners.js` proto přiřazený `.banner-wrapper` přesune do vlastního bloku `.as-section-banner--left|--right` před nadpis sekce. Banner bez značky nebo bez shody zůstává na místě.
+
+- od 1200 px: banner 434 × 509 px obtéká (float), sekce za ním `display: flow-root`, slider o dva produkty méně (nejméně 3),
+- 992–1199 px: totéž s bannerem 300 px (menší nadpis a okraje),
+- 768–991 px: banner nad sekcí, 434 px uprostřed, slider s plným počtem,
+- telefon: přes šířku s textem pod obrázkem (`components/_banners.scss`).
+
+Obrázek drží poměr 434 : 509, neořezává se do jiného, protože bannery mívají text přímo v obrázku. Počet karet slider určí při spuštění, o sníženém počtu rozhoduje šířka okna při načtení. Shoptet může mít pro mobil samostatné bannery (banner jen pro desktop se na mobilu nevykreslí).
 
 ## Multibanner přes šířku displeje
 
