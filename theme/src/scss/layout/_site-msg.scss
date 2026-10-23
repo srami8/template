@@ -85,8 +85,10 @@
     color: inherit;
     cursor: pointer;
 
+    // Disco barví přímo pseudo-prvek (.site-msg .close:before), ikona bere barvu textu lišty.
     &::before {
       @include icon(close, 20px);
+      color: inherit;
       font-size: 0;
       line-height: 0;
     }
