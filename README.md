@@ -8,6 +8,8 @@ Zadání a principy vývoje (barvy a fonty z administrace, obsah z administrace,
 
 ## Struktura
 
+Pokyny pro vývoj a spolupráci: [AGENTS.md](AGENTS.md).
+
 | Složka | Co obsahuje |
 |---|---|
 | [`theme/`](theme/) | SCSS a JS šablony, které se vkládají do e-shopu nad HTML šablony Disco. Varianty hlavičky, layouty kategorie, komponenty. |
