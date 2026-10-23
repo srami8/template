@@ -1,63 +1,472 @@
-// Mobilní menu Disca (#navigation při body.navigation-window-visible, pod 768 px): kategorie,
-// rozbalení podkategorií (li.exp, přepíná Disco), rychlé odkazy (js/header.js) a akce (měna,
-// přihlášení). Písmo a barvy jsou stejné jako v menu na desktopu (tools/menu), tady je jen
-// rozložení: řádky přes šířku s oddělovačem a dotykovou výškou.
+// Mobilní menu (Figma: „Menu - level 1/2/3“), pod 768 px. Je to menu Disca (#navigation), otevírané
+// hamburgerem Disca (body.navigation-window-visible). Na mobilu vysouvací panel zleva přes ztmavenou
+// stránku. Nahoře křížek, měna a jazyk (.navigationActions Disca), pod tím kategorie, rychlé odkazy,
+// informační stránky a dole přichycený telefon. Podkategorie se otevírají místo seznamu (Disco li.exp,
+// 3. úroveň .as-open, viz js/mobile-menu.js). Písmo a barvy položek jsou společné s menu na desktopu
+// (tools/menu), tady je rozložení.
 
 @use "../tools/breakpoints" as bp;
+@use "../tools/icon" as *;
 @use "../tools/menu";
 
-.as-theme {
-  @include bp.mobile {
-    // .navigation-in kvůli specificitě: Disco barví otevřenou položku selektorem s ní.
-    #navigation .navigation-in .menu-level-1 > li > a,
-    #navigation .navigation-in .navigationActions > li > a {
-      @include menu.item;
-      display: flex;
-      align-items: center;
-      min-height: 52px;
-      // Vpravo místo pro šipku Disca (50 px).
-      padding: 16px 50px 16px 20px;
-      border-bottom: 1px solid var(--as-secondary-75);
+$drawer-width: 300px;
+$top-height: 44px;
+$row-border: 1px solid var(--as-secondary-50);
 
-      // Disco dává názvu svislé odsazení 20 px pro svou výšku řádku.
-      b {
+// Řádek seznamu v panelu (kategorie, podkategorie, odkazy).
+@mixin row {
+  @include menu.item;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  margin: 0;
+  padding: 16px 20px;
+  border: 0;
+  border-bottom: $row-border;
+  background: none;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+@mixin chevron {
+  @include icon(chevron-right, 16px);
+  margin-left: auto;
+  color: var(--as-secondary-200);
+}
+
+// Panel 2. a 3. úrovně přes seznam pod horním řádkem (vůči panelu: ten má transform).
+@mixin level-panel {
+  position: fixed;
+  top: $top-height + 1px;
+  right: 0;
+  bottom: var(--as-menu-phone-height, 72px);
+  left: 0;
+  z-index: 2;
+  display: block;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--as-white);
+  list-style: none;
+  box-shadow: none;
+  font-size: var(--as-font-size-body);
+}
+
+.as-theme {
+  // Doplňky menu jsou jen pro mobil.
+  .as-menu-close,
+  .as-menu-back,
+  .as-menu-all,
+  .as-menu-pages,
+  .as-menu-phone {
+    display: none;
+  }
+
+  @include bp.mobile {
+    // Ztmavení stránky vedle panelu (overlay Disca body::before). Klepnutí na něj zavře menu
+    // (js/mobile-menu.js), proto zachytává klepnutí místo obsahu pod ním.
+    body.navigation-window-visible::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1004;
+      background: rgba(0, 0, 0, 0.6);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    // Panel je uvnitř hlavičky (její vrstva má z-index 56), při otevřeném menu musí být celá
+    // hlavička nad ztmavením stránky.
+    body.navigation-window-visible #header {
+      z-index: 1005;
+    }
+
+    #navigation {
+      position: fixed;
+      top: 0;
+      right: auto;
+      bottom: 0;
+      left: 0;
+      z-index: 1005;
+      width: min(#{$drawer-width}, calc(100% - 56px));
+      height: auto;
+      padding: 0;
+      border: 0;
+      background: var(--as-white);
+      overflow: hidden;
+      visibility: hidden;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease, visibility 0s linear 0.25s;
+    }
+
+    body.navigation-window-visible #navigation {
+      visibility: visible;
+      transform: translateX(0);
+      transition: transform 0.25s ease;
+    }
+
+    // Horní řádek (křížek, měna, jazyk) a pod ním seznam, který se posouvá; telefon zůstává dole.
+    #navigation .navigation-in {
+      display: grid;
+      grid-template-columns: $top-height minmax(0, 1fr);
+      align-content: start;
+      width: 100%;
+      height: 100%;
+      padding: 0 0 var(--as-menu-phone-height, 72px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      font-size: var(--as-font-size-body);
+      line-height: 20px;
+
+      > * {
+        grid-column: 1 / -1;
+        margin: 0;
+      }
+    }
+
+    #navigation .as-menu-close,
+    #navigation .navigation-in > .navigationActions {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      grid-row: 1;
+      height: $top-height + 1px;
+      border-bottom: 1px solid var(--as-secondary-75);
+      background: var(--as-white);
+    }
+
+    #navigation .as-menu-close {
+      display: flex;
+      grid-column: 1;
+      align-items: center;
+      justify-content: center;
+      width: $top-height;
+      padding: 0;
+      border-top: 0;
+      border-right: 0;
+      border-left: 0;
+      color: var(--as-secondary-500);
+      cursor: pointer;
+
+      &::before {
+        @include icon(close, 24px);
+      }
+    }
+
+    // Měna a jazyk vedle sebe, oddělené svislými linkami. Výběr se rozbalí pod položkou (li.exp Disca).
+    #navigation .navigation-in > .navigationActions {
+      display: flex;
+      grid-column: 2;
+      padding: 0;
+      list-style: none;
+
+      > li {
+        position: relative;
+        display: none;
+        border-left: 1px solid var(--as-secondary-75);
+      }
+
+      // Přihlášení je v hlavičce (ikona účtu), v menu jen měna a jazyk.
+      > li.ext {
+        display: block;
+      }
+
+      > li.ext > a {
+        @include menu.item;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: $top-height;
+        padding: 0 12px 0 16px;
+        border: 0;
+        font-size: var(--as-font-size-small);
+
+        &::before {
+          @include icon(public, 16px);
+        }
+
+        // Popisek „Měna“ / „Jazyk“ Disca; vidět je ikona a hodnota.
+        > span > span:first-child:not(:only-child) {
+          display: none;
+        }
+
+        .submenu-arrow {
+          position: static;
+          display: flex;
+          width: auto;
+          height: auto;
+          padding: 0;
+          line-height: normal;
+
+          &::after {
+            @include icon(expand-more, 16px);
+            color: var(--as-secondary-200);
+          }
+        }
+      }
+
+      > li.as-menu-currency > a::before {
+        @include icon(account-balance-wallet, 16px);
+      }
+
+      > li > .menu-level-2 {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 100%;
+        padding: 4px 0;
+        border: 1px solid var(--as-secondary-75);
+        border-radius: 0 0 8px 8px;
+        background: var(--as-white);
+
+        a {
+          display: block;
+          padding: 10px 16px;
+          color: var(--as-secondary-500);
+          font-size: var(--as-font-size-small);
+          text-decoration: none;
+        }
+      }
+    }
+
+    // Kategorie 1. úrovně, kategorie s podkategoriemi mají šipku doprava.
+    #navigation .navigation-in .menu-level-1 {
+      display: block;
+      padding: 0;
+      list-style: none;
+
+      > li {
+        border: 0;
+      }
+
+      > li > a {
+        @include row;
+
+        b {
+          padding: 0;
+        }
+
+        .submenu-arrow {
+          position: static;
+          display: flex;
+          width: auto;
+          height: auto;
+          margin-left: auto;
+          padding: 0;
+          line-height: normal;
+          transform: none;
+
+          &::after {
+            @include chevron;
+            transform: none;
+          }
+        }
+
+        &:hover,
+        &:focus-visible {
+          @include menu.item-active;
+        }
+      }
+
+      // Otevřená kategorie: podkategorie přes seznam.
+      > li.exp > .menu-level-2 {
+        @include level-panel;
+      }
+    }
+
+    // Seznamy podkategorií (2. i 3. úroveň).
+    #navigation .navigation-in .menu-level-2,
+    #navigation .navigation-in .menu-level-3 {
+      > li {
+        display: block;
+        float: none;
+        width: auto;
+        margin: 0;
+        padding: 0;
+        // Disco odděluje položky 3. úrovně čárkou (text v <li>), bez výšky řádku by tvořila řádek navíc.
+        font-size: 0;
+        line-height: 0;
+      }
+
+      // Řádek zpět: šipka vlevo a název kategorie na světlém podkladu.
+      > .as-menu-back > button {
+        @include row;
+        width: 100%;
+        border-bottom-color: var(--as-primary-50);
+        background: var(--as-primary-50);
+        cursor: pointer;
+
+        &::before {
+          @include icon(chevron-right, 16px);
+          transform: rotate(180deg);
+        }
+      }
+
+      > .as-menu-all > a {
+        @include row;
+
+        &::before {
+          @include icon(grid-view, 16px);
+        }
+      }
+    }
+
+    #navigation .navigation-in .menu-level-2 > li {
+      &.as-menu-back,
+      &.as-menu-all {
+        display: block;
+      }
+
+      // Podkategorie: obrázek 32 px z menu Shoptetu, název, šipka u podkategorií se 3. úrovní.
+      &:not(.as-menu-back):not(.as-menu-all) {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 20px;
+        border-bottom: $row-border;
+      }
+
+      > .menu-image {
+        display: block;
+        flex: 0 0 32px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 4px;
+          object-fit: contain;
+          mix-blend-mode: multiply;
+        }
+      }
+
+      > div {
+        display: block;
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+
+        > a {
+          @include row;
+          padding: 16px 0;
+          border-bottom: 0;
+        }
+      }
+
+      &.as-has-level-3 > div > a::after {
+        @include chevron;
+      }
+
+      // Otevřená 3. úroveň přes seznam 2. úrovně.
+      &.as-open > div > .menu-level-3 {
+        @include level-panel;
+        z-index: 4;
+      }
+    }
+
+    #navigation .navigation-in .menu-level-3 > li > a {
+      @include row;
+      font-size: var(--as-font-size-body);
+    }
+
+    #navigation .navigation-in .menu-level-3 > li {
+      &.as-menu-back,
+      &.as-menu-all {
+        font-size: var(--as-font-size-body);
+      }
+    }
+
+    // Rychlé odkazy (js/header.js je na mobilu dává do menu) jako řádky s ikonou.
+    #navigation .navigation-in .as-quicklinks {
+      border: 0;
+
+      .container {
+        width: auto;
+        min-height: 0;
         padding: 0;
       }
 
-      // Šipka Disca (pole 50 px vpravo) přes celou výšku řádku, ikona na středu.
-      .submenu-arrow {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        line-height: normal;
-      }
-
-      &:hover,
-      &:focus-visible {
-        @include menu.item-active;
-      }
-    }
-
-    #navigation .navigation-in .menu-level-1 > li.exp > a,
-    #navigation .navigation-in .navigationActions > li.exp > a {
-      @include menu.item-active;
-
-      .submenu-arrow::after {
-        color: var(--as-primary-500);
-      }
-    }
-
-    // Rozbalené podkategorie: odsazené pod kategorií, obrázky Disco na mobilu skrývá.
-    #navigation .navigation-in .menu-level-1 > li > .menu-level-2 {
-      padding: 4px 0 8px;
-      border-bottom: 1px solid var(--as-secondary-75);
-      background: var(--as-primary-50);
-
-      > li > div > a {
-        @include menu.sublink;
+      ul {
         display: block;
-        padding: 12px 20px 12px 32px;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+      }
+
+      li {
+        display: block;
+      }
+
+      a {
+        @include row;
+        white-space: normal;
+      }
+
+      .as-icon {
+        flex-shrink: 0;
+      }
+    }
+
+    // Informační stránky: menší šedé odkazy pod sebou.
+    #navigation .as-menu-pages {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 20px;
+      border-bottom: $row-border;
+      list-style: none;
+
+      a {
+        color: var(--as-secondary-400);
+        font-family: var(--as-font-family);
+        font-size: var(--as-font-size-small);
+        line-height: 20px;
+        text-decoration: none;
+
+        &:hover {
+          color: var(--as-primary-600);
+          text-decoration: underline;
+        }
+      }
+    }
+
+    // Telefon přichycený dole v panelu, nad posouvaným seznamem se stínem.
+    #navigation .as-menu-phone {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 16px minmax(0, 1fr);
+      column-gap: 10px;
+      min-height: var(--as-menu-phone-height, 72px);
+      padding: 16px 20px;
+      background: var(--as-white);
+      box-shadow: 0 -4px 2px rgba(0, 0, 0, 0.08);
+      color: var(--as-secondary-400);
+      font-family: var(--as-font-family);
+      font-size: var(--as-font-size-small);
+      line-height: 20px;
+      text-decoration: none;
+
+      &::before {
+        @include icon(phone, 16px);
+        grid-row: 1 / span 2;
+        margin-top: 2px;
+        color: var(--as-secondary-500);
+      }
+
+      strong {
+        color: var(--as-secondary-500);
+        font-weight: 500;
       }
     }
   }

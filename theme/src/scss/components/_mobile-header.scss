@@ -1,0 +1,227 @@
+// Mobilní hlavička (Figma: „Header - mobile“, „Header - mobile - sticky“), pod 768 px.
+// Je to #header Disca (pevná nahoře, Disco ji při posunu dolů vysune nahoru přes .scrolled-down).
+// Rozložení: řádek s hamburgerem, logem, účtem a košíkem a pod ním vždy viditelné pole hledání.
+// Po odjetí informační lišty se hlavička zkompaktní (.as-header-compact, js/mobile-header.js):
+// místo pole je lupa, která otevře hledání Disca. Při posunu dolů se schová (.as-header-hidden).
+// Stránka si drží místo celé hlavičky, při přepnutí se obsah neposouvá.
+// Ikony a jejich vzhled jsou společné s desktopem (layout/_header.scss), tady je jen rozložení.
+
+@use "../tools/breakpoints" as bp;
+
+.as-theme {
+  @include bp.mobile {
+    // Místo pro informační lištu nad hlavičkou a pro celou hlavičku (výšky měří js/mobile-header.js).
+    .overall-wrapper {
+      position: relative;
+      padding-top: calc(var(--as-info-height, 0px) + var(--as-mobile-header-height, 104px));
+    }
+
+    // Informační lišta nahoře nad hlavičkou (Disco ji má v toku za odsazením pro hlavičku).
+    .overall-wrapper > .site-msg.information {
+      position: absolute;
+      top: 0;
+      right: 0;
+      // Disco liště dopočítává inline bottom (kvůli cookie liště), u absolutní lišty by ji roztáhl
+      // přes celou stránku. !important kvůli inline stylu.
+      bottom: auto !important;
+      left: 0;
+    }
+
+    #header {
+      // Pod lištou, dokud je vidět, pak nahoře (proměnnou posouvá JS při posunu stránky).
+      top: var(--as-header-offset, 0px);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.13);
+      background: var(--as-white);
+      transition: transform 0.2s ease;
+
+      .header-top {
+        padding: 0;
+      }
+
+      // Hamburger a logo vlevo, akce vpravo, pole hledání na dalším řádku. Tlačítka Disca jsou
+      // přímé položky řádku (obal .navigation-buttons bez vlastního boxu), pořadí přes order.
+      .header-top-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        width: auto;
+        min-height: 0;
+        padding: 8px 4px 16px;
+
+        &::before,
+        &::after {
+          content: none;
+        }
+      }
+
+      .navigation-buttons {
+        display: contents;
+      }
+
+      // Tlačítka 40 px (ikona 24 px uprostřed), dotykový cíl.
+      .navigation-buttons > a,
+      .navigation-buttons > button {
+        position: relative;
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        min-width: 0;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--as-header-text);
+      }
+
+      .navigation-buttons > [data-target="navigation"] {
+        order: 1;
+      }
+
+      .site-name {
+        order: 2;
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 0 0 0 16px;
+        padding: 0;
+
+        a {
+          display: inline-block;
+          max-width: 100%;
+        }
+
+        img {
+          display: block;
+          max-width: min(160px, 100%);
+          max-height: 24px;
+          width: auto;
+          height: auto;
+        }
+      }
+
+      // Lupa jen v kompaktní hlavičce, jinak je vidět celé pole.
+      .navigation-buttons > [data-target="search"] {
+        order: 3;
+        display: none;
+      }
+
+      .navigation-buttons > .as-account-button {
+        order: 4;
+        font-size: 0;
+
+        // Text „Přihlášení“ / jméno zákazníka zůstává pro čtečky, vidět je jen ikona.
+        > span {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip-path: inset(50%);
+          white-space: nowrap;
+        }
+      }
+
+      .navigation-buttons > .cart-count {
+        order: 5;
+        margin-left: -4px;
+
+        // Odznak vpravo nad ikonou.
+        i {
+          top: 2px;
+          right: 0;
+          bottom: auto;
+          left: auto;
+        }
+      }
+
+      // Pole hledání přes celou šířku pod řádkem (Disco ho na mobilu ukazuje až po klepnutí na lupu).
+      .search {
+        order: 6;
+        display: block;
+        flex: 0 0 calc(100% - 16px);
+        width: auto;
+        margin: 0 8px;
+        padding: 0;
+      }
+
+      .search-form,
+      .search fieldset {
+        position: relative;
+        display: flex;
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+
+      .search-input {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        height: 40px;
+        padding: 0 48px 0 24px;
+        border: 0;
+        border-radius: var(--as-radius-pill);
+        background: var(--as-secondary-50);
+        box-shadow: none;
+        color: var(--as-secondary-500);
+        font-family: var(--as-font-family);
+        font-size: var(--as-font-size-small);
+        line-height: 20px;
+
+        &::placeholder {
+          color: var(--as-secondary-300);
+        }
+      }
+
+      // Lupa v poli (tlačítko odeslání Disca, na mobilu ho Disco skrývá), křížek Disca jen
+      // v otevřeném hledání kompaktní hlavičky.
+      .search-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 40px;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--as-secondary-500);
+      }
+
+      .search-input-icon {
+        display: none;
+      }
+    }
+
+    // Kompaktní hlavička: bez pole hledání, s lupou. Pole se vrátí po klepnutí na lupu.
+    &.as-header-compact #header {
+      .header-top-wrapper {
+        padding-bottom: 8px;
+      }
+
+      .navigation-buttons > [data-target="search"] {
+        display: flex;
+      }
+
+      .search {
+        display: none;
+      }
+    }
+
+    &.as-header-compact .search-window-visible #header .search {
+      display: block;
+      margin-top: 8px;
+    }
+
+    // Při posunu dolů se kompaktní hlavička schová (při otevřeném hledání nebo menu ne).
+    &.as-header-hidden body:not(.search-window-visible):not(.navigation-window-visible):not(.cart-window-visible) #header {
+      transform: translateY(-100%);
+    }
+  }
+}

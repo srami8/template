@@ -32,7 +32,7 @@ function renderAccountButton() {
 }
 
 // Telefon z nastavení e-shopu bereme z kontaktního boxu Shoptetu (patička).
-function shopPhone() {
+export function shopPhone() {
   const link = document.querySelector('.contact-box .tel a');
   if (!link) return null;
   return { number: link.textContent.trim(), href: link.getAttribute('href') };
@@ -141,12 +141,14 @@ export function enhanceHeader(config) {
   renderQuickLinks(config);
   if (config.header === 'v2') enhanceV2(config);
 
-  // Mobilní Disco má pevnou hlavičku a ve .overall-wrapper rezervuje jen 50 / 80 px.
-  // Rychlé odkazy nebo otevřené hledání ji zvýší; obsah i menu musí začínat až pod ní.
+  // Mobilní Disco má pevnou hlavičku a ve .overall-wrapper rezervuje jen 50 / 80 px. Naše hlavička
+  // s polem hledání je vyšší; obsah musí začínat až pod ní. Měříme jen plnou hlavičku: kompaktní
+  // (js/mobile-header.js) je nižší a obsah se při přepnutí posouvat nemá.
   const header = document.getElementById('header');
   if (header) {
     let previous;
     const syncHeight = () => {
+      if (document.documentElement.classList.contains('as-header-compact')) return;
       const height = header.getBoundingClientRect().height;
       if (height === previous) return;
       previous = height;

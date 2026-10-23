@@ -2,6 +2,8 @@
 // Konfiguraci vkládá settings-app přes Shoptet API (template-include) jako window.asteroidConfig.
 
 import { enhanceHeader } from './header';
+import { enhanceMobileHeader } from './mobile-header';
+import { enhanceMobileMenu } from './mobile-menu';
 import { enhanceSearch } from './search';
 import { enhanceBanners } from './banners';
 import { renderHomeCategories } from './home-categories';
@@ -70,6 +72,8 @@ function start() {
     placeSectionBanners();
     setHomepageProductColumns(config);
     enhanceHeader(config);
+    enhanceMobileHeader();
+    enhanceMobileMenu(config);
     enhanceSearch(config);
     enhanceBanners(config);
     renderHomeCategories(config);

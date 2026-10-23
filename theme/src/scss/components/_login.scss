@@ -87,8 +87,6 @@
 $forms: "#login .login-form, #formLogin.login-form";
 
 .as-theme {
-  #login.popup-widget { max-width: calc(100% - 32px); }
-
   // Pole: zaoblená, 52 px, ikona vlevo. Rozměry řídí proměnné Shoptetu. Dopočítané hodnoty
   // (--*-computed-*) Shoptet počítá na :root, proto je tu nastavujeme taky:
   // pole s popiskem = řádek 20 + rámeček 2 + okraje 2 × 10, k tomu místo na zmenšený popisek.
@@ -202,44 +200,47 @@ $forms: "#login .login-form, #formLogin.login-form";
     line-height: 1.2;
   }
 
-  // Rozložení okna: na desktopu modální okno uprostřed (na mobilu ho Disco neotevírá,
-  // přihlášení z menu vede na stránku /login/).
-  @include bp.desktop {
-    // Ztmavení stránky pod oknem: overlay Disca (body::before), který Disco používá při hledání.
-    body.login-window-visible::before {
-      z-index: 1002;
-      background: rgba(46, 53, 69, 0.3);
-      opacity: 1;
-    }
+  // Okno uprostřed nahoře přes ztmavenou stránku, na všech zařízeních (na mobilu ho otevírá
+  // ikona účtu v hlavičce, js/header.js). Na telefonu široké jako obrazovka bez okrajů 16 px.
+  // Ztmavení stránky pod oknem: overlay Disca (body::before), který Disco používá při hledání.
+  body.login-window-visible::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1002;
+    background: rgba(46, 53, 69, 0.3);
+    opacity: 1;
+    visibility: visible;
+  }
 
-    // Disco okno zobrazuje jako rozbalovací panel pod horní lištou (absolute, se šipkou),
-    // v návrhu je to okno na středu obrazovky.
-    #login.popup-widget {
-      position: fixed;
-      top: clamp(16px, 6vh, 64px);
-      right: auto;
-      bottom: auto;
-      left: 50%;
-      z-index: 1003;
-      width: 460px;
-      max-height: none;
-      margin: 0;
-      transform: translateX(-50%);
-      padding: 0;
+  // Disco okno zobrazuje jako rozbalovací panel pod horní lištou (absolute, se šipkou),
+  // v návrhu je to okno na středu obrazovky.
+  #login.popup-widget {
+    position: fixed;
+    top: clamp(16px, 6vh, 64px);
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    z-index: 1003;
+    width: min(460px, calc(100% - 32px));
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    transform: translateX(-50%);
+    padding: 0;
 
-      &::before {
-        content: none;
-      }
+    &::before {
+      content: none;
     }
+  }
 
-    #login .popup-widget-inner {
-      width: auto;
-      max-height: calc(100dvh - clamp(16px, 6vh, 64px) - 16px);
-      padding: 40px;
-      border: 0;
-      border-radius: 12px;
-      box-shadow: none;
-      overflow-y: auto;
-    }
+  #login .popup-widget-inner {
+    width: auto;
+    max-height: calc(100dvh - clamp(16px, 6vh, 64px) - 16px);
+    padding: clamp(24px, 6vw, 40px);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: none;
+    overflow-y: auto;
   }
 }

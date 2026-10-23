@@ -6,6 +6,14 @@
 // Používá rozbalené menu v1 (4 sloupce) i katalog v2 (3 sloupce). Volá se uvnitř selektoru .menu-level-2.
 
 @mixin groups($columns) {
+  // Řádky „zpět“ a „Zobrazit vše“ patří jen mobilnímu menu (js/mobile-menu.js).
+  > li.as-menu-back,
+  > li.as-menu-all,
+  .menu-level-3 > li.as-menu-back,
+  .menu-level-3 > li.as-menu-all {
+    display: none;
+  }
+
   display: grid;
   grid-template-columns: repeat($columns, minmax(0, 1fr));
   // Disco seznamu dává align-items: center, skupiny v řádku ale mají začínat nahoře.

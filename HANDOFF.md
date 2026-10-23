@@ -1,3 +1,61 @@
+# Aktualizace (Claude): mobilní hlavička a menu podle Figmy
+
+**Zadání:** majitel dodal 5 návrhů (výchozí, sticky, menu úroveň 1–3). Rozhodnutí majitele:
+- ikona účtu otevře okno přihlášení,
+- položka „Další“ se vynechá,
+- hlavička se při posunu dolů schová a při posunu nahoru vrátí kompaktní,
+- odznak košíku je v konverzní barvě jako na desktopu.
+
+**(1) Disco a Shoptet**
+- Hlavička: `#header` (pevná na mobilu), `.header-top-wrapper`, `.navigation-buttons` (lupa, košík, hamburger), `.search` / `.search-form` (pole i tlačítko Disca), `.site-msg.information` (Disco má inline `bottom`).
+- Menu: `#navigation .navigation-in`, `.menu-level-1 > li.ext` + `.submenu-arrow` (Disco přepíná `li.exp`), `.menu-level-2 > li > a.menu-image + div > a + ul.menu-level-3` (Shoptet dává nejvýš 3 úrovně), `.navigationActions` (měna / jazyk / přihlášení), `.top-navigation-menu` (informační stránky).
+- Okno přihlášení: `#login` přes kopii tlačítka účtu `.as-account-button`.
+
+**(2) Vlastní doplňky**
+- `components/_mobile-header.scss` + `js/mobile-header.js`:
+  - řádek přes flex s `order` a `.navigation-buttons { display: contents }`,
+  - tlačítka 40 px, pole hledání 40 px,
+  - kompaktní a skrytý stav, lišta absolutně nahoře; inline `bottom` od Disca přebíjí `!important`.
+- `js/header.js`: měří výšku jen plné hlavičky, `shopPhone` exportován.
+- `layout/_header.scss`:
+  - ikona účtu a odznak košíku jsou společné mimo breakpointy,
+  - kopie účtu je vidět i na mobilu,
+  - odstraněny staré mobilní rezervy 50 / 80 px.
+- `components/_mobile-menu.scss` (přepsáno) + `js/mobile-menu.js`:
+  - panel, horní řádek, řádky podle návrhu,
+  - panely úrovní,
+  - informační stránky, telefon.
+  - Hlavička má při otevřeném menu z-index 1005, panel je v její vrstvě.
+- `tools/_submenu.scss`: na desktopu skrývá mobilní řádky zpět a „Zobrazit vše“.
+- `components/_login.scss`: modální okno je mimo breakpoint (`width: min(460px, 100% - 32px)`).
+- `header/_v2.scss`: odkazy v2 jsou na mobilu jen v menu.
+- Nová ikona `icons/grid-view.svg` (asset z Figmy).
+
+**(3) Ověření**
+- Testy: 87 prošlých. Upraveny mobilní testy na nový návrh, nové testy pro kompaktní hlavičku, odkazy v menu a panel menu.
+- Skutečný e-shop, headless Chromium 390 × 844, mobil s dotykem:
+  - nahoře hlavička 104 px pod lištou 66 px,
+  - po posunu dolů schovaná,
+  - po posunu nahoru kompaktní 56 px,
+  - otevřené hledání 104 px,
+  - menu úroveň 1, 2 (Produkty s obrázky), 3 (Šperky) a zpět,
+  - okno přihlášení,
+  - bez přetékání a bez chyb JS.
+- 1920 px beze změny (menu v1 i podmenu, doplňky skryté).
+
+**Odchylky od Figmy**
+- Logo má max. výšku 24 px (Figma 20 px slovní značka).
+- Telefon je přichycený dole i na 1. úrovni.
+- Položky 3. úrovně jsou bez šipky (Shoptet nemá 4. úroveň).
+
+**Neověřeno**
+- Skutečný dotyk na zařízení.
+- Vícejazyčný e-shop (přepínač jazyka).
+- Přihlášený zákazník (kopie tlačítka účtu vede na účet).
+- Plný košík (odznak).
+
+---
+
 # Aktualizace (Claude): carousel varianty default na mobilu
 
 Nalezeno při ověření předchozí úpravy, opravu schválil majitel. U varianty bannerů `default` (také `content`, `fullwidth`) byl celý vzhled carouselu a postranních bannerů v `bp.desktop`. Na mobilu proto zůstal Disco: text 34 px tučně přes obrázek, nadpis a text se překrývaly.

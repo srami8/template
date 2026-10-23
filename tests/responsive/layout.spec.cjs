@@ -44,12 +44,17 @@ for(const width of [320,375,390,479,480,481,767,768,820,991,992,1024,1199,1200,1
         if(width<1200) await expect(page.locator('#header .cart-price')).toBeHidden();
         else await expect(page.locator('#header .cart-price')).toBeVisible();
       }else{
-        await expect(page.locator('#header .as-account-button')).toBeHidden();
-        await expect(page.locator('#header [data-target="search"]')).toBeVisible();
+        // Mobilní hlavička (Figma „Header - mobile“): účet a pole hledání vidět, lupa až v kompaktní.
+        await expect(page.locator('#header .as-account-button')).toBeVisible();
+        await expect(page.locator('#header .search-input')).toBeVisible();
+        await expect(page.locator('#header [data-target="search"]')).toBeHidden();
         const headerBox=await page.locator('#header').boundingBox();
-        expect(headerBox.height).toBeLessThanOrEqual(200);
+        expect(headerBox.height).toBeLessThanOrEqual(120);
+        // Informační lišta je nad hlavičkou a obsah začíná pod ní.
         const information=await page.locator('.site-msg.information').boundingBox();
-        expect(information.y).toBeGreaterThanOrEqual(headerBox.y+headerBox.height);
+        expect(information.y+information.height).toBeLessThanOrEqual(headerBox.y+1);
+        const content=await page.locator('#content').boundingBox();
+        expect(content.y).toBeGreaterThanOrEqual(headerBox.y+headerBox.height-1);
       }
     });
   }
@@ -236,41 +241,41 @@ for(const width of [320,768,1280]) {
 }
 
 for(const width of [320,480,481,767]) {
-  test(`native mobile search toggles without replacing its form at ${width}px`,async({page})=>{
-    await page.setViewportSize({width,height:900});
+  test(`mobile header compacts on scroll and keeps the native search form at ${width}px`,async({page})=>{
+    await page.setViewportSize({width,height:600});
     await load(page,{navLinks:[],quickLinks:[],homeCategories:null});
-    const header=page.locator('#header');
-    const height=width>480?80:50;
-    await expect(page.locator('#header .search')).toBeHidden();
-    expect((await header.boundingBox()).height).toBe(height);
+    const contentTop=async()=>(await page.locator('#content').boundingBox()).y+await page.evaluate(()=>scrollY);
+    const before=await contentTop();
     await page.evaluate(()=>window.originalSearchForm=document.querySelector('#header .search-form'));
+    await page.evaluate(()=>window.scrollTo(0,300));
+    await expect(page.locator('html')).toHaveClass(/as-header-compact/);
+    // Kompaktní hlavička: lupa místo pole, obsah se neposunul.
+    await expect(page.locator('#header .search')).toBeHidden();
+    expect(await contentTop()).toBe(before);
+    await page.evaluate(()=>window.scrollTo(0,200));
+    await expect(page.locator('#header .navigation-buttons [data-target="search"]')).toBeVisible();
     await page.locator('#header .navigation-buttons [data-target="search"]').click();
     await expect(page.locator('#header .search')).toBeVisible();
     await page.locator('#header .search-input').fill('košík');
     await fits(page.locator('#header .search'),page.locator('#header .header-top-wrapper'));
-    await page.setViewportSize({width:768,height:900});
-    await expect(page.locator('#header .search')).toBeVisible();
-    await expect(page.locator('#header .search-input')).toHaveValue('košík');
-    await expect(page.locator('#header .navigation-buttons [data-target="search"]')).toBeHidden();
     expect(await page.evaluate(()=>document.querySelector('#header .search-form')===window.originalSearchForm)).toBe(true);
-    await page.setViewportSize({width,height:900});
     await page.keyboard.press('Escape');
     await expect(page.locator('#header .search')).toBeHidden();
-    expect((await header.boundingBox()).height).toBe(height);
+    await page.evaluate(()=>window.scrollTo(0,0));
+    await expect(page.locator('html')).not.toHaveClass(/as-header-compact/);
+    await expect(page.locator('#header .search-input')).toBeVisible();
+    expect(await page.evaluate(()=>document.querySelector('#header .search-form')===window.originalSearchForm)).toBe(true);
     await noPageOverflow(page);
   });
 }
 
-test('mobile supplementary links stay reachable without a tall fixed header',async({page})=>{
+test('mobile menu lists supplementary and information links',async({page})=>{
   await page.setViewportSize({width:320,height:700});
   await load(page);
-  expect((await page.locator('#header').boundingBox()).height).toBeLessThanOrEqual(160);
-  for(const selector of ['.as-navlinks']) {
-    const list=page.locator(selector);
-    await list.locator('a').last().focus();
-    await expect(list.locator('a').last()).toBeFocused();
-    expect(await list.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);
-  }
+  await expect(page.locator('#header .as-navlinks')).toBeHidden();
+  await page.locator('#header .navigation-buttons [data-target="navigation"]').click();
+  const pages=page.locator('#navigation .as-menu-pages a');
+  await expect(pages.filter({hasText:'Informace pro naše zákazníky 1'})).toBeVisible();
   await noPageOverflow(page);
 });
 
@@ -398,4 +403,25 @@ test('default carousel banner keeps its look on mobile', async ({page}) => {
   }
   expect(snapshots[0]).toEqual(snapshots[1]);
   expect(snapshots[0].link.borderRadius).not.toBe('0px');
+});
+
+test('mobile menu is a left drawer and its extras stay off the desktop', async ({page}) => {
+  for (const width of [320,375]) {
+    await page.setViewportSize({width,height:800});
+    await load(page);
+    await page.locator('#header .navigation-buttons [data-target="navigation"]').click();
+    await page.waitForTimeout(300);
+    const drawer=await page.locator('#navigation').boundingBox();
+    expect(Math.round(drawer.x)).toBe(0);
+    expect(Math.round(drawer.width)).toBe(Math.min(300,width-56));
+    await expect(page.locator('#navigation .as-menu-close')).toBeVisible();
+    await expect(page.locator('#navigation .as-menu-phone')).toBeVisible();
+    await page.locator('#navigation .as-menu-close').click();
+    await expect(page.locator('body')).not.toHaveClass(/navigation-window-visible/);
+    await noPageOverflow(page);
+  }
+  await page.setViewportSize({width:1280,height:900});
+  for (const selector of ['.as-menu-close','.as-menu-back','.as-menu-all','.as-menu-pages','.as-menu-phone']) {
+    for (const item of await page.locator(selector).all()) await expect(item).toBeHidden();
+  }
 });

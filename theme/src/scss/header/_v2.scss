@@ -5,32 +5,9 @@
 
 .as-header-v2 {
   @include bp.mobile {
-    // Doplňkové informační odkazy nemají v mobilním Discu vlastní styl.
-    // Zachováme je dostupné, ale bez mnohařádkového seznamu v pevné hlavičce.
+    // Odkazy vedle katalogu jsou na mobilu v menu mezi informačními stránkami (js/mobile-menu.js).
     #header .header-bottom > .container > nav:has(> .as-navlinks) {
-      // .navigation-wrapper je i na mobilu flex; automatické minimum by drželo šířku všech odkazů.
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 100%;
-    }
-
-    #header .as-navlinks {
-      display: flex;
-      gap: 16px;
-      margin: 0;
-      padding: 0;
-      overflow-x: auto;
-      scrollbar-width: thin;
-      list-style: none;
-
-      li { flex: 0 0 auto; }
-
-      a {
-        display: inline-flex;
-        align-items: center;
-        min-height: 44px;
-        white-space: nowrap;
-      }
+      display: none;
     }
   }
 

@@ -22,8 +22,7 @@ $quicklinks-height: 45px;
 }
 
 .as-theme {
-  // Mobilní ovládání zůstává Discu; kopie účtu je jen pro desktopovou hlavičku.
-  #header .as-account-button,
+  // Telefon v horní liště je jen na desktopu, na mobilu je v menu (components/_mobile-header.scss).
   .as-topbar-phone {
     display: none;
   }
@@ -35,6 +34,24 @@ $quicklinks-height: 45px;
     > [data-target="search"]::before { @include icon(search, 24px); }
     > [data-target="cart"]::before { @include icon(shopping-cart, 24px); }
     > [data-target="navigation"]::before { @include icon(menu, 24px); }
+    > .as-account-button::before { @include icon(perm-identity, 24px); }
+
+    // Počet kusů v košíku (umístění podle velikosti tlačítka v breakpointech).
+    .cart-count i {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 4px;
+      border-radius: var(--as-radius-pill);
+      background: var(--as-conversion);
+      color: var(--as-white);
+      font-size: 12px;
+      font-style: normal;
+      line-height: 20px;
+    }
   }
 
   // Otevřené menu: Disco místo hamburgeru ukazuje křížek.
@@ -121,21 +138,6 @@ $quicklinks-height: 45px;
       .as-icon { flex-shrink: 0; }
     }
 
-    // Ikona uprostřed tlačítka (Disco ji centroval výškou řádku písma ikon).
-    // Jen původní tlačítka Disca, kopie účtu (.as-account-button) zůstává na mobilu skrytá.
-    #header .navigation-buttons > [data-target]:not(.as-account-button) {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    // Disco rezervuje fixních 50 / 80 px, doplněné odkazy by zakryly informační lištu a obsah.
-    .overall-wrapper { padding-top: var(--as-mobile-header-height, 50px); }
-    #navigation {
-      top: var(--as-mobile-header-height, 50px);
-      bottom: 0;
-      height: auto;
-    }
   }
 
   @include bp.desktop {
@@ -522,23 +524,12 @@ $quicklinks-height: 45px;
             font-size: 0;
           }
 
-          // Počet kusů v košíku.
+          // Počet kusů v košíku (vzhled je společný, viz začátek souboru).
           i {
-            position: absolute;
             top: 4px;
+            right: auto;
+            bottom: auto;
             left: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 20px;
-            height: 20px;
-            padding: 0 4px;
-            border-radius: var(--as-radius-pill);
-            background: var(--as-conversion);
-            color: var(--as-white);
-            font-size: 12px;
-            font-style: normal;
-            line-height: 20px;
           }
 
           .cart-price {

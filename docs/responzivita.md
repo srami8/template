@@ -26,6 +26,22 @@ Ověřeno 23. 10. 2026 na `313980.myshoptet.com`, šablona 13 (Disco). V testova
 
 Referenční stylesheet: `cdn.myshoptet.com/prj/dist/master/shop/dist/main-13.less.c8a6415be4516e0585b7.css`. Při další změně nejprve znovu ověř chování aktuální verze Disca. Nepřidávej vlastní mobilní menu, obsluhu hledání ani další breakpoint jen podle desktopového obrázku.
 
+## Mobilní hlavička a menu (pod 768 px)
+
+Figma: „Header - mobile“, „Header - mobile - sticky“, „Menu - level 1/2/3“. Hlavička je pevná `#header` Disca (styly `components/_mobile-header.scss`, JS `js/mobile-header.js`).
+- **Nahoře na stránce:** pod informační lištou (`--as-header-offset`); řádek s hamburgerem, logem, účtem a košíkem; pod ním vždy viditelné pole hledání.
+- **Po odjetí lišty:** kompaktní (`html.as-header-compact`): lupa místo pole, lupa otevře hledání Disca.
+- **Při posunu dolů** se schová (`html.as-header-hidden`), při posunu nahoru se vrátí.
+- **Místo pro hlavičku:** `.overall-wrapper` drží místo plné hlavičky (`--as-info-height + --as-mobile-header-height`). Výšku `js/header.js` měří jen v plném stavu, takže se obsah při přepnutí neposouvá.
+
+Menu je `#navigation` Disca jako vysouvací panel zleva (`components/_mobile-menu.scss`, `js/mobile-menu.js`).
+- **Rozměry:** šířka `min(300px, 100% - 56px)`, ztmavení `body::before` (klepnutí zavře menu).
+- **Horní řádek:** náš křížek, měna a jazyk (`.navigationActions` Disca, přihlášení je v hlavičce).
+- **Úrovně:** 2. úroveň = Disco `li.exp` (klepnutí na celou kategorii klikne na šipku Disca), 3. úroveň = naše `.as-open`. Obě jako panel `position: fixed` vůči panelu s `transform`, s řádky zpět a „Zobrazit vše“.
+- **Dole v seznamu:** informační stránky z horní lišty Disca a odkazy `navLinks`.
+- **Telefon** je přichycený dole.
+- **Desktop:** doplňky jsou skryté (i v `tools/submenu`).
+
 ## Banner Střed vedle produktové sekce
 
 Doplňkový banner Shoptetu s pozicí Střed obchodník přiřadí sekci názvem „Nadpis sekce [L]“ / „[P]“ / „[R]“ (interní název, popis obrázku nebo nadpis banneru; značku zákazník nevidí). Disco vykreslí všechny bannery Střed v jednom bloku `#content > .body-banners` za první sekcí, `js/section-banners.js` proto přiřazený `.banner-wrapper` přesune do vlastního bloku `.as-section-banner--left|--right` před nadpis sekce. Banner bez značky nebo bez shody zůstává na místě.
