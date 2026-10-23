@@ -1,6 +1,10 @@
 // Našeptávač vyhledávání (Figma: „Vyhledávání“, „Vyhledávání - nenalezeno“).
-// Disco ho vykresluje do .searchWhisperer, js/search.js obsah přeskládá do .as-whisperer
-// (vlevo __main s produkty, vpravo __side s dalšími výsledky nebo kontaktem).
+// Stylujeme původní markup Disca / Shoptetu, který přichází z /action/ProductSearch/ajaxSearch/:
+//   .searchWhisperer > .searchWhisperer__products        produkty
+//                    > .searchWhisperer__additionalResults kategorie, značky, články (nadpisy --category/--brand/--article)
+//                    > .searchWhisperer__buttonWrapper     „Zobrazit všechny výsledky“
+//                    > .searchWhisperer__content--empty    nic nenalezeno
+// Jediný doplněk je .as-whisperer-contact (kontakt z nastavení e-shopu u „nic nenalezeno“, viz js/search.js).
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
@@ -32,38 +36,67 @@
         font-family: var(--as-font-family);
         overflow: hidden;
 
+        // Disco tu má flex se změnou pořadí (order), mřížka dá sloupce podle návrhu.
         &.active {
-          display: block;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          align-items: start;
+        }
+
+        // Vpravo sloupec 360 px: další výsledky vedle produktů, nebo kontakt vedle „nic nenalezeno“.
+        &.active:has(> .searchWhisperer__products):has(> .searchWhisperer__additionalResults),
+        &.active:has(> .searchWhisperer__content--empty):has(> .as-whisperer-contact) {
+          grid-template-columns: minmax(0, 1fr) 360px;
         }
       }
 
-      .as-whisperer {
-        display: flex;
-        align-items: stretch;
+      .searchWhisperer__products {
+        grid-column: 1;
+        padding: 32px 40px 0;
       }
 
-      .as-whisperer__main {
-        flex: 1 1 auto;
-        min-width: 0;
+      .searchWhisperer__buttonWrapper {
+        grid-column: 1;
+        display: flex;
+        justify-content: center;
+        margin: 0;
         padding: 32px 40px 40px;
       }
 
-      .as-whisperer__side {
-        flex: 0 0 360px;
+      .searchWhisperer__additionalResults {
+        grid-column: 1;
+        align-self: stretch;
+        margin: 0;
+        padding: 32px 40px;
+        border-right: 0;
+      }
+
+      // Vedle produktů jde blok do pravého sloupce přes celou výšku panelu.
+      .searchWhisperer:has(> .searchWhisperer__products) > .searchWhisperer__additionalResults {
+        grid-column: 2;
+        grid-row: 1 / span 2;
         border-left: 1px solid var(--as-secondary-75);
       }
 
-      // Produkty: nadpis a mřížka 2 × N.
+      // Nadpisy sekcí: Produkty, Kategorie, Značky, Články.
       .searchWhisperer__products__heading,
       .searchWhisperer__additionalResults__heading {
         margin: 0 0 20px;
-        font-family: var(--as-font-family-headings);
         color: var(--as-secondary-500);
+        font-family: var(--as-font-family-headings);
         font-size: var(--as-font-size-body);
         font-weight: 500;
         line-height: 1.2;
       }
 
+      // Další sekce v pravém sloupci oddělí čára přes celou šířku sloupce (vyrovnává odsazení 40 px).
+      .searchWhisperer__additionalResults__heading ~ .searchWhisperer__additionalResults__heading {
+        margin: 32px -40px 20px;
+        padding: 32px 40px 0;
+        border-top: 1px solid var(--as-secondary-75);
+      }
+
+      // Produkty: mřížka 2 × N.
       .searchWhisperer__products__list {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -82,13 +115,13 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        text-align: left;
         gap: 22px;
         min-height: 89px;
         padding: 12px 25px 12px 12px;
         border: 1px solid transparent;
         border-radius: 8px;
         color: var(--as-secondary-500);
+        text-align: left;
         text-decoration: none;
 
         &:hover,
@@ -149,14 +182,7 @@
         white-space: nowrap;
       }
 
-      // „Zobrazit všechny výsledky“: sekundární tlačítko se šipkou.
-      .searchWhisperer__buttonWrapper {
-        display: flex;
-        justify-content: center;
-        margin-top: 32px;
-        padding: 0;
-      }
-
+      // „Zobrazit všechny výsledky“ (.btn.btn-default od Disca): sekundární tlačítko se šipkou.
       .searchWhisperer__button {
         display: inline-flex;
         align-items: center;
@@ -182,17 +208,7 @@
         }
       }
 
-      // Další výsledky vpravo (kategorie, články, značky) jako „štítky“.
-      .searchWhisperer__additionalResults {
-        width: auto;
-        margin: 0;
-        padding: 32px 40px;
-
-        + .searchWhisperer__additionalResults {
-          border-top: 1px solid var(--as-secondary-75);
-        }
-      }
-
+      // Kategorie a značky jako štítky.
       .searchWhisperer__additionalResults__list {
         display: flex;
         flex-wrap: wrap;
@@ -225,45 +241,82 @@
         }
       }
 
-      // Nic nenalezeno.
-      .as-whisperer__empty {
-        display: flex;
-        gap: 24px;
-        align-items: flex-start;
+      // Články jako seznam s ikonou dokumentu (seznam hned za nadpisem --article).
+      .searchWhisperer__additionalResults__heading--article + .searchWhisperer__additionalResults__list {
+        flex-direction: column;
+        gap: 12px;
+
+        .searchWhisperer__additionalResults__link {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 0;
+          border-radius: 0;
+          background: none;
+          color: var(--as-secondary-500);
+          font-weight: 400;
+
+          &::before {
+            @include icon(text-snippet, 24px);
+            color: var(--as-primary-500);
+          }
+
+          &:hover,
+          &:focus-visible {
+            background: none;
+            color: var(--as-primary-600);
+            text-decoration: underline;
+          }
+        }
+      }
+
+      // Nic nenalezeno: text hlášky je od Shoptetu (přeložený), ikona přes ::before.
+      .searchWhisperer__content--empty {
+        grid-column: 1;
+        display: grid;
+        grid-template-columns: 64px minmax(0, 1fr);
+        column-gap: 24px;
+        align-items: start;
         padding: 40px;
-      }
-
-      .as-whisperer__emptyIcon {
-        @include icon(search-off, 64px);
-        color: var(--as-secondary-100);
-      }
-
-      .as-whisperer__emptyTitle {
-        margin-bottom: 8px;
-        font-family: var(--as-font-family-headings);
         color: var(--as-secondary-500);
+        font-family: var(--as-font-family-headings);
         font-size: var(--as-font-size-h3);
         font-weight: 500;
         line-height: 1.2;
+        text-align: left;
+
+        &::before {
+          @include icon(search-off, 64px);
+          grid-row: 1 / span 2;
+          color: var(--as-secondary-100);
+        }
+
+        // Vysvětlující věta z návrhu. Shoptet ji neposílá, proto jen pro češtinu, ostatní jazyky
+        // zobrazí jen přeloženou hlášku Shoptetu.
+        &:lang(cs)::after {
+          content: "Je nám líto, ale na zadaný dotaz se nám nepovedlo nic nalézt. Zkuste zkontrolovat, zda v dotazu nemáte překlep.";
+          margin-top: 8px;
+          color: var(--as-secondary-400);
+          font-family: var(--as-font-family);
+          font-size: var(--as-font-size-body);
+          font-weight: 400;
+          line-height: 1.7;
+        }
       }
 
-      .as-whisperer__emptyText p {
-        margin: 0;
-        color: var(--as-secondary-400);
-        font-size: var(--as-font-size-body);
-        line-height: 1.7;
-      }
-
-      // Kontakt z nastavení e-shopu.
-      .as-whisperer__contact {
+      // Doplněk: kontakt z nastavení e-shopu vedle „nic nenalezeno“.
+      .as-whisperer-contact {
+        grid-column: 2;
+        align-self: stretch;
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 40px;
+        border-left: 1px solid var(--as-secondary-75);
         text-align: center;
       }
 
-      .as-whisperer__photo {
+      .as-whisperer-contact__photo {
         width: 64px;
         height: 64px;
         margin-bottom: 24px;
@@ -271,15 +324,15 @@
         object-fit: cover;
       }
 
-      .as-whisperer__contactTitle {
-        font-family: var(--as-font-family-headings);
+      .as-whisperer-contact__title {
         color: var(--as-secondary-500);
+        font-family: var(--as-font-family-headings);
         font-size: var(--as-font-size-h5);
         font-weight: 500;
         line-height: 1.2;
       }
 
-      .as-whisperer__contactText {
+      .as-whisperer-contact__text {
         max-width: 280px;
         margin: 4px 0 16px;
         color: var(--as-secondary-400);
@@ -287,7 +340,7 @@
         line-height: 1.2;
       }
 
-      .as-whisperer__contactLink {
+      .as-whisperer-contact__link {
         display: inline-flex;
         align-items: center;
         gap: 12px;
