@@ -11,11 +11,24 @@ Designová šablona pro Shoptet nad šablonou **Disco**, prodávaná jako dopln�
 - `settings-app/`: Node.js 18 server bez závislostí. Instalace doplňku (OAuth), stránka nastavení v administraci Shoptetu (iframe), zápis konfigurace přes Shoptet API `template-include`.
 - Konfiguraci posílá settings-app do e-shopu jako `window.asteroidConfig`. `theme/src/js/main.js` podle ní přidá třídy **na `<html>`** (ne na `<body>`), např. `.as-header-v2`, `.as-banners-cards`.
 
+## Závazné pravidlo: maximálně využívat Disco
+
+- Zdrojový kód Disca měnit nelze. Jeho HTML, CSS třídy a funkce jsou **integrační rozhraní**.
+- Před implementací prozkoumat skutečný markup, styly a chování dané části Disca na testovacím e-shopu. Když podklad chybí, vyžádat si ho. Selektory neodhadovat.
+- Přednostně stylovat existující prvky přes jejich třídy v naší SCSS nadstavbě.
+- Nevytvářet vlastní komponentu, markup ani náhradní JS, pokud jde požadavek splnit přes existující šablonu.
+- Třídy `as-*` jen pro doplňující stav, konfiguraci, nebo prvky, pro které Disco nemá základ. Ne plošně jako náhradu tříd Disca.
+- Zachovat události, datové atributy, formuláře a další vazby, na kterých stojí funkčnost Shoptetu.
+- Nepřesouvat, nenahrazovat a neduplikovat DOM prvky JavaScriptem. Když je to nezbytné, před implementací vysvětlit důvod a dopad.
+- CSS cílené, s přiměřenou specificitou. Každé `!important` musí mít konkrétní důvod v komentáři.
+
+Předání ke kontrole navíc uvádí: (1) které prvky, třídy a funkce Disca řešení využívá, (2) jaké vlastní doplňky zavádí a proč, (3) jak byla ověřena původní funkčnost dotčených prvků.
+
 ## Konvence
 
 - **Tokeny:** `theme/src/scss/tokens/` se exportují jako CSS proměnné `--as-*`. Barvy a fonty se odvozují z proměnných Shoptetu (`--color-primary`, `--template-font`…), hodnoty z Figmy jsou jen záloha. Pevné barvy z Figmy nepoužívat tam, kde má Shoptet nastavení (viz docs/zadani.md).
 - **Komponenty:** prefix `as-`, BEM-like (`.as-bcard__track`), sdílené styly jako Sass mixiny v `tools/`.
-- **Napojení na Disco:** selektory vždy ověřit na skutečném HTML testovacího e-shopu. Disco používá selektory s `#header` / `#navigation`, naše pravidla proto často potřebují stejnou specificitu. Obcházení stylů Disco komentovat (co Disco dělá a proč to přebíjíme).
+- **Napojení na Disco:** viz závazné pravidlo výše; selektory vždy ověřit na skutečném HTML testovacího e-shopu. Disco používá selektory s `#header` / `#navigation`, naše pravidla proto často potřebují stejnou specificitu. Obcházení stylů Disco komentovat (co Disco dělá a proč to přebíjíme).
 - **Desktop:** `@include bp.desktop` (od 768 px, jako Disco). Mobilní návrhy zatím ve Figmě nejsou.
 - **Obsah z administrace má přednost** před vlastním nastavením doplňku. Údaje se nezadávají dvakrát.
 - **Bezpečnost settings-app:** relace jako podepsaný token (ne cookie), CSRF řeší token ve formuláři, všechny výstupy přes `escape()`, JSON v `<script>` přes `inlineJson()`, z chyb Shoptetu se odstraňují tokeny.
