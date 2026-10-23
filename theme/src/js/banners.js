@@ -61,13 +61,16 @@ export function enhanceBanners(config) {
   loadImages(carousel);
 
   // Šipky Disca: jejich klik obsluhuje Bootstrap delegovaně na documentu ([data-slide]). Klik
-  // zastavíme na šipce, takže se snímek nepřepne, a místo toho posuneme pás o viditelnou šířku.
+  // zastavíme na šipce, takže se snímek nepřepne, a místo toho posuneme pás o jednu kartu včetně mezery.
   carousel.querySelectorAll(':scope > .carousel-control[data-slide]').forEach((control) => {
     control.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
       const direction = control.dataset.slide === 'prev' ? -1 : 1;
-      track.scrollBy({ left: direction * track.clientWidth * 0.9 });
+      const card = track.querySelector(':scope > .item');
+      if (!card) return;
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      track.scrollBy({ left: direction * (card.getBoundingClientRect().width + gap) });
     });
   });
 

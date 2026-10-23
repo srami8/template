@@ -28,7 +28,7 @@ Referenční stylesheet: `cdn.myshoptet.com/prj/dist/master/shop/dist/main-13.le
 
 ## Multibanner přes šířku displeje
 
-Varianta `cards` používá na mobilu i desktopu pás přes celou šířku displeje. První karta a pozice přichycení lícují s obsahem původního sloupce Disca. Při posunu karty projíždějí za levou hranou displeje, na konci poslední karta lícuje s pravým okrajem obsahu. JavaScript pouze měří původní sloupec pro odsazení a zachování desktopové velikosti karet; nepřesouvá DOM. Šipky dál posouvají původní `.carousel-inner`, mobil používá swipe.
+Varianta `cards` používá na mobilu i desktopu pás přes celou šířku displeje. První karta a pozice přichycení lícují s obsahem původního sloupce Disca. Při posunu karty projíždějí za levou hranou displeje, na konci poslední karta lícuje s pravým okrajem obsahu. JavaScript pouze měří původní sloupec pro odsazení a zachování desktopové velikosti karet; nepřesouvá DOM. Šipky posouvají původní `.carousel-inner` vždy o šířku jedné karty včetně mezery (jako na Starnails); na konci se krok omezí dostupným místem. Mobil používá swipe s přichycením po jednotlivých kartách.
 
 ## Automatické kontroly
 

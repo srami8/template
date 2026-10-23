@@ -343,6 +343,7 @@
     transform: none;
     transition: none;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
 
     @include bp.desktop {
       flex-basis: calc((var(--as-cards-content-width, 100%) - 3 * 20px) / 3.5);
