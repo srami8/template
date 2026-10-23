@@ -3,21 +3,29 @@
 
 import { enhanceHeader } from './header';
 import { enhanceSearch } from './search';
+import { enhanceBanners } from './banners';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
+const BANNER_LAYOUTS = ['default', 'content', 'fullwidth', 'cards'];
 
 const DEFAULTS = {
   header: 'v1',
   categoryLayout: 'default',
+  banners: 'default',
   phone: null,
   quickLinks: [],
   navLinks: [],
 };
 
-// Náhled jiné varianty bez změny nastavení: ?asteroid-header=v2
+// Náhled jiné varianty bez změny nastavení: ?asteroid-header=v2, ?asteroid-banners=cards
 function previewOverrides() {
-  const header = new URLSearchParams(window.location.search).get('asteroid-header');
-  return HEADER_VARIANTS.includes(header) ? { header } : {};
+  const params = new URLSearchParams(window.location.search);
+  const header = params.get('asteroid-header');
+  const banners = params.get('asteroid-banners');
+  return {
+    ...(HEADER_VARIANTS.includes(header) ? { header } : {}),
+    ...(BANNER_LAYOUTS.includes(banners) ? { banners } : {}),
+  };
 }
 
 function start() {
@@ -29,11 +37,13 @@ function start() {
     'as-theme',
     `as-header-${config.header}`,
     `as-category-${config.categoryLayout}`,
+    `as-banners-${BANNER_LAYOUTS.includes(config.banners) ? config.banners : 'default'}`,
   );
 
   const init = () => {
     enhanceHeader(config);
     enhanceSearch();
+    enhanceBanners(config);
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

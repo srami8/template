@@ -9,6 +9,31 @@ export const HEADER_VARIANTS = [
   { value: 'v3', label: 'Tlačítko „Katalog produktů“ vedle loga' },
 ];
 
+// Zobrazení bannerů na úvodní stránce. Bannery samotné (obrázky, odkazy, texty) se nahrávají
+// v administraci Shoptetu, tady se volí jen způsob zobrazení.
+export const BANNER_LAYOUTS = [
+  {
+    value: 'default',
+    label: 'Výchozí',
+    hint: 'Velký banner a vedle dva menší. Když postranní bannery nenahrajete, velký banner se roztáhne přes šířku obsahu. Rozměry: 1880 × 1000 px a 920 × 480 px.',
+  },
+  {
+    value: 'content',
+    label: 'Jeden banner přes šířku obsahu',
+    hint: 'Zobrazí se jen bannery carouselu, postranní bannery se skryjí.',
+  },
+  {
+    value: 'fullwidth',
+    label: 'Jeden banner přes celou šířku obrazovky',
+    hint: 'Bannery carouselu od okraje k okraji okna, postranní se skryjí. Doporučený rozměr 2880 × 960 px (poměr 3 : 1).',
+  },
+  {
+    value: 'cards',
+    label: 'Bannery na výšku (posuvný pás)',
+    hint: 'Bannery carouselu i postranní bannery jako karty na výšku vedle sebe, posouvají se šipkami nebo prstem. Nadpis, text a odkaz banneru se zobrazí na kartě. Doporučený rozměr 900 × 1200 px (poměr 3 : 4).',
+  },
+];
+
 // Ikony dostupné v theme/src/icons pro rychlé odkazy.
 export const QUICK_LINK_ICONS = ['local-fire-department', 'local-offer', 'filter-vintage', 'schedule'];
 
@@ -17,6 +42,7 @@ export const MAX_NAV_LINKS = 8;
 
 export const DEFAULT_THEME_CONFIG = {
   header: 'v1',
+  banners: 'default',
   phone: null,
   quickLinks: [],
   navLinks: [],
@@ -41,6 +67,7 @@ function safeUrl(value) {
 
 export function themeConfigFromForm(form) {
   const header = HEADER_VARIANTS.some((v) => v.value === form.get('header')) ? form.get('header') : 'v1';
+  const banners = BANNER_LAYOUTS.some((v) => v.value === form.get('banners')) ? form.get('banners') : 'default';
 
   // Číslo telefonu bere šablona z nastavení e-shopu, tady se vyplňuje jen otevírací doba.
   const hours = text(form.get('phoneHours'), 60);
@@ -63,7 +90,7 @@ export function themeConfigFromForm(form) {
     if (label && url) navLinks.push({ label, url });
   }
 
-  return { header, phone, quickLinks, navLinks };
+  return { header, banners, phone, quickLinks, navLinks };
 }
 
 // JSON vložený do <script>: znak < escapujeme, aby text nemohl ukončit script tag.

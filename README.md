@@ -35,6 +35,7 @@ Settings-app vkládá do e-shopu `window.asteroidConfig`. Všechny klíče jsou 
 ```js
 window.asteroidConfig = {
   header: 'v1',                 // varianta hlavičky: 'v1' | 'v2' | 'v3'
+  banners: 'default',           // bannery na úvodu: 'default' | 'content' | 'fullwidth' | 'cards'
   categoryLayout: 'default',    // layout kategorie
   phone: {                      // otevírací doba za telefonem v horní liště;
     hours: 'po–pá: 9:00–17:00', // číslo se bere z kontaktních údajů v nastavení e-shopu
@@ -50,7 +51,7 @@ window.asteroidConfig = {
 
 Ikony (`icon`) odpovídají souborům v [`theme/src/icons`](theme/src/icons/).
 
-Náhled jiné varianty hlavičky bez změny nastavení: přidejte k adrese e-shopu `?asteroid-header=v2`.
+Náhled jiné varianty bez změny nastavení: přidejte k adrese e-shopu `?asteroid-header=v2` nebo `?asteroid-banners=cards`.
 
 ## Vývoj
 

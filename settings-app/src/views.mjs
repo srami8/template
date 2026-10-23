@@ -2,7 +2,7 @@
 // Stránka se zobrazuje v administraci Shoptetu (iframe), proto používá knihovnu Shoptet UI,
 // skript iframe-resizer (výška rámu) a přebírá motiv administrace (světlý / tmavý).
 
-import { HEADER_VARIANTS, QUICK_LINK_ICONS, MAX_QUICK_LINKS, MAX_NAV_LINKS } from './theme-config.mjs';
+import { HEADER_VARIANTS, BANNER_LAYOUTS, QUICK_LINK_ICONS, MAX_QUICK_LINKS, MAX_NAV_LINKS } from './theme-config.mjs';
 
 const SHOPTET_UI_CSS = 'https://cdn.jsdelivr.net/npm/@shoptet/ui@0.23.0-beta/dist/index.css';
 const IFRAME_RESIZER = 'https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.contentWindow.min.js';
@@ -108,6 +108,13 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, tok
     </label>`,
   ).join('');
 
+  const bannerLayouts = BANNER_LAYOUTS.map(
+    (v) => `<label class="as-variant" title="${escape(v.hint)}">
+      <input class="radioField" type="radio" name="banners" value="${v.value}" ${(themeConfig.banners || 'default') === v.value ? 'checked' : ''}>
+      <span><strong>${escape(v.label)}</strong><span class="v2FormField__hint">${escape(v.hint)}</span></span>
+    </label>`,
+  ).join('');
+
   const phone = `<div class="v2form">
     <div class="v2FormField">
       <label class="v2FormField__label" for="phoneHours">Otevírací doba</label>
@@ -144,6 +151,11 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, tok
         <input type="hidden" name="t" value="${escape(token)}">
         <input type="hidden" name="lang" value="${escape(lang)}">
         ${card('Vzhled hlavičky', variants, `E-shop ${eshopName} (ID ${eshopId})`)}
+        ${card(
+          'Bannery na úvodní stránce',
+          bannerLayouts,
+          'Bannery nahráváte jako obvykle v administraci Shoptetu (Vzhled a obsah → Bannery). Tady zvolíte, jak se zobrazí.',
+        )}
         ${card(
           'Telefon v horní liště',
           phone,

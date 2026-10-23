@@ -1,0 +1,389 @@
+// Bannery na úvodní stránce (Figma: Homepage – Carousel 940 × 500, dva postranní 460 × 240, mezery 20 px).
+// Obsah (obrázky, odkazy, texty) je z administrace Shoptetu, variantu zobrazení volí obchodník
+// v nastavení šablony (třída .as-banners-* na <html>, viz js/banners.js):
+//   default   – velký banner + dva postranní; bez postranních banner přes šířku obsahu (chování Shoptetu)
+//   content   – jen velký banner přes šířku obsahu
+//   fullwidth – jen velký banner přes celou šířku okna
+//   cards     – přehled bannerů na výšku, posouvá se do stran
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+.as-theme {
+  @include bp.desktop {
+    // Společné pro všechny varianty.
+    // Obsah stránky má v Disco odsazení 20 px, řádek bannerů ho záporným okrajem vyrovná (jako Disco),
+    // pod bannery je 48 px k výhodám obchodu.
+    .banners-row {
+      margin: -20px -20px 48px;
+
+      // Clearfix z Bootstrapu by se v mřížce stal další buňkou.
+      &::before,
+      &::after {
+        content: none;
+      }
+
+      > [class*="col-"] {
+        float: none;
+        width: auto;
+        padding: 0;
+      }
+    }
+
+    #carousel,
+    .next-to-carousel-banners .banner-wrapper {
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    #carousel {
+      margin: 0;
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    // Šipky: bílé kruhy 40 px vpravo dole (Figma: Carousel).
+    #carousel .carousel-control {
+      top: auto;
+      bottom: 32px;
+      left: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--as-white);
+      color: var(--as-secondary-500);
+      opacity: 1;
+      text-shadow: none;
+
+      &::before {
+        @include icon(chevron-right, 16px);
+        position: static;
+        margin: 0;
+        border: 0;
+        font-size: 0;
+      }
+
+      &.left {
+        right: 80px;
+
+        &::before {
+          transform: rotate(180deg);
+        }
+      }
+
+      &.right {
+        right: 32px;
+      }
+
+      &:hover {
+        background: var(--as-primary-50);
+      }
+    }
+
+    // Tečky v návrhu nejsou, posun obstarají šipky.
+    #carousel .carousel-indicators {
+      display: none;
+    }
+
+    // Texty k bannerům z administrace (nadpis, text, odkaz): blok vlevo na středu.
+    .banners-row .extended-banner-texts {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 16px;
+      max-width: 50%;
+      padding: 40px 56px;
+      pointer-events: none;
+
+      > * {
+        position: static;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        color: var(--as-white);
+      }
+    }
+
+    .banners-row .extended-banner-title {
+      font-family: var(--as-font-family-headings);
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .banners-row .extended-banner-text {
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.3;
+    }
+
+    .banners-row .extended-banner-link {
+      display: inline-flex;
+      align-items: center;
+      height: 60px;
+      margin-top: 8px;
+      padding: 0 40px;
+      border-radius: var(--as-radius-pill);
+      background: var(--as-white);
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-body);
+      font-weight: 500;
+      pointer-events: auto;
+    }
+
+    .next-to-carousel-banners {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .banner-wrapper {
+        margin: 0;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .extended-banner-texts {
+        max-width: 100%;
+        padding: 24px 32px;
+      }
+
+      .extended-banner-title {
+        font-size: 28px;
+      }
+
+      .extended-banner-link {
+        height: 40px;
+        padding: 0 32px;
+      }
+    }
+
+    // Výchozí: velký banner a vedle sloupec 460 px se dvěma postranními (jen když jsou nahrané).
+    &.as-banners-default .banners-row:has(.next-to-carousel-banners .banner-wrapper) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 460px;
+      gap: 20px;
+    }
+
+    // Jen velký banner (přes obsah, nebo přes celé okno): postranní bannery se nezobrazují.
+    &.as-banners-content,
+    &.as-banners-fullwidth {
+      .banners-row > [class*="col-"]:has(.next-to-carousel-banners) {
+        display: none;
+      }
+    }
+
+    &.as-banners-fullwidth {
+      .banners-row {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+      }
+
+      // Pevný poměr 3 : 1 (doporučený obrázek 2880 × 960 px), jinak by běžný obrázek banneru
+      // přes celou šířku okna zabral víc než celou výšku obrazovky.
+      #carousel {
+        border-radius: 0;
+
+        img {
+          aspect-ratio: 3 / 1;
+          object-fit: cover;
+        }
+      }
+
+      // Šipky lícují s pravým okrajem obsahu.
+      #carousel .carousel-control.right {
+        right: max(32px, calc((100vw - 1418px) / 2));
+      }
+
+      #carousel .carousel-control.left {
+        right: calc(max(32px, calc((100vw - 1418px) / 2)) + 48px);
+      }
+    }
+
+  }
+}
+
+// Bannery na výšku (karty) vzniknou v js/banners.js z bannerů carouselu, původní řádek skryjeme hned,
+// aby neproblikl (i na mobilu).
+.as-theme.as-banners-cards .banners-row {
+  display: none;
+}
+
+// Karty na výšku se posouvají do stran i na mobilu (swipe), proto mimo desktopový breakpoint.
+.as-theme .as-bcards {
+  position: relative;
+  margin: 0 0 48px;
+
+  // Na desktopu stejně jako řádek bannerů vyrovnáme odsazení obsahu Disco (20 px).
+  @include bp.desktop {
+    margin: -20px -20px 48px;
+  }
+}
+
+.as-theme .as-bcards__track {
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  list-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// Na desktopu 3,5 karty: poslední je vidět jen napůl, aby bylo jasné, že se dá posouvat.
+.as-theme .as-bcard {
+  position: relative;
+  flex: 0 0 calc((100% - 3 * 20px) / 3.5);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--as-secondary-50);
+  scroll-snap-align: start;
+
+  @media (max-width: 767px) {
+    flex-basis: 78%;
+  }
+
+  > a {
+    position: absolute;
+    inset: 0;
+    display: block;
+    color: var(--as-white);
+    text-decoration: none;
+  }
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  a:hover img {
+    transform: scale(1.03);
+  }
+
+  // Tmavý přechod dole, aby byl text čitelný na jakékoli fotce.
+  .extended-banner-texts {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 96px 32px 32px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+
+    &:not(:has(:not(:empty))) {
+      display: none;
+    }
+
+    > * {
+      position: static;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      background: none;
+      border: 0;
+      box-shadow: none;
+      color: var(--as-white);
+      text-align: left;
+    }
+
+    > :empty {
+      display: none;
+    }
+  }
+
+  .extended-banner-title {
+    font-family: var(--as-font-family-headings);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .extended-banner-text {
+    font-size: var(--as-font-size-body);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .extended-banner-link {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    margin-top: 8px;
+    padding: 0 24px;
+    border-radius: 8px;
+    background: var(--as-white);
+    color: var(--as-secondary-500);
+    font-size: var(--as-font-size-body);
+    font-weight: 500;
+  }
+}
+
+.as-theme .as-bcards__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--as-white);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  color: var(--as-secondary-500);
+  cursor: pointer;
+
+  &::before {
+    @include icon(chevron-right, 20px);
+  }
+
+  &--prev {
+    left: 16px;
+
+    &::before {
+      transform: rotate(180deg);
+    }
+  }
+
+  &--next {
+    right: 16px;
+  }
+
+  &[hidden] {
+    display: none;
+  }
+
+  &:hover {
+    background: var(--as-primary-50);
+  }
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
