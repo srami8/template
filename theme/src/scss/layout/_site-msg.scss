@@ -19,7 +19,8 @@
   box-shadow: none;
   // Disco plovoucí lištu zprůhledňuje (opacity: .9), v návrhu je plná.
   opacity: 1;
-  background: var(--as-primary-500);
+  // Konverzní barva z administrace (barva šablony pro košík a objednávku).
+  background: var(--as-conversion);
   color: var(--as-white);
   font-family: var(--as-font-family);
   font-size: var(--as-font-size-small);
