@@ -38,6 +38,25 @@ Nastavení doplňku (settings-app) obsahuje jen to, co Shoptet nemá:
 
 U každého nového prvku se nejdřív ověří, jestli ho jde naplnit z administrace. Vlastní nastavení je až druhá možnost. Duplicitní údaje (telefon, e-mail, logo) se nikdy nezadávají podruhé.
 
+### Přehled zdrojů (stav k 23. 10. 2026)
+
+| Prvek | Zdroj |
+|---|---|
+| Barvy (hlavní, hover, konverzní, doplňková) | administrace (`--color-*`), odstíny dopočítané |
+| Písmo textu a nadpisů | administrace (`--template-font`, `--template-headings-font`) |
+| Pozadí hlavičky a světlý / tmavý text v ní | administrace (`--color-header-background`, třída `.header-background-light/dark`) |
+| Logo, hlavní a horní menu, kategorie v katalogu | administrace |
+| Telefon v horní liště, kontakt v našeptávači (fotka, e-mail, telefon) | kontaktní údaje e-shopu |
+| Výběr měny, košík, přihlášení | Shoptet |
+| Výsledky našeptávače, barvy dostupnosti | Shoptet / administrace |
+| Varianta hlavičky, otevírací doba, rychlé odkazy, odkazy vedle katalogu (v2) | nastavení doplňku (v Shoptetu nejsou) |
+
+Dál z administrace půjde brát (při kódování dalších částí):
+- informační proužek nad hlavičkou (Figma „Lišta“),
+- bannery na úvodní stránce a výhody obchodu („Doprava zdarma“…),
+- příznaky produktů (Novinka, Akce, Tip…) včetně barev nastavených obchodníkem místo pevných barev z Figmy,
+- patička: kontakty, sociální sítě, platební metody, odkazy na stránky.
+
 ## Postup vývoje
 
 Komponenta po komponentě, pak skládání stránek:

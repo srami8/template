@@ -7,11 +7,31 @@
 @forward "typography";
 @forward "shape";
 
-// Tokeny jako CSS proměnné, ať je jde přepsat z nastavení doplňku bez nového buildu.
+// Odstíny hlavní barvy jako poměr s bílou / černou. Paleta ve Figmě je namíchaná přesně takhle
+// (např. primary-50 = 10 % #1E9FE8 + 90 % bílé), takže stejné poměry fungují s barvou z administrace.
+$primary-tints: (50: 10%, 100: 20%, 200: 40%, 300: 60%, 400: 80%);
+$primary-shades: (700: 50%, 800: 25%, 900: 10%);
+
+// Tokeny jako CSS proměnné. Barvy a fonty se berou z administrace e-shopu (proměnné Shoptetu
+// --color-*, --template-*), hodnoty z Figmy jsou jen záloha, kdyby proměnná chyběla.
 @mixin custom-properties {
-  @each $step, $value in colors.$primary {
-    --as-primary-#{$step}: #{$value};
+  // Barva šablony 1 (hlavní) a 2 (hover).
+  --as-primary-500: var(--color-primary, #{map.get(colors.$primary, 500)});
+  --as-primary-600: var(--color-primary-hover, #{map.get(colors.$primary, 600)});
+  @each $step, $amount in $primary-tints {
+    --as-primary-#{$step}: color-mix(in srgb, var(--as-primary-500) #{$amount}, #fff);
   }
+  @each $step, $amount in $primary-shades {
+    --as-primary-#{$step}: color-mix(in srgb, var(--as-primary-500) #{$amount}, #000);
+  }
+
+  // Konverzní barva (košík, „Do košíku“, objednávka) a barva šablony 3 / 4.
+  --as-conversion: var(--color-secondary, var(--as-primary-500));
+  --as-conversion-hover: var(--color-secondary-hover, var(--as-primary-600));
+  --as-tertiary: var(--color-tertiary, #{map.get(colors.$secondary, 500)});
+  --as-tertiary-hover: var(--color-tertiary-hover, #{map.get(colors.$secondary, 400)});
+
+  // Neutrální barvy Shoptet nenastavuje, zůstávají podle Figmy.
   @each $step, $value in colors.$secondary {
     --as-secondary-#{$step}: #{$value};
   }
@@ -20,9 +40,12 @@
   }
   --as-white: #{colors.$white};
   --as-page-bg: #{colors.$page-bg};
-  --as-header-bg: #{colors.$header-bg};
+  // Pozadí hlavičky z administrace (barva a případně obrázek).
+  --as-header-bg: var(--color-header-background, #{colors.$header-bg});
 
-  --as-font-family: #{typography.$font-family};
+  // Písmo textu a nadpisů z administrace. Font načítá Shoptet, šablona si žádný nenačítá.
+  --as-font-family: var(--template-font, #{typography.$font-family-fallback}), #{typography.$font-stack};
+  --as-font-family-headings: var(--template-headings-font, #{typography.$font-family-fallback}), #{typography.$font-stack};
   @each $level, $size in typography.$headings {
     --as-font-size-#{$level}: #{$size};
   }

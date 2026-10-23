@@ -22,7 +22,7 @@
     #navigation {
       height: 60px;
       background: var(--as-white);
-      font-family: var(--as-font-family);
+      font-family: var(--as-font-family-headings);
     }
 
     #navigation .menu-level-1 {
@@ -130,7 +130,7 @@
       height: 60px;
       padding: 0 20px;
       color: var(--as-secondary-500);
-      font-family: var(--as-font-family);
+      font-family: var(--as-font-family-headings);
       font-size: var(--as-font-size-body);
       font-weight: 400;
 

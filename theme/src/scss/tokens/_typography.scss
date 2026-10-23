@@ -1,6 +1,8 @@
-// Typografie ze Styleguide ve Figmě. Font: Rubik.
+// Typografie ze Styleguide ve Figmě. Font samotný volí obchodník v administraci (--template-font,
+// --template-headings-font), Rubik z návrhu je jen záloha, kdyby proměnná Shoptetu chyběla.
 
-$font-family: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+$font-family-fallback: "Rubik";
+$font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
 $weight-regular: 400;
 $weight-medium: 500;

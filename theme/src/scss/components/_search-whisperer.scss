@@ -57,6 +57,7 @@
       .searchWhisperer__products__heading,
       .searchWhisperer__additionalResults__heading {
         margin: 0 0 20px;
+        font-family: var(--as-font-family-headings);
         color: var(--as-secondary-500);
         font-size: var(--as-font-size-body);
         font-weight: 500;
@@ -239,6 +240,7 @@
 
       .as-whisperer__emptyTitle {
         margin-bottom: 8px;
+        font-family: var(--as-font-family-headings);
         color: var(--as-secondary-500);
         font-size: var(--as-font-size-h3);
         font-weight: 500;
@@ -270,6 +272,7 @@
       }
 
       .as-whisperer__contactTitle {
+        font-family: var(--as-font-family-headings);
         color: var(--as-secondary-500);
         font-size: var(--as-font-size-h5);
         font-weight: 500;

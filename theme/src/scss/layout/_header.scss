@@ -6,6 +6,18 @@
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
 
+// Barva textu v hlavičce podle pozadí hlavičky z administrace. Shoptet podle něj přidá na <html>
+// třídu .header-background-light / .header-background-dark.
+.as-theme {
+  --as-header-text: var(--as-secondary-500);
+  --as-header-muted: var(--as-secondary-400);
+
+  &.header-background-dark {
+    --as-header-text: var(--as-white);
+    --as-header-muted: rgba(255, 255, 255, 0.75);
+  }
+}
+
 .as-theme {
   @include bp.desktop {
     // Horní lišta: odkazy na stránky, telefon, měna, jazyk.
@@ -37,7 +49,7 @@
 
         a {
           padding: 0;
-          color: var(--as-secondary-400);
+          color: var(--as-header-muted);
           font-size: var(--as-font-size-small);
           line-height: 20px;
           text-decoration: none;
@@ -49,7 +61,7 @@
       }
 
       .top-navigation-menu-trigger {
-        color: var(--as-secondary-400);
+        color: var(--as-header-muted);
         font-size: var(--as-font-size-small);
       }
 
@@ -86,7 +98,7 @@
           padding: 0;
           border: 0;
           background: none;
-          color: var(--as-secondary-500);
+          color: var(--as-header-text);
           font-family: var(--as-font-family);
           font-size: var(--as-font-size-small);
           line-height: 20px;
@@ -165,7 +177,7 @@
       flex: 0 0 auto;
       align-items: center;
       gap: 8px;
-      color: var(--as-secondary-400);
+      color: var(--as-header-muted);
       font-size: var(--as-font-size-small);
       line-height: 20px;
       text-decoration: none;
@@ -173,11 +185,11 @@
 
       &::before {
         @include icon(phone, 16px);
-        color: var(--as-secondary-500);
+        color: var(--as-header-text);
       }
 
       strong {
-        color: var(--as-secondary-500);
+        color: var(--as-header-text);
         font-weight: 500;
       }
     }
@@ -311,7 +323,7 @@
           border: 0;
           border-left: 1px solid var(--as-secondary-75);
           background: none;
-          color: var(--as-secondary-500);
+          color: var(--as-header-text);
           font-family: var(--as-font-family);
           font-size: var(--as-font-size-small);
           line-height: 1.2;
@@ -368,7 +380,7 @@
             height: 20px;
             padding: 0 4px;
             border-radius: var(--as-radius-pill);
-            background: var(--as-primary-500);
+            background: var(--as-conversion);
             color: var(--as-white);
             font-size: 12px;
             font-style: normal;

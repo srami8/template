@@ -75,10 +75,8 @@ export function buildHeaderSnippet(themeConfig) {
   const base = config.assetsBase;
   const version = config.assetsVersion === 'dev' ? 'Date.now()' : JSON.stringify(config.assetsVersion);
 
+  // Font si šablona nenačítá: použije písmo zvolené v administraci, které načítá Shoptet.
   const html = `<!-- aSteroid -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap">
 <script>
 window.asteroidConfig = ${inlineJson(themeConfig)};
 (function () {
