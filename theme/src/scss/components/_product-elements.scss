@@ -1,0 +1,49 @@
+// Prvky produktu všude, kde je Disco vypisuje (karta ve výpisech, detail produktu, hodnocení,
+// košík, další výpisy): příznaky, sleva v kolečku, hvězdičky hodnocení a počítadlo množství.
+// Markup Disca je všude stejný (.flags .flag, .flags-extra .flag-discount, .stars .star,
+// span.quantity), proto vzhled platí globálně a místa použití (components/product-cards/*,
+// _cart-widget) určují jen umístění a rozložení.
+// :is(body, …) zvedá specificitu nad selektory Disca typu .p-detail .add-to-cart .quantity.
+
+@use "../tools/flag";
+@use "../tools/quantity";
+@use "../tools/rating";
+
+.as-theme :is(body, .p-detail .add-to-cart, .cart-table .p-quantity) {
+  @include quantity.stepper;
+}
+
+// Hvězdičky hodnocení (barva z návrhu místo hlavní barvy Disca).
+.as-theme :is(body, .p-detail .stars-wrapper) .stars {
+  @include rating.stars;
+}
+
+// Štítky (Novinka, Tip …). Kolečka .flags-extra mají vlastní vzhled níže.
+.as-theme :is(body, .p-image) .flags:not(.flags-extra) .flag {
+  @include flag.label;
+}
+
+// Detail produktu: štítky vlevo nahoře přes fotku, pod sebou (jako v kartě).
+.as-theme .p-image .flags-default {
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+// Detail produktu: sleva v kolečku vpravo dole přes fotku. Disco v kolečku vypisuje i původní cenu,
+// v návrhu je jen procento (původní cena je u ceny vedle).
+.as-theme :is(body, .p-image-wrapper) .flags-extra .flag-discount {
+  @include flag.discount(72px);
+
+  .price-standard {
+    display: none;
+  }
+
+  .price-save {
+    color: inherit;
+    font-size: inherit;
+  }
+}

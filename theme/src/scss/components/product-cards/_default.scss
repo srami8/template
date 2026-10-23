@@ -11,6 +11,7 @@
 @use "../../tools/breakpoints" as bp;
 @use "../../tools/button";
 @use "../../tools/quantity";
+@use "../../tools/flag";
 @use "../../tools/rating";
 
 // Vnitřní okraj karty: 20 px, v úzké kartě (6 produktů vedle sebe) 12 px, aby se počítadlo
@@ -89,16 +90,7 @@ $image-inset: 12px;
       margin: 0;
     }
 
-    .flag {
-      display: inline-block;
-      margin: 0;
-      padding: 4px 8px;
-      border-radius: var(--as-radius-pill);
-      font-size: var(--as-font-size-caption);
-      font-weight: 500;
-      line-height: 1.2;
-      text-transform: none;
-    }
+    // Vzhled štítků je společný (components/_product-flags.scss, tools/flag).
 
     // Hvězdičky hodnocení (bez hodnocení zůstává místo, aby karty v řadě lícovaly).
     .stars-wrapper,
@@ -182,23 +174,15 @@ $image-inset: 12px;
       // 100cqw = šířka obsahu karty; obrázek je čtverec o 2 × 12 px užší, kolečko přesahuje 34 px nad jeho spodek.
       top: calc(24px + 100cqw - #{$image-inset * 2} - 34px);
       right: $padding-x;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      margin: 0;
-      border-radius: 50%;
-      background: var(--as-danger);
-      color: var(--as-white);
+      @include flag.discount(48px);
       font-size: 0;
 
+      // Disco ceně slevy dává tučné písmo s vyšší specificitou, text v kolečku ho nesmí zdědit.
       &::before {
         content: attr(data-as-discount);
         font-size: var(--as-font-size-caption);
         font-weight: 500;
         line-height: 1.2;
-        white-space: nowrap;
       }
     }
 

@@ -425,3 +425,34 @@ test('mobile menu is a left drawer and its extras stay off the desktop', async (
     for (const item of await page.locator(selector).all()) await expect(item).toBeHidden();
   }
 });
+
+test('product flags, discount and quantity look the same on the product detail as in the card', async ({page}) => {
+  await page.setViewportSize({width:1280,height:900});
+  await load(page);
+  // Markup detailu Disca (ověřený na testovacím e-shopu).
+  await page.evaluate(()=>{
+    const detail=document.createElement('div');
+    detail.className='p-detail';
+    detail.innerHTML=`<div class="p-image-wrapper" style="position:relative"><div class="p-image" style="position:relative;width:600px;height:600px"><div class="flags flags-default" style="position:absolute"><span class="flag flag-new" style="background:green">Novinka</span></div></div><div class="flags flags-extra" style="position:absolute;right:0;bottom:0"><span class="flag flag-discount"><span class="price-standard"><span>290 Kč</span></span><span class="price-save">–31 %</span></span></div></div>
+      <form class="pr-action"><div class="add-to-cart"><span class="quantity"><label><input class="amount" type="number" value="1"></label><button class="increase" type="button"><span>+</span></button><button class="decrease" type="button"><span>−</span></button></span></div></form>`;
+    document.querySelector('#content').append(detail);
+  });
+  const look=await page.evaluate(()=>{
+    const read=(el,keys)=>Object.fromEntries(keys.map(k=>[k,getComputedStyle(el)[k]]));
+    const box=['borderRadius','backgroundColor','height','borderTopWidth'];
+    const text=['borderRadius','fontSize','fontWeight','paddingTop','paddingLeft'];
+    return {
+      cardQty:read(document.querySelector('.products-block .quantity'),box),
+      detailQty:read(document.querySelector('.p-detail .add-to-cart .quantity'),box),
+      cardFlag:read(document.querySelector('.products-block .flag'),text),
+      detailFlag:read(document.querySelector('.p-detail .flags-default .flag'),text),
+      detailDiscount:read(document.querySelector('.p-detail .flag-discount'),['borderRadius','backgroundColor']),
+      cardDiscount:read(document.querySelector('.products-block .price-save'),['borderRadius','backgroundColor']),
+      oldPriceHidden:getComputedStyle(document.querySelector('.p-detail .flag-discount .price-standard')).display,
+    };
+  });
+  expect(look.detailQty).toEqual(look.cardQty);
+  expect(look.detailFlag).toEqual(look.cardFlag);
+  expect(look.detailDiscount).toEqual(look.cardDiscount);
+  expect(look.oldPriceHidden).toBe('none');
+});

@@ -1,3 +1,28 @@
+# Aktualizace (Claude): prvky produktu jako globální komponenty
+
+**Chyba (majitel):** na detailu produktu měly štítky, sleva, hvězdičky a počítadlo vzhled Disca, protože naše styly platily jen v kartě produktu (`.products-block .p`) a v okně košíku. Markup Disca je přitom stejný.
+
+**(1) Disco:** `.flags-default .flag`, detail `.p-image .flags-default`, `.p-image-wrapper .flags-extra .flag-discount` (původní cena + `.price-save` „–31 %“), `.stars .star-on/-off`, `span.quantity` (detail `.p-detail .add-to-cart .quantity` s vyšší specificitou).
+
+**(2) Změny**
+- Nový `tools/_flag.scss` (`label`, `discount($size)`).
+- Nový `components/_product-elements.scss`, globálně: počítadlo `quantity.stepper`, hvězdičky `rating.stars`, štítky, kolečko slevy na detailu (72 px, původní cena skrytá).
+  - `:is(body, .p-detail .add-to-cart, …)` zvedá specificitu nad Disco.
+- Karta: štítek a kolečko přes stejné mixiny. Text kolečka má vlastní `font-weight`, protože Disco dává tučné s vyšší specificitou.
+- Procesní doplňky:
+  - `tests/shop/snapshots.cjs` (`npm run snapshots before` / `after before`): standardní sada stránek (úvodní, kategorie, detail, hledání, košík, přihlášení) na 1920 a 390 px s porovnáním pixelů,
+  - `docs/komponenty.md`: mapa prvků Disca a kde se vypisují,
+  - pravidlo v `AGENTS.md`.
+
+**(3) Ověření**
+- Testy: 91 prošlých, nový `product flags, discount and quantity look the same on the product detail as in the card`.
+- Detail na e-shopu (1920 i 390): počítadlo 36 px bílá pilulka bez rámečku, štítky zaoblené vlevo nahoře, kolečko 72 px červené „–31 %“, hvězdičky v barvách z návrhu.
+- Karty na úvodní stránce a v kategorii beze změny (porovnání snímků, rozdíl jen ve vyhlazení písma).
+
+**Bez návrhu (vzhled Disca):** tlačítko „Do košíku“ a cena na detailu, další formuláře, ostatní kolečka `.flags-extra`.
+
+---
+
 # Aktualizace (Claude): styly rozdělené na základ a soubory variant
 
 **Zadání majitele:** variant (karty produktů aj.) časem přibude, e-shop má stahovat jen styly zvolených variant.
