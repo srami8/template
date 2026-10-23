@@ -66,23 +66,19 @@ $row-border: 1px solid var(--as-secondary-50);
   }
 
   @include bp.mobile {
-    // Ztmavení stránky vedle panelu (overlay Disca body::before). Klepnutí na něj zavře menu
-    // (js/mobile-menu.js), proto zachytává klepnutí místo obsahu pod ním.
-    body.navigation-window-visible::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 1004;
-      background: rgba(0, 0, 0, 0.6);
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-
-    // Panel je uvnitř hlavičky (její vrstva má z-index 56), při otevřeném menu musí být celá
-    // hlavička nad ztmavením stránky.
+    // Ztmavení stránky vedle panelu. Panel je uvnitř hlavičky (pevná hlavička má vlastní vrstvu),
+    // proto ztmavení kreslí hlavička sama: celá hlavička jde nad stránku, její obsah zůstane pod
+    // ztmavením a nad ním je jen panel. Klepnutí na ztmavení zavře menu (js/mobile-menu.js).
     body.navigation-window-visible #header {
       z-index: 1005;
+
+      &::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        background: rgba(0, 0, 0, 0.6);
+      }
     }
 
     #navigation {
@@ -91,7 +87,7 @@ $row-border: 1px solid var(--as-secondary-50);
       right: auto;
       bottom: 0;
       left: 0;
-      z-index: 1005;
+      z-index: 2;
       width: min(#{$drawer-width}, calc(100% - 56px));
       height: auto;
       padding: 0;
