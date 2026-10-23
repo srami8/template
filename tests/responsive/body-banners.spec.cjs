@@ -1,4 +1,4 @@
-// Banner Střed vedle produktové sekce (js/section-banners.js, components/_body-banners.scss).
+// Banner Střed vedle produktové sekce (js/homepage-banners.js, components/_body-banners.scss).
 // Minimální stránka podle skutečného pořadí v obsahu úvodní stránky Disca: sekce 1, blok
 // .body-banners se všemi bannery Střed, sekce 2 a 3, a měřicí #trackingScript Shoptetu.
 // Kontroluje přiřazení podle názvu a rozložení, slider Shoptetu se zde nespouští (jen data-columns).
@@ -122,4 +122,65 @@ test('middle banners fit the phone width', async ({page: p}) => {
   expect(banner.width).toBeLessThanOrEqual(375);
   const overflow = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
+});
+
+// Bannery ze Zápatí: mozaika podle čísel, banner sekce podle [R], banner bez značky zůstává v zápatí.
+const svg = (w, h) => `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"%3E%3Crect width="${w}" height="${h}" fill="%23e6e8eb"/%3E%3C/svg%3E`;
+const footerBanner = (alt, w, h) => `<div class="footer-banner col-sm-12 col-lg-2"><img src='${svg(w, h)}' alt="${alt}" width="${w}" height="${h}"></div>`;
+
+const footerPage = () => `<!doctype html><html lang="cs"><head><meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1"><style>
+  *,*::before,*::after{box-sizing:border-box}body{margin:0;font-family:sans-serif}.container{margin:0 auto;padding:0 20px}
+  .product-slider-holder{width:100%}.footer-banner{float:left;width:16.66%;padding:0 10px}
+  @media(min-width:768px){.container{width:747px}}@media(min-width:992px){.container{width:972px}}
+  @media(min-width:1200px){.container{width:1178px}}@media(min-width:1440px){.container{width:1418px}}
+  ${css}</style></head><body class="type-index admin-logged"><main id="content" class="container content">
+  ${section(1, 'Omrkni nové kousky')}
+  ${section(2, 'Novinky, které musíš mít')}
+  <div class="footer-banners row banner-wrapper banners-row">
+    ${footerBanner('Sluchátka [3]', 920, 480)}${footerBanner('Novinky, které musíš mít [R]', 434, 509)}
+    ${footerBanner('Makita [1]', 920, 1000)}${footerBanner('Fotoaparát [4]', 920, 1000)}
+    ${footerBanner('Kosmetika [2]', 920, 480)}${footerBanner('Recenze', 920, 480)}
+  </div>
+  </main><script id="trackingScript" data-products="{}"></script><script>${js}</script></body></html>`;
+
+test('numbered footer banners form the mosaic under the first section', async ({page: p}) => {
+  await p.setViewportSize({width: 1440, height: 900});
+  await p.setContent(footerPage());
+
+  // Pořadí podle čísel, mozaika hned za prvním pásem produktů.
+  expect(await p.locator('.homepage-products-heading-1 + .products-wrapper + .as-banner-mosaic').count()).toBe(1);
+  expect(await p.locator('.as-banner-mosaic img').evaluateAll((els) => els.map((el) => el.alt))).toEqual(['Makita', 'Kosmetika', 'Sluchátka', 'Fotoaparát']);
+
+  const boxes = await p.locator('.as-banner-mosaic > *').evaluateAll((els) => els.map((el) => el.getBoundingClientRect()).map(({x, y, width, height}) => ({x, y, width, height})));
+  const [tall1, low2, low3, tall4] = boxes;
+  // Vysoký vlevo, dva nízké pod sebou uprostřed, vysoký vpravo, mezery 20 px.
+  expect(Math.abs(low2.x - (tall1.x + tall1.width) - 20)).toBeLessThanOrEqual(1);
+  expect(Math.abs(low2.x - low3.x)).toBeLessThanOrEqual(1);
+  expect(Math.abs(low3.y - (low2.y + low2.height) - 20)).toBeLessThanOrEqual(1);
+  expect(Math.abs(tall4.x - (low2.x + low2.width) - 20)).toBeLessThanOrEqual(1);
+  expect(Math.abs(tall1.height - (low3.y + low3.height - low2.y))).toBeLessThanOrEqual(1);
+  expect(Math.abs(low2.width / low2.height * 240 - 460)).toBeLessThanOrEqual(2);
+
+  // [R] u své sekce, banner bez značky zůstává v zápatí, štítky pro admina.
+  expect(await p.locator('.as-section-banner--right + .homepage-products-heading-2').count()).toBe(1);
+  expect(await p.locator('#content > .footer-banners .footer-banner img').evaluateAll((els) => els.map((el) => el.alt))).toEqual(['Recenze']);
+  expect(await p.locator('.as-banner-mosaic > *').first().getAttribute('data-as-admin-label')).toContain('pozice 1');
+  expect(await p.locator('.as-banner-mosaic > *').first().evaluate((el) => getComputedStyle(el, '::after').content)).toContain('Mozaika');
+
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('mosaic banners stack uncropped on a phone', async ({page: p}) => {
+  await p.setViewportSize({width: 375, height: 800});
+  await p.setContent(footerPage());
+  const items = await p.locator('.as-banner-mosaic img').evaluateAll((els) => els.map((el) => {
+    const r = el.getBoundingClientRect();
+    return {ratio: r.width / r.height, natural: el.naturalWidth / el.naturalHeight, x: r.x, width: r.width};
+  }));
+  for (const item of items) {
+    expect(Math.abs(item.ratio - item.natural)).toBeLessThan(0.02);
+    expect(item.x + item.width).toBeLessThanOrEqual(376);
+  }
 });

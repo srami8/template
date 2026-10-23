@@ -42,6 +42,16 @@ Menu je `#navigation` Disca jako vysouvací panel zleva (`components/_mobile-men
 - **Telefon** je přichycený dole.
 - **Desktop:** doplňky jsou skryté (i v `tools/submenu`).
 
+## Mozaika bannerů pod prvním pásem produktů
+
+Bannery Zápatí s číslem v názvu (`[1]` …) `js/homepage-banners.js` seřadí a přesune do `#content > .as-banner-mosaic` za první `.products-wrapper` (`components/_banner-mosaic.scss`).
+- **Vzor po čtyřech:** 1. a 4. vysoký (řádky ×2), 2. a 3. nízké.
+- **Šířky:**
+  - od 1200 px tři sloupce,
+  - 768–1199 px dva (`grid-auto-flow: dense`),
+  - telefon jeden sloupec s obrázky v přirozeném poměru, bez ořezu: texty jsou součástí obrázků, textová pole Shoptetu jsou skrytá.
+- **Štítky:** přihlášený admin (`body.admin-logged`) vidí štítek `data-as-admin-label` přes `::after`.
+
 ## Banner Střed vedle produktové sekce
 
 Doplňkový banner Shoptetu s pozicí Střed obchodník přiřadí sekci názvem „Nadpis sekce [L]“ / „[P]“ / „[R]“ (interní název, popis obrázku nebo nadpis banneru; značku zákazník nevidí). Disco vykreslí všechny bannery Střed v jednom bloku `#content > .body-banners` za první sekcí, `js/section-banners.js` proto přiřazený `.banner-wrapper` přesune do vlastního bloku `.as-section-banner--left|--right` před nadpis sekce. Banner bez značky nebo bez shody zůstává na místě.

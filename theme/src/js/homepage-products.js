@@ -4,7 +4,7 @@
 // posluchač DOMContentLoaded je zaregistrovaný dřív (skript v hlavičce), atribut tedy přepíšeme
 // před spuštěním slideru. Nic jiného se nemění.
 //
-// Sekce s bannerem Střed vedle sebe (js/section-banners.js, components/_body-banners.scss) je
+// Sekce s bannerem Střed vedle sebe (js/homepage-banners.js, components/_body-banners.scss) je
 // o šířku banneru užší, má o dva produkty méně (6 → 4 jako v návrhu), nejméně však 3. Vedle banneru
 // je jen od 992 px, pod tím je sekce přes celou šířku; slider si počet určí jen jednou při spuštění,
 // rozhoduje tedy šířka okna při načtení (po změně šířky přes 992 px platí až po novém načtení stránky).

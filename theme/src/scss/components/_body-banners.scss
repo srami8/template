@@ -1,6 +1,6 @@
 // Banner vedle produktové sekce na úvodní stránce (Figma: Homepage – „Nejprodávanější“ s bannerem
 // vlevo / vpravo). Obsah jsou doplňkové bannery Shoptetu s pozicí Střed, které obchodník přiřadí
-// sekci názvem „Nadpis sekce [L]“ / „[P]“. js/section-banners.js přesune jejich .banner-wrapper do
+// sekci názvem „Nadpis sekce [L]“ / „[P]“. js/homepage-banners.js přesune banner (.banner-wrapper ze Střed, .footer-banner ze Zápatí) do
 // bloku #content > .as-section-banner(--left|--right) před nadpis sekce (s třídami bloku Disca
 // .banners-content.body-banners). Od 992 px blok obteče (float, do 1200 px užší) a sekce za ním
 // (nadpis a slider) se zúží vedle něj, užší slider má o dva produkty méně (js/homepage-products.js).
@@ -19,19 +19,25 @@ $section-gap: 72px;
   margin: 0 0 32px;
   padding: 0;
 
-  .banner-wrapper {
+  // Banner ze Střed (.banner-wrapper) nebo ze Zápatí (.footer-banner, se sloupcovými třídami Bootstrapu).
+  .banner-wrapper,
+  .footer-banner {
+    float: none;
+    width: auto;
     margin: 0;
+    padding: 0;
   }
 
   // Obrázek přes celou plochu banneru, texty nahoře, tlačítko dole (vše z administrace).
-  // Rámeček je na .banner-wrapper, banner bez cílové adresy nemá odkaz, jen obrázek.
+  // Rámeček je na .banner-wrapper / .footer-banner, banner bez cílové adresy nemá odkaz, jen obrázek.
   @include bp.desktop {
     // Na tabletu nad sekcí uprostřed, v plné šířce by obrázek na výšku byl příliš vysoký.
     max-width: $banner-width;
     margin-right: auto;
     margin-left: auto;
 
-    .banner-wrapper {
+    .banner-wrapper,
+    .footer-banner {
       position: relative;
       aspect-ratio: 434 / 509;
       border-radius: 8px;
@@ -39,7 +45,8 @@ $section-gap: 72px;
     }
 
     // Flex: výška z poměru stran se pro height: 100 % textů nepočítá, texty se roztáhnou přes flex.
-    .banner-wrapper > a {
+    .banner-wrapper > a,
+    .footer-banner > a {
       position: absolute;
       inset: 0;
       display: flex;

@@ -1,0 +1,102 @@
+// Mozaika bannerů pod prvním pásem produktů (Figma „Bannery medium“): doplňkové bannery Shoptetu
+// s číslem v názvu („Makita [1]“), viz js/homepage-banners.js. Vzor po čtyřech: 1. a 4. vysoký,
+// 2. a 3. nízké pod sebou (dlaždice 460 × 500 a 460 × 240, mezera 20 px, zaoblení 8 px).
+// Texty a tlačítka jsou součástí obrázků, textová pole Shoptetu se v mozaice nezobrazují.
+// Na telefonu jsou bannery pod sebou celé (bez ořezu), od 768 px dva sloupce, od 1200 px tři.
+// Štítky pro přihlášeného admina (kam banner patří) platí pro všechny přesunuté bannery.
+
+@use "../tools/breakpoints" as bp;
+
+$gap: 20px;
+
+.as-theme #content > .as-banner-mosaic {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: $gap;
+  margin: 0 0 40px;
+
+  .as-banner-mosaic__item {
+    position: relative;
+    float: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--as-secondary-50);
+
+    > a {
+      display: block;
+      height: 100%;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    // Texty jsou v obrázku, popis zůstává v alt.
+    .extended-banner-texts {
+      display: none;
+    }
+  }
+
+  // Od 768 px dlaždice v poměrech z návrhu, obrázek je vyplní (při doporučeném rozměru bez ořezu).
+  // Vysoký banner zabírá dva řádky nízkých.
+  @include bp.desktop {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row dense;
+    margin-bottom: 72px;
+
+    .as-banner-mosaic__item img {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .as-banner-mosaic__item--low {
+      aspect-ratio: 460 / 240;
+    }
+
+    .as-banner-mosaic__item--tall {
+      grid-row: span 2;
+      align-self: stretch;
+      aspect-ratio: 460 / 500;
+    }
+  }
+
+  // Tři sloupce: vysoký vlevo, dva nízké uprostřed, vysoký vpravo, další čtveřice pod tím.
+  @media (min-width: bp.$wide) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    > :nth-child(4n + 1) { grid-column: 1; }
+    > :nth-child(4n + 2),
+    > :nth-child(4n + 3) { grid-column: 2; }
+    > :nth-child(4n) { grid-column: 3; }
+  }
+}
+
+// Štítek pro přihlášeného admina (Shoptet mu dává body.admin-logged): kam banner podle značky patří
+// a doporučený rozměr obrázku. Zákazníci ho nevidí.
+.as-theme body.admin-logged [data-as-admin-label] {
+  position: relative;
+
+  &::after {
+    content: attr(data-as-admin-label);
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 5;
+    max-width: calc(100% - 16px);
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(35, 40, 52, 0.85);
+    color: var(--as-white);
+    font-family: var(--as-font-family);
+    font-size: 12px;
+    line-height: 1.3;
+    pointer-events: none;
+  }
+}

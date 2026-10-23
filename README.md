@@ -64,7 +64,7 @@ Ikony (`icon`) odpovídají souborům v [`theme/src/icons`](theme/src/icons/).
 
 Náhled jiné varianty bez změny nastavení: přidejte k adrese e-shopu `?asteroid-header=v2`, `?asteroid-banners=cards` nebo `?asteroid-columns=6`.
 
-Banner vedle produktové sekce: doplňkový banner Shoptetu s pozicí Střed pojmenujte jako nadpis sekce a přidejte `[L]` (vlevo) nebo `[P]` / `[R]` (vpravo), např. „Omrkni nové kousky [L]“. Nastavení šablony k tomu není potřeba.
+Bannery na úvodní stránce podle názvu (`js/homepage-banners.js`): doplňkové bannery s pozicí Zápatí (Shoptet jich pošle libovolný počet, Střed nejvýš dva) umístí konec interního názvu. `[1]`, `[2]` … = mozaika pod prvním pásem produktů, `[L]` / `[P]` / `[R]` = vedle produktové sekce se stejným nadpisem, bez značky = zůstane v zápatí. Přihlášený admin vidí na e-shopu štítek, kam banner patří.
 
 ## Vývoj
 

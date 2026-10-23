@@ -1,3 +1,32 @@
+# Aktualizace (Claude): mozaika bannerů a bannery ze Zápatí podle značky v názvu
+
+**Zjištění:** Shoptet posílá na e-shop nejvýš **2 bannery Střed** (Disco je dává jako 1/3 + 2/3). 4 testovací bannery tak vytlačily i bannery `[L]`/`[R]` u sekcí. Pozice **Zápatí** má víc bannerů (ověřeno 8 viditelných, Disco mění šířku sloupců `col-lg-2` → `col-lg-1.5`). Jsou jen na úvodní stránce, v `#content > .footer-banners > .footer-banner` (img s `data-src` líně, odkaz s `data-ec-promo-id`, když má banner URL). Majitel přepnul bannery na Zápatí.
+
+**(1) Disco a Shoptet:** `.footer-banners` / `.footer-banner`, `.body-banners .banner-wrapper`, `#trackingScript[data-products].banners` (interní název podle promo ID), `body.admin-logged`.
+
+**(2) Vlastní doplňky**
+- `js/section-banners.js` → `js/homepage-banners.js` (`placeHomepageBanners`):
+  - zdroje Zápatí i Střed,
+  - značka `[L]/[P]/[R]` → sekce (beze změny), `[číslo]` → mozaika,
+  - bez značky → zůstává,
+  - štítky `data-as-admin-label`, prázdné bloky Disca odstraní.
+  - Mozaika: řazení podle čísla (stejná čísla v pořadí Shoptetu), třídy `--tall` / `--low` podle pozice ve vzoru, vložená za první `.products-wrapper` (po bannerech u sekcí).
+- Nový `components/_banner-mosaic.scss`: mřížka, poměry 460/240 a 460/500, zaoblení 8 px, štítky pro admina.
+- `_body-banners.scss`, `_banners.scss`: banner u sekce může být i `.footer-banner` (nulování sloupců Bootstrapu).
+- settings-app: karta s návodem k pojmenování.
+
+**(3) Ověření**
+- Testy: 89 prošlých, nové `numbered footer banners form the mosaic…` a `mosaic banners stack uncropped on a phone`.
+- E-shop:
+  - **1920 px:** mozaika 447 × 485 / 446 × 233, mezery 20 px. Odpovídá Figmě, jen v kontejneru Disca 1378 px místo 1420 px.
+  - **1024 px:** dva sloupce.
+  - **390 px:** pod sebou bez ořezu.
+  - `[L]`/`[R]` u sekcí, bannery bez značky v zápatí, štítky pro přihlášeného admina, bez přetékání a chyb.
+
+**Neověřeno:** horní limit počtu bannerů Zápatí.
+
+---
+
 # Aktualizace (Claude): mobilní hlavička a menu podle Figmy
 
 **Zadání:** majitel dodal 5 návrhů (výchozí, sticky, menu úroveň 1–3). Rozhodnutí majitele:

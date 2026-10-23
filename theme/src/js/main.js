@@ -11,7 +11,7 @@ import { enhanceLogin } from './login';
 import { enhanceCart } from './cart';
 import { enhanceProductCards } from './product-cards';
 import { setHomepageProductColumns } from './homepage-products';
-import { placeSectionBanners } from './section-banners';
+import { placeHomepageBanners } from './homepage-banners';
 import { trackViewportWidth } from './viewport';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
@@ -69,7 +69,7 @@ function start() {
   const init = () => {
     // Před spuštěním slideru Shoptetu (ten běží na DOMContentLoaded po nás). Bannery k sekcím
     // nejdřív, sekce vedle banneru má méně produktů.
-    placeSectionBanners();
+    placeHomepageBanners();
     setHomepageProductColumns(config);
     enhanceHeader(config);
     enhanceMobileHeader();

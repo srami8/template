@@ -246,9 +246,15 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, cat
           'Kolik produktů je vidět vedle sebe v produktových sekcích úvodní stránky (na širokém displeji, na menších se počet sám sníží). Ostatní produkty se posouvají šipkami. Výpis kategorie řídí nastavení e-shopu.',
         )}
         ${card(
-          'Banner vedle produktové sekce',
-          `<p class="v2FormField__hint">Doplňkový banner s pozicí Střed (Vzhled a obsah → Bannery → Doplňkové bannery) pojmenujte stejně jako nadpis produktové sekce a na konec přidejte <strong>[L]</strong> pro banner vlevo nebo <strong>[P]</strong> vpravo, např. „Omrkni nové kousky [L]“. Banner se pak na širokém displeji zobrazí vedle sekce (na menších nad ní). Doporučený obrázek na výšku 868 × 1018 px.</p>`,
-          'Nadpis, text a tlačítko banneru se vyplňují v administraci Shoptetu. Banner bez značky zůstává tam, kam ho dává Shoptet.',
+          'Bannery na úvodní stránce podle názvu',
+          `<p class="v2FormField__hint">Doplňkové bannery s pozicí <strong>Zápatí</strong> (Vzhled a obsah → Bannery → Doplňkové bannery) umístíte koncem interního názvu:</p>
+          <ul class="v2FormField__hint">
+            <li><strong>[1], [2], [3] …</strong> mozaika pod prvním pásem produktů na danou pozici (1. a 4. vysoký 920 × 1000 px, 2. a 3. nízký 920 × 480 px, pak znovu stejný vzor), např. „Makita [1]“,</li>
+            <li><strong>[L] / [P]</strong> vedle produktové sekce se stejným nadpisem, vlevo / vpravo (obrázek 868 × 1018 px), např. „Omrkni nové kousky [L]“,</li>
+            <li>bez značky zůstane banner v zápatí.</li>
+          </ul>
+          <p class="v2FormField__hint">Přihlášeným v administraci se na e-shopu u každého banneru ukáže štítek, kam patří. Zákazníci ho nevidí.</p>`,
+          'Texty a tlačítka v mozaice jsou součástí obrázku. Bannery se Střed fungují také, Shoptet jich ale zobrazí nejvýš dva.',
         )}
         ${card(
           'Telefon v horní liště',
