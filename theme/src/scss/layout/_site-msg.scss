@@ -19,7 +19,7 @@
   box-shadow: none;
   // Disco plovoucí lištu zprůhledňuje (opacity: .9), v návrhu je plná.
   opacity: 1;
-  background: linear-gradient(90deg, var(--as-primary-600), var(--as-gradient-end));
+  background: var(--as-primary-500);
   color: var(--as-white);
   font-family: var(--as-font-family);
   font-size: var(--as-font-size-small);

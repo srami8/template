@@ -16,9 +16,3 @@
   @include tokens.custom-properties;
   @include icon.custom-properties;
 }
-
-@supports (color: oklch(from red l c h)) {
-  :root {
-    @include tokens.modern-custom-properties;
-  }
-}

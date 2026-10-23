@@ -25,12 +25,6 @@ $primary-shades: (700: 50%, 800: 25%, 900: 10%);
     --as-primary-#{$step}: color-mix(in srgb, var(--as-primary-500) #{$amount}, #000);
   }
 
-  // Druhá barva přechodů (Figma „Lišta“: od #1676AD do #37D1E5). Je to hlavní barva posunutá
-  // ve světlosti a odstínu stejně jako ve Figmě, takže přechod sedí k barvě z administrace.
-  // Prohlížeče bez relativních barev dostanou světlejší odstín hlavní barvy.
-  // (relativní varianta je v mixinu modern-custom-properties).
-  --as-gradient-end: var(--as-primary-400);
-
   // Konverzní barva (košík, „Do košíku“, objednávka) a barva šablony 3 / 4.
   --as-conversion: var(--color-secondary, var(--as-primary-500));
   --as-conversion-hover: var(--color-secondary-hover, var(--as-primary-600));
@@ -61,9 +55,4 @@ $primary-shades: (700: 50%, 800: 25%, 900: 10%);
 
   --as-radius-pill: #{shape.$radius-pill};
   --as-control-height: #{shape.$control-height};
-}
-
-// Tokeny, které potřebují novější CSS (relativní barvy). Vkládá se do @supports v main.scss.
-@mixin modern-custom-properties {
-  --as-gradient-end: oklch(from var(--as-primary-500) calc(l + 0.12) calc(c - 0.024) calc(h - 33));
 }
