@@ -4,6 +4,8 @@ Designová šablona pro Shoptet postavená nad šablonou **Disco**, prodávaná 
 
 Návrh: [Figma – aSteroid](https://www.figma.com/design/jpEXMp36OXxRJqE0ortBfB/aSteroid)
 
+Zadání a principy vývoje (barvy a fonty z administrace, obsah z administrace, postup): [docs/zadani.md](docs/zadani.md)
+
 ## Struktura
 
 | Složka | Co obsahuje |
