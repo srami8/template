@@ -8,6 +8,7 @@
 // hvězdičky, název, ceny, dostupnost, tlačítka): obaly mají display: contents a pořadí řídí order,
 // DOM se nemění.
 
+@use "../../tools/breakpoints" as bp;
 @use "../../tools/button";
 @use "../../tools/quantity";
 @use "../../tools/rating";
@@ -239,7 +240,12 @@ $image-inset: 12px;
         max-width: 100%;
         white-space: normal;
         overflow-wrap: anywhere;
-        min-height: 44px;
+
+        // Na dotykovém displeji větší plocha pro prst, na desktopu výška 36 px podle návrhu
+        // (stejná jako počítadlo vedle).
+        @include bp.mobile {
+          min-height: 44px;
+        }
 
         // Úzká karta: s menším okrajem se tlačítko vejde vedle počítadla.
         @container product-card (max-width: 240px) {

@@ -310,3 +310,14 @@ test('cart controls share their visual style on mobile and desktop', async ({pag
   expect(snapshots[0]).toEqual(snapshots[1]);
   expect(snapshots[0].quantity.borderRadius).not.toBe('0px');
 });
+
+test('product card button keeps the design height on desktop and a touch target on mobile', async ({page}) => {
+  await load(page);
+  const minHeight=async width=>{
+    await page.setViewportSize({width,height:900});
+    return page.locator('.products-block .p .p-tools .btn').first().evaluate(el=>getComputedStyle(el).minHeight);
+  };
+  // Na desktopu 36 px jako počítadlo (bez vynucené minimální výšky), na mobilu aspoň 44 px.
+  expect(await minHeight(1280)).not.toBe('44px');
+  expect(await minHeight(390)).toBe('44px');
+});

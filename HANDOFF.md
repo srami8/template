@@ -1,3 +1,14 @@
+# Aktualizace (Claude): převzetí feature/responsive, výška tlačítka v kartě
+
+Navazuje na předchozí aktualizace Codexu. Větev nasazena na testovací e-shop (SFTP).
+
+- `npm run test:responsive`: **78 prošlých** (77 původních + 1 nový). Na tomto stroji je Node 18, Playwright 1.62 potřebuje Node 20, testy proto běží přes `npx -y node@20 node_modules/@playwright/test/cli.js test --config tests/responsive/playwright.config.cjs`. Prošel i test shody vzhledu košíku na mobilu a desktopu, který se u Codexu nespustil (pád Chromu).
+- Tlačítko v kartě produktu: `min-height: 44px` jen na mobilu (`bp.mobile`). Na desktopu má 36 px podle Figmy, stejně jako počítadlo vedle (předtím 44 / 36 px v jednom řádku). Nový test `product card button keeps the design height on desktop and a touch target on mobile`.
+- Ověřeno na skutečném e-shopu: multibanner (`cards`) při 375 px – pás 0–375 px, první karta x = 20 px, další vykukuje, přichycení na začátek karty, na konci 20 px od pravého okraje, stránka nepřetéká; informační lišta hned pod mobilní hlavičkou (50 px). Desktop 1920 px: tlačítko i počítadlo v kartě 36 px, cena košíku zobrazená.
+- Neověřeno: skutečný dotykový swipe (jen programový posun), plný košík na mobilu na skutečném e-shopu (košík je prázdný).
+
+---
+
 # Aktualizace: posun multibanneru po jedné kartě
 
 Šipky nyní posouvají pás o skutečnou šířku jedné karty plus mezeru namísto 90 % viewportu. Zachováno zarovnání a koncové odsazení. `scroll-snap-stop: always` omezuje přeskakování karet při posuvu. Bez nové knihovny a změn DOM.
