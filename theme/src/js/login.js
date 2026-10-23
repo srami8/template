@@ -24,6 +24,10 @@ function enhanceLoginDialog() {
   const trigger = document.querySelector('.toggle-window[data-target="login"]');
   if (!inner || !trigger) return;
 
+  // Disco okna zavírá, když z nich odjede myš (u přihlášení jen bez fokusu v poli). Modální okno
+  // má zůstat otevřené, Disco na to má třídu .stay-open.
+  dialog.classList.add('stay-open');
+
   const close = document.createElement('button');
   close.type = 'button';
   close.className = 'as-dialog-close';
