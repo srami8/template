@@ -19,6 +19,14 @@
       opacity: 1;
     }
 
+    // Disco tlačítkům v hlavičce dává z-index 1001. Obal je položkou flexu, takže tím vytváří vlastní
+    // vrstvu a celá tlačítka jsou pod ztmavením (1002). Myš pak „odjede“ z tlačítka košíku na
+    // ztmavení, Disco okno zavře a znovu otevře (problikávání). Při otevřeném košíku vrstvu rušíme,
+    // nad ztmavení se dostane jen tlačítko košíku, ostatní tlačítka zůstanou ztmavená.
+    body.cart-window-visible #header .navigation-buttons {
+      z-index: auto;
+    }
+
     // Otevřený košík: tlačítko je nad ztmavením a navazuje na okno (zaoblené jen nahoře).
     body.cart-window-visible #header .navigation-buttons .cart-count {
       z-index: 1003;
