@@ -39,13 +39,6 @@
     #carousel {
       margin: 0;
 
-      // Disco skriptem nastaví carouselu min-height podle nejvyššího banneru (inline styl), takže
-      // při bannerech s různým poměrem stran zůstává pod nižšími prázdné místo. Výšku necháme
-      // na aktuálním banneru, ten se tak zobrazí celý ve svém poměru. !important kvůli inline stylu.
-      .carousel-inner {
-        min-height: 0 !important;
-      }
-
       img {
         display: block;
         width: 100%;
@@ -197,10 +190,15 @@
         margin-left: calc(50% - 50vw);
       }
 
-      // Obrázek se neořezává, drží svůj poměr stran. Výšku tedy určuje nahraný obrázek
-      // (proto v nastavení doporučujeme široký formát).
+      // Pevný poměr 3 : 1 (doporučený obrázek 2880 × 960 px), jinak by běžný obrázek banneru
+      // přes celou šířku okna zabral víc než celou výšku obrazovky.
       #carousel {
         border-radius: 0;
+
+        img {
+          aspect-ratio: 3 / 1;
+          object-fit: cover;
+        }
       }
 
       // Šipky lícují s pravým okrajem obsahu.
