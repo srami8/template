@@ -4,6 +4,7 @@
 // přidává js/login.js.
 
 @use "../tools/icon" as *;
+@use "../tools/button";
 @use "../tools/breakpoints" as bp;
 
 // Zobrazení hesla: oko vpravo v poli s heslem (ve všech formulářích Disca, i na mobilu).
@@ -211,8 +212,7 @@
       }
     }
 
-    // Tlačítko Disca .btn.btn-primary je bílé s rámečkem v hlavní barvě (= sekundární tlačítko
-    // z návrhu), upravujeme jen tvar a písmo.
+    // Tlačítko Disca .btn.btn-primary jako sekundární tlačítko z návrhu (sdílená komponenta tools/button).
     #login .submit-wrapper {
       grid-row: 3;
       grid-column: 2;
@@ -220,14 +220,9 @@
       padding: 0;
 
       .btn {
-        height: auto;
-        padding: 15px 31px;
-        border-radius: var(--as-radius-pill);
-        font-family: var(--as-font-family);
-        font-size: var(--as-font-size-body);
-        font-weight: 500;
-        line-height: 20px;
-        text-transform: none;
+        @include button.base;
+        @include button.size(md);
+        @include button.secondary;
       }
     }
   }

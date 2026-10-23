@@ -1,0 +1,229 @@
+// Karta produktu – výchozí vzhled (Figma: Homepage – „Produkt“). Platí pro výpisy Disca
+// .products-block (produktové sekce úvodní stránky, výpis kategorie) při .as-product-card-default
+// na <html> (nastavení šablony, další vzhledy karet budou vedle v product-cards/).
+//
+// Markup Disca: .p > a.image (img, .flags) + .p-in > .p-in-in (a.name, .ratings-wrapper: hvězdičky,
+// .availability) + .p-bottom > div[data-micro=offer] (.prices: .price-final, .price-standard,
+// .price-save; .p-tools: form.pr-action s .quantity a .btn). Návrh má jiné pořadí (obrázek,
+// hvězdičky, název, ceny, dostupnost, tlačítka): obaly mají display: contents a pořadí řídí order,
+// DOM se nemění.
+
+@use "../../tools/button";
+@use "../../tools/quantity";
+@use "../../tools/rating";
+
+$padding-x: 20px;
+$image-inset: 12px;
+
+.as-theme.as-product-card-default .products-block {
+  // Disco položce výpisu dává okraj a průhledný rámeček, v návrhu karty leží těsně vedle sebe.
+  .product {
+    padding: 0;
+    border: 0;
+  }
+
+  .p {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+    padding: 24px $padding-x;
+    border: 0;
+    border-radius: 8px;
+    background: var(--as-white);
+    font-family: var(--as-font-family);
+    text-align: center;
+    // Šířka karty pro dopočet pozice kolečka se slevou (cqw).
+    container-type: inline-size;
+
+    // Pravidla karty jsou vnořená pod .p: obal .products-block má i slider kategorií na úvodní stránce.
+
+    .p-in,
+    .p-in-in,
+    .ratings-wrapper,
+    .p-bottom,
+    .p-bottom > div {
+      display: contents;
+    }
+
+    // Obrázek: čtverec přes šířku karty (bez 2 × 12 px), produkt celý.
+    .image {
+      position: relative;
+      order: 1;
+      display: block;
+      width: calc(100% - #{$image-inset * 2});
+      aspect-ratio: 1;
+      margin: 0;
+      padding: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    // Příznaky (barvy z administrace) vlevo nahoře karty, pod sebou.
+    .flags-default {
+      position: absolute;
+      top: 16px - 24px;
+      left: 12px - ($padding-x + $image-inset);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      margin: 0;
+    }
+
+    .flag {
+      display: inline-block;
+      margin: 0;
+      padding: 4px 8px;
+      border-radius: var(--as-radius-pill);
+      font-size: var(--as-font-size-caption);
+      font-weight: 500;
+      line-height: 1.2;
+      text-transform: none;
+    }
+
+    // Hvězdičky hodnocení (bez hodnocení zůstává místo, aby karty v řadě lícovaly).
+    .stars-wrapper,
+    .stars-placeholder {
+      order: 2;
+      height: 16px;
+      margin: 24px 0 0;
+      font-size: 16px;
+      line-height: 16px;
+
+      @include rating.stars;
+    }
+
+    .name {
+      order: 3;
+      display: -webkit-box;
+      width: 100%;
+      min-height: 3 * 1.2em;
+      margin: 16px 0 0;
+      overflow: hidden;
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-small);
+      font-weight: 400;
+      line-height: 1.2;
+      text-decoration: none;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+
+      &:hover {
+        color: var(--as-primary-600);
+      }
+    }
+
+    // Ceny v řádku: původní přeškrtnutá, vedle aktuální. Disco výpis stylí selektory přes .p a
+    // .p-bottom (vyšší specificita), proto i tady.
+    .p-bottom .prices {
+      order: 4;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      // Disco ceny zalamuje pod sebe (aktuální cena má plnou šířku).
+      flex-wrap: nowrap;
+      gap: 12px;
+      margin: 12px 0 0;
+      line-height: 1.2;
+    }
+
+    .p-bottom .price-final {
+      order: 2;
+      flex: 0 0 auto;
+      width: auto;
+      margin: 0;
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-body);
+      font-weight: 600;
+
+      strong {
+        font-weight: inherit;
+      }
+    }
+
+    .p-bottom .price-standard {
+      order: 1;
+      flex: 0 0 auto;
+      width: auto;
+      margin: 0;
+      color: var(--as-secondary-300);
+      font-size: var(--as-font-size-caption);
+      text-decoration: line-through;
+
+      strong {
+        font-weight: 400;
+      }
+    }
+
+    // Sleva: červené kolečko 48 px přes pravý spodní roh obrázku. Disco ji vypisuje se závorkami
+    // „(–31 %)“, hodnotu bez nich doplňuje js/product-cards.js do data-as-discount.
+    .price-save {
+      position: absolute;
+      // 100cqw = šířka obsahu karty; obrázek je čtverec o 2 × 12 px užší, kolečko přesahuje 34 px nad jeho spodek.
+      top: calc(24px + 100cqw - #{$image-inset * 2} - 34px);
+      right: $padding-x;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      margin: 0;
+      border-radius: 50%;
+      background: var(--as-danger);
+      color: var(--as-white);
+      font-size: 0;
+
+      &::before {
+        content: attr(data-as-discount);
+        font-size: var(--as-font-size-caption);
+        font-weight: 500;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+    }
+
+    // Dostupnost (barvu nastavuje obchodník v administraci, inline styl).
+    .availability {
+      order: 5;
+      margin: 12px 0 0;
+      font-size: var(--as-font-size-caption);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    // Počítadlo a „Do košíku“ / „Detail“ dole v kartě.
+    .p-bottom .p-tools {
+      order: 6;
+      width: 100%;
+      margin: 16px 0 0;
+      padding: 0;
+
+      // V úzké kartě (mobil, víc sloupců) se tlačítko zalomí pod počítadlo.
+      form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      @include quantity.stepper;
+
+      // Disco tlačítku dává vodorovné okraje auto (samo by bylo na středu karty).
+      .btn {
+        margin: 0;
+        @include button.base;
+        @include button.size(sm);
+        @include button.secondary;
+      }
+    }
+  }
+}

@@ -8,6 +8,7 @@
 // a .as-whisperer-contact (kontakt z nastavení e-shopu).
 
 @use "../tools/icon" as *;
+@use "../tools/button";
 @use "../tools/breakpoints" as bp;
 @use "../tools/category-card";
 
@@ -186,28 +187,10 @@
 
       // „Zobrazit všechny výsledky“ (.btn.btn-default od Disca): sekundární tlačítko se šipkou.
       .searchWhisperer__button {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        height: auto;
-        padding: 15px 31px;
-        border: 1px solid var(--as-primary-500);
-        border-radius: var(--as-radius-pill);
-        background: var(--as-white);
-        color: var(--as-primary-500);
-        font-family: var(--as-font-family);
-        font-size: var(--as-font-size-body);
-        font-weight: 500;
-        line-height: 20px;
-        text-transform: none;
-
-        &::after {
-          @include icon(chevron-right, 20px);
-        }
-
-        &:hover {
-          background: var(--as-primary-50);
-        }
+        @include button.base;
+        @include button.size(md);
+        @include button.secondary;
+        @include button.chevron;
       }
 
       // Kategorie a značky jako štítky.

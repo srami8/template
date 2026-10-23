@@ -28,6 +28,8 @@ Předání ke kontrole navíc uvádí: (1) které prvky, třídy a funkce Disca 
 
 - **Tokeny:** `theme/src/scss/tokens/` se exportují jako CSS proměnné `--as-*`. Barvy a fonty se odvozují z proměnných Shoptetu (`--color-primary`, `--template-font`…), hodnoty z Figmy jsou jen záloha. Pevné barvy z Figmy nepoužívat tam, kde má Shoptet nastavení (viz docs/zadani.md).
 - **Komponenty:** prefix `as-`, BEM-like (`.as-bcard__track`), sdílené styly jako Sass mixiny v `tools/`.
+- **Sdílené komponenty se nepíšou znovu.** Stejný prvek vypadá na celém e-shopu stejně a styluje se jedním mixinem z `tools/`: `button` (base, size md/sm, secondary, conversion, chevron), `quantity.stepper` (počítadlo množství), `slider` (holder, arrows), `rating.stars`, `category-card.card`. Kontakt z nastavení e-shopu je v `js/contact.js`. Nový opakující se prvek nejdřív jako mixin / modul, pak použít.
+- **Varianty vzhledu** (hlavička, bannery, karty produktů) jsou třídy na `<html>` (`.as-header-v2`, `.as-product-card-default`). Styly varianty jsou jen pod její třídou, další varianta = nový soubor (např. `components/product-cards/_<varianta>.scss`) a hodnota v nastavení.
 - **Napojení na Disco:** viz závazné pravidlo výše; selektory vždy ověřit na skutečném HTML testovacího e-shopu. Disco používá selektory s `#header` / `#navigation`, naše pravidla proto často potřebují stejnou specificitu. Obcházení stylů Disco komentovat (co Disco dělá a proč to přebíjíme).
 - **Desktop:** `@include bp.desktop` (od 768 px, jako Disco). Mobilní návrhy zatím ve Figmě nejsou.
 - **Obsah z administrace má přednost** před vlastním nastavením doplňku. Údaje se nezadávají dvakrát.

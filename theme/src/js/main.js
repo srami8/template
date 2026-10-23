@@ -7,9 +7,12 @@ import { enhanceBanners } from './banners';
 import { renderHomeCategories } from './home-categories';
 import { enhanceLogin } from './login';
 import { enhanceCart } from './cart';
+import { enhanceProductCards } from './product-cards';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
 const BANNER_LAYOUTS = ['default', 'content', 'fullwidth', 'cards'];
+// Vzhledy karet produktů (zatím jen výchozí, další přibudou v nastavení šablony).
+const PRODUCT_CARDS = ['default'];
 
 const DEFAULTS = {
   header: 'v1',
@@ -19,6 +22,7 @@ const DEFAULTS = {
   quickLinks: [],
   navLinks: [],
   homeCategories: null,
+  productCard: 'default',
 };
 
 // Náhled jiné varianty bez změny nastavení: ?asteroid-header=v2, ?asteroid-banners=cards
@@ -42,6 +46,7 @@ function start() {
     `as-header-${config.header}`,
     `as-category-${config.categoryLayout}`,
     `as-banners-${BANNER_LAYOUTS.includes(config.banners) ? config.banners : 'default'}`,
+    `as-product-card-${PRODUCT_CARDS.includes(config.productCard) ? config.productCard : 'default'}`,
   );
 
   const init = () => {
@@ -51,6 +56,7 @@ function start() {
     renderHomeCategories(config);
     enhanceLogin();
     enhanceCart();
+    enhanceProductCards();
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

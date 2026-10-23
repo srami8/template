@@ -1,0 +1,36 @@
+// Úvodní stránka: nadpisy sekcí a produktové sekce (Figma: Homepage – „Kategorie“, „Nejprodávanější“).
+// Nadpis je .homepage-group-title Disca (u produktových sekcí i u kategorií z js/home-categories.js),
+// produktová sekce .products-wrapper.product-slider-holder se sliderem Shoptetu.
+
+@use "../tools/slider";
+
+// Nadpis sekce: v návrhu H2 zarovnaný vlevo (Disco ho má menší a na střed).
+.as-theme .homepage-group-title {
+  margin: 0 0 24px;
+  padding: 0;
+  color: var(--as-secondary-500);
+  font-family: var(--as-font-family-headings);
+  font-size: var(--as-font-size-h2);
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: left;
+  text-transform: none;
+
+  // Nad produkty je v návrhu větší mezera.
+  &:has(+ .products-wrapper) {
+    margin-bottom: 36px;
+  }
+}
+
+// Produktová sekce: karty těsně vedle sebe, šipky 18 px přes kraj obsahu zhruba v polovině karet.
+.as-theme .products-wrapper.product-slider-holder {
+  @include slider.holder;
+  margin: 0 0 72px;
+
+  // Disco nechává nad kartami 5 px na stín, karty v návrhu stín nemají.
+  .product-slider {
+    padding-top: 0;
+  }
+
+  @include slider.arrows(calc(50% - 40px), -18px);
+}

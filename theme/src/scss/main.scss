@@ -9,7 +9,9 @@
 @use "components/home-categories";
 @use "components/login";
 @use "components/cart-widget";
+@use "components/product-cards/default" as product-card-default;
 @use "layout/site-msg";
+@use "layout/homepage";
 @use "layout/header";
 @use "header/v1";
 @use "header/v2";

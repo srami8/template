@@ -1,10 +1,11 @@
 // Kategorie na úvodní stránce (Figma: Homepage – „Kategorie“): nadpis a karty 220 px (šedé pole
 // s obrázkem 120 px, pod ním název), nad 6 kategorií carousel. Markup skládá js/home-categories.js
-// z tříd Disca: .homepage-group-title, ul.subcategories.with-image a produktový slider Shoptetu.
+// z tříd Disca: .homepage-group-title (vzhled v layout/_homepage.scss), ul.subcategories.with-image
+// a produktový slider Shoptetu.
 
-@use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
 @use "../tools/category-card";
+@use "../tools/slider";
 
 $gap: 20px;
 $image-height: 164px;
@@ -12,31 +13,12 @@ $image-height: 164px;
 .as-theme .as-home-categories {
   margin: 56px 0 72px;
 
-  // Nadpis produktových bloků Disca (.homepage-group-title.h4), v návrhu H2 zarovnaný vlevo.
-  .homepage-group-title {
-    margin: 0 0 24px;
-    padding: 0;
-    color: var(--as-secondary-500);
-    font-family: var(--as-font-family-headings);
-    font-size: 28px;
-    font-weight: 500;
-    line-height: 1.2;
-    text-align: left;
-    text-transform: none;
-  }
-
-  // Disco dává obalu slideru inline overflow: hidden. Šipky v návrhu přesahují obsah o 20 px,
-  // posun karet ořezává samotný seznam (také inline overflow: hidden), proto !important.
-  // Disco obalu se šipkami (.has-navigation) dává vnitřní okraje pro šipky vedle slideru,
-  // v návrhu šipky leží přes kraje karet.
-  // Slider počítá šířku položek z šířky tohoto obalu, záporný okraj (polovina mezery) proto
-  // patří sem, ne na seznam.
+  // Slider počítá šířku položek z šířky obalu, záporný okraj (polovina mezery) proto patří sem,
+  // ne na seznam. Disco obalu dává width: 100 %, tím by ho okraj nerozšířil.
   .product-slider-holder {
-    position: relative;
+    @include slider.holder;
     width: auto;
     margin: 0 (-$gap * 0.5);
-    padding: 0;
-    overflow: visible !important;
   }
 
   // Mezery mezi kartami jako vnitřní okraj položek: šířku položek nastavuje slider inline.
@@ -71,75 +53,12 @@ $image-height: 164px;
 
   @include category-card.card($image-height);
 
-  // Šipky slideru (Disco: button.product-slider-navigation): bílé kruhy 40 px na krajích,
-  // svisle na středu obrázku.
-  .product-slider-navigation {
-    position: absolute;
-    top: ($image-height * 0.5) - 20px;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    background: var(--as-white);
-    box-shadow: 0 2px 8px rgba(46, 53, 69, 0.12);
-    color: var(--as-secondary-500);
-    font-size: 0;
-    // Disco šipky ukazuje až při najetí na slider, v návrhu jsou vidět stále.
-    opacity: 1;
-    transform: none;
-    cursor: pointer;
+  // Šipky svisle na středu obrázku, 20 px přes kraj obsahu (obal je o polovinu mezery širší).
+  @include slider.arrows(($image-height * 0.5) - 20px, -20px + $gap * 0.5);
 
-    &::before {
-      @include icon(chevron-right, 16px);
-      position: static;
-      color: inherit;
-      margin: 0;
-      border: 0;
-      transform: none;
-    }
-
-    &::after {
-      content: none;
-    }
-
-    &:hover {
-      background: var(--as-primary-50);
-    }
-  }
-
-  // 20 px přes kraj obsahu (obal je o polovinu mezery širší).
-  .navigation-prev {
-    right: auto;
-    left: -20px + $gap * 0.5;
-
-    &::before {
-      transform: rotate(180deg);
-    }
-  }
-
-  .navigation-next {
-    right: -20px + $gap * 0.5;
-    left: auto;
-  }
-
-  // Tečky v návrhu nejsou.
-  .product-slider-pagination {
-    display: none;
-  }
-
-  // Na mobilu se posouvá prstem, šipky by zakrývaly karty. Slider dává seznamu šířku obalu + 10 px
-  // na stín, na úzkém displeji by tím stránka přetékala do strany.
+  // Slider dává seznamu šířku obalu + 10 px na stín, na úzkém displeji by tím stránka přetékala
+  // do strany (šipky jsou na mobilu skryté).
   @media (max-width: 767px) {
     overflow-x: clip;
-
-    .product-slider-navigation {
-      display: none;
-    }
   }
 }

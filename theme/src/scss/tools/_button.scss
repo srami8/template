@@ -1,0 +1,74 @@
+// Tlačítko (Figma Styleguide: „Button“): pilulka, písmo šablony, varianty a velikosti.
+// Stylují se tlačítka Disca/Shoptetu (.btn, .searchWhisperer__button…), mixiny se volají v jejich
+// selektoru: @include button.base; @include button.size(md); @include button.secondary;
+// Barvy jsou z administrace (hlavní a konverzní barva).
+
+@use "sass:map";
+@use "icon" as *;
+
+// Výška = okraje + řádek 20 / 16 px + rámeček 2 × 1 px (md 52 px, sm 36 px).
+$sizes: (
+  md: (padding: 15px 31px, font-size: var(--as-font-size-body), line-height: 20px),
+  sm: (padding: 9px 23px, font-size: var(--as-font-size-caption), line-height: 16px),
+);
+
+@mixin base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  height: auto;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: var(--as-radius-pill);
+  font-family: var(--as-font-family);
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+@mixin size($name) {
+  $size: map.get($sizes, $name);
+  padding: map.get($size, padding);
+  font-size: map.get($size, font-size);
+  line-height: map.get($size, line-height);
+}
+
+// Bílé s rámečkem v hlavní barvě (= .btn-primary Disca).
+@mixin secondary {
+  border-color: var(--as-primary-500);
+  background: var(--as-white);
+  color: var(--as-primary-500);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--as-primary-500);
+    background: var(--as-primary-50);
+    color: var(--as-primary-500);
+  }
+}
+
+// Plné v konverzní barvě (košík, objednávka).
+@mixin conversion {
+  border-color: var(--as-conversion);
+  background: var(--as-conversion);
+  color: var(--as-white);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--as-conversion-hover);
+    background: var(--as-conversion-hover);
+    color: var(--as-white);
+  }
+}
+
+// Šipka za textem („Pokračovat do košíku ›“).
+@mixin chevron {
+  &::after {
+    @include icon(chevron-right, 20px);
+  }
+}

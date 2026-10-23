@@ -1,0 +1,20 @@
+// Hvězdičky hodnocení (Figma: „Rating“, 5 × 16 px). Markup Shoptetu: .stars > .star.star-on /
+// .star-off (hvězdička je znak písma ikon v ::before, Disco ji barví hlavní barvou).
+// Volá se uvnitř bloku s hodnocením.
+
+@mixin stars {
+  .star {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
+
+    &::before {
+      color: var(--as-secondary-100);
+    }
+  }
+
+  .star-on::before {
+    color: var(--as-rating);
+  }
+}

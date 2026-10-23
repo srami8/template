@@ -48,6 +48,7 @@ window.asteroidConfig = {
   navLinks: [                   // v2: odkazy vedle „Katalogu produktů“
     { label: 'Kontakt', url: '/kontakty/' },
   ],
+  productCard: 'default',       // vzhled karet produktů (zatím jen 'default', třída .as-product-card-*)
   homeCategories: {             // kategorie na úvodní stránce (víc než 6 = carousel);
     title: 'Tohle u nás zrovna frčí', // název, odkaz a obrázek převezme settings-app z API při uložení
     items: [

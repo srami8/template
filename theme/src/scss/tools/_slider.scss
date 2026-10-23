@@ -1,0 +1,82 @@
+// Produktový slider Shoptetu (shoptet.slider.runProductSlider): obal .product-slider-holder,
+// šipky button.product-slider-navigation (.navigation-prev / .navigation-next) a tečky
+// .product-slider-pagination. Používají ho produktové sekce i kategorie na úvodní stránce.
+
+@use "icon" as *;
+
+// Obal slideru: Disco mu se šipkami (.has-navigation) dává vnitřní okraje pro šipky vedle slideru
+// a inline overflow: hidden. V návrhu šipky leží přes kraje karet a přesahují obsah, posun karet
+// ořezává samotný seznam (také inline overflow: hidden), proto !important.
+@mixin holder {
+  position: relative;
+  padding: 0;
+  overflow: visible !important;
+}
+
+// Šipky: bílé kruhy 40 px na krajích. $top: svislá pozice šipek, $offset: vodorovný přesah přes
+// kraj obalu (záporný = ven). Tečky v návrhu nejsou, na mobilu se posouvá prstem.
+@mixin arrows($top, $offset) {
+  .product-slider-navigation {
+    position: absolute;
+    top: $top;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--as-white);
+    box-shadow: 0 2px 8px rgba(46, 53, 69, 0.12);
+    color: var(--as-secondary-500);
+    font-size: 0;
+    // Disco šipky ukazuje až při najetí na slider, v návrhu jsou vidět stále.
+    opacity: 1;
+    transform: none;
+    cursor: pointer;
+
+    &::before {
+      @include icon(chevron-right, 16px);
+      position: static;
+      color: inherit;
+      margin: 0;
+      border: 0;
+      transform: none;
+    }
+
+    &::after {
+      content: none;
+    }
+
+    &:hover {
+      background: var(--as-primary-50);
+    }
+  }
+
+  .navigation-prev {
+    right: auto;
+    left: $offset;
+
+    &::before {
+      transform: rotate(180deg);
+    }
+  }
+
+  .navigation-next {
+    right: $offset;
+    left: auto;
+  }
+
+  .product-slider-pagination {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .product-slider-navigation {
+      display: none;
+    }
+  }
+}
