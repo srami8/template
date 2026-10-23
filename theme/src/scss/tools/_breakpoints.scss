@@ -7,3 +7,20 @@ $desktop: 768px;
     @content;
   }
 }
+
+// Šířky .container v Disco (main CSS šablony): okraj 20 px po stranách, od breakpointu pevná šířka.
+$container-padding: 20px;
+$container-widths: (768px: 747px, 992px: 972px, 1200px: 1178px, 1440px: 1418px);
+
+// Šířka jako .container Disca, pro prvky, kterým ji Disco přepisuje (např. width: auto).
+@mixin container-width {
+  width: auto;
+  padding-right: $container-padding;
+  padding-left: $container-padding;
+
+  @each $breakpoint, $width in $container-widths {
+    @media (min-width: $breakpoint) {
+      width: $width;
+    }
+  }
+}

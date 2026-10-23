@@ -1,0 +1,97 @@
+// Informační lišta nad hlavičkou (Figma „Lišta“). Text a odkaz zadává obchodník v administraci
+// Shoptetu, zavření (.js-close-information-msg) obsluhuje Disco i s cookie na jeden den.
+// Disco lištu zobrazuje jako plovoucí okénko vlevo dole (position: fixed). V DOM je ale už před
+// hlavičkou (první v .overall-wrapper), stačí ji tedy vrátit do toku stránky.
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+.as-theme .site-msg.information {
+  // Static místo fixed: Disco liště při cookie liště dopočítává inline bottom (aby se nepřekrývaly),
+  // u static se neuplatní.
+  position: static;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  // Disco plovoucí lištu zprůhledňuje (opacity: .9), v návrhu je plná.
+  opacity: 1;
+  background: linear-gradient(90deg, var(--as-primary-600), var(--as-gradient-end));
+  color: var(--as-white);
+  font-family: var(--as-font-family);
+  font-size: var(--as-font-size-small);
+  line-height: 1.2;
+  text-align: left;
+
+  // Zvonek, text a zavírací křížek v řádku přes šířku obsahu. Disco obsahu lišty dává
+  // width: auto bez okrajů (kvůli plovoucímu okénku), vracíme šířku jako u ostatních .container.
+  .container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: auto;
+    min-height: 40px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    &::before {
+      @include icon(notifications-none, 24px);
+    }
+
+    // Clearfix z Bootstrapu by byl ve flexu další položkou (s mezerou za křížkem).
+    &::after {
+      content: none;
+    }
+
+    @include bp.container-width;
+  }
+
+  .text {
+    flex: 1 1 auto;
+    width: auto;
+    height: auto;
+    min-width: 0;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+
+    b,
+    strong {
+      font-weight: 600;
+    }
+
+    a {
+      color: inherit;
+      font-weight: 500;
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+
+  // Disco: absolutně umístěný křížek z písma ikon Shoptetu, v návrhu ikona 20 px vpravo.
+  .close {
+    position: static;
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    color: inherit;
+    cursor: pointer;
+
+    &::before {
+      @include icon(close, 20px);
+      font-size: 0;
+      line-height: 0;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
