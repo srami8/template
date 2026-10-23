@@ -1,0 +1,234 @@
+// Přihlašovací okno (Figma: „Přihlášení“) a zobrazení hesla. Okno je #login Disca
+// (.popup-widget.login-widget, otevřené při body.login-window-visible), formulář pole s plovoucími
+// popisky Shoptetu (.smart-label-wrapper). Doplňky .as-dialog-close a .as-password-toggle
+// přidává js/login.js.
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+// Zobrazení hesla: oko vpravo v poli s heslem (ve všech formulářích Disca, i na mobilu).
+.as-theme .form-control-wrapper:has(> .as-password-toggle) > input {
+  padding-right: 48px;
+}
+
+// Svisle na středu pole (ne obalu: pod pole Shoptet do obalu vkládá hlášky validace). Výšku pole
+// dávají proměnné Shoptetu, pole s plovoucím popiskem je vyšší.
+.as-theme .as-password-toggle {
+  position: absolute;
+  top: calc(var(--form-controls-computed-height, 100%) / 2);
+  right: 6px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--as-secondary-400);
+  transform: translateY(-50%);
+  cursor: pointer;
+
+  &::before {
+    @include icon(visibility, 20px);
+  }
+
+  &[aria-pressed="true"]::before {
+    @include icon(visibility-off, 20px);
+  }
+
+  &:hover {
+    color: var(--as-primary-500);
+  }
+}
+
+.as-theme .smart-label-wrapper .as-password-toggle {
+  top: calc(var(--smart-labels-computed-height, 100%) / 2);
+}
+
+// Zavírací křížek okna (Disco ho nemá), na desktopu i mobilu.
+.as-theme #login .popup-widget-inner {
+  position: relative;
+}
+
+.as-theme #login h2 {
+  padding-right: 32px;
+}
+
+.as-theme #login .as-dialog-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--as-secondary-200);
+  cursor: pointer;
+
+  &::before {
+    @include icon(close, 24px);
+  }
+
+  &:hover {
+    color: var(--as-secondary-500);
+  }
+}
+
+.as-theme {
+  @include bp.desktop {
+    // Ztmavení stránky pod oknem: overlay Disca (body::before), který Disco používá při hledání.
+    body.login-window-visible::before {
+      z-index: 1002;
+      background: rgba(46, 53, 69, 0.3);
+      opacity: 1;
+    }
+
+    // Disco okno zobrazuje jako rozbalovací panel pod horní lištou (absolute, se šipkou),
+    // v návrhu je to okno na středu obrazovky.
+    #login.popup-widget {
+      position: fixed;
+      top: 64px;
+      right: auto;
+      bottom: auto;
+      left: 50%;
+      z-index: 1003;
+      width: 460px;
+      max-height: none;
+      margin: 0 0 0 -230px;
+      padding: 0;
+
+      &::before {
+        content: none;
+      }
+    }
+
+    #login .popup-widget-inner {
+      width: auto;
+      max-height: calc(100vh - 128px);
+      padding: 40px;
+      border: 0;
+      border-radius: 12px;
+      box-shadow: none;
+      overflow-y: auto;
+    }
+
+    #login h2 {
+      margin: 0 0 32px;
+      color: var(--as-secondary-500);
+      font-family: var(--as-font-family-headings);
+      font-size: var(--as-font-size-h3);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    // Pole: zaoblená, 52 px, ikona vlevo. Rozměry řídí proměnné Shoptetu. Dopočítané hodnoty
+    // (--*-computed-*) Shoptet počítá na :root, proto je tu nastavujeme taky:
+    // pole s popiskem = řádek 20 + rámeček 2 + okraje 2 × 10, k tomu místo na zmenšený popisek.
+    #login .login-form {
+      --form-controls-font-size: var(--as-font-size-small);
+      --form-controls-line-height: 1.4286;
+      --form-controls-computed-line-height: 20px;
+      --form-controls-padding-y: 10px;
+      --form-controls-padding-x: 48px;
+      --form-controls-computed-height: 42px;
+      --smart-labels-computed-height: 52px;
+      --form-controls-border-radius: var(--as-radius-pill);
+      --colors-forms-border: var(--as-secondary-100);
+      --colors-forms-activated: var(--as-primary-500);
+
+      // Odkazy vlevo, tlačítko vpravo pod poli (Disco je má pod sebou).
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: 16px;
+      align-items: center;
+      margin: 0;
+      font-family: var(--as-font-family);
+    }
+
+    #login .login-form > .smart-label-wrapper {
+      grid-column: 1 / -1;
+      margin: 0 0 16px;
+
+      label {
+        color: var(--as-secondary-300);
+      }
+    }
+
+    // Ikona pole (e-mail / zámek). Pole s heslem může být po zobrazení typu text, proto podle name.
+    #login .form-control-wrapper:has(> input[name="email"])::before,
+    #login .form-control-wrapper:has(> input[name="password"])::before {
+      position: absolute;
+      top: calc(var(--smart-labels-computed-height) / 2);
+      left: 16px;
+      z-index: 2;
+      color: var(--as-secondary-400);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    #login .form-control-wrapper:has(> input[name="email"])::before {
+      @include icon(mail-outline, 16px);
+    }
+
+    #login .form-control-wrapper:has(> input[name="password"])::before {
+      @include icon(lock, 16px);
+    }
+
+    #login .alternative-links {
+      grid-row: 3;
+      grid-column: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+
+      a {
+        margin: 0;
+        padding: 0;
+        color: var(--as-secondary-500);
+        font-size: var(--as-font-size-small);
+        line-height: 1.2;
+        text-decoration: underline;
+
+        &::before,
+        &::after {
+          content: none;
+        }
+
+        &:hover {
+          color: var(--as-primary-600);
+        }
+      }
+    }
+
+    // Tlačítko Disca .btn.btn-primary je bílé s rámečkem v hlavní barvě (= sekundární tlačítko
+    // z návrhu), upravujeme jen tvar a písmo.
+    #login .submit-wrapper {
+      grid-row: 3;
+      grid-column: 2;
+      margin: 0;
+      padding: 0;
+
+      .btn {
+        height: auto;
+        padding: 15px 31px;
+        border-radius: var(--as-radius-pill);
+        font-family: var(--as-font-family);
+        font-size: var(--as-font-size-body);
+        font-weight: 500;
+        line-height: 20px;
+        text-transform: none;
+      }
+    }
+  }
+}
