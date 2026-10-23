@@ -4,7 +4,7 @@ Responzivita se řeší při každé implementaci. Chybějící mobilní Figma n
 
 ## Rozložení
 
-- Pod 768 px zůstává mobilní hlavička, menu a vyhledávání Disca. Hledání se otevře lupou na samostatném řádku. Desktopová kopie účtu je skrytá, doplňkové rychlé i informační odkazy V2 mají vlastní vodorovné posuvné řádky. Skutečná výška pevné hlavičky určuje odstup obsahu a horní okraj mobilního menu, aby nezakrývala informační lištu.
+- Pod 768 px zůstává mobilní hlavička, menu a vyhledávání Disca. Hledání se otevře lupou na samostatném řádku. Desktopová kopie účtu je skrytá, rychlé odkazy jsou uvnitř hlavního menu pod kategoriemi a před měnou a přihlášením; informační odkazy V2 mají vlastní vodorovný posuvný řádek. Skutečná výška pevné hlavičky určuje odstup obsahu a horní okraj mobilního menu, aby nezakrývala informační lištu.
 - Od 768 px zůstávají logo, hledání a akce v jednom řádku jako v Discu. Vyhledávání vyplňuje zbývající místo do svého maxima; nemusí držet přesnou šířku návrhu. Pod 1200 px řídí skrytí textu ceny košíku původní třída `.visible-lg-inline-block`. Dlouhý název účtu se zalomí uvnitř tlačítka.
 - Od 768 do 1199 px má našeptávač jeden sloupec, produktové výsledky se řadí pod sebe. Bannery se skládají do hlavního banneru a řádku dvou postranních.
 - Horní menu a telefon se při dlouhém obsahu mohou zalomit. Informační odkazy vedle katalogu mají vlastní posuvný řádek, aby velký počet položek nezabral téměř celou obrazovku.
@@ -19,7 +19,7 @@ Přednost mají CSS flex/grid, `min-width: 0`, rozumné maximální šířky a z
 
 Ověřeno 23. 10. 2026 na `313980.myshoptet.com`, šablona 13 (Disco). V testovacím prohlížeči byly vynechány pouze soubory aSteroidu a externí Treelab CSS; původní HTML, CSS a skripty Shoptetu zůstaly načtené. Následně se do stejné stránky vložilo lokální sestavení aSteroidu. Soubory na serveru se neměnily.
 
-- Mobilní hlavní řádek má 50 / 80 px podle šířky, otevření hledání přidá 48 px. Doplňkové odkazy aSteroidu zvětší celkovou hlavičku o své řádky; velikost původních ovládacích prvků zůstává Discu.
+- Mobilní hlavní řádek má 50 / 80 px podle šířky, otevření hledání přidá 48 px. Informační odkazy V2 zvětší celkovou hlavičku o svůj řádek; rychlé odkazy jsou na mobilu uvnitř menu; velikost původních ovládacích prvků zůstává Discu.
 - Mobilní skrytí při posunu dolů a návrat při posunu nahoru dál řídí původní `.scrolled-down`. Hledání ovládá `.toggle-window[data-target="search"]` a `.search-window-visible`.
 - Při změně z mobilu na desktop zůstane zachovaný stejný formulář i rozepsaný dotaz. Escape hledání zavře a vymaže dotaz podle původní obsluhy Disca.
 - Od 768 px má Disco hledání přímo mezi logem a košíkem; cena košíku se objeví od 1200 px. aSteroid tyto přechody zachovává, navíc má vlastní vzhled a tlačítko účtu v hlavním řádku.

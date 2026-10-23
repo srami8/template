@@ -69,7 +69,7 @@ test('search stays usable at 768px even without supplementary links',async({page
 test('supplementary links remain reachable by keyboard without growing the header',async({page})=>{
   await page.setViewportSize({width:768,height:900});
   await load(page);
-  for(const selector of ['.as-quicklinks ul','.as-navlinks']) {
+  for(const selector of ['.as-navlinks']) {
     const list=page.locator(selector);
     await list.locator('a').first().focus();
     for(let i=1;i<await list.locator('a').count();i++)await page.keyboard.press('Tab');
@@ -265,11 +265,48 @@ test('mobile supplementary links stay reachable without a tall fixed header',asy
   await page.setViewportSize({width:320,height:700});
   await load(page);
   expect((await page.locator('#header').boundingBox()).height).toBeLessThanOrEqual(160);
-  for(const selector of ['.as-quicklinks ul','.as-navlinks']) {
+  for(const selector of ['.as-navlinks']) {
     const list=page.locator(selector);
     await list.locator('a').last().focus();
     await expect(list.locator('a').last()).toBeFocused();
     expect(await list.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);
   }
   await noPageOverflow(page);
+});
+
+
+test('quick links follow the mobile menu and return to desktop without duplicates', async ({page}) => {
+  await page.setViewportSize({width:390,height:700});
+  await load(page);
+  await expect(page.locator('#navigation .navigation-in .as-quicklinks')).toHaveCount(1);
+  await page.locator('.toggle-window[data-target="navigation"]').first().click();
+  await expect(page.locator('.as-quicklinks a').first()).toBeVisible();
+  await page.setViewportSize({width:1280,height:900});
+  await expect(page.locator('#header > .as-quicklinks')).toHaveCount(1);
+  await page.setViewportSize({width:390,height:700});
+  await expect(page.locator('#navigation .navigation-in .as-quicklinks')).toHaveCount(1);
+  await expect(page.locator('.as-quicklinks')).toHaveCount(1);
+  await noPageOverflow(page);
+});
+
+test('cart controls share their visual style on mobile and desktop', async ({page}) => {
+  await load(page);
+  const snapshots=[];
+  for (const width of [390,1280]) {
+    await page.setViewportSize({width,height:900});
+    await page.evaluate(()=>document.body.classList.add('cart-window-visible'));
+    snapshots.push(await page.evaluate(()=>{
+      const read=selector=>{
+        const style=getComputedStyle(document.querySelector(selector));
+        return Object.fromEntries(['borderRadius','backgroundColor','color','fontFamily','fontSize'].map(key=>[key,style[key]]));
+      };
+      return {
+        button:read('#cart-widget .cart-widget-button .btn'),
+        quantity:read('#cart-widget .quantity'),
+        input:read('#cart-widget .quantity .amount'),
+      };
+    }));
+  }
+  expect(snapshots[0]).toEqual(snapshots[1]);
+  expect(snapshots[0].quantity.borderRadius).not.toBe('0px');
 });

@@ -52,6 +52,36 @@
   }
 
   @include bp.mobile {
+    // V mobilním menu jsou vlastní rychlé odkazy pod kategoriemi, bez dalšího řádku hlavičky.
+    #navigation .navigation-in .as-quicklinks {
+      border-top: 1px solid var(--as-secondary-75);
+
+      .container {
+        width: auto;
+        min-height: 0;
+        padding: 0;
+      }
+
+      ul {
+        display: block;
+        padding: 8px 0;
+        overflow: visible;
+      }
+
+      li { display: block; }
+
+      a {
+        display: flex;
+        min-height: 44px;
+        padding: 12px 20px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-decoration: none;
+      }
+
+      .as-icon { flex-shrink: 0; }
+    }
+
     // Disco rezervuje fixních 50 / 80 px, doplněné odkazy by zakryly informační lištu a obsah.
     .overall-wrapper { padding-top: var(--as-mobile-header-height, 50px); }
     #navigation {

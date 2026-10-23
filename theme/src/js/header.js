@@ -92,7 +92,18 @@ function renderQuickLinks({ quickLinks }) {
   wrapper.setAttribute('aria-label', 'Rychlé odkazy');
   wrapper.append(container);
 
-  headerBottom.before(wrapper);
+  // Přesouváme jen vlastní odkazy; původní menu a jeho obsluhu necháváme Discu.
+  const navigation = document.querySelector('#navigation .navigation-in');
+  const mobile = window.matchMedia('(max-width: 767px)');
+  const place = () => {
+    if (mobile.matches && navigation) {
+      navigation.insertBefore(wrapper, navigation.querySelector('.navigationActions'));
+    } else {
+      headerBottom.before(wrapper);
+    }
+  };
+  mobile.addEventListener('change', place);
+  place();
 }
 
 // Textové odkazy na stránky vedle katalogu (v2), položky přicházejí z nastavení doplňku.
