@@ -10,6 +10,7 @@ import {
   MAX_NAV_LINKS,
   MAX_HOME_CATEGORIES,
   HOME_CATEGORIES_TITLE,
+  PRODUCT_COLUMNS,
 } from './theme-config.mjs';
 
 const SHOPTET_UI_CSS = 'https://cdn.jsdelivr.net/npm/@shoptet/ui@0.23.0-beta/dist/index.css';
@@ -185,6 +186,13 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, cat
     </label>`,
   ).join('');
 
+  const productColumns = PRODUCT_COLUMNS.map(
+    (count) => `<label class="as-variant">
+      <input class="radioField" type="radio" name="productColumns" value="${count}" ${Number(themeConfig.productColumns || 4) === count ? 'checked' : ''}>
+      <span><strong>${count} ${count < 5 ? 'produkty' : 'produktů'}</strong></span>
+    </label>`,
+  ).join('');
+
   const phone = `<div class="v2form">
     <div class="v2FormField">
       <label class="v2FormField__label" for="phoneHours">Otevírací doba</label>
@@ -230,6 +238,11 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, cat
           'Kategorie na úvodní stránce',
           homeCategoriesCard(themeConfig.homeCategories, categoryChoices),
           'Vybrané kategorie se zobrazí pod bannery s názvem, obrázkem a odkazem z administrace e-shopu. Víc než 6 kategorií se posouvá jako carousel. Po přejmenování kategorie nebo změně jejího obrázku nastavení znovu uložte.',
+        )}
+        ${card(
+          'Produkty na úvodní stránce',
+          productColumns,
+          'Kolik produktů je vidět vedle sebe v produktových sekcích úvodní stránky (na širokém displeji, na menších se počet sám sníží). Ostatní produkty se posouvají šipkami. Výpis kategorie řídí nastavení e-shopu.',
         )}
         ${card(
           'Telefon v horní liště',

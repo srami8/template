@@ -52,7 +52,7 @@ Automatické testy zatím nejsou. Úspěšný build nedokládá správný vzhled
 ## Ověření změn
 
 - Testovací e-shop: https://313980.myshoptet.com/ (šablona Disco). Ověřovat na šířce 1920 px a změřit rozměry proti Figmě.
-- Náhled variant bez ukládání: `?asteroid-header=v1|v2|v3`, `?asteroid-banners=default|content|fullwidth|cards`.
+- Náhled variant bez ukládání: `?asteroid-header=v1|v2|v3`, `?asteroid-banners=default|content|fullwidth|cards`, `?asteroid-columns=4|5|6`.
 - Figma: https://www.figma.com/design/jpEXMp36OXxRJqE0ortBfB/aSteroid
 
 ## Tajné údaje

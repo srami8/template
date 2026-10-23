@@ -37,6 +37,9 @@ export const BANNER_LAYOUTS = [
 // Ikony dostupné v theme/src/icons pro rychlé odkazy.
 export const QUICK_LINK_ICONS = ['local-fire-department', 'local-offer', 'filter-vintage', 'schedule'];
 
+// Počet produktů vedle sebe v produktových sekcích úvodní stránky (Shoptet sám umí jen 3 nebo 4).
+export const PRODUCT_COLUMNS = [4, 5, 6];
+
 export const MAX_QUICK_LINKS = 6;
 export const MAX_NAV_LINKS = 8;
 
@@ -52,6 +55,7 @@ export const DEFAULT_THEME_CONFIG = {
   quickLinks: [],
   navLinks: [],
   homeCategories: { title: HOME_CATEGORIES_TITLE, items: [] },
+  productColumns: 4,
 };
 
 const SNIPPET_LIMIT = 8192;
@@ -156,8 +160,10 @@ export function themeConfigFromForm(form, { categories, previous } = {}) {
   }
 
   const homeCategories = homeCategoriesFromForm(form, { categories, previous: previous?.homeCategories });
+  const columns = Number(form.get('productColumns'));
+  const productColumns = PRODUCT_COLUMNS.includes(columns) ? columns : DEFAULT_THEME_CONFIG.productColumns;
 
-  return { header, banners, phone, quickLinks, navLinks, homeCategories };
+  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns };
 }
 
 // JSON vložený do <script>: znak < escapujeme, aby text nemohl ukončit script tag.

@@ -12,7 +12,9 @@
 @use "../../tools/quantity";
 @use "../../tools/rating";
 
-$padding-x: 20px;
+// Vnitřní okraj karty: 20 px, v úzké kartě (6 produktů vedle sebe) 12 px, aby se počítadlo
+// a tlačítko vešly vedle sebe. Pozice příznaků a slevy z něj vycházejí.
+$padding-x: var(--as-card-padding-x);
 $image-inset: 12px;
 
 .as-theme.as-product-card-default .products-block {
@@ -20,9 +22,13 @@ $image-inset: 12px;
   .product {
     padding: 0;
     border: 0;
+    // Šířka položky pro okraj karty (kontejnerový dotaz níže).
+    container: product-card / inline-size;
   }
 
   .p {
+    --as-card-padding-x: 20px;
+
     position: relative;
     display: flex;
     flex-direction: column;
@@ -37,6 +43,10 @@ $image-inset: 12px;
     text-align: center;
     // Šířka karty pro dopočet pozice kolečka se slevou (cqw).
     container-type: inline-size;
+
+    @container product-card (max-width: 240px) {
+      --as-card-padding-x: 12px;
+    }
 
     // Pravidla karty jsou vnořená pod .p: obal .products-block má i slider kategorií na úvodní stránce.
 
@@ -69,7 +79,7 @@ $image-inset: 12px;
     .flags-default {
       position: absolute;
       top: 16px - 24px;
-      left: 12px - ($padding-x + $image-inset);
+      left: calc(12px - #{$padding-x} - #{$image-inset});
       z-index: 1;
       display: flex;
       flex-direction: column;
@@ -223,6 +233,12 @@ $image-inset: 12px;
         @include button.base;
         @include button.size(sm);
         @include button.conversion-outline;
+
+        // Úzká karta: s menším okrajem se tlačítko vejde vedle počítadla.
+        @container product-card (max-width: 240px) {
+          padding-right: 14px;
+          padding-left: 14px;
+        }
       }
     }
   }
