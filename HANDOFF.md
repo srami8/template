@@ -1,3 +1,29 @@
+# Aktualizace (Claude): tlačítka zaoblená globálně
+
+**Zadání:** všechna tlačítka mají být zaoblená, ne hranatá, a to globálně.
+
+**Inventura:** všechna viditelná tlačítka (`button`, `.btn`, `input[type=submit]`, cookie lišta, sociální přihlášení) na 9 stránkách (úvodní, kategorie, detail, hledání, košík, přihlášení, registrace, kontakty, zapomenuté heslo) na 1920 a 390 px. Hranatá byla:
+- detail: „Do košíku“ (`btn-conversion`),
+- úvodní text: „Náš příběh“ (`btn-secondary`),
+- košík: „Hledat“ (`btn-primary`),
+- kategorie: řazení (`sortingToggle`), „Zobrazit více produktů“ (`toggle-top-prod`, mobil),
+- detail: `navigation-btn` (záložky na mobilu).
+- Disco: `.btn, a.btn { border-radius: 0 }`.
+
+**Změny**
+- Nový `components/_buttons.scss`: tvar pilulka pro `.btn` a ovládací prvky Shoptetu výše. Barvy a velikost dál určuje místo přes `tools/button`.
+- Výjimka podle návrhu: „Katalog produktů“ (v2) je díl lišty.
+- `npm run snapshots` teď spouští Node 20 (dřív přes npm Node 18 neběžel). Detail ve snímcích má celý blok nákupu (`.p-data-wrapper`).
+
+**Ověření**
+- Testy: 92 prošlých, nový `buttons are rounded everywhere…`.
+- Snímky před a po (skutečný stav před nasazením):
+  - rozdíl jen u košíku („Hledat“), řazení v kategorii na mobilu a známého šumu písma,
+  - 19 snímků beze změny.
+- Opakovaná inventura: hranaté zůstalo jen „Katalog produktů“.
+
+---
+
 # Aktualizace (Claude): prvky produktu jako globální komponenty
 
 **Chyba (majitel):** na detailu produktu měly štítky, sleva, hvězdičky a počítadlo vzhled Disca, protože naše styly platily jen v kartě produktu (`.products-block .p`) a v okně košíku. Markup Disca je přitom stejný.

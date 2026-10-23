@@ -12,7 +12,7 @@
     "deploy": "npm run deploy -w theme && npm run publish-snippets -w settings-app",
     "settings": "npm run start -w settings-app",
     "tunnel": "npm run tunnel -w settings-app",
-    "snapshots": "NODE_PATH=node_modules node tests/shop/snapshots.cjs"
+    "snapshots": "NODE_PATH=node_modules npx -y node@20 tests/shop/snapshots.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1"

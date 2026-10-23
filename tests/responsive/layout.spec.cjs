@@ -456,3 +456,14 @@ test('product flags, discount and quantity look the same on the product detail a
   expect(look.detailDiscount).toEqual(look.cardDiscount);
   expect(look.oldPriceHidden).toBe('none');
 });
+
+test('buttons are rounded everywhere, not only where they have a design', async ({page}) => {
+  await load(page);
+  const radii=await page.evaluate(()=>{
+    const host=document.createElement('div');
+    host.innerHTML=['<a class="btn btn-secondary" href="#">Náš příběh</a>','<button class="btn btn-primary">Hledat</button>','<button class="btn btn-conversion add-to-cart-button">Do košíku</button>','<button class="sortingToggle">Řadit</button>','<button class="toggle-top-prod">Zobrazit více</button>'].join('');
+    document.querySelector('#content').append(host);
+    return [...host.children].map(el=>parseFloat(getComputedStyle(el).borderTopLeftRadius));
+  });
+  for (const radius of radii) expect(radius).toBeGreaterThanOrEqual(16);
+});

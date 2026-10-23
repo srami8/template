@@ -1,0 +1,18 @@
+// Tvar tlačítek všude na e-shopu: zaoblená pilulka (Figma Styleguide „Button“). Disco tlačítka
+// kreslí hranatá (.btn, a.btn { border-radius: 0 }), stejně tak další ovládací prvky Shoptetu
+// (řazení výpisu, „Zobrazit více produktů“, přepínač záložek detailu, cookie lišta, přihlášení
+// přes sociální sítě). Tady jen tvar, aby platil i tam, kde ještě nemáme návrh; barvy a velikost
+// určují místa použití přes tools/button (@include button.base … nastaví stejný tvar).
+// Výjimka: tlačítko „Katalog produktů“ hlavičky v2 je podle návrhu dílem lišty (hranaté).
+
+.as-theme :is(
+  .btn,
+  .sortingToggle,
+  .toggle-top-prod,
+  .navigation-btn,
+  .siteCookies__button,
+  .cookiesSetting__button,
+  .login-btn
+) {
+  border-radius: var(--as-radius-pill);
+}

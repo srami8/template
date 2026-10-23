@@ -17,7 +17,7 @@ const SHOP = process.env.SHOP_URL || 'https://313980.myshoptet.com';
 const PAGES = [
   ['home', '/', ['#header', '.banners-row', '.homepage-products-heading-1 + .products-wrapper', '.as-banner-mosaic']],
   ['category', '/sperky/', ['.products-block', '.category-header']],
-  ['detail', '/zbozi/dreveny-privesek-bracken-pendant-6/', ['.p-image-wrapper', '.p-detail-inner-header', '.p-info-wrapper', '.add-to-cart']],
+  ['detail', '/zbozi/dreveny-privesek-bracken-pendant-6/', ['.p-image-wrapper', '.p-detail-inner-header', '.p-data-wrapper']],
   ['search', '/vyhledavani/?string=test', ['#content']],
   ['cart', '/kosik/', ['#content']],
   ['login', '/login/', ['#content']],
