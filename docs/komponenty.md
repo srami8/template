@@ -8,11 +8,13 @@ Prvek Disca má na všech stránkách stejné třídy. Jeho **vzhled** proto pat
 | Sleva v kolečku | karta: `.price-save` („(–31 %)“, text bez závorek v `data-as-discount`), detail: `.flags-extra .flag-discount` | karta, detail | `tools/_flag.scss` `discount($size)` | karta 48 px přes roh obrázku, detail 72 px vpravo dole přes fotku |
 | Hvězdičky hodnocení | `.stars .star.star-on / .star-off` | karta, detail, hodnocení | `tools/_rating.scss`, globálně `_product-elements.scss` | dle místa |
 | Počítadlo množství | `span.quantity > label > input.amount + .increase + .decrease` | karta, detail, okno košíku, stránka košíku | `tools/_quantity.scss` `stepper`, globálně `_product-elements.scss` | karta, okno košíku (rozložení řádku) |
-| Tlačítka | `.btn` (`btn-conversion`, `btn-primary`, `btn-secondary`, `btn-default`), `.sortingToggle`, `.toggle-top-prod`, cookie lišta, sociální přihlášení | karta, detail, košík, přihlášení, našeptávač, bannery, výpis kategorie, úvodní text | tvar (pilulka) globálně `components/_buttons.scss`; barvy a velikost `tools/_button.scss` (`secondary`, `conversion`, `conversion-outline`, `light`) | variantu volí místo podle návrhu; výjimka „Katalog produktů“ (v2, hranaté podle návrhu) |
+| Tlačítka | `.btn` (`btn-conversion`, `btn-primary`, `btn-secondary`, `btn-default`), `.sortingToggle`, `.toggle-top-prod`, cookie lišta, sociální přihlášení | karta, detail, košík, přihlášení, našeptávač, bannery, výpis kategorie, úvodní text | tvar (pilulka) a `btn-conversion` (konverzní barva z administrace, bílý text) globálně `components/_buttons.scss`; barvy a velikost `tools/_button.scss` (`secondary`, `conversion`, `conversion-outline`, `light`) | variantu volí místo podle návrhu; výjimka „Katalog produktů“ (v2, hranaté podle návrhu) |
 | Ikony | písmo `shoptet` v `::before` | hlavička, menu, hledání | `tools/_icon.scss` (maska), glyf mimo breakpointy | velikost v breakpointech |
 | Pole formuláře | `.smart-label-wrapper .form-control-wrapper input` | přihlášení (okno i `/login/`), další formuláře | `components/_login.scss` | — |
 
 **Zatím bez návrhu (vzhled Disca):**
-- tlačítko „Do košíku“ a cena na detailu produktu,
+- cena na detailu produktu,
 - další formuláře (newsletter, objednávka),
 - ostatní kolečka `.flags-extra` (doprava zdarma).
+
+Barvy vždy z administrace e-shopu (tokeny `--as-primary-*`, `--as-conversion` z proměnných Shoptetu), nikdy pevně z Figmy.

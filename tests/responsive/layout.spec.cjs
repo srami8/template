@@ -467,3 +467,16 @@ test('buttons are rounded everywhere, not only where they have a design', async 
   });
   for (const radius of radii) expect(radius).toBeGreaterThanOrEqual(16);
 });
+
+test('conversion buttons use the admin conversion color with white text everywhere', async ({page}) => {
+  await load(page);
+  const look=await page.evaluate(()=>{
+    document.documentElement.style.setProperty('--color-secondary','rgb(10, 120, 60)');
+    const host=document.createElement('div');
+    host.className='p-detail';
+    host.innerHTML='<div class="p-to-cart-block"><button class="btn btn-conversion add-to-cart-button">Do košíku</button></div><div class="next-step"><a class="btn btn-conversion" href="#">Pokračovat</a></div>';
+    document.querySelector('#content').append(host);
+    return [...host.querySelectorAll('.btn-conversion')].map(el=>({bg:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color}));
+  });
+  for (const button of look) expect(button).toEqual({bg:'rgb(10, 120, 60)',color:'rgb(255, 255, 255)'});
+});

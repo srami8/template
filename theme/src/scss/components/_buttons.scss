@@ -1,3 +1,5 @@
+@use "../tools/button";
+
 // Tvar tlačítek všude na e-shopu: zaoblená pilulka (Figma Styleguide „Button“). Disco tlačítka
 // kreslí hranatá (.btn, a.btn { border-radius: 0 }), stejně tak další ovládací prvky Shoptetu
 // (řazení výpisu, „Zobrazit více produktů“, přepínač záložek detailu, cookie lišta, přihlášení
@@ -15,4 +17,12 @@
   .login-btn
 ) {
   border-radius: var(--as-radius-pill);
+}
+
+// Konverzní tlačítko (Do košíku, Pokračovat …) všude: konverzní barva z administrace e-shopu
+// (--as-conversion = --color-secondary Shoptetu, při najetí její odstín pro hover) a bílý text.
+// Disco text barví podle vlastního kontrastu (na detailu tmavý). Místa s jiným návrhem tlačítko
+// přebíjí vyšší specificitou (karta produktu: obrysové tlačítko, components/product-cards).
+.as-theme :is(body, .p-detail .p-to-cart-block) .btn-conversion {
+  @include button.conversion;
 }

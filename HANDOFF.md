@@ -1,3 +1,21 @@
+# Aktualizace (Claude): konverzní tlačítko globálně, barvy z administrace
+
+**Zadání:** barvy z administrace e-shopu. U `btn-conversion` všude bílý text.
+
+**Změna:** `components/_buttons.scss` přidává `.btn-conversion` → `button.conversion`:
+- pozadí `--as-conversion` (= `--color-secondary` z administrace), při najetí `--as-conversion-hover`,
+- bílý text,
+- `:is(body, .p-detail .p-to-cart-block)` kvůli specificitě Disca.
+
+Karty produktů mají jiné tlačítko (`btn-cart`) s obrysem podle návrhu, nekolidují.
+
+**Ověření**
+- Testy: 93 prošlých, nový `conversion buttons use the admin conversion color…` (změna `--color-secondary` se propíše).
+- Snímky před a po: změna jen u tlačítka na detailu (1920 i 390), ostatní beze změny.
+- Výpis všech `btn-conversion` na e-shopu (detail, košík s položkou, kategorie): detail „Do košíku“ i košík „Pokračovat“ mají pozadí #1E9FE8 (konverzní barva z administrace) a bílý text.
+
+---
+
 # Aktualizace (Claude): tlačítka zaoblená globálně
 
 **Zadání:** všechna tlačítka mají být zaoblená, ne hranatá, a to globálně.
