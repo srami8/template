@@ -26,6 +26,10 @@ Ověřeno 23. 10. 2026 na `313980.myshoptet.com`, šablona 13 (Disco). V testova
 
 Referenční stylesheet: `cdn.myshoptet.com/prj/dist/master/shop/dist/main-13.less.c8a6415be4516e0585b7.css`. Při další změně nejprve znovu ověř chování aktuální verze Disca. Nepřidávej vlastní mobilní menu, obsluhu hledání ani další breakpoint jen podle desktopového obrázku.
 
+## Multibanner přes šířku displeje
+
+Varianta `cards` používá na mobilu i desktopu pás přes celou šířku displeje. První karta a pozice přichycení lícují s obsahem původního sloupce Disca. Při posunu karty projíždějí za levou hranou displeje, na konci poslední karta lícuje s pravým okrajem obsahu. JavaScript pouze měří původní sloupec pro odsazení a zachování desktopové velikosti karet; nepřesouvá DOM. Šipky dál posouvají původní `.carousel-inner`, mobil používá swipe.
+
 ## Automatické kontroly
 
 ```bash

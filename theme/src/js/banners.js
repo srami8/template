@@ -41,6 +41,21 @@ export function enhanceBanners(config) {
   const track = carousel?.querySelector(':scope > .carousel-inner');
   if (!track) return;
 
+  // Měříme původní sloupec, nikoli roztažený carousel; změna šířky pásu tak nemění měření.
+  const column = carousel.parentElement;
+  const fitTrack = () => {
+    const box = column.getBoundingClientRect();
+    const style = getComputedStyle(column);
+    const left = parseFloat(style.paddingLeft) + parseFloat(style.borderLeftWidth);
+    const right = parseFloat(style.paddingRight) + parseFloat(style.borderRightWidth);
+    carousel.style.setProperty('--as-cards-inset', `${Math.max(0, box.left + left)}px`);
+    carousel.style.setProperty('--as-cards-content-width', `${box.width - left - right}px`);
+    updateEnds(carousel, track);
+  };
+  new ResizeObserver(fitTrack).observe(column);
+  window.addEventListener('resize', fitTrack, { passive: true });
+  fitTrack();
+
   stopCycling(carousel);
   window.addEventListener('load', () => stopCycling(carousel), { once: true });
   loadImages(carousel);

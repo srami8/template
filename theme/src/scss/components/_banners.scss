@@ -302,12 +302,11 @@
     overflow: visible;
     border-radius: 0;
 
-    @include bp.mobile {
-      // Karty při tažení odjíždějí za hranu displeje; odsazení řeší až jejich přichycení.
-      width: var(--as-viewport-width, 100vw);
-      margin-left: calc(50% - var(--as-viewport-width, 100vw) / 2);
-      margin-right: 0;
-    }
+    // Posouvá se pás přes celý displej, první karta přitom lícuje s původním obsahem.
+    // Rozměry původního sloupce měří banners.js, DOM Disca se nepřesouvá.
+    width: var(--as-viewport-width, 100vw);
+    margin-left: calc(-1 * var(--as-cards-inset, 20px));
+    margin-right: 0;
   }
 
   #carousel .carousel-inner {
@@ -319,13 +318,10 @@
     scroll-behavior: smooth;
     scrollbar-width: none;
 
-    @include bp.mobile {
-      // Každá karta se zastaví 20 px od okraje, pás se přitom ořezává až na hraně displeje.
-      scroll-padding-left: bp.$container-padding;
-      // Koncové odsazení je součást posuvného obsahu, objeví se až za poslední kartou.
-      padding-right: bp.$container-padding;
-      box-sizing: border-box;
-    }
+    scroll-padding-left: var(--as-cards-inset, 20px);
+    // Odsazení je uvnitř posuvného obsahu, takže nezakrývá projíždějící karty.
+    padding-right: var(--as-cards-inset, 20px);
+    box-sizing: border-box;
 
     &::-webkit-scrollbar {
       display: none;
@@ -339,7 +335,7 @@
     position: relative;
     left: auto;
     display: block;
-    flex: 0 0 78%;
+    flex: 0 0 calc(var(--as-viewport-width, 100vw) * 0.78);
     aspect-ratio: 3 / 4;
     overflow: hidden;
     border-radius: 8px;
@@ -349,12 +345,10 @@
     scroll-snap-align: start;
 
     @include bp.desktop {
-      flex-basis: calc((100% - 3 * 20px) / 3.5);
+      flex-basis: calc((var(--as-cards-content-width, 100%) - 3 * 20px) / 3.5);
     }
 
-    @include bp.mobile {
-      &:first-child { margin-left: bp.$container-padding; }
-    }
+    &:first-child { margin-left: var(--as-cards-inset, 20px); }
 
 
     > a {
