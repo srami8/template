@@ -377,3 +377,25 @@ test('login form and search results share their look on mobile and desktop', asy
   expect(snapshots[0]).toEqual(snapshots[1]);
   expect(snapshots[0].inputIcon.maskImage).toContain('svg');
 });
+
+test('default carousel banner keeps its look on mobile', async ({page}) => {
+  await load(page,{banners:'default'});
+  const snapshots=[];
+  for (const width of [375,1280]) {
+    await page.setViewportSize({width,height:900});
+    snapshots.push(await page.evaluate(()=>{
+      const read=selector=>{
+        const style=getComputedStyle(document.querySelector(selector));
+        return Object.fromEntries(['backgroundColor','borderRadius','color','fontFamily','fontWeight','position'].map(key=>[key,style[key]]));
+      };
+      return {
+        carousel:read('#carousel'),
+        title:read('#carousel .item.active .extended-banner-title'),
+        text:read('#carousel .item.active .extended-banner-text'),
+        link:read('#carousel .item.active .extended-banner-link'),
+      };
+    }));
+  }
+  expect(snapshots[0]).toEqual(snapshots[1]);
+  expect(snapshots[0].link.borderRadius).not.toBe('0px');
+});

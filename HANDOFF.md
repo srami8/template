@@ -1,3 +1,26 @@
+# Aktualizace (Claude): carousel varianty default na mobilu
+
+Nalezeno při ověření předchozí úpravy, opravu schválil majitel. U varianty bannerů `default` (také `content`, `fullwidth`) byl celý vzhled carouselu a postranních bannerů v `bp.desktop`. Na mobilu proto zůstal Disco: text 34 px tučně přes obrázek, nadpis a text se překrývaly.
+
+**(1) Disco a Shoptet:** `#carousel` (Bootstrap), `.carousel-control`, `.extended-banner-texts/-title/-text/-link`, `.next-to-carousel-banners`. Na mobilu Shoptet posílá vlastní obrázek carouselu (na e-shopu 720 × 720) a postranní bannery dává pod něj (`col-sm-4`).
+
+**(2) `components/_banners.scss`**
+- Vzhled je mimo breakpointy: zaoblení, zrušení inline `min-height`, kulaté šipky, skryté tečky, texty vlevo na středu, typografie s `clamp()`, tlačítko `button.light`, postranní bannery.
+- Doplněno vynulování podkladu, rámečku a stínu textů Disca a `height: auto` u odkazu (Disco 32 px).
+- Šipky mají odsazení přes `--as-carousel-arrow-inset`: 16 px, na desktopu 32 px.
+- Mobil: texty přes celou šířku banneru, postranní bannery 20 px pod carouselem s menšími texty.
+- V `bp.desktop` zůstalo jen rozložení: záporné okraje řádku, mřížka s postranním sloupcem 460 px, varianty `content` / `fullwidth`.
+
+**(3) Ověření**
+- Testy: 86 prošlých, nový `default carousel banner keeps its look on mobile` (375 vs. 1280 px).
+- E-shop 375 px: „Svíčky Lawood“ s nadpisem, textem a bílým tlačítkem, nic se nepřekrývá, postranní bannery pod ním.
+- 1920 px beze změny.
+- Varianta `cards` na 375 px beze změny (vlastní pravidla s vyšší specificitou).
+
+**Neověřeno:** šipky na mobilu (e-shop má jen jeden mobilní banner carouselu, Disco je pak nezobrazí).
+
+---
+
 # Aktualizace (Claude): stejný vzhled přihlášení, našeptávače a mobilního menu
 
 Bod 3 z revize, schválil majitel. Podle pravidla „vzhled mimo breakpointy, breakpoint mění jen rozložení“.

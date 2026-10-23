@@ -58,9 +58,191 @@
   }
 }
 
+// Vzhled carouselu a postranních bannerů je stejný na všech zařízeních (texty přes obrázek, kulaté
+// šipky, tlačítko). Na mobilu Shoptet posílá vlastní obrázek carouselu (často čtvercový) a postranní
+// bannery dává pod něj. Breakpointy níže mění jen rozložení řádku bannerů a umístění prvků.
 .as-theme {
+  #carousel,
+  .next-to-carousel-banners .banner-wrapper {
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  #carousel {
+    margin: 0;
+
+    // Disco skriptem nastaví carouselu min-height podle nejvyššího banneru (inline styl), takže
+    // při bannerech s různým poměrem stran zůstává pod nižšími prázdné místo. Výšku necháme
+    // na aktuálním banneru, ten se tak zobrazí celý ve svém poměru. !important kvůli inline stylu.
+    .carousel-inner {
+      min-height: 0 !important;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  // Šipky: bílé kruhy 40 px vpravo dole (Figma: Carousel). Odsazení od okraje podle šířky.
+  #carousel .carousel-control {
+    --as-carousel-arrow-inset: 16px;
+    top: auto;
+    bottom: var(--as-carousel-arrow-inset);
+    left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--as-white);
+    color: var(--as-secondary-500);
+    opacity: 1;
+    text-shadow: none;
+
+    &::before {
+      @include icon(chevron-right, 16px);
+      position: static;
+      margin: 0;
+      border: 0;
+      font-size: 0;
+    }
+
+    &.left {
+      right: calc(var(--as-carousel-arrow-inset) + 48px);
+
+      &::before {
+        transform: rotate(180deg);
+      }
+    }
+
+    &.right {
+      right: var(--as-carousel-arrow-inset);
+    }
+
+    &:hover {
+      background: var(--as-primary-50);
+    }
+  }
+
+  // Tečky v návrhu nejsou, posun obstarají šipky.
+  #carousel .carousel-indicators {
+    display: none;
+  }
+
+  // Texty k bannerům z administrace (nadpis, text, odkaz): blok vlevo na středu.
+  .banners-row .extended-banner-texts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 50%;
+    padding: clamp(16px, 3vw, 40px) clamp(16px, 4vw, 56px);
+    pointer-events: none;
+
+    > * {
+      position: static;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      color: var(--as-white);
+      // Disco texty na mobilu podkládá a stínuje, v návrhu jsou přímo na obrázku.
+      background: none;
+      border: 0;
+      box-shadow: none;
+      transform: none;
+    }
+
+    > :empty {
+      display: none;
+    }
+  }
+
+  .banners-row .extended-banner-title {
+    font-family: var(--as-font-family-headings);
+    font-size: clamp(24px, 3.8vw, 56px);
+    overflow-wrap: anywhere;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .banners-row .extended-banner-text {
+    font-size: clamp(16px, 1.6vw, 22px);
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  .banners-row .extended-banner-link {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    // Disco odkazu dává pevnou výšku 32 px.
+    height: auto;
+    min-height: 44px;
+    margin-top: 8px;
+    padding: 12px clamp(16px, 3vw, 40px);
+    border: 1px solid transparent;
+    border-radius: var(--as-radius-pill);
+    @include button.light;
+    font-size: var(--as-font-size-body);
+    font-weight: 500;
+    pointer-events: auto;
+    overflow-wrap: anywhere;
+  }
+
+  .next-to-carousel-banners {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .banner-wrapper {
+      margin: 0;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .extended-banner-texts {
+      max-width: 100%;
+      padding: 24px 32px;
+    }
+
+    .extended-banner-title {
+      font-size: 28px;
+    }
+
+    .extended-banner-link {
+      min-height: 40px;
+      padding: 8px 32px;
+    }
+  }
+
+  // Telefon: obrázek je úzký, text může zabrat celou šířku banneru. Postranní bannery pod carouselem.
+  @include bp.mobile {
+    .banners-row .extended-banner-texts {
+      max-width: 100%;
+    }
+
+    .next-to-carousel-banners {
+      margin-top: 20px;
+
+      .extended-banner-texts {
+        padding: 16px 20px;
+      }
+
+      .extended-banner-title {
+        font-size: 24px;
+      }
+    }
+  }
+
   @include bp.desktop {
-    // Společné pro všechny varianty.
     // Obsah stránky má v Disco odsazení 20 px, řádek bannerů ho záporným okrajem vyrovná (jako Disco),
     // pod bannery je 48 px k výhodám obchodu.
     .banners-row {
@@ -79,156 +261,8 @@
       }
     }
 
-    #carousel,
-    .next-to-carousel-banners .banner-wrapper {
-      overflow: hidden;
-      border-radius: 4px;
-    }
-
-    #carousel {
-      margin: 0;
-
-      // Disco skriptem nastaví carouselu min-height podle nejvyššího banneru (inline styl), takže
-      // při bannerech s různým poměrem stran zůstává pod nižšími prázdné místo. Výšku necháme
-      // na aktuálním banneru, ten se tak zobrazí celý ve svém poměru. !important kvůli inline stylu.
-      .carousel-inner {
-        min-height: 0 !important;
-      }
-
-      img {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-    }
-
-    // Šipky: bílé kruhy 40 px vpravo dole (Figma: Carousel).
     #carousel .carousel-control {
-      top: auto;
-      bottom: 32px;
-      left: auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--as-white);
-      color: var(--as-secondary-500);
-      opacity: 1;
-      text-shadow: none;
-
-      &::before {
-        @include icon(chevron-right, 16px);
-        position: static;
-        margin: 0;
-        border: 0;
-        font-size: 0;
-      }
-
-      &.left {
-        right: 80px;
-
-        &::before {
-          transform: rotate(180deg);
-        }
-      }
-
-      &.right {
-        right: 32px;
-      }
-
-      &:hover {
-        background: var(--as-primary-50);
-      }
-    }
-
-    // Tečky v návrhu nejsou, posun obstarají šipky.
-    #carousel .carousel-indicators {
-      display: none;
-    }
-
-    // Texty k bannerům z administrace (nadpis, text, odkaz): blok vlevo na středu.
-    .banners-row .extended-banner-texts {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 16px;
-      max-width: 50%;
-      padding: clamp(16px, 3vw, 40px) clamp(16px, 4vw, 56px);
-      pointer-events: none;
-
-      > * {
-        position: static;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-        color: var(--as-white);
-      }
-    }
-
-    .banners-row .extended-banner-title {
-      font-family: var(--as-font-family-headings);
-      font-size: clamp(24px, 3.8vw, 56px);
-      overflow-wrap: anywhere;
-      font-weight: 700;
-      line-height: 1.1;
-    }
-
-    .banners-row .extended-banner-text {
-      font-size: clamp(16px, 1.6vw, 22px);
-      font-weight: 400;
-      line-height: 1.3;
-    }
-
-    .banners-row .extended-banner-link {
-      display: inline-flex;
-      align-items: center;
-      height: 60px;
-      margin-top: 8px;
-      padding: 0 40px;
-      border: 1px solid transparent;
-      border-radius: var(--as-radius-pill);
-      @include button.light;
-      font-size: var(--as-font-size-body);
-      font-weight: 500;
-      pointer-events: auto;
-      max-width: 100%;
-      height: auto;
-      min-height: 44px;
-      padding: 12px clamp(16px, 3vw, 40px);
-      overflow-wrap: anywhere;
-    }
-
-    .next-to-carousel-banners {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-
-      .banner-wrapper {
-        margin: 0;
-      }
-
-      img {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      .extended-banner-texts {
-        max-width: 100%;
-        padding: 24px 32px;
-      }
-
-      .extended-banner-title {
-        font-size: 28px;
-      }
-
-      .extended-banner-link {
-        height: 40px;
-        padding: 0 32px;
-      }
+      --as-carousel-arrow-inset: 32px;
     }
 
     // Výchozí: velký banner a vedle sloupec 460 px se dvěma postranními (jen když jsou nahrané).
@@ -276,7 +310,6 @@
         right: calc(max(32px, calc((100vw - 1418px) / 2)) + 48px);
       }
     }
-
   }
 }
 
