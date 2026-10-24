@@ -247,7 +247,7 @@ async function handleSettingsPost(req, res, url) {
     // Hned zveřejnit z posledních načtených článků, server je pak obnovuje z API (handlePublicArticles).
     ...(articles ? { categoryArticlesPublished: { data: publishedCategoryArticles(categoryArticles, articles), builtAt: 0 } } : {}),
   });
-  console.log(`uložení: e-shop ${eshopId}, hlavička ${themeConfig.header}, kategorií na úvodní stránce ${themeConfig.homeCategories.items.length}`);
+  console.log(`uložení: e-shop ${eshopId}, hlavička ${themeConfig.header}, kategorií na úvodní stránce ${themeConfig.homeCategories.items.length}, vzhled kategorie ${themeConfig.categoryLayout}${themeConfig.categoryTint ? " (světlé pozadí)" : ""}`);
   redirect(res, settingsUrl(eshopId, { t: token, lang, saved: '1' }));
 }
 

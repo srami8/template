@@ -1,0 +1,103 @@
+// Vzhled popisu kategorie „Obrázek na pozadí“ (Figma „Kategorie – typy popisů“ 1487:5132, 1487:5133).
+// Pruh přes celou šířku okna, první obrázek z popisu jako pozadí se ztmavením, nadpis, popis
+// a články bíle. Články vedle popisu za svislou čarou (od 992 px), na užších šířkách pod popisem.
+// Kategorie bez obrázku v popisu má výchozí vzhled.
+
+@use "../tools/breakpoints" as bp;
+@use "../tools/category-intro" as intro;
+
+$padding: 80px;
+$padding-mobile: 40px;
+
+.as-theme.as-category-background .category-top {
+  @include intro.hide-pending-images;
+
+  &#{intro.$with-image} {
+    position: relative;
+    isolation: isolate;
+    grid-template-rows: $padding-mobile auto auto auto $padding-mobile;
+    @include intro.band-top;
+
+    > .category-title {
+      grid-row: 2;
+      color: var(--as-white);
+    }
+
+    > .category-perex {
+      grid-row: 3;
+      color: var(--as-white);
+
+      a,
+      a:hover,
+      strong,
+      b {
+        color: var(--as-white);
+      }
+    }
+
+    > .as-category-articles {
+      grid-row: 4;
+    }
+
+    // Pozadí pruhu. Než se načte obrázek, je pruh tmavý (bílý text zůstane čitelný).
+    &::before {
+      content: "";
+      grid-row: 1 / 6;
+      grid-column: 1 / -1;
+      @include intro.full-bleed;
+      z-index: -2;
+      background: var(--as-secondary-600);
+    }
+
+    > .as-category-intro__media {
+      position: relative;
+      grid-row: 1 / 6;
+      grid-column: 1 / -1;
+      @include intro.full-bleed;
+      z-index: -1;
+      margin-top: 0;
+      margin-bottom: 0;
+      overflow: hidden;
+
+      // Ztmavení pod textem (Figma: rgba(38, 38, 38, 0.6), neutrální tmavá šablony).
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: color-mix(in srgb, var(--as-secondary-600) 60%, transparent);
+      }
+    }
+
+    @include intro.media-image;
+
+    // Výšku pruhu určuje text, obrázek ho jen vyplní.
+    .as-category-intro__image {
+      position: absolute;
+      inset: 0;
+    }
+
+    .as-category-articles__title,
+    .as-category-articles__list a,
+    .as-category-articles__list a:hover,
+    .as-category-articles__list a::before {
+      color: var(--as-white);
+    }
+
+    @include bp.desktop {
+      grid-template-rows: $padding auto auto auto $padding;
+    }
+
+    @include bp.desktop {
+      @media (min-width: bp.$large) {
+        &:has(> .as-category-articles) {
+          grid-template-rows: $padding auto 1fr $padding;
+
+          > .as-category-articles {
+            grid-row: 2 / 4;
+            border-left-color: color-mix(in srgb, var(--as-white) 30%, transparent);
+          }
+        }
+      }
+    }
+  }
+}

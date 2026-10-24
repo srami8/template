@@ -1,3 +1,28 @@
+# Aktualizace (Claude): vzhled popisu kategorie (varianty z Figmy)
+
+**Zadání majitele:** varianty popisu kategorie podle Figmy „Kategorie – typy popisů kategorie“ (1487:3697, komentáře #claude). Uživatel volí v nastavení šablony jeden vzhled pro všechny kategorie. Obrázek je první obrázek vložený do popisu kategorie. Responzivita je na Claudovi.
+
+**Řešení**
+- **Nastavení:** karta „Vzhled popisu kategorie“ s volbami výchozí, obrázek na pozadí, obrázek vedle textu, obrázek až k okraji okna, plus „Světlé pozadí“ (jen pro dvě varianty s obrázkem vedle textu). Ukládá se `categoryLayout` a `categoryTint`, na `<html>` jsou třídy `as-category-<vzhled>` a `as-category-tinted`. Náhled: `?asteroid-category=image&asteroid-category-tint=1`.
+- **Styly:** každá varianta má vlastní soubor (`variants/category-*.scss`). Výchozí vzhled je v základu, bez souboru (`styles.mjs` nově podporuje hodnotu bez souboru). Společné části jsou v `tools/_category-intro.scss`.
+- **Rozložení podle obsahu:** CSS pozná obrázek v popisu přes `:has()` už při prvním vykreslení. Kategorie bez obrázku má výchozí vzhled, bez článků je popis přes celou šířku (podle Figmy).
+- **Přesun obrázku:** `js/category-intro.js` přesune první obrázek z popisu do `<figure>`. Odstraní prázdný odstavec a rozměry z editoru, alt zůstává. Funguje i po AJAXu (řazení, filtry).
+- **Bez poskočení:** do přesunu jsou obrázky v popisu skryté a místo pro obrázek drží zástupný blok stejného rozměru. Naměřené CLS na e-shopu s obrázkem 0,005–0,016, telefon 0.
+- **Barvy:** ztmavení pozadí z `--as-secondary-600` (60 %), světlé pozadí `--as-primary-50` (z hlavní barvy administrace). Pruh navazuje přímo na drobečky (vyrovnává `#content` `padding-top: 20px` Disca na desktopu).
+- **Responzivita:**
+  - od 992 px dva sloupce (648 : 700, mezera 72), text svisle na střed vůči obrázku;
+  - pod 992 px obrázek nahoře (u varianty až k okraji okna od okraje k okraji), pod ním nadpis, popis a články (od 768 px ve 2 sloupcích);
+  - obrázek na pozadí: odsazení 80 px, na telefonu 40 px.
+
+**Ověření**
+- Testy: 112 Playwright prošlo, nových 7 pro varianty (rozložení na desktopu i telefonu, bez obrázku, beze změny polohy textu při přesunu obrázku, AJAX).
+- E-shop: všechny varianty na 1920 a 390 px s obrázkem podstrčeným do HTML popisu (administrace beze změny).
+- Snímky beze změny (výchozí vzhled). Audit 0 rozdílů.
+
+**Zbývá:** na e-shopu zatím žádná kategorie nemá obrázek v popisu a vzhled je nastavený na výchozí.
+
+---
+
 # Aktualizace (Claude): rozbitý vzhled administrace šablony
 
 **Hlášení majitele:** administrace šablony (stránka nastavení v iframu) je vizuálně celá rozbitá.

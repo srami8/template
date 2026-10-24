@@ -1,0 +1,222 @@
+// Společné části vzhledů popisu kategorie s obrázkem (scss/variants/category-*.scss, js/category-intro.js).
+// Obrázek je první obrázek v popisu (.category-perex). Rozložení platí, když popis obrázek má
+// (před spuštěním JS), nebo už je přesunutý do <figure> (.as-intro-media).
+
+@use "breakpoints" as bp;
+
+// Kategorie, jejíž popis má obrázek. Bez obrázku zůstává výchozí vzhled.
+$with-image: ":is(.as-intro-media, :has(> .category-perex img))";
+
+// Přes celou šířku okna z prvku mřížky .category-top (oblast přes všechny sloupce, obsah je na středu).
+@mixin full-bleed {
+  justify-self: start;
+  width: var(--as-viewport-width, 100vw);
+  max-width: none;
+  margin-left: calc(50% - var(--as-viewport-width, 100vw) / 2);
+}
+
+// O kolik je pravý okraj okna dál než pravý okraj obsahu (.container Disca + odsazení #content).
+@mixin bleed-right {
+  @each $breakpoint, $width in bp.$container-widths {
+    @if $breakpoint >= bp.$large {
+      @media (min-width: $breakpoint) {
+        margin-right: calc((var(--as-viewport-width, 100vw) - #{$width}) / -2 - #{bp.$container-padding});
+      }
+    }
+  }
+}
+
+// Pruh (obrázek na pozadí, světlé pozadí) navazuje přímo na drobečkovou navigaci: Disco dává
+// #content na desktopu odsazení 20 px nahoře, na telefonu žádné.
+@mixin band-top {
+  margin-top: 0;
+
+  @include bp.desktop {
+    margin-top: -20px;
+  }
+}
+
+// Do přesunu obrázků JS je popis bez obrázků (první obrázek se jinak na chvíli ukáže v textu).
+@mixin hide-pending-images {
+  &:not(.as-intro-media) > .category-perex {
+    img {
+      display: none;
+    }
+
+    // Odstavec jen s obrázkem (běžné vložení v editoru) JS po přesunu odstraní, do té doby nezabírá místo.
+    > :is(p, div):has(> img:only-child, > a:only-child > img:only-child) {
+      display: none;
+    }
+  }
+}
+
+@mixin media-image {
+  .as-category-intro__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    margin: 0;
+    object-fit: cover;
+  }
+}
+
+// Články pod popisem (vzhledy s obrázkem vedle textu): za čarou, ve dvou sloupcích od 768 px.
+@mixin articles-below {
+  > .as-category-articles {
+    grid-column: 1;
+    margin: 32px 0 0;
+    padding: 32px 0 0;
+    border-top: 1px solid var(--as-secondary-75);
+    border-left: 0;
+  }
+
+  .as-category-articles__list {
+    display: block;
+    column-gap: 32px;
+
+    li {
+      margin: 0 0 8px;
+      break-inside: avoid;
+    }
+
+    @include bp.desktop {
+      columns: 2;
+    }
+  }
+}
+
+// Obrázek vedle popisu (vzhledy image a image-wide). Od 992 px dva sloupce (648 : 700 jako ve Figmě,
+// mezera 72 px): vlevo nadpis, popis a články svisle na střed vůči obrázku, vpravo obrázek.
+// Na užších šířkách obrázek nahoře přes celou šířku (u image-wide až k okrajům okna), pod ním text.
+// Světlé pozadí (.as-category-tinted na <html>): pruh přes celou šířku okna, odsazení 64 px
+// (telefon 32 px). Zaoblený obrázek je v pruhu odsazený, obrázek až k okraji pruh vyplní na výšku.
+$side-padding: 64px;
+$side-padding-mobile: 32px;
+$side-gap: 72px;
+
+@mixin side-layout($wide: false) {
+  $ratio: if($wide, "1022 / 681", "700 / 467");
+  $radius: if($wide, 0, 20px);
+
+  @include hide-pending-images;
+
+  &#{$with-image} {
+    position: relative;
+    isolation: isolate;
+    // Obrázek, nadpis, popis, články. Další části (podkategorie …) jdou do řádků za nimi.
+    grid-template-rows: auto auto auto auto;
+
+    > .category-title {
+      grid-row: 2;
+    }
+
+    > .category-perex {
+      grid-row: 3;
+    }
+
+    @include articles-below;
+
+    > .as-category-articles {
+      grid-row: 4;
+    }
+
+    // Obrázek a do jeho přesunu (js/category-intro.js) stejně velký zástupný blok.
+    > .as-category-intro__media,
+    &:not(.as-intro-media)::after {
+      grid-row: 1;
+      grid-column: 1 / -1;
+      aspect-ratio: #{$ratio};
+      margin: 0 0 24px;
+      overflow: hidden;
+      border-radius: $radius;
+    }
+
+    &:not(.as-intro-media)::after {
+      content: "";
+      background: var(--as-secondary-50);
+    }
+
+    @include media-image;
+
+    @if $wide {
+      > .as-category-intro__media,
+      &:not(.as-intro-media)::after {
+        @include full-bleed;
+      }
+    }
+
+    @include bp.desktop {
+      @media (min-width: bp.$large) {
+        grid-template-columns: minmax(0, 648fr) minmax(0, 700fr);
+        grid-template-rows: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
+        column-gap: $side-gap;
+
+        > .category-title,
+        > .category-perex,
+        > .as-category-articles {
+          grid-column: 1;
+        }
+
+        > .category-title {
+          max-width: none;
+        }
+
+        > .as-category-intro__media,
+        &:not(.as-intro-media)::after {
+          grid-row: 1 / 6;
+          grid-column: 2;
+          align-self: center;
+          width: auto;
+          margin: 0;
+        }
+
+        @if $wide {
+          // Až k pravému okraji okna, na výšku přes celý blok (text je vůči němu na střed).
+          > .as-category-intro__media,
+          &:not(.as-intro-media)::after {
+            align-self: stretch;
+            justify-self: stretch;
+            @include bleed-right;
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin side-tint($wide: false) {
+  &#{$with-image} {
+    grid-template-rows: auto auto auto auto $side-padding-mobile;
+    @include band-top;
+
+    &::before {
+      content: "";
+      grid-row: 1 / 6;
+      grid-column: 1 / -1;
+      @include full-bleed;
+      z-index: -1;
+      background: var(--as-primary-50);
+    }
+
+    @if not $wide {
+      > .as-category-intro__media,
+      &:not(.as-intro-media)::after {
+        margin-top: $side-padding-mobile;
+      }
+    }
+
+    @include bp.desktop {
+      @media (min-width: bp.$large) {
+        grid-template-rows: minmax($side-padding, 1fr) auto auto auto minmax($side-padding, 1fr);
+
+        @if not $wide {
+          > .as-category-intro__media,
+          &:not(.as-intro-media)::after {
+            margin: $side-padding 0;
+          }
+        }
+      }
+    }
+  }
+}

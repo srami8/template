@@ -13,6 +13,7 @@ import { enhanceProductCards } from './product-cards';
 import { setHomepageProductColumns } from './homepage-products';
 import { placeHomepageBanners } from './homepage-banners';
 import { enhanceCategory } from './category';
+import { enhanceCategoryIntro } from './category-intro';
 import { loadCategoryArticles, renderCategoryArticles } from './category-articles';
 import { trackViewportWidth } from './viewport';
 import { styleFiles } from './styles.mjs';
@@ -22,10 +23,14 @@ const BANNER_LAYOUTS = ['default', 'content', 'fullwidth', 'cards'];
 // Vzhledy karet produktů (zatím jen výchozí, další přibudou v nastavení šablony).
 const PRODUCT_CARDS = ['default'];
 const PRODUCT_COLUMNS = [4, 5, 6];
+// Vzhled popisu kategorie (scss/variants/category-*.scss, výchozí je v základu).
+const CATEGORY_LAYOUTS = ['default', 'background', 'image', 'image-wide'];
 
 const DEFAULTS = {
   header: 'v1',
   categoryLayout: 'default',
+  // Světlé pozadí pod popisem a obrázkem (jen vzhledy image a image-wide).
+  categoryTint: false,
   banners: 'default',
   phone: null,
   quickLinks: [],
@@ -37,13 +42,17 @@ const DEFAULTS = {
 };
 
 // Náhled jiné varianty bez změny nastavení: ?asteroid-header=v2, ?asteroid-banners=cards,
-// ?asteroid-columns=6
+// ?asteroid-columns=6, ?asteroid-category=image-wide, ?asteroid-category-tint=1
 function previewOverrides() {
   const params = new URLSearchParams(window.location.search);
   const header = params.get('asteroid-header');
   const banners = params.get('asteroid-banners');
   const columns = Number(params.get('asteroid-columns'));
+  const category = params.get('asteroid-category');
+  const tint = params.get('asteroid-category-tint');
   return {
+    ...(CATEGORY_LAYOUTS.includes(category) ? { categoryLayout: category } : {}),
+    ...(tint === '1' || tint === '0' ? { categoryTint: tint === '1' } : {}),
     ...(HEADER_VARIANTS.includes(header) ? { header } : {}),
     ...(BANNER_LAYOUTS.includes(banners) ? { banners } : {}),
     ...(PRODUCT_COLUMNS.includes(columns) ? { productColumns: columns } : {}),
@@ -86,12 +95,15 @@ function start() {
   document.documentElement.classList.add(
     'as-theme',
     `as-header-${config.header}`,
-    `as-category-${config.categoryLayout}`,
+    `as-category-${CATEGORY_LAYOUTS.includes(config.categoryLayout) ? config.categoryLayout : 'default'}`,
     `as-banners-${BANNER_LAYOUTS.includes(config.banners) ? config.banners : 'default'}`,
     `as-product-card-${PRODUCT_CARDS.includes(config.productCard) ? config.productCard : 'default'}`,
   );
   // Řádek rychlých odkazů vzniká až na DOMContentLoaded; CSS mu podle třídy drží místo předem,
   // aby hlavička a obsah po prvním vykreslení neposkočily (layout/_header.scss).
+  if (config.categoryTint === true && ['image', 'image-wide'].includes(config.categoryLayout)) {
+    document.documentElement.classList.add('as-category-tinted');
+  }
   if (Array.isArray(config.quickLinks) && config.quickLinks.some((link) => link?.label && link?.url)) {
     document.documentElement.classList.add('as-has-quicklinks');
   }
@@ -113,6 +125,7 @@ function start() {
     enhanceLogin();
     enhanceCart();
     enhanceProductCards();
+    enhanceCategoryIntro(config);
     enhanceCategory();
     renderCategoryArticles(categoryArticles);
   };

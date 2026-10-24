@@ -1,0 +1,14 @@
+// Vzhled popisu kategorie „Obrázek vedle textu“ (Figma „Kategorie – typy popisů“ 1487:5134, 1487:5177,
+// se světlým pozadím 1487:5342, 1487:5341). Obrázek se zaoblením 20 px vpravo od popisu, články
+// pod popisem za čarou. Rozložení v tools/_category-intro.scss, kategorie bez obrázku v popisu
+// má výchozí vzhled.
+
+@use "../tools/category-intro" as intro;
+
+.as-theme.as-category-image .category-top {
+  @include intro.side-layout;
+}
+
+.as-theme.as-category-image.as-category-tinted .category-top {
+  @include intro.side-tint;
+}

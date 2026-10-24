@@ -40,6 +40,32 @@ export const BANNER_LAYOUTS = [
   },
 ];
 
+// Vzhled popisu kategorie (stejný pro všechny kategorie). Obrázek je první obrázek vložený do popisu
+// kategorie v administraci; kategorie bez obrázku má výchozí vzhled. Články se přizpůsobí samy.
+export const CATEGORY_LAYOUTS = [
+  {
+    value: 'default',
+    label: 'Výchozí',
+    hint: 'Nadpis a popis, vedle nich přiřazené články. Bez článků je popis přes celou šířku.',
+  },
+  {
+    value: 'background',
+    label: 'Obrázek na pozadí',
+    hint: 'Pruh přes celou šířku okna, obrázek ztmavený pod bílým textem. Doporučujeme široký obrázek (např. 2400 × 600 px) bez textu.',
+  },
+  {
+    value: 'image',
+    label: 'Obrázek vedle textu',
+    hint: 'Obrázek se zaoblenými rohy vpravo od popisu, články pod popisem. Doporučený rozměr 1400 × 934 px (poměr 3 : 2).',
+  },
+  {
+    value: 'image-wide',
+    label: 'Obrázek až k okraji okna',
+    hint: 'Obrázek vpravo od popisu sahá až k okraji okna, články pod popisem. Doporučený rozměr 2000 × 1333 px (poměr 3 : 2).',
+  },
+];
+export const TINTABLE_CATEGORY_LAYOUTS = ['image', 'image-wide'];
+
 // Ikony dostupné v theme/src/icons pro rychlé odkazy.
 export const QUICK_LINK_ICONS = ['local-fire-department', 'local-offer', 'filter-vintage', 'schedule'];
 
@@ -63,6 +89,8 @@ export const DEFAULT_THEME_CONFIG = {
   homeCategories: { title: HOME_CATEGORIES_TITLE, items: [] },
   productColumns: 4,
   headings: {},
+  categoryLayout: 'default',
+  categoryTint: false,
 };
 
 export { HEADING_SIZES };
@@ -177,7 +205,10 @@ export function themeConfigFromForm(form, { categories, previous } = {}) {
     Object.keys(HEADING_SIZES).map((level) => [level, form.get(`headings[${level}]`)]),
   ));
 
-  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, headings };
+  const categoryLayout = CATEGORY_LAYOUTS.some((v) => v.value === form.get('categoryLayout')) ? form.get('categoryLayout') : 'default';
+  const categoryTint = form.get('categoryTint') === '1' && TINTABLE_CATEGORY_LAYOUTS.includes(categoryLayout);
+
+  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, headings, categoryLayout, categoryTint };
 }
 
 function escapeAttribute(value) {

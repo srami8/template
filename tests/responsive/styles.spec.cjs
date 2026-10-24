@@ -12,8 +12,9 @@ test('every variant style file is listed and every listed variant is built', asy
   expect(listed.sort()).toEqual(built.sort());
 
   expect(styleFiles({header: 'v2', banners: 'cards'})).toEqual(['asteroid', 'header-v2', 'banners-cards', 'product-card-default']);
-  // Neznámá hodnota → výchozí varianta.
-  expect(styleFiles({header: 'v9'})).toEqual(['asteroid', 'header-v1', 'banners-default', 'product-card-default']);
+  // Neznámá hodnota → výchozí varianta; výchozí vzhled kategorie je v základu (bez souboru).
+  expect(styleFiles({header: 'v9', categoryLayout: 'x'})).toEqual(['asteroid', 'header-v1', 'banners-default', 'product-card-default']);
+  expect(styleFiles({categoryLayout: 'image-wide'})).toContain('category-image-wide');
 });
 
 test('heading defaults are the same in the settings and in the CSS tokens', async () => {

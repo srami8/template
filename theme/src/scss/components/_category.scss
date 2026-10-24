@@ -27,14 +27,13 @@ $section-gap: 40px;
     min-width: 0;
   }
 
-  // Nadpis (velikost H1 z components/_headings) a úvodní popis z administrace.
+  // Nadpis (velikost H1 z components/_headings) a úvodní popis z administrace. Bez článků přes celou
+  // šířku (Figma „Kategorie – typy popisů“), s články vedle nich sloupec 820 px.
   > .category-title {
-    max-width: $text-width;
     margin: 0 0 16px;
   }
 
   > .category-perex {
-    max-width: $text-width;
     margin: 0;
     color: var(--as-secondary-400);
     font-size: var(--as-font-size-body);

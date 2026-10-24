@@ -23,19 +23,26 @@ const bestseller = (i) => `<div class="product"><div class="p"><a href="/produkt
 const GUID = '0d2e8b0e-6b1a-11eb-90ab-b8ca3a6063f8';
 const ARTICLES_URL = 'https://settings.test/public/313980/category-articles.json?v=abc';
 const config = `<script>window.dataLayer = [{shoptet: {pageType: 'category', category: {guid: '${GUID}'}}}];
-  window.asteroidConfig = {categoryArticles: '${ARTICLES_URL}'};</script>`;
+  window.asteroidConfig = Object.assign(window.asteroidConfig || {}, {categoryArticles: '${ARTICLES_URL}'});</script>`;
 
-const page = (bestsellers = 5, {articles = false} = {}) => `<!doctype html><html lang="cs"><head><meta charset="utf-8">
+const variantCss = (name) => fs.readFileSync(path.join(dist, `category-${name}.css`), 'utf8');
+// Obrázek vložený do popisu v editoru Shoptetu (s rozměry v atributech a stylu).
+const photo = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1400" height="934"%3E%3Crect width="1400" height="934" fill="%2378c5f1"/%3E%3C/svg%3E';
+const perexWithImage = `<p><img src='${photo}' alt="Prádelna" width="300" height="200" style="width: 300px; float: left;"></p>
+    <p>Úvodní popis kategorie s <a href="/odkaz">odkazem</a> a <strong>tučným textem</strong>, delší text na několik řádků.</p>`;
+
+const page = (bestsellers = 5, {articles = false, layout = 'default', tint = false, image = false} = {}) => `<!doctype html><html lang="cs"><head><meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1"><style>
   *,*::before,*::after{box-sizing:border-box}body{margin:0;font-family:sans-serif}.container{margin:0 auto;padding:0 20px}
   @media(min-width:768px){.container{width:747px}}@media(min-width:992px){.container{width:972px}}
   @media(min-width:1200px){.container{width:1178px}}@media(min-width:1440px){.container{width:1418px}}
   /* Disco: buňky podkategorií jsou plovoucí sloupce Bootstrapu */.subcategories li{float:left;width:25%}
   /* Disco: horní část kategorie má max. 1178 px */.category-top{max-width:1178px}
-  ${css}</style></head><body class="type-category one-column-body"><main id="content" class="container content">
+  ${css}${layout === 'default' ? '' : variantCss(layout)}</style>
+  <script>window.asteroidConfig = Object.assign(window.asteroidConfig || {}, {categoryLayout: '${layout}', categoryTint: ${tint}});</script></head><body class="type-category one-column-body"><main id="content" class="container content">
   <div class="category-top">
     <h1 class="category-title">Šperky</h1>
-    <div class="category-perex"><p>Úvodní popis kategorie s <a href="/odkaz">odkazem</a>.</p></div>
+    <div class="category-perex">${image ? perexWithImage : '<p>Úvodní popis kategorie s <a href="/odkaz">odkazem</a>.</p>'}</div>
     <ul class="subcategories with-image">${Array.from({length: 7}, (_, i) => subcategory(i + 1)).join('')}</ul>
     <div class="products-top-wrapper"><h2 class="products-top-header" id="productsTopHeading">Nejprodávanější</h2>
       <div id="productsTop" class="products products-inline products-top">${Array.from({length: bestsellers}, (_, i) => bestseller(i + 1)).join('')}</div>
@@ -220,4 +227,143 @@ test('bestsellers and articles come back after Shoptet replaces the category con
   await expect(p.locator('.as-bestsellers > #productsTop')).toHaveCount(1);
   expect(await p.locator('.as-detail-button').count()).toBe(5);
   await expect(p.locator('.products-top-wrapper > .button-wrapper')).toBeHidden();
+});
+
+// Vzhled popisu kategorie (nastavení categoryLayout, scss/variants/category-*.scss, js/category-intro.js).
+// Obrázek je první obrázek v popisu; bez něj výchozí vzhled.
+const intro = (p) => p.evaluate(() => {
+  const r = (s) => { const e = document.querySelector(s); if (!e) return null; const b = e.getBoundingClientRect(); return {x: Math.round(b.x), y: Math.round(b.y), right: Math.round(b.right), bottom: Math.round(b.bottom), width: Math.round(b.width), height: Math.round(b.height)}; };
+  const band = getComputedStyle(document.querySelector('.category-top'), '::before');
+  const figure = document.querySelector('.as-category-intro__media');
+  return {
+    figure: r('.as-category-intro__media'), title: r('.category-title'), perex: r('.category-perex'), articles: r('.as-category-articles'), subcategories: r('.subcategories'),
+    radius: figure && getComputedStyle(figure).borderTopLeftRadius, alt: figure?.querySelector('img').alt,
+    perexImages: document.querySelectorAll('.category-perex img').length, emptyParagraphs: [...document.querySelectorAll('.category-perex p')].filter((el) => !el.textContent.trim()).length,
+    band: {content: band.content, width: Math.round(parseFloat(band.width)), background: band.backgroundColor},
+    titleColor: getComputedStyle(document.querySelector('.category-title')).color, marginTop: getComputedStyle(document.querySelector('.category-top')).marginTop,
+    listColumns: document.querySelector('.as-category-articles__list') && getComputedStyle(document.querySelector('.as-category-articles__list')).columnCount,
+  };
+});
+
+test('category layout "image": first description image beside the text, articles below it', async ({page: p}) => {
+  await serve(p, articleData(four));
+  await p.setViewportSize({width: 1440, height: 900});
+  await p.setContent(page(3, {articles: true, layout: 'image', image: true}));
+  await expect(p.locator('.as-category-articles')).toHaveCount(1);
+  const d = await intro(p);
+  // Obrázek přesunutý z popisu (jen jednou, bez prázdného odstavce), alt zůstává.
+  expect(d.perexImages).toBe(0);
+  expect(d.emptyParagraphs).toBe(0);
+  expect(d.alt).toBe('Prádelna');
+  // Vpravo se zaoblením 20 px v poměru 700 : 467, text vlevo, mezera 72 px, obsah končí s obsahem stránky.
+  expect(d.radius).toBe('20px');
+  expect(Math.abs(d.figure.width / d.figure.height - 700 / 467)).toBeLessThan(0.02);
+  expect(d.figure.x - d.perex.right).toBeGreaterThanOrEqual(72);
+  expect(d.figure.right).toBe(1409);
+  // Články pod popisem za čarou ve dvou sloupcích, text svisle na střed vůči obrázku.
+  expect(d.articles.y).toBeGreaterThan(d.perex.bottom);
+  expect(d.articles.x).toBe(d.perex.x);
+  expect(d.listColumns).toBe('2');
+  expect(Math.abs((d.title.y + d.articles.bottom) / 2 - (d.figure.y + d.figure.bottom) / 2)).toBeLessThan(30);
+  expect(d.subcategories.y).toBeGreaterThanOrEqual(Math.max(d.figure.bottom, d.articles.bottom));
+  // Bez světlého pozadí žádný pruh.
+  expect(d.band.content).toBe('none');
+});
+
+test('category layout "image" on a phone: image on top, then title, description and articles in one column', async ({page: p}) => {
+  await serve(p, articleData(four));
+  await p.setViewportSize({width: 390, height: 844});
+  await p.setContent(page(3, {articles: true, layout: 'image', image: true}));
+  await expect(p.locator('.as-category-articles')).toHaveCount(1);
+  const d = await intro(p);
+  expect(d.figure.width).toBe(350);
+  expect(d.title.y).toBeGreaterThanOrEqual(d.figure.bottom + 24);
+  expect(d.articles.y).toBeGreaterThan(d.perex.bottom);
+  expect(d.listColumns).toBe('auto');
+  expect(d.subcategories.y).toBeGreaterThanOrEqual(d.articles.bottom);
+});
+
+test('category layout "image-wide" reaches the window edge; light background is a full-width band', async ({page: p}) => {
+  await p.setViewportSize({width: 1440, height: 900});
+  await p.setContent(page(3, {layout: 'image-wide', tint: true, image: true}));
+  await expect(p.locator('.as-category-intro__media')).toHaveCount(1);
+  let d = await intro(p);
+  expect(d.figure.right).toBe(1440);
+  expect(d.radius).toBe('0px');
+  expect(d.band.width).toBe(1440);
+  expect(d.band.background).not.toBe('rgba(0, 0, 0, 0)');
+  // Pruh navazuje na drobečky (vyrovnává odsazení #content Disca 20 px).
+  expect(d.marginTop).toBe('-20px');
+  // Obrázek vyplní pruh na výšku, text uvnitř pruhu aspoň 64 px od okraje.
+  expect(d.title.y - d.figure.y).toBeGreaterThanOrEqual(64);
+
+  await p.setViewportSize({width: 390, height: 844});
+  // --as-viewport-width nastavuje ResizeObserver (js/viewport.js) až po vykreslení nové šířky.
+  await p.waitForFunction(() => document.documentElement.style.getPropertyValue('--as-viewport-width') === '390px');
+  d = await intro(p);
+  expect([d.figure.x, d.figure.width]).toEqual([0, 390]);
+  expect(d.title.y).toBeGreaterThan(d.figure.bottom);
+});
+
+test('category layout "background": image behind the text across the window, text in white', async ({page: p}) => {
+  await serve(p, articleData(four));
+  await p.setViewportSize({width: 1440, height: 900});
+  await p.setContent(page(3, {articles: true, layout: 'background', image: true}));
+  await expect(p.locator('.as-category-articles')).toHaveCount(1);
+  const d = await intro(p);
+  expect([d.figure.x, d.figure.width]).toEqual([0, 1440]);
+  expect(d.titleColor).toBe('rgb(255, 255, 255)');
+  // Pruh od textu 80 px nahoře, články vpravo vedle popisu, výšku určuje text (ne rozměr obrázku).
+  expect(d.title.y - d.figure.y).toBe(80);
+  expect(d.articles.x).toBeGreaterThan(d.perex.right);
+  expect(d.figure.bottom).toBeLessThan(d.articles.bottom + 200);
+  expect(d.subcategories.y).toBeGreaterThan(d.figure.bottom);
+});
+
+test('category without an image in the description keeps the default look in every layout', async ({browser}) => {
+  for (const layout of ['background', 'image', 'image-wide']) {
+    // Vlastní stránka: setContent ponechává window, skript šablony by se podruhé nespustil.
+    const p = await browser.newPage({viewport: {width: 1440, height: 900}});
+    await p.setContent(page(3, {layout, tint: true}));
+    const d = await intro(p);
+    expect(d.figure).toBeNull();
+    expect(d.band.content).toBe('none');
+    expect(d.marginTop).toBe('32px');
+    // Bez článků popis přes celou šířku obsahu.
+    expect(d.perex.width).toBe(1378);
+    await p.close();
+  }
+});
+
+test('reserved image space: the text does not move when the image is moved out of the description', async ({browser}) => {
+  const measure = async (withScript) => {
+    const p = await browser.newPage({viewport: {width: 1440, height: 900}});
+    // Stav před přesunem obrázku: třídy na <html> jako od skriptu šablony, obrázek ještě v popisu.
+    const html = page(3, {layout: 'image', image: true});
+    await p.setContent(withScript ? html : html.replace(`<script>${js}</script>`, '')
+      .replace('<html lang="cs">', '<html lang="cs" class="as-theme as-category-image" style="--as-viewport-width: 1440px">'));
+    const d = await intro(p);
+    await p.close();
+    return d;
+  };
+  const before = await measure(false);
+  const after = await measure(true);
+  expect(before.figure).toBeNull();
+  expect(after.figure).not.toBeNull();
+  expect(after.title).toEqual(before.title);
+  expect(after.subcategories.y).toBe(before.subcategories.y);
+});
+
+test('description image comes back after Shoptet replaces the category content (AJAX)', async ({page: p}) => {
+  await p.setViewportSize({width: 1440, height: 900});
+  await p.setContent(page(3, {layout: 'image', image: true}));
+  await expect(p.locator('.as-category-intro__media')).toHaveCount(1);
+  await p.evaluate(() => {
+    const fresh = document.createElement('div');
+    fresh.innerHTML = window.__originalTop;
+    document.querySelector('.category-top').replaceWith(fresh.firstElementChild);
+    document.dispatchEvent(new Event('ShoptetDOMPageContentLoaded'));
+  });
+  await expect(p.locator('.as-category-intro__media')).toHaveCount(1);
+  expect((await intro(p)).perexImages).toBe(0);
 });

@@ -12,6 +12,8 @@ import {
   HOME_CATEGORIES_TITLE,
   PRODUCT_COLUMNS,
   HEADING_SIZES,
+  CATEGORY_LAYOUTS,
+  TINTABLE_CATEGORY_LAYOUTS,
 } from './theme-config.mjs';
 import { CATEGORY_ARTICLES_TITLE, MAX_ARTICLES_PER_CATEGORY, articleState } from './category-articles.mjs';
 
@@ -377,6 +379,33 @@ export function settingsPage({
     </label>`,
   ).join('');
 
+  const categoryLayout = CATEGORY_LAYOUTS.some((v) => v.value === themeConfig.categoryLayout) ? themeConfig.categoryLayout : 'default';
+  const categoryLayouts = `${CATEGORY_LAYOUTS.map(
+    (v) => `<label class="as-variant" title="${escape(v.hint)}">
+      <input class="radioField" type="radio" name="categoryLayout" value="${v.value}" ${categoryLayout === v.value ? 'checked' : ''}>
+      <span><strong>${escape(v.label)}</strong><span class="as-hint">${escape(v.hint)}</span></span>
+    </label>`,
+  ).join('')}
+    <label class="as-variant" data-category-tint>
+      <input class="checkboxField" type="checkbox" name="categoryTint" value="1" ${themeConfig.categoryTint ? 'checked' : ''}>
+      <span><strong>Světlé pozadí</strong><span class="as-hint">Pod popisem a obrázkem pruh ve světlém odstínu hlavní barvy e-shopu přes celou šířku okna. Jen u vzhledů s obrázkem vedle textu.</span></span>
+    </label>
+    <script>
+    (function () {
+      var tint = document.querySelector('[data-category-tint]');
+      var input = tint.querySelector('input');
+      var tintable = ${JSON.stringify(TINTABLE_CATEGORY_LAYOUTS)};
+      function update() {
+        var checked = document.querySelector('input[name="categoryLayout"]:checked');
+        var enabled = checked && tintable.indexOf(checked.value) !== -1;
+        input.disabled = !enabled;
+        tint.style.opacity = enabled ? '' : '0.5';
+      }
+      document.querySelectorAll('input[name="categoryLayout"]').forEach(function (radio) { radio.addEventListener('change', update); });
+      update();
+    })();
+    </script>`;
+
   const productColumns = PRODUCT_COLUMNS.map(
     (count) => `<label class="as-variant">
       <input class="radioField" type="radio" name="productColumns" value="${count}" ${Number(themeConfig.productColumns || 4) === count ? 'checked' : ''}>
@@ -430,6 +459,11 @@ export function settingsPage({
           'Kategorie na úvodní stránce',
           homeCategoriesCard(themeConfig.homeCategories, categoryChoices),
           'Vybrané kategorie se zobrazí pod bannery s názvem, obrázkem a odkazem z administrace e-shopu. Víc než 6 kategorií se posouvá jako carousel. Po přejmenování kategorie nebo změně jejího obrázku nastavení znovu uložte.',
+        )}
+        ${card(
+          'Vzhled popisu kategorie',
+          categoryLayouts,
+          'Platí pro všechny kategorie. Obrázek je první obrázek vložený do popisu kategorie (Kategorie → Popis). Kategorie bez obrázku v popisu má výchozí vzhled, přiřazené články se zobrazí vedle textu nebo pod ním podle zvoleného vzhledu.',
         )}
         ${card(
           'Články ke kategoriím',
