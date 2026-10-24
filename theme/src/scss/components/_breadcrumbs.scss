@@ -125,3 +125,8 @@
     }
   }
 }
+
+// Disco obalu obsahu na telefonu dává nahoře odsazení 10 px, pruh drobečků by nenavazoval na hlavičku.
+.as-theme .content-wrapper:has(> .breadcrumbs:first-child) {
+  padding-top: 0;
+}

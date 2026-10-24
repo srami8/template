@@ -11,9 +11,10 @@
 @use "../tools/breakpoints" as bp;
 @use "../tools/button";
 
-// Obsahové bannery Disca mají na telefonu příliš nízký obrázek pro nadpis, text i tlačítko.
-// Původní textový blok se proto zobrazí pod obrázkem, celý banner zůstává původním odkazem.
-.as-theme .body-banners :is(.banner-wrapper, .footer-banner) {
+// Obsahové bannery Disca (původní blok Střed) mají na telefonu příliš nízký obrázek pro nadpis, text
+// i tlačítko. Původní textový blok se proto zobrazí pod obrázkem, celý banner zůstává původním odkazem.
+// Bannery u sekcí (.as-section-banner) mají vlastní vzhled stejný na všech zařízeních.
+.as-theme .body-banners:not(.as-section-banner) :is(.banner-wrapper, .footer-banner) {
   max-width: 100%;
 
   @include bp.mobile {

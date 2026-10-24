@@ -5,6 +5,7 @@
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
+@use "../tools/dropdown";
 
 // Řádek rychlých odkazů na desktopu: odkaz 44 px (dotykový cíl) + spodní linka.
 $quicklinks-height: 45px;
@@ -67,6 +68,26 @@ $quicklinks-height: 45px;
     @include icon(expand-more, 16px);
     color: var(--as-secondary-300);
     vertical-align: middle;
+  }
+
+  // Pole hledání: stejný vzhled na desktopu i mobilu, výšku a odsazení určují breakpointy
+  // (layout/_header.scss desktop, components/_mobile-header.scss).
+  #header .search-input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    border-radius: var(--as-radius-pill);
+    background: var(--as-secondary-50);
+    box-shadow: none;
+    color: var(--as-secondary-500);
+    font-family: var(--as-font-family);
+    font-size: var(--as-font-size-small);
+    line-height: 20px;
+
+    &::placeholder {
+      color: var(--as-secondary-300);
+    }
   }
 
   // Tlačítko hledání ve formuláři (desktop v řádku, mobil v otevřeném hledání).
@@ -263,35 +284,7 @@ $quicklinks-height: 45px;
           right: auto;
           left: -8px;
           min-width: calc(100% + 16px);
-          margin: -1px 0 0;
-          padding: 8px;
-          border: 0;
-          border-top: 1px solid var(--as-secondary-75);
-          border-radius: 0 0 8px 8px;
-          background: var(--as-white);
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-
-          a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            border-radius: 4px;
-            color: var(--as-secondary-500);
-            font-size: var(--as-font-size-small);
-            line-height: 20px;
-
-            // Disco kreslí před položky tečku.
-            &::before {
-              content: none;
-            }
-
-            &:hover,
-            &:focus-visible {
-              background: var(--as-primary-50);
-              color: var(--as-primary-600);
-            }
-          }
+          @include dropdown.panel;
         }
       }
     }
@@ -415,24 +408,10 @@ $quicklinks-height: 45px;
         display: none;
       }
 
+      // Vzhled pole je společný (začátek souboru), tady jen rozměry řádku hlavičky.
       .search-input {
-        box-sizing: border-box;
-        width: 100%;
-        min-width: 0;
         height: 48px;
         padding: 0 56px 0 24px;
-        border: 0;
-        border-radius: var(--as-radius-pill);
-        background: var(--as-secondary-50);
-        box-shadow: none;
-        color: var(--as-secondary-500);
-        font-family: var(--as-font-family);
-        font-size: var(--as-font-size-small);
-        line-height: 20px;
-
-        &::placeholder {
-          color: var(--as-secondary-300);
-        }
       }
 
       .search-button {

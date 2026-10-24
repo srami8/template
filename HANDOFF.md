@@ -1,3 +1,37 @@
+# Aktualizace (Claude): audit stejného vzhledu desktop vs. mobil
+
+**Zadání majitele:** mezera mezi hlavičkou a drobečky na mobilu, jiný vzhled nabídky měny na mobilu. Pak projít vše hotové, aby se komponenty na desktopu a mobilu nelišily, a průběžně hlásit nálezy.
+
+**Nálezy a opravy**
+1. **Mezera nad drobečky (mobil):** Disco dává `.content-wrapper` na mobilu `padding-top: 10px`. Opraveno v `_breadcrumbs.scss`: `.content-wrapper:has(> .breadcrumbs:first-child) { padding-top: 0 }`.
+2. **Nabídka měny:**
+   - vzhled byl dvakrát (desktop v `_header.scss`, mobil zvlášť a jinak), teď je jeden mixin `tools/_dropdown.scss` `panel`,
+   - na mobilu navíc pravidla podkategorií z `_mobile-menu.scss` platila pro každé `.menu-level-2` (Disco ji má i u nabídky měny), zúženo na `.menu-level-1 .menu-level-2/3`,
+   - vynulována tečka Disca u aktivní položky, okraj odkazu 20 px a podtržení textu v horním řádku menu.
+3. **Banner u sekce:**
+   - vzhled (zaoblení, obrázek přes plochu, texty a tlačítko přes obrázek) byl jen v `bp.desktop`, teď platí na všech zařízeních,
+   - Codexova mobilní úprava „text pod obrázkem“ zůstává jen pro původní blok Disca (`.body-banners:not(.as-section-banner)`).
+4. **Pole hledání:** vzhled byl dvakrát (desktop, mobilní hlavička), teď je jedno společné pravidlo v `_header.scss`, breakpointy mají jen výšku a odsazení.
+5. **Počítadlo:** `text-align: left` v mixinu (Disco na detailu mobilu zarovnává vpravo).
+
+**Nový nástroj:** `tests/shop/audit.cjs` (`npm run audit`) porovná 41 komponent na e-shopu na 1920 a 390 px. Výsledek: 0 rozdílů. Audit nezachytí vše, nabídku měny jsem ověřil i snímky otevřeného stavu. Pravidlo je v `AGENTS.md`, popis v `docs/komponenty.md`.
+
+**Ověření:**
+- Testy: 96 prošlých (2 dočasná selhání při souběhu s nasazením, po opakování prošly).
+- Snímky před a po: změny jen tam, kde měly být.
+- Mobilní menu (úrovně 1–3, zpět, přihlášení) beze změny funkčnosti.
+
+**Známé rozdíly podle návrhu (záměrně):**
+- košík: pilulka s cenou (desktop) vs. ikona (mobil),
+- domeček v drobečcích vs. poslední odkaz,
+- řádky mobilního menu (výška, oddělovače),
+- velikost nadpisů H1–H3,
+- tlačítko v kartě má na mobilu min. výšku 44 px (dotyk).
+
+**Mimo rozsah:** původní blok Střed Disca (banner bez značky) má na mobilu Codexův vzhled, na desktopu vzhled Disca. Na e-shopu se teď nepoužívá.
+
+---
+
 # Aktualizace (Claude): drobečková navigace podle Figmy
 
 **Zadání:**

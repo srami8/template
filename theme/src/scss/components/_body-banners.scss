@@ -16,7 +16,9 @@ $gap: 40px;
 $section-gap: 72px;
 
 .as-theme #content > .as-section-banner {
-  margin: 0 0 32px;
+  // Nad sekcí (tablet, telefon) uprostřed, nejvýš 434 px: obrázek na výšku by byl jinak příliš vysoký.
+  max-width: $banner-width;
+  margin: 0 auto 32px;
   padding: 0;
 
   // Banner ze Střed (.banner-wrapper) nebo ze Zápatí (.footer-banner, se sloupcovými třídami Bootstrapu).
@@ -28,97 +30,93 @@ $section-gap: 72px;
     padding: 0;
   }
 
-  // Obrázek přes celou plochu banneru, texty nahoře, tlačítko dole (vše z administrace).
-  // Rámeček je na .banner-wrapper / .footer-banner, banner bez cílové adresy nemá odkaz, jen obrázek.
-  @include bp.desktop {
-    // Na tabletu nad sekcí uprostřed, v plné šířce by obrázek na výšku byl příliš vysoký.
-    max-width: $banner-width;
-    margin-right: auto;
-    margin-left: auto;
+  // Obrázek přes celou plochu banneru, texty nahoře, tlačítko dole (vše z administrace), stejně na
+  // všech zařízeních. Rámeček je na .banner-wrapper / .footer-banner, banner bez cílové adresy nemá
+  // odkaz, jen obrázek.
 
-    .banner-wrapper,
-    .footer-banner {
-      position: relative;
-      aspect-ratio: 434 / 509;
-      border-radius: 8px;
-      overflow: hidden;
-    }
+  .banner-wrapper,
+  .footer-banner {
+    position: relative;
+    aspect-ratio: 434 / 509;
+    border-radius: 8px;
+    overflow: hidden;
+  }
 
-    // Flex: výška z poměru stran se pro height: 100 % textů nepočítá, texty se roztáhnou přes flex.
-    .banner-wrapper > a,
-    .footer-banner > a {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      color: var(--as-white);
-      text-decoration: none;
-    }
+  // Flex: výška z poměru stran se pro height: 100 % textů nepočítá, texty se roztáhnou přes flex.
+  .banner-wrapper > a,
+  .footer-banner > a {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    color: var(--as-white);
+    text-decoration: none;
+  }
 
-    img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-    .extended-banner-texts {
-      position: relative;
-      z-index: 1;
-      inset: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1 1 auto;
-      gap: 8px;
-      width: 100%;
-      height: auto;
-      max-width: none;
+  .extended-banner-texts {
+    position: relative;
+    z-index: 1;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 auto;
+    gap: 8px;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    margin: 0;
+    padding: 48px 32px 44px;
+    background: none;
+    text-align: center;
+    transform: none;
+
+    > * {
+      position: static;
+      max-width: 100%;
       margin: 0;
-      padding: 48px 32px 44px;
-      background: none;
-      text-align: center;
+      padding: 0;
       transform: none;
-
-      > * {
-        position: static;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-        transform: none;
-      }
-
-      > :empty {
-        display: none;
-      }
     }
 
-    .extended-banner-title {
-      color: var(--as-white);
-      font-family: var(--as-font-family-headings);
-      font-size: var(--as-font-size-h1);
-      font-weight: 500;
-      line-height: 1.2;
-    }
-
-    .extended-banner-text {
-      color: var(--as-white);
-      font-size: var(--as-font-size-body);
-      line-height: 1.7;
-    }
-
-    // Tlačítko dole (margin-top: auto až za button.base, ten nastavuje margin: 0).
-    .extended-banner-link {
-      @include button.base;
-      @include button.light;
-      margin-top: auto;
-      padding: 15px 39px;
-      font-size: var(--as-font-size-h5);
-      line-height: 1.2;
-      white-space: normal;
+    > :empty {
+      display: none;
     }
   }
+
+  .extended-banner-title {
+    color: var(--as-white);
+    font-family: var(--as-font-family-headings);
+    font-size: var(--as-font-size-h1);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .extended-banner-text {
+    color: var(--as-white);
+    font-size: var(--as-font-size-body);
+    line-height: 1.7;
+  }
+
+  // Tlačítko dole (margin-top: auto až za button.base, ten nastavuje margin: 0).
+  .extended-banner-link {
+    @include button.base;
+    @include button.light;
+    margin-top: auto;
+    padding: 15px 39px;
+    font-size: var(--as-font-size-h5);
+    line-height: 1.2;
+    white-space: normal;
+  }
+
 
   // Užší banner vedle sekce: menší nadpis a okraje, aby se texty vešly.
   @media (min-width: bp.$large) and (max-width: (bp.$wide - 1px)) {

@@ -157,24 +157,11 @@
         border: 0;
       }
 
+      // Vzhled pole je společný s desktopem (layout/_header.scss), tady jen rozměry.
       .search-input {
         flex: 1 1 auto;
-        width: 100%;
-        min-width: 0;
         height: 40px;
         padding: 0 48px 0 24px;
-        border: 0;
-        border-radius: var(--as-radius-pill);
-        background: var(--as-secondary-50);
-        box-shadow: none;
-        color: var(--as-secondary-500);
-        font-family: var(--as-font-family);
-        font-size: var(--as-font-size-small);
-        line-height: 20px;
-
-        &::placeholder {
-          color: var(--as-secondary-300);
-        }
       }
 
       // Lupa v poli (tlačítko odeslání Disca, na mobilu ho Disco skrývá), křížek Disca jen

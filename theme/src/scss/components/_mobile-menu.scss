@@ -8,6 +8,7 @@
 @use "../tools/breakpoints" as bp;
 @use "../tools/icon" as *;
 @use "../tools/menu";
+@use "../tools/dropdown";
 
 $drawer-width: 300px;
 $top-height: 44px;
@@ -185,6 +186,12 @@ $row-border: 1px solid var(--as-secondary-50);
           @include icon(public, 16px);
         }
 
+        // Disco v mobilním menu podtrhává texty odkazů, v horním řádku je text bez podtržení
+        // jako v liště na desktopu.
+        span {
+          text-decoration: none;
+        }
+
         // Popisek „Měna“ / „Jazyk“ Disca; vidět je ikona a hodnota.
         > span > span:first-child:not(:only-child) {
           display: none;
@@ -209,22 +216,23 @@ $row-border: 1px solid var(--as-secondary-50);
         @include icon(account-balance-wallet, 16px);
       }
 
+      // Nabídka měny / jazyka: stejná jako v horní liště na desktopu (tools/dropdown).
       > li > .menu-level-2 {
         position: absolute;
         top: 100%;
-        left: 0;
-        min-width: 100%;
-        padding: 4px 0;
-        border: 1px solid var(--as-secondary-75);
-        border-radius: 0 0 8px 8px;
-        background: var(--as-white);
+        left: -1px;
+        z-index: 4;
+        min-width: calc(100% + 1px);
+        @include dropdown.panel;
 
-        a {
+        // Disco nabídku obaluje skupinou (li > ul[role=group] > li > a).
+        li,
+        ul {
           display: block;
-          padding: 10px 16px;
-          color: var(--as-secondary-500);
-          font-size: var(--as-font-size-small);
-          text-decoration: none;
+          margin: 0;
+          padding: 0;
+          border: 0;
+          list-style: none;
         }
       }
     }
@@ -274,9 +282,10 @@ $row-border: 1px solid var(--as-secondary-50);
       }
     }
 
-    // Seznamy podkategorií (2. i 3. úroveň).
-    #navigation .navigation-in .menu-level-2,
-    #navigation .navigation-in .menu-level-3 {
+    // Seznamy podkategorií (2. i 3. úroveň). Jen v kategoriích: třídu .menu-level-2 má i nabídka
+    // měny / jazyka v .navigationActions, ta má vzhled rozbalovací nabídky (tools/dropdown).
+    #navigation .navigation-in .menu-level-1 .menu-level-2,
+    #navigation .navigation-in .menu-level-1 .menu-level-3 {
       > li {
         display: block;
         float: none;
@@ -311,7 +320,7 @@ $row-border: 1px solid var(--as-secondary-50);
       }
     }
 
-    #navigation .navigation-in .menu-level-2 > li {
+    #navigation .navigation-in .menu-level-1 .menu-level-2 > li {
       &.as-menu-back,
       &.as-menu-all {
         display: block;
@@ -367,12 +376,12 @@ $row-border: 1px solid var(--as-secondary-50);
       }
     }
 
-    #navigation .navigation-in .menu-level-3 > li > a {
+    #navigation .navigation-in .menu-level-1 .menu-level-3 > li > a {
       @include row;
       font-size: var(--as-font-size-body);
     }
 
-    #navigation .navigation-in .menu-level-3 > li {
+    #navigation .navigation-in .menu-level-1 .menu-level-3 > li {
       &.as-menu-back,
       &.as-menu-all {
         font-size: var(--as-font-size-body);

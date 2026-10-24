@@ -1,0 +1,52 @@
+// Rozbalovací nabídka (Figma: Header, „Hover - měna“): bílý panel se stínem a zaoblenými spodními
+// rohy, položky s podbarvením při najetí. Stejná všude, kde ji šablona má: výběr měny / jazyka
+// v horní liště (desktop, .dropdown-menu) i v mobilním menu (.navigationActions__submenu).
+// Volá se v selektoru panelu, položky jsou odkazy uvnitř.
+
+@mixin panel {
+  margin: -1px 0 0;
+  padding: 8px;
+  border: 0;
+  border-top: 1px solid var(--as-secondary-75);
+  border-radius: 0 0 8px 8px;
+  background: var(--as-white);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  font-family: var(--as-font-family);
+  text-align: left;
+  list-style: none;
+
+  // Disco položky na mobilu označuje tečkou (aktivní měna); v nabídce na desktopu ji nemá.
+  li::before,
+  li::after {
+    content: none;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    // Disco odkazům v mobilním menu dává levý okraj.
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: var(--as-secondary-500);
+    font-family: var(--as-font-family);
+    font-size: var(--as-font-size-small);
+    font-weight: 400;
+    line-height: 20px;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+
+    // Disco kreslí před položky tečku.
+    &::before {
+      content: none;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--as-primary-50);
+      color: var(--as-primary-600);
+    }
+  }
+}
