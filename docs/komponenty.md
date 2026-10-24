@@ -15,6 +15,7 @@ Prvek Disca má na všech stránkách stejné třídy. Jeho **vzhled** proto pat
 | Horní část kategorie | `.category-top > h1.category-title + .category-perex` | kategorie (i podkategorie, značky mají vlastní šablonu) | `components/_category.scss` | popis max. 820 px; vedle něj místo pro blok článků (od 992 px) |
 | Podkategorie | `ul.subcategories.with-image > li > a > span.image + span.text` | jen stránka kategorie | `components/_category.scss` | mřížka tlačítek 72 px (min. 240 px), na telefonu pod sebou |
 | Nejprodávanější | `.products-top-wrapper > h2.products-top-header + #productsTop.products-inline > .product > .p` (bez tlačítek, pod ním „Zobrazit více“) | jen stránka kategorie | `components/_category.scss` (karta na šířku), `js/category.js` (posuvný pás, šipky třídami slideru Shoptetu, tlačítko Detail) | 3 / 2 karty vedle sebe, telefon 88 % s kouskem další |
+| Články ke kategorii | vlastní `nav.as-category-articles` v `.category-top` (data ze settings-app, docs/clanky-ke-kategoriim.md) | jen stránka kategorie | `components/_category.scss`, `js/category-articles.js` | od 992 px vpravo vedle popisu za čarou, jinak pod popisem před podkategoriemi |
 | Ikony | písmo `shoptet` v `::before` | hlavička, menu, hledání | `tools/_icon.scss` (maska), glyf mimo breakpointy | velikost v breakpointech |
 | Pole formuláře | `.smart-label-wrapper .form-control-wrapper input` | přihlášení (okno i `/login/`), další formuláře | `components/_login.scss` | — |
 

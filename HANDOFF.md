@@ -1,3 +1,27 @@
+# Aktualizace (Claude): články ke kategoriím (issue #1)
+
+**Zadání:** issue #1, část „články“ (přiřazení existujících článků ke kategoriím v nastavení, zveřejnění, blok v kategorii podle Figmy „Články“ 112:5596).
+
+**Hotovo**
+- `settings-app/src/category-articles.mjs`: datová logika (formulář → přiřazení podle GUID kategorie a ID článků, stav článku, zveřejněná data, verze, hlášky chyb).
+- `settings-app`:
+  - karta „Články ke kategoriím“ (hledání, pořadí, odebrání, nadpis, stav skrytý / budoucí / smazaný);
+  - `getArticles` (stránkování po 10);
+  - veřejný soubor `/public/<eshopId>/category-articles.json` s mezipamětí a obnovou na pozadí;
+  - adresa souboru v kódu e-shopu (`snippetConfig`, i v `publish-snippets`).
+- Šablona: `js/category-articles.js` (GUID z dataLayer, stažení už v hlavičce), styly bloku v `_category.scss`. Řádek popisu bere výšku navíc z bloku (`grid-template-rows: auto 1fr`), takže nadpis se neroztahuje.
+- Provoz, omezení a postup převodu ručně psaných článků: `docs/clanky-ke-kategoriim.md`.
+
+**Ověření**
+- `npm test -w settings-app`: 8 testů prošlo.
+- Playwright: 104 testů prošlo, z toho 4 nové pro blok článků.
+- Karta nastavení vyzkoušena offline s ukázkovými články: přidání, duplicita, pořadí, odebrání, escapování názvu.
+- Veřejný soubor vrací 200 a správné hlavičky.
+
+**Chybí:** ověření na e-shopu. E-shop nemá žádný článek, je potřeba založit testovací články a v nastavení je přiřadit (scénáře v dokumentu).
+
+---
+
 # Aktualizace (Claude): stránka kategorie podle návrhu (issue #1, část vzhled)
 
 **Zadání majitele:** podle Figmy „Kategorie“ (112:3621) horní popisek s názvem, články, vzhled subkategorií, Nejprodávanější a výpis produktů. Filtrace a řazení se zatím neřeší.
