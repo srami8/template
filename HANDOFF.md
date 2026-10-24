@@ -1,3 +1,31 @@
+# Aktualizace (Claude): hodnocení obchodu nad patičkou
+
+**Zadání majitele:** nad patičkou na každé stránce celkové hodnocení obchodu a 4 nejnovější recenze s prokliknutím na /hodnoceni-obchodu/ (návrh jako obrázek). Šablonu může mít až 500 e-shopů. Postup přes `/cache/hodnoceni-obchodu/` podle šablony Merkur, s vylepšeními.
+
+**Řešení**
+- `js/shop-reviews.js`:
+  - čte stránku hodnocení z `/cache/<adresa>/` (serverová mezipaměť Shoptetu), při chybě z běžné adresy;
+  - bere průměr, počet a 4 nejnovější recenze (jméno, hvězdičky, text zkrácený na 300 znaků, štítek „Ověřená recenze“ jen pokud ho Shoptet vypisuje);
+  - adresu stránky zjistí z odkazu na stránce, jinak podle jazyka (cs, sk, hu, ro, de, pl, en);
+  - stahuje až po přiblížení k patičce a výsledek drží 30 minut v `sessionStorage` (i prázdný);
+  - zástupný blok drží místo, s uloženými daty se blok vykreslí hned;
+  - nezobrazuje se v košíku a objednávce (`ordering-process`) ani na stránce hodnocení; bez recenzí se blok odstraní.
+- `components/_shop-reviews.scss`:
+  - průměr ve čtverci barvy `--as-success`, nadpis H3 s ikonou `verified` (nová ikona z Figmy), odkaz hlavní barvou;
+  - recenze 4 / 2 / posuvný pás; hvězdičky přes `tools/_rating.scss`;
+  - na telefonu odsazení 10 px jako obsah stránky.
+- **Nastavení:** karta „Hodnocení obchodu“ (`shopReviews.enabled`, výchozí zapnuto; `shopReviews.title`, výchozí „Hodnocení obchodu“).
+
+**Ověření**
+- Testy: nový `shop-reviews.spec.cjs` (data, 4 nejnovější, stažení až u patičky, uložení na návštěvu, bez bloku v 5 případech, vlastní nadpis, telefon).
+- E-shop na 1920 a 390 px: stažení 0× před posunem, 1× po posunu, další stránka návštěvy 0×; průměr 5,0, „4 hodnocení“, 4 recenze; košík a stránka hodnocení bez bloku; bez přetečení.
+- Audit: nové položky bloku. Snímky: beze změny (blok je mimo sledované oblasti).
+- Dokumentace: příručka (karta, přehled stránek, časté otázky), docs/vyvoj.md, komponenty.md.
+
+**Poznámka:** v celé sadě testů se při vytížení počítače (zátěž 6) náhodně zasekly testy hlavičky a menu. Samostatně procházejí, se změnou nesouvisí.
+
+---
+
 # Aktualizace (Claude): úvodní text přes celou šířku
 
 **Zadání majitele:** `.welcome-wrapper` přes celou šířku.

@@ -15,6 +15,7 @@ import {
   CATEGORY_LAYOUTS,
   TINTABLE_CATEGORY_LAYOUTS,
   CATEGORY_TINT_PLACEHOLDER,
+  SHOP_REVIEWS_TITLE,
 } from './theme-config.mjs';
 import { CATEGORY_ARTICLES_TITLE, MAX_ARTICLES_PER_CATEGORY, articleState } from './category-articles.mjs';
 
@@ -428,6 +429,20 @@ export function settingsPage({
     })();
     </script>`;
 
+  const shopReviews = { enabled: true, title: SHOP_REVIEWS_TITLE, ...themeConfig.shopReviews };
+  const shopReviewsCard = `<label class="as-variant">
+      <input class="checkboxField" type="checkbox" name="shopReviewsEnabled" value="1" ${shopReviews.enabled ? 'checked' : ''}>
+      <span><strong>Zobrazit hodnocení obchodu nad patičkou</strong><span class="as-hint">Průměrné hodnocení, počet hodnocení, 4 nejnovější recenze a odkaz na stránku hodnocení obchodu. Na všech stránkách kromě košíku, objednávky a samotné stránky hodnocení.</span></span>
+    </label>
+    <div class="v2form">
+      <div class="v2FormField">
+        <label class="v2FormField__label" for="shopReviewsTitle">Nadpis</label>
+        <div class="v2FormField__input">
+          <input class="textField md" type="text" id="shopReviewsTitle" name="shopReviewsTitle" value="${escape(shopReviews.title)}" placeholder="${escape(SHOP_REVIEWS_TITLE)}" maxlength="80">
+        </div>
+      </div>
+    </div>`;
+
   const productColumns = PRODUCT_COLUMNS.map(
     (count) => `<label class="as-variant">
       <input class="radioField" type="radio" name="productColumns" value="${count}" ${Number(themeConfig.productColumns || 4) === count ? 'checked' : ''}>
@@ -491,6 +506,11 @@ export function settingsPage({
           'Články ke kategoriím',
           categoryArticlesCard(categoryArticles, articles, categoryChoices),
           'Ke kategorii přiřaďte existující články e-shopu. Na stránce kategorie se zobrazí vedle popisu (na telefonu pod ním) v nastaveném pořadí. Název a odkaz článku se berou z e-shopu, skryté, smazané a dosud nezveřejněné články se nezobrazí. Odebrání článek nemaže.',
+        )}
+        ${card(
+          'Hodnocení obchodu',
+          shopReviewsCard,
+          'Recenze se berou ze stránky hodnocení obchodu v e-shopu: stejné recenze, stejný průměr i počet. Nová recenze se zobrazí, jakmile ji Shoptet zveřejní. Bez recenzí se blok nezobrazí.',
         )}
         ${card(
           'Produkty na úvodní stránce',

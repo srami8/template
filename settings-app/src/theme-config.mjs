@@ -86,6 +86,10 @@ export function isDarkColor(hex) {
   return 1.05 / background > background / (luminance(DARK_TEXT) + 0.05);
 }
 
+// Hodnocení obchodu nad patičkou (js/shop-reviews.js): průměr, počet a 4 nejnovější recenze ze stránky
+// hodnocení obchodu Shoptetu. Bez recenzí se blok nezobrazí.
+export const SHOP_REVIEWS_TITLE = 'Hodnocení obchodu';
+
 // Ikony dostupné v theme/src/icons pro rychlé odkazy.
 export const QUICK_LINK_ICONS = ['local-fire-department', 'local-offer', 'filter-vintage', 'schedule'];
 
@@ -113,6 +117,7 @@ export const DEFAULT_THEME_CONFIG = {
   categoryTint: false,
   categoryTintColor: null,
   categoryTintDark: false,
+  shopReviews: { enabled: true, title: SHOP_REVIEWS_TITLE },
 };
 
 export { HEADING_SIZES };
@@ -234,7 +239,12 @@ export function themeConfigFromForm(form, { categories, previous } = {}) {
   const categoryTintColor = form.get('categoryTintMode') === 'custom' && HEX_COLOR.test(tintColor) ? tintColor.toLowerCase() : null;
   const categoryTintDark = Boolean(categoryTintColor) && isDarkColor(categoryTintColor);
 
-  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, headings, categoryLayout, categoryTint, categoryTintColor, categoryTintDark };
+  const shopReviews = {
+    enabled: form.get('shopReviewsEnabled') === '1',
+    title: text(form.get('shopReviewsTitle'), 80),
+  };
+
+  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, headings, categoryLayout, categoryTint, categoryTintColor, categoryTintDark, shopReviews };
 }
 
 function escapeAttribute(value) {

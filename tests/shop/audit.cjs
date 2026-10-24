@@ -57,6 +57,12 @@ const ITEMS = [
   ['Nejprodávanější: název', '/sperky/', '#productsTop .product .name', null, { size: true }],
   ['Nejprodávanější: cena', '/sperky/', '#productsTop .product .price-final', null, { size: true }],
   ['Nejprodávanější: tlačítko Detail', '/sperky/', '#productsTop .as-detail-button', null, { size: true }],
+  // Hodnocení obchodu nad patičkou (načítá se po posunu k patičce)
+  ['Hodnocení obchodu: průměr', '/', '.as-shop-reviews__score', null, { scrollTo: '#footer' }],
+  ['Hodnocení obchodu: nadpis', '/', '.as-shop-reviews__title', null, { scrollTo: '#footer' }],
+  ['Hodnocení obchodu: odkaz', '/', '.as-shop-reviews__all', null, { size: true, scrollTo: '#footer' }],
+  ['Hodnocení obchodu: text recenze', '/', '.as-shop-reviews__text', null, { size: true, scrollTo: '#footer' }],
+  ['Hodnocení obchodu: autor', '/', '.as-shop-reviews__author', null, { size: true, scrollTo: '#footer' }],
   // Karta produktu
   ['Karta: název', '/sperky/', '.products-block .p .name', null, { size: true }],
   ['Karta: cena', '/sperky/', '.products-block .p .price-final', null, { size: true }],
@@ -121,6 +127,11 @@ async function read(page, selector, opts) {
         if (device === 'mobile') await page.locator('#header .search-input').scrollIntoViewIfNeeded();
         await page.locator('#header .search-input').click(); await page.locator('#header .search-input').pressSequentially(opts.search, { delay: 80 });
         await page.waitForTimeout(2500);
+      }
+      // Obsah načítaný až u patičky (hodnocení obchodu): posun a počkat na prvek.
+      if (opts.scrollTo) {
+        await page.locator(opts.scrollTo).scrollIntoViewIfNeeded();
+        await page.locator(dSel).first().waitFor({ timeout: 15000 }).catch(() => {});
       }
       values[device] = await read(page, device === 'mobile' && mSel ? mSel : dSel, opts);
       await page.close();

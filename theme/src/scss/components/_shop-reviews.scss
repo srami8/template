@@ -1,0 +1,191 @@
+// Hodnocení obchodu nad patičkou (js/shop-reviews.js): vlevo průměr ve čtverci, nadpis s ikonou
+// ověření, počet hodnocení a odkaz na stránku hodnocení; pod tím 4 nejnovější recenze.
+// Od 992 px čtyři vedle sebe, 768–991 px dvě, na telefonu posuvný pás (kousek další recenze).
+// Obsah je .container Disca, lícuje s hlavičkou a patičkou.
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+@use "../tools/rating";
+
+.as-theme .as-shop-reviews {
+  margin: 64px 0 0;
+  padding: 0 0 64px;
+
+  // Zástupný blok drží místo, než se recenze načtou (bez poskočení obsahu nad patičkou).
+  &--pending {
+    min-height: 420px;
+
+    @include bp.desktop {
+      min-height: 300px;
+    }
+  }
+
+  // Na telefonu lícuje s obsahem stránky (Disco tam má odsazení obsahu 10 px, .container 20 px).
+  .as-shop-reviews__inner {
+    @include bp.mobile {
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+  }
+
+  .as-shop-reviews__summary {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .as-shop-reviews__score {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    background: var(--as-success);
+    color: var(--as-white);
+    font-family: var(--as-font-family-headings);
+    font-size: var(--as-font-size-h3);
+    font-weight: 600;
+    line-height: 1;
+
+    @include bp.desktop {
+      width: 84px;
+      height: 84px;
+    }
+  }
+
+  .as-shop-reviews__heading {
+    min-width: 0;
+  }
+
+  .as-shop-reviews__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 8px;
+    color: var(--as-secondary-500);
+    font-size: var(--as-font-size-h3);
+    font-weight: 500;
+    line-height: 1.2;
+
+    &::before {
+      @include icon(verified, 28px);
+      color: var(--as-primary-500);
+    }
+  }
+
+  .as-shop-reviews__count {
+    margin: 0;
+    color: var(--as-secondary-400);
+    font-size: var(--as-font-size-body);
+    line-height: 1.5;
+  }
+
+  .as-shop-reviews__all {
+    color: var(--as-primary-500);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--as-primary-600);
+    }
+  }
+
+  .as-shop-reviews__list {
+    display: grid;
+    grid-auto-columns: 85%;
+    grid-auto-flow: column;
+    gap: 16px;
+    margin: 32px 0 0;
+    padding: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    list-style: none;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include bp.desktop {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px 48px;
+      margin-top: 48px;
+      overflow: visible;
+    }
+
+    @media (min-width: bp.$large) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      padding: 0 32px;
+    }
+  }
+
+  .as-shop-reviews__item {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    scroll-snap-align: start;
+
+    &::before {
+      content: none;
+    }
+  }
+
+  .as-shop-reviews__verified {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: var(--as-secondary-300);
+    font-size: var(--as-font-size-small);
+    line-height: 1.2;
+
+    &::before {
+      @include icon(verified, 18px);
+      color: var(--as-primary-500);
+    }
+  }
+
+  .as-shop-reviews__text {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: var(--as-secondary-400);
+    font-size: var(--as-font-size-body);
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .as-shop-reviews__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    margin: auto 0 0;
+  }
+
+  .stars {
+    @include rating.stars;
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  .as-shop-reviews__author {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--as-secondary-300);
+    font-size: var(--as-font-size-small);
+
+    &::before {
+      @include icon(perm-identity, 16px);
+    }
+  }
+}

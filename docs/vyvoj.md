@@ -53,6 +53,7 @@ Tvar vytváří `settings-app/src/theme-config.mjs` (`themeConfigFromForm`, `sni
 | `quickLinks` | `[{ label, url, icon? }]` (max 6) | `[]` | řádek pod hlavičkou, `.as-has-quicklinks` drží místo předem |
 | `navLinks` | `[{ label, url }]` (max 8) | `[]` | odkazy vedle Katalogu (v2) |
 | `homeCategories` | `{ title, items: [{ guid, name, url, image }] }` (max 16) | – | `js/home-categories.js`; data z API při uložení |
+| `shopReviews` | `{ enabled, title }` | `{ enabled: true, title: 'Hodnocení obchodu' }` | `js/shop-reviews.js`, blok nad patičkou |
 | `headings` | `{ h1: 40, … }` jen změněné | `{}` | do `<style>` jako `--as-heading-size-hN` |
 
 Ikony (`icon`) jsou soubory v `theme/src/icons` (`npm run build:icons` → `scss/generated/_icons.scss`). Vložený kód má limit Shoptetu 8192 znaků (`buildHeaderSnippet` hlídá), proto velká data (články) jdou mimo něj.
@@ -84,6 +85,7 @@ Ikony (`icon`) jsou soubory v `theme/src/icons` (`npm run build:icons` → `scss
 | `product-cards.js` | hodnota slevy do `data-as-discount` (i po AJAXu přes MutationObserver) |
 | `category.js` | Nejprodávanější: posuvný pás, šipky, tlačítko Detail |
 | `category-intro.js` | přesun prvního obrázku z popisu kategorie do `figure.as-category-intro__media` |
+| `shop-reviews.js` | hodnocení obchodu nad patičkou: data ze stránky hodnocení přes `/cache/<adresa>/` (serverová mezipaměť Shoptetu, ~25 kB gzip), stažení až u patičky, `sessionStorage` 30 min, 4 nejnovější recenze |
 | `category-articles.js` | blok článků ke kategorii (GUID z `dataLayer`, data stažená už v hlavičce) |
 
 ### SCSS (`theme/src/scss`)
@@ -101,6 +103,7 @@ Breakpointy (`tools/_breakpoints.scss`): `bp.desktop` od 768 px (jako Disco), `$
 - **AJAX Shoptetu** (řazení, filtry, stránkování) vymění `.category-top` i výpis a vyvolá `ShoptetDOMPageContentLoaded`. Na ni se znovu spouští `category.js`, `category-intro.js` a vykreslení článků; karty produktů hlídá MutationObserver. Nová úprava DOM v kategorii musí být idempotentní a navázaná na tuto událost.
 - **Bez posunu stránky:** rozložení, které závisí na obsahu, se rozhoduje v CSS (`:has()`), JS jen dokončí (přesun obrázku, vložení bloku). Místo se drží předem (zástupný blok, `.as-has-quicklinks`). U variant popisu kategorie je naměřené CLS 0,005–0,016.
 - **Specificita Disca:** Disco používá `#header`, `#navigation`, `#productsTop` …, naše pravidla potřebují stejnou specificitu. Každé `!important` s důvodem v komentáři.
+- **Hodnocení obchodu bez vlastního serveru:** blok čte stránku hodnocení obchodu z `/cache/<adresa>/` (nedokumentovaná, ale funkční serverová mezipaměť Shoptetu, obsah shodný s běžnou adresou, odpověď ~20 ms; při chybě se zkusí běžná adresa). Adresa stránky z odkazu na stránce, jinak podle jazyka. Šetrnost pro stovky e-shopů: stahuje se až po přiblížení k patičce (IntersectionObserver, 800 px) a jednou za 30 minut návštěvy (`sessionStorage`, i prázdný výsledek). Markup se čte přes `data-testid` (`textRatingAverage`, `textRatingAuthor`, `textRating` …).
 - **Pásy přes celou šířku okna** používají `--as-viewport-width` (ne `100vw`, ten zahrnuje posuvník). `#content` má na desktopu `padding-top: 20px` (Disco), pásy navazující na drobečky ho vyrovnávají.
 - **Barvy jen z tokenů**, žádná pevná barva z Figmy tam, kde má Shoptet nastavení.
 

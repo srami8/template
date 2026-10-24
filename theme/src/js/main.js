@@ -15,6 +15,7 @@ import { placeHomepageBanners } from './homepage-banners';
 import { enhanceCategory } from './category';
 import { enhanceCategoryIntro } from './category-intro';
 import { loadCategoryArticles, renderCategoryArticles } from './category-articles';
+import { renderShopReviews } from './shop-reviews';
 import { trackViewportWidth } from './viewport';
 import { styleFiles } from './styles.mjs';
 
@@ -130,6 +131,7 @@ function start() {
     enhanceCategoryIntro(config);
     enhanceCategory();
     renderCategoryArticles(categoryArticles);
+    renderShopReviews(config);
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
