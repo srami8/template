@@ -1,7 +1,7 @@
 // Vzhled popisu kategorie „Obrázek vedle textu“ (Figma „Kategorie – typy popisů“ 1487:5134, 1487:5177,
 // se světlým pozadím 1487:5342, 1487:5341). Obrázek se zaoblením 20 px vpravo od popisu, články
 // pod popisem za čarou. Rozložení v tools/_category-intro.scss, kategorie bez obrázku v popisu
-// má výchozí vzhled.
+// má výchozí vzhled (se zapnutou barvou na pozadí v barevném pruhu).
 
 @use "../tools/category-intro" as intro;
 
@@ -14,10 +14,11 @@
 }
 
 // Tmavá vlastní barva pozadí (nastavení šablony spočítá jas): text bíle, čára pod popisem světlá.
-.as-theme.as-category-image.as-category-tinted.as-category-tint-dark .category-top#{intro.$with-image} {
+.as-theme.as-category-image.as-category-tinted.as-category-tint-dark .category-top {
   @include intro.light-text;
 
   > .as-category-articles {
     border-top-color: color-mix(in srgb, var(--as-white) 30%, transparent);
+    border-left-color: color-mix(in srgb, var(--as-white) 30%, transparent);
   }
 }

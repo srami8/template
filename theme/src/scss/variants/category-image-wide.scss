@@ -1,7 +1,8 @@
 // Vzhled popisu kategorie „Obrázek až k okraji okna“ (Figma „Kategorie – typy popisů“ 1487:5210,
 // se světlým pozadím 1487:5271, 1487:5272). Obrázek vpravo od popisu sahá k pravému okraji okna
 // (na telefonu nahoře od okraje k okraji), články pod popisem za čarou. Rozložení
-// v tools/_category-intro.scss, kategorie bez obrázku v popisu má výchozí vzhled.
+// v tools/_category-intro.scss, kategorie bez obrázku v popisu má výchozí vzhled (se zapnutou barvou
+// na pozadí v barevném pruhu).
 
 @use "../tools/category-intro" as intro;
 
@@ -14,10 +15,11 @@
 }
 
 // Tmavá vlastní barva pozadí (nastavení šablony spočítá jas): text bíle, čára pod popisem světlá.
-.as-theme.as-category-image-wide.as-category-tinted.as-category-tint-dark .category-top#{intro.$with-image} {
+.as-theme.as-category-image-wide.as-category-tinted.as-category-tint-dark .category-top {
   @include intro.light-text;
 
   > .as-category-articles {
     border-top-color: color-mix(in srgb, var(--as-white) 30%, transparent);
+    border-left-color: color-mix(in srgb, var(--as-white) 30%, transparent);
   }
 }

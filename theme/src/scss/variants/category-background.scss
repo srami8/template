@@ -13,32 +13,11 @@ $padding-mobile: 40px;
   @include intro.hide-pending-images;
 
   &#{intro.$with-image} {
-    position: relative;
-    isolation: isolate;
-    grid-template-rows: $padding-mobile auto auto auto $padding-mobile;
-    @include intro.band-top;
-
+    @include intro.text-band($padding, $padding-mobile);
     @include intro.light-text;
-
-    > .category-title {
-      grid-row: 2;
-    }
-
-    > .category-perex {
-      grid-row: 3;
-    }
-
-    > .as-category-articles {
-      grid-row: 4;
-    }
 
     // Pozadí pruhu. Než se načte obrázek, je pruh tmavý (bílý text zůstane čitelný).
     &::before {
-      content: "";
-      grid-row: 1 / 6;
-      grid-column: 1 / -1;
-      @include intro.full-bleed;
-      z-index: -2;
       background: var(--as-secondary-600);
     }
 
@@ -69,21 +48,8 @@ $padding-mobile: 40px;
       inset: 0;
     }
 
-    @include bp.desktop {
-      grid-template-rows: $padding auto auto auto $padding;
-    }
-
-    @include bp.desktop {
-      @media (min-width: bp.$large) {
-        &:has(> .as-category-articles) {
-          grid-template-rows: $padding auto 1fr $padding;
-
-          > .as-category-articles {
-            grid-row: 2 / 4;
-            border-left-color: color-mix(in srgb, var(--as-white) 30%, transparent);
-          }
-        }
-      }
+    > .as-category-articles {
+      border-left-color: color-mix(in srgb, var(--as-white) 30%, transparent);
     }
   }
 }

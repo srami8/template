@@ -1,3 +1,20 @@
+# Aktualizace (Claude): barva na pozadí i u kategorie bez obrázku
+
+**Zadání majitele:** u vzhledu s barvou na pozadí se má barva zobrazit, i když kategorie nemá obrázek v popisu.
+
+**Řešení**
+- Nový mixin `tools/_category-intro.scss` `text-band($padding, $padding-mobile)`: pruh přes celou šířku okna s nadpisem, popisem a články ve výchozím rozložení (články vedle popisu od 992 px, jinak pod ním).
+- Mixin teď používá i varianta „Obrázek na pozadí“ (80 / 40 px); dřív v ní byl stejný kód napsaný zvlášť.
+- `side-tint` u kategorie bez obrázku (`:not($with-image)`) použije `text-band(64px, 32px)` a barvu `--as-category-tint` (jinak `--as-primary-50`).
+- Tmavá barva (`.as-category-tint-dark`) přepíná bílý text i bez obrázku, čára u článků (horní i levá) je světlá.
+
+**Ověření**
+- Testy: 18 testů kategorie prošlo. Nový test pokrývá pruh bez obrázku na 1440 a 390 px (barva, odsazení 64 / 32 px, bílý text, články, podkategorie pod pruhem). Test „bez obrázku“ teď hlídá výchozí vzhled bez pruhu.
+- E-shop: Šperky bez obrázku s uloženou barvou majitele #fdf6e8 (tmavý text) a s podstrčenou #1e3a5f (bílý text), 1920 a 390 px.
+- Dokumentace: příručka pro obchodníka, docs/vyvoj.md, komponenty.md.
+
+---
+
 # Aktualizace (Claude): vlastní barva na pozadí popisu kategorie
 
 **Zadání majitele:** kde je na pozadí barva, má si ji uživatel zvolit.

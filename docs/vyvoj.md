@@ -45,7 +45,7 @@ Tvar vytváří `settings-app/src/theme-config.mjs` (`themeConfigFromForm`, `sni
 | `productCard` | `default` | `default` | `.as-product-card-default`, soubor `product-card-default.css` |
 | `productColumns` | `4` \| `5` \| `6` | podle Shoptetu | `js/homepage-products.js` (počet v sliderech úvodní stránky) |
 | `categoryLayout` | `default` \| `background` \| `image` \| `image-wide` | `default` | `.as-category-<v>`; `default` je v základu (bez souboru), ostatní `category-<v>.css` |
-| `categoryTint` | `true` \| `false` | `false` | `.as-category-tinted` (jen `image`, `image-wide`) |
+| `categoryTint` | `true` \| `false` | `false` | `.as-category-tinted` (jen `image`, `image-wide`); pruh je i u kategorie bez obrázku (výchozí rozložení v pruhu, mixin `text-band`) |
 | `categoryTintColor` | `#rrggbb` \| `null` | `null` | do `<style>` jako `--as-category-tint`; bez ní `--as-primary-50` |
 | `categoryTintDark` | `true` \| `false` | `false` | `.as-category-tint-dark` (bílý text); počítá server z jasu barvy (WCAG < 0,4) |
 | `categoryArticles` | URL souboru s `?v=` | – | jen když existuje přiřazení; `js/category-articles.js` |

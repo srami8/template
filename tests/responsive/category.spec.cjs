@@ -325,13 +325,39 @@ test('category without an image in the description keeps the default look in eve
   for (const layout of ['background', 'image', 'image-wide']) {
     // Vlastní stránka: setContent ponechává window, skript šablony by se podruhé nespustil.
     const p = await browser.newPage({viewport: {width: 1440, height: 900}});
-    await p.setContent(page(3, {layout, tint: true}));
+    await p.setContent(page(3, {layout}));
     const d = await intro(p);
     expect(d.figure).toBeNull();
     expect(d.band.content).toBe('none');
     expect(d.marginTop).toBe('32px');
     // Bez článků popis přes celou šířku obsahu.
     expect(d.perex.width).toBe(1378);
+    await p.close();
+  }
+});
+
+test('background colour is shown also for a category without an image (default layout in the band)', async ({browser}) => {
+  for (const [layout, width] of [['image', 1440], ['image-wide', 1440], ['image', 390]]) {
+    const p = await browser.newPage({viewport: {width, height: 900}});
+    await serve(p, articleData(four));
+    await p.setContent(page(3, {articles: true, layout, tint: true, tintColor: '#1e3a5f', tintDark: true}));
+    await expect(p.locator('.as-category-articles')).toHaveCount(1);
+    const d = await intro(p);
+    expect(d.figure).toBeNull();
+    // Pruh přes celé okno ve zvolené barvě, navazuje na drobečky, text uvnitř odsazený (64 px, telefon 32 px).
+    expect(d.band.width).toBe(width);
+    expect(d.band.background).toBe('rgb(30, 58, 95)');
+    expect(d.marginTop).toBe(width > 767 ? '-20px' : '0px');
+    const band = await p.evaluate(() => {
+      const top = document.querySelector('.category-top').getBoundingClientRect();
+      return {top: Math.round(top.top)};
+    });
+    expect(d.title.y - band.top).toBe(width > 767 ? 64 : 32);
+    expect(d.titleColor).toBe('rgb(255, 255, 255)');
+    // Výchozí rozložení: od 992 px články vedle popisu, jinak pod ním; podkategorie pod pruhem.
+    if (width > 991) expect(d.articles.x).toBeGreaterThan(d.perex.right);
+    else expect(d.articles.y).toBeGreaterThan(d.perex.bottom);
+    expect(d.subcategories.y).toBeGreaterThan(Math.max(d.articles.bottom, d.perex.bottom) + (width > 767 ? 64 : 32));
     await p.close();
   }
 });

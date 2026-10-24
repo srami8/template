@@ -36,6 +36,50 @@ $with-image: ":is(.as-intro-media, :has(> .category-perex img))";
   }
 }
 
+// Pruh přes celou šířku okna s nadpisem, popisem a články v rozložení výchozího vzhledu (články vedle
+// popisu od 992 px, jinak pod ním): obrázek na pozadí a barva na pozadí u kategorie bez obrázku.
+// Pruh je ::before přes řádky 1–5 (barvu dává místo použití), další části stránky jdou pod něj.
+@mixin text-band($padding, $padding-mobile) {
+  position: relative;
+  isolation: isolate;
+  grid-template-rows: $padding-mobile auto auto auto $padding-mobile;
+  @include band-top;
+
+  > .category-title {
+    grid-row: 2;
+  }
+
+  > .category-perex {
+    grid-row: 3;
+  }
+
+  > .as-category-articles {
+    grid-row: 4;
+  }
+
+  &::before {
+    content: "";
+    grid-row: 1 / 6;
+    grid-column: 1 / -1;
+    @include full-bleed;
+    z-index: -2;
+  }
+
+  @include bp.desktop {
+    grid-template-rows: $padding auto auto auto $padding;
+
+    @media (min-width: bp.$large) {
+      &:has(> .as-category-articles) {
+        grid-template-rows: $padding auto 1fr $padding;
+
+        > .as-category-articles {
+          grid-row: 2 / 4;
+        }
+      }
+    }
+  }
+}
+
 // Bílý text v pruhu s tmavým pozadím (obrázek na pozadí, tmavá vlastní barva pozadí).
 @mixin light-text {
   > .category-title {
@@ -211,6 +255,15 @@ $side-gap: 72px;
 }
 
 @mixin side-tint($wide: false) {
+  // Kategorie bez obrázku v popisu: výchozí rozložení v barevném pruhu (odsazení jako u obrázku).
+  &:not(#{$with-image}) {
+    @include text-band($side-padding, $side-padding-mobile);
+
+    &::before {
+      background: var(--as-category-tint, var(--as-primary-50));
+    }
+  }
+
   &#{$with-image} {
     grid-template-rows: auto auto auto auto $side-padding-mobile;
     @include band-top;
