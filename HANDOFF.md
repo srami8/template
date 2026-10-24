@@ -1,3 +1,23 @@
+# Aktualizace (Claude): stránka kategorie podle návrhu (issue #1, část vzhled)
+
+**Zadání majitele:** podle Figmy „Kategorie“ (112:3621) horní popisek s názvem, články, vzhled subkategorií, Nejprodávanější a výpis produktů. Filtrace a řazení se zatím neřeší.
+
+**Hotovo v tomto kroku**
+- `components/_category.scss`:
+  - nadpis a popis (max. 820 px, barva secondary-400, odkazy primární barvou),
+  - podkategorie jako tlačítka 72 px s obrázkem 56 px a šipkou,
+  - „Nejprodávanější“ jako karty na šířku: obrázek 100 px, název na jeden řádek, ceny, tlačítko Detail, sleva v kolečku přes obrázek.
+- `js/category.js`: pás karet se posouvá (scroll-snap), šipky mají třídy slideru Shoptetu (stejný vzhled jako na úvodní stránce) a skrývají se na krajích, Detail vede na produkt. Slider Shoptetu se nepoužívá, protože karty přeskupuje do `.products-block`, na které se chytá vzhled svislé karty.
+- Rozložení pro blok článků je připravené (`.category-top:has(> .as-category-articles)`: popis vlevo, články vpravo za čarou od 992 px), samotný blok a nastavení přijdou v dalším kroku.
+- Výpis produktů používá globální kartu (odpovídá komponentě „Produkt“). V návrhu je vlevo sloupec filtrů a karty mají 284 px. Do doplnění filtrů vyplňuje výpis celou šířku.
+
+**Ověření**
+- Testy: 100 prošlých, nový `tests/responsive/category.spec.cjs` (mřížka podkategorií, pás, šipky, Detail, telefon).
+- Audit: 0 rozdílů z 52, nové položky kategorie a nejprodávanějších.
+- Snímky: nová oblast `.category-top`; ostatní stránky jsou beze změny (jen subpixelové posuny).
+
+---
+
 # Aktualizace (Claude): účet v hlavičce i v objednávce
 
 **Chyba (majitel):** v košíku bylo přihlášení v horní liště, jinde v hlavičce.

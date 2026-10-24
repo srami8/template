@@ -16,7 +16,7 @@ const { chromium } = require('playwright-core');
 const SHOP = process.env.SHOP_URL || 'https://313980.myshoptet.com';
 const PAGES = [
   ['home', '/', ['#header', '.banners-row', '.homepage-products-heading-1 + .products-wrapper', '.as-banner-mosaic']],
-  ['category', '/sperky/', ['.breadcrumbs', '.products-block', '.category-header']],
+  ['category', '/sperky/', ['.breadcrumbs', '.category-top', '.products-block', '.category-header']],
   ['detail', '/zbozi/dreveny-privesek-bracken-pendant-6/', ['.breadcrumbs', '.p-image-wrapper', '.p-detail-inner-header', '.p-data-wrapper']],
   ['search', '/vyhledavani/?string=test', ['.breadcrumbs', '#content']],
   ['contacts', '/kontakty/', ['.breadcrumbs', '#content']],

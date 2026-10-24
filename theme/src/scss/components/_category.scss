@@ -1,0 +1,401 @@
+// Stránka kategorie (Figma: „Kategorie“ 112:3621): horní blok .category-top Disca s nadpisem,
+// popisem (.category-perex), podkategoriemi (ul.subcategories.with-image) a „Nejprodávanější“
+// (.products-top-wrapper > #productsTop). Vedle popisu může být blok článků (js/category-articles.js).
+// Filtry a řazení zatím podle Disca (návrh je doplní později).
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+@use "../tools/button";
+@use "../tools/flag";
+@use "../tools/rating";
+@use "../tools/slider";
+
+$text-width: 820px;
+$section-gap: 40px;
+
+.as-theme .category-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 64px;
+  margin: 32px 0 0;
+
+  > * {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  // Nadpis (velikost H1 z components/_headings) a úvodní popis z administrace.
+  > .category-title {
+    max-width: $text-width;
+    margin: 0 0 16px;
+  }
+
+  > .category-perex {
+    max-width: $text-width;
+    margin: 0;
+    color: var(--as-secondary-400);
+    font-size: var(--as-font-size-body);
+    line-height: 1.7;
+
+    p {
+      margin: 0 0 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    strong,
+    b {
+      font-weight: 500;
+    }
+
+    a {
+      color: var(--as-primary-500);
+      text-decoration: underline;
+
+      &:hover {
+        color: var(--as-primary-600);
+      }
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+  }
+
+  // S blokem článků: popis vlevo, články vpravo za svislou čarou (na menších šířkách pod popisem).
+  @include bp.desktop {
+    @media (min-width: bp.$large) {
+      &:has(> .as-category-articles) {
+        grid-template-columns: minmax(0, $text-width) minmax(0, 1fr);
+
+        > .category-title,
+        > .category-perex {
+          grid-column: 1;
+        }
+
+        > .as-category-articles {
+          grid-column: 2;
+          grid-row: 1 / span 2;
+          align-self: start;
+          margin: 0;
+          padding: 9px 0 40px 64px;
+          border-left: 1px solid var(--as-secondary-75);
+        }
+      }
+    }
+  }
+
+  // Podkategorie: tlačítka s obrázkem 56 px, názvem a šipkou (Figma „Category button“ 276 × 72),
+  // kolik se jich vejde vedle sebe (na desktopu 5, na telefonu 1).
+  > .subcategories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+    margin: $section-gap 0 0;
+    padding: 0;
+    list-style: none;
+
+    // Clearfix z Bootstrapu by byl v mřížce další buňkou.
+    &::before,
+    &::after {
+      content: none;
+    }
+
+    > li {
+      float: none;
+      width: auto;
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 72px;
+      padding: 8px 16px 8px 8px;
+      border: 1px solid var(--as-secondary-75);
+      border-radius: 4px;
+      background: var(--as-white);
+      color: var(--as-secondary-500);
+      text-decoration: none;
+
+      &::after {
+        @include icon(chevron-right, 16px);
+        margin-left: auto;
+        color: var(--as-secondary-200);
+      }
+
+      &:hover,
+      &:focus-visible {
+        border-color: var(--as-secondary-200);
+        color: var(--as-primary-600);
+      }
+    }
+
+    .image {
+      flex: 0 0 56px;
+      width: 56px;
+      height: 56px;
+      margin: 0;
+      padding: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border-radius: 4px;
+        object-fit: contain;
+      }
+    }
+
+    .text {
+      flex: 1 1 auto;
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      color: inherit;
+      font-family: var(--as-font-family);
+      font-size: var(--as-font-size-body);
+      font-weight: 400;
+      line-height: 1.2;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  // „Nejprodávanější“: nadpis H4, karty na šířku v posuvném pásu (slider Shoptetu, js/category.js).
+  > .products-top-wrapper {
+    margin: $section-gap 0 0;
+  }
+
+  .products-top-header {
+    margin: 0 0 12px;
+    font-size: var(--as-font-size-h4);
+  }
+
+  // Disco pod pásem nabízí „Zobrazit více“, posuvný pás ukazuje všechny.
+  .products-top-wrapper:has(.as-bestsellers) > .button-wrapper {
+    display: none;
+  }
+}
+
+// Karta nejprodávanějšího produktu (Figma „Best seller“): rámeček, obrázek 100 px vlevo, vpravo
+// hodnocení, název na jeden řádek, ceny a tlačítko Detail (js/category.js) dole.
+.as-theme .as-bestsellers {
+  @include slider.holder;
+  @include slider.arrows(calc(50% - 20px), -20px);
+
+  // Na desktopu 3 karty vedle sebe, na tabletu 2, na telefonu 1 (s kouskem další).
+  #productsTop {
+    --as-bestseller-columns: 1;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include bp.desktop {
+      --as-bestseller-columns: 2;
+    }
+
+    @media (min-width: bp.$wide) {
+      --as-bestseller-columns: 3;
+    }
+  }
+
+  .product {
+    float: none;
+    flex: 0 0 calc((100% - (var(--as-bestseller-columns) - 1) * 10px) / var(--as-bestseller-columns));
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    scroll-snap-align: start;
+
+    @include bp.mobile {
+      flex-basis: 88%;
+    }
+  }
+
+  .product-slider-navigation[hidden] {
+    display: none;
+  }
+
+  // Disco kartám v .products-inline dává pravidla s vysokou specificitou, proto pod #productsTop.
+  #productsTop .product {
+    .p {
+      position: relative;
+      display: grid;
+      grid-template-columns: 100px minmax(0, 1fr);
+      column-gap: 24px;
+      height: 100%;
+      min-height: 151px;
+      margin: 0;
+      padding: 24px;
+      border: 1px solid var(--as-secondary-75);
+      border-radius: 8px;
+      background: var(--as-white);
+      text-align: left;
+    }
+
+    .p > .image {
+      grid-row: 1 / span 2;
+      position: relative;
+      display: block;
+      width: 100px;
+      height: 100px;
+      margin: 0;
+      padding: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    // Disco textové části dává pevné šířky (pro svůj řádkový výpis), tady vyplní sloupec.
+    .p-in {
+      display: flex;
+      flex-direction: column;
+      // Disco části karty centruje, v návrhu jsou zarovnané vlevo přes celou šířku sloupce.
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 12px;
+      width: auto;
+      min-width: 0;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .p-in-in {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: auto;
+      min-width: 0;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    // Hodnocení nad názvem, dostupnost v návrhu není.
+    .ratings-wrapper {
+      order: 1;
+      margin: 0;
+
+      .availability {
+        display: none;
+      }
+    }
+
+    .stars-wrapper {
+      @include rating.stars;
+      margin: 0;
+    }
+
+    .name {
+      order: 2;
+      display: block;
+      overflow: hidden;
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-small);
+      font-weight: 400;
+      line-height: 1.2;
+      text-decoration: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      * {
+        display: inline;
+      }
+
+      &:hover {
+        color: var(--as-primary-600);
+      }
+    }
+
+    .p-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .prices {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      margin: 0;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .price-standard-wrapper-placeholder {
+      display: none;
+    }
+
+    .price-standard {
+      margin: 0;
+      color: var(--as-secondary-300);
+      font-size: var(--as-font-size-caption);
+      text-decoration: line-through;
+    }
+
+    .price-final {
+      margin: 0;
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-body);
+      font-weight: 600;
+
+      strong {
+        font-weight: inherit;
+      }
+    }
+
+    // Sleva v kolečku přes pravý spodní roh obrázku (jako v kartě produktu).
+    .price-save {
+      position: absolute;
+      top: calc(24px + 100px - 34px);
+      left: calc(24px + 100px - 34px);
+      z-index: 1;
+      @include flag.discount(48px);
+      font-size: 0;
+
+      &::before {
+        content: attr(data-as-discount);
+        font-size: var(--as-font-size-caption);
+        font-weight: 500;
+        line-height: 1.2;
+      }
+    }
+
+    .as-detail-button {
+      @include button.base;
+      @include button.size(sm);
+      @include button.conversion-outline;
+      min-width: 120px;
+      margin: 0 0 0 auto;
+    }
+  }
+}

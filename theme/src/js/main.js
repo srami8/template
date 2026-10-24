@@ -12,6 +12,7 @@ import { enhanceCart } from './cart';
 import { enhanceProductCards } from './product-cards';
 import { setHomepageProductColumns } from './homepage-products';
 import { placeHomepageBanners } from './homepage-banners';
+import { enhanceCategory } from './category';
 import { trackViewportWidth } from './viewport';
 import { styleFiles } from './styles.mjs';
 
@@ -108,6 +109,7 @@ function start() {
     enhanceLogin();
     enhanceCart();
     enhanceProductCards();
+    enhanceCategory();
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

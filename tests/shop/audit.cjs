@@ -46,6 +46,17 @@ const ITEMS = [
   ['Kategorie na úvodní stránce: karta', '/', '.as-home-categories li > a', null, {}],
   ['Kategorie na úvodní stránce: název', '/', '.as-home-categories li .text', null, { size: true }],
   ['Nadpis sekce úvodní stránky', '/', '.homepage-group-title', null, {}],
+  // Stránka kategorie
+  ['Kategorie: nadpis', '/sperky/', '.category-top .category-title', null, {}],
+  ['Kategorie: popis', '/sperky/', '.category-top .category-perex', null, {}],
+  ['Kategorie: podkategorie', '/sperky/', '.category-top .subcategories a', null, {}],
+  ['Kategorie: šipka podkategorie', '/sperky/', '.category-top .subcategories a', null, { pseudo: '::after', props: ['maskImage', 'backgroundColor', 'color'] }],
+  ['Kategorie: název podkategorie', '/sperky/', '.category-top .subcategories .text', null, { size: true }],
+  ['Nejprodávanější: nadpis', '/sperky/', '.products-top-header', null, {}],
+  ['Nejprodávanější: karta', '/sperky/', '#productsTop .product .p', null, {}],
+  ['Nejprodávanější: název', '/sperky/', '#productsTop .product .name', null, { size: true }],
+  ['Nejprodávanější: cena', '/sperky/', '#productsTop .product .price-final', null, { size: true }],
+  ['Nejprodávanější: tlačítko Detail', '/sperky/', '#productsTop .as-detail-button', null, { size: true }],
   // Karta produktu
   ['Karta: název', '/sperky/', '.products-block .p .name', null, { size: true }],
   ['Karta: cena', '/sperky/', '.products-block .p .price-final', null, { size: true }],
