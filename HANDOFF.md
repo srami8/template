@@ -1,3 +1,17 @@
+# Aktualizace (Claude): rozbitý vzhled administrace šablony
+
+**Hlášení majitele:** administrace šablony (stránka nastavení v iframu) je vizuálně celá rozbitá.
+
+**Příčina:** moje předchozí „oprava“ zalamování nápovědy (`white-space: normal` na `.v2FormField__hint`). Shoptet UI dává této třídě `width: 1px; max-width: 1px; nowrap`, je jen pro nápovědu uvnitř pole formuláře. Po zapnutí zalamování se každá nápověda rozpadla do sloupce po slovech.
+
+**Oprava:** samostatné texty (nápovědy karet, popisky variant, varování nadpisů, seznam značek bannerů) mají vlastní třídu `.as-hint`. Třída Shoptet UI se na ně nepoužívá.
+
+**Ověření:** snímek celé stránky na 1280 a 800 px, testy settings-app.
+
+**Poznámka:** poslední uložení nastavení (13:37 UTC, z administrace) přepnulo hlavičku z V2 na V1. Majitel ověří, jestli šlo o záměr.
+
+---
+
 # Aktualizace (Claude): horní část kategorie přes celou šířku
 
 **Zadání majitele:** `.category-top` má být přes celou šířku containeru.

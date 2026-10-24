@@ -69,8 +69,12 @@ function layout(title, body, { eshopOrigin } = {}) {
   .as-intro h1 { margin: 0 0 4px; font-size: 20px; }
   .as-intro p { margin: 0; opacity: 0.75; }
   .as-page .card { margin-bottom: 16px; }
-  /* Shoptet UI nápovědu nezalamuje (nowrap), delší text by utekl z karty. */
-  .as-page .v2FormField__hint { display: block; white-space: normal; }
+  /* Vlastní nápověda: .v2FormField__hint ze Shoptet UI má šířku 1 px a nowrap (jen pro nápovědu
+     uvnitř pole formuláře), samostatný text by se rozpadl nebo utekl z karty. */
+  .as-hint { display: block; margin: 0 0 12px; font-size: 13px; line-height: 1.5; opacity: 0.75; }
+  .as-variant .as-hint { margin: 2px 0 0; }
+  ul.as-hint { padding-left: 20px; }
+  .as-hint[hidden] { display: none; }
   .as-variant { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; cursor: pointer; }
   .as-headings { display: grid; gap: 8px; max-width: 420px; }
   .as-heading-field { display: grid; grid-template-columns: minmax(0, 1fr) 96px auto; align-items: center; gap: 12px; }
@@ -131,7 +135,7 @@ function headingsCard(headings = {}) {
     </label>`).join('');
   return `<div class="as-headings">
     ${fields}
-    <p class="v2FormField__hint as-headings__warning" hidden>Pozor: nadpis vyšší úrovně by měl být větší než nadpis nižší (H1 &gt; H2 &gt; … &gt; H6).</p>
+    <p class="as-hint as-headings__warning" hidden>Pozor: nadpis vyšší úrovně by měl být větší než nadpis nižší (H1 &gt; H2 &gt; … &gt; H6).</p>
     <button type="button" class="btn btn-default btn-sm as-headings__reset">Vrátit výchozí velikosti</button>
   </div>
   <script>
@@ -157,7 +161,7 @@ function card(title, content, hint) {
   return `<section class="card card--bordered">
     <div class="card__header"><h2 class="card__title">${escape(title)}</h2></div>
     <div class="card__content">
-      ${hint ? `<p class="v2FormField__hint">${escape(hint)}</p>` : ''}
+      ${hint ? `<p class="as-hint">${escape(hint)}</p>` : ''}
       ${content}
     </div>
   </section>`;
@@ -362,14 +366,14 @@ export function settingsPage({
   const variants = HEADER_VARIANTS.map(
     (v) => `<label class="as-variant" title="${escape(v.label)}">
       <input class="radioField" type="radio" name="header" value="${v.value}" ${themeConfig.header === v.value ? 'checked' : ''}>
-      <span><strong>${escape(v.value.toUpperCase())}</strong><span class="v2FormField__hint">${escape(v.label)}</span></span>
+      <span><strong>${escape(v.value.toUpperCase())}</strong><span class="as-hint">${escape(v.label)}</span></span>
     </label>`,
   ).join('');
 
   const bannerLayouts = BANNER_LAYOUTS.map(
     (v) => `<label class="as-variant" title="${escape(v.hint)}">
       <input class="radioField" type="radio" name="banners" value="${v.value}" ${(themeConfig.banners || 'default') === v.value ? 'checked' : ''}>
-      <span><strong>${escape(v.label)}</strong><span class="v2FormField__hint">${escape(v.hint)}</span></span>
+      <span><strong>${escape(v.label)}</strong><span class="as-hint">${escape(v.hint)}</span></span>
     </label>`,
   ).join('');
 
@@ -444,13 +448,13 @@ export function settingsPage({
         )}
         ${card(
           'Bannery na úvodní stránce podle názvu',
-          `<p class="v2FormField__hint">Doplňkové bannery s pozicí <strong>Zápatí</strong> (Vzhled a obsah → Bannery → Doplňkové bannery) umístíte koncem interního názvu:</p>
-          <ul class="v2FormField__hint">
+          `<p class="as-hint">Doplňkové bannery s pozicí <strong>Zápatí</strong> (Vzhled a obsah → Bannery → Doplňkové bannery) umístíte koncem interního názvu:</p>
+          <ul class="as-hint">
             <li><strong>[1], [2], [3] …</strong> mozaika pod prvním pásem produktů na danou pozici (1. a 4. vysoký 920 × 1000 px, 2. a 3. nízký 920 × 480 px, pak znovu stejný vzor), např. „Makita [1]“,</li>
             <li><strong>[L] / [P]</strong> vedle produktové sekce se stejným nadpisem, vlevo / vpravo (obrázek 868 × 1018 px), např. „Omrkni nové kousky [L]“,</li>
             <li>bez značky zůstane banner v zápatí.</li>
           </ul>
-          <p class="v2FormField__hint">Přihlášeným v administraci se na e-shopu u každého banneru ukáže štítek, kam patří. Zákazníci ho nevidí.</p>`,
+          <p class="as-hint">Přihlášeným v administraci se na e-shopu u každého banneru ukáže štítek, kam patří. Zákazníci ho nevidí.</p>`,
           'Texty a tlačítka v mozaice jsou součástí obrázku. Bannery se Střed fungují také, Shoptet jich ale zobrazí nejvýš dva.',
         )}
         ${card(
