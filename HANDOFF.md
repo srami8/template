@@ -1,3 +1,32 @@
+# Aktualizace (Claude): drobečková navigace podle Figmy
+
+**Zadání:**
+- Figma „Breadcrumb“ Desktop `1483:5173` / Mobile `1483:5175`.
+- Na mobilu jen poslední proklikávací odkaz (návrat o úroveň výš).
+
+**(1) Disco:**
+- `.breadcrumbs > span#navigation-first` (odkaz „Domů“ + `.navigation-bullet` „/“), `span#navigation-N`, poslední `[data-testid="breadcrumbsLastLevel"]` bez odkazu.
+- Ověřeno na kategorii, podkategorii, detailu, kontaktech, přihlášení, hledání a článcích. Úvodní stránka a košík drobečky nemají.
+- Obal je `.content-wrapper.container` (někde `container-narrow`).
+- Pravidla Disca: `.aside-indented .breadcrumbs {max-width:1178px}`, `.type-product .breadcrumbs {width:50%}` (≥ 992) a `.multiple-columns-body.type-product …`.
+
+**(2) Změny:**
+- Nový `components/_breadcrumbs.scss`:
+  - pruh 40 px `secondary-50` přes celou šířku okna (`--as-viewport-width`), obsah odsazený na vnitřní šířku hlavního kontejneru podle breakpointů Disca,
+  - desktop: domeček (nová ikona `icons/home.svg` z Figmy), oddělovač „/“ jako `chevron-right` 16 px `secondary-300`, odkazy podtržené `secondary-600`, aktuální stránka `secondary-400` se zkrácením,
+  - telefon: jen položka před aktuální stránkou (`:has(+ [data-testid=breadcrumbsLastLevel])`) se šipkou zpět.
+  - `:is(body, .aside-indented, .multiple-columns-body.type-product)` + `max-width: none` přebíjí pravidla Disca.
+- Sada snímků e-shopu má drobečky a stránku kontaktů (úzký obsah).
+
+**(3) Ověření:**
+- Testy: 96 prošlých, nový `breadcrumbs: full-width bar…`.
+- Snímky před a po (35 snímků):
+  - drobečky na všech stránkách podle návrhu, desktop i mobil,
+  - na kategorii nejdřív zůstal pruh 1178 px (max-width Disca), opraveno a ověřeno na 1920 px,
+  - ostatní rozdíly: drobečky uvnitř `#content` (kontakty, hledání), posun detailu o 1 px, šum vyhlazení písma.
+
+---
+
 # Aktualizace (Claude): nadpisy podle Figmy globálně a velikosti v nastavení šablony
 
 **Zadání:** nadpisy podle Figmy (H1 36, H2 28, H3 24, H4 20, H5 18, H6 16 px, Medium, výška řádku 1,2) všude. Obchodník je může měnit v administraci šablony, mobil se automaticky zmenší.

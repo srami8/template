@@ -16,11 +16,12 @@ const { chromium } = require('playwright-core');
 const SHOP = process.env.SHOP_URL || 'https://313980.myshoptet.com';
 const PAGES = [
   ['home', '/', ['#header', '.banners-row', '.homepage-products-heading-1 + .products-wrapper', '.as-banner-mosaic']],
-  ['category', '/sperky/', ['.products-block', '.category-header']],
-  ['detail', '/zbozi/dreveny-privesek-bracken-pendant-6/', ['.p-image-wrapper', '.p-detail-inner-header', '.p-data-wrapper']],
-  ['search', '/vyhledavani/?string=test', ['#content']],
+  ['category', '/sperky/', ['.breadcrumbs', '.products-block', '.category-header']],
+  ['detail', '/zbozi/dreveny-privesek-bracken-pendant-6/', ['.breadcrumbs', '.p-image-wrapper', '.p-detail-inner-header', '.p-data-wrapper']],
+  ['search', '/vyhledavani/?string=test', ['.breadcrumbs', '#content']],
+  ['contacts', '/kontakty/', ['.breadcrumbs', '#content']],
   ['cart', '/kosik/', ['#content']],
-  ['login', '/login/', ['#content']],
+  ['login', '/login/', ['.breadcrumbs', '#content']],
 ];
 const VIEWPORTS = [['1920', { width: 1920, height: 1080 }, false], ['390', { width: 390, height: 844 }, true]];
 

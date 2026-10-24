@@ -1,0 +1,127 @@
+// Drobečková navigace (Figma: „Breadcrumb“ Desktop / Mobile) všude, kde ji Disco vypisuje (kategorie,
+// detail produktu, stránky, hledání, přihlášení …). Markup Disca: .breadcrumbs > span#navigation-first
+// (odkaz „Domů“ + .navigation-bullet „/“), span#navigation-N (odkaz + oddělovač), poslední položka
+// [data-testid="breadcrumbsLastLevel"] je aktuální stránka bez odkazu.
+// Pruh 40 px přes celou šířku okna (i na stránkách s užším obsahem), obsah lícuje s hlavním
+// kontejnerem. Desktop: domeček, šipky, podtržené odkazy, aktuální stránka šedě. Telefon: jen
+// poslední odkaz (návrat o úroveň výš) se šipkou zpět.
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+// :is(…) zvedá specificitu nad pravidla Disca pro stránky se sloupcem (.aside-indented .breadcrumbs
+// má max-width 1178 px, detail produktu se sloupcem šířku 50 %).
+.as-theme :is(body, .aside-indented, .multiple-columns-body.type-product) .breadcrumbs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  // Přes celou šířku okna z jakkoli úzkého obalu (--as-viewport-width bez posuvníku, js/viewport.js).
+  width: var(--as-viewport-width, 100vw);
+  max-width: none;
+  min-height: 40px;
+  margin: 0 0 0 calc(50% - var(--as-viewport-width, 100vw) / 2);
+  padding: 8px 16px;
+  overflow: hidden;
+  background: var(--as-secondary-50);
+  color: var(--as-secondary-400);
+  font-family: var(--as-font-family);
+  font-size: var(--as-font-size-small);
+  line-height: 1.2;
+  white-space: nowrap;
+
+  > span {
+    display: inline-flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    color: var(--as-secondary-600);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--as-primary-600);
+    }
+  }
+
+  // Aktuální stránka (bez odkazu) může být dlouhá, zkrátí se třemi tečkami.
+  > [data-testid="breadcrumbsLastLevel"] [itemprop="name"] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Oddělovač „/“ Disca jako šipka doprava.
+  .navigation-bullet {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    color: var(--as-secondary-300);
+    font-size: 0;
+
+    &::before {
+      @include icon(chevron-right, 16px);
+    }
+  }
+
+  // Obsah lícuje s hlavním kontejnerem Disca (vnitřní šířka = šířka − 2 × 20 px).
+  @each $breakpoint, $width in bp.$container-widths {
+    @media (min-width: $breakpoint) {
+      padding-right: calc((var(--as-viewport-width, 100vw) - #{$width} + 40px) / 2);
+      padding-left: calc((var(--as-viewport-width, 100vw) - #{$width} + 40px) / 2);
+    }
+  }
+
+  // Desktop: „Domů“ jako domeček (text zůstává pro čtečky).
+  @include bp.desktop {
+    #navigation-first a {
+      display: inline-flex;
+      color: var(--as-secondary-600);
+      font-size: 0;
+
+      &::before {
+        @include icon(home, 24px);
+      }
+    }
+  }
+
+  // Telefon: jen poslední odkaz (položka před aktuální stránkou) se šipkou zpět.
+  @include bp.mobile {
+    > span {
+      display: none;
+    }
+
+    > span:has(+ [data-testid="breadcrumbsLastLevel"]) {
+      display: inline-flex;
+      min-width: 0;
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+
+        &::before {
+          @include icon(chevron-right, 16px);
+          color: var(--as-secondary-300);
+          transform: rotate(180deg);
+        }
+
+        [itemprop="name"] {
+          overflow: hidden;
+          text-decoration: underline;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .navigation-bullet {
+        display: none;
+      }
+    }
+  }
+}

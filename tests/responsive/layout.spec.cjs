@@ -499,3 +499,35 @@ test('headings follow the design everywhere and the size from settings, smaller 
   expect(mobile[1][0]).toBeCloseTo(28*0.86,1);
   expect(mobile[2][0]).toBe(20);
 });
+
+test('breadcrumbs: full-width bar with home icon on desktop, only the last link on a phone', async ({page}) => {
+  await load(page);
+  const add=()=>page.evaluate(()=>{
+    document.querySelector('#as-breadcrumbs-test')?.remove();
+    const wrap=document.createElement('div');
+    wrap.id='as-breadcrumbs-test';
+    wrap.className='container container-narrow content-wrapper';
+    wrap.innerHTML='<div class="breadcrumbs"><span id="navigation-first"><a href="/"><span itemprop="name">Domů</span></a> <span class="navigation-bullet">/</span></span> <span id="navigation-1"><a href="/produkty/"><span itemprop="name">Produkty</span></a> <span class="navigation-bullet">/</span></span> <span id="navigation-2"><a href="/sperky/"><span itemprop="name">Šperky</span></a> <span class="navigation-bullet">/</span></span> <span id="navigation-3" data-testid="breadcrumbsLastLevel"><span itemprop="name">Dřevěný přívěsek</span></span></div>';
+    document.querySelector('.overall-wrapper').prepend(wrap);
+  });
+  const read=()=>page.evaluate(()=>{
+    const bar=document.querySelector('#as-breadcrumbs-test .breadcrumbs');
+    const r=bar.getBoundingClientRect();
+    const visible=[...bar.children].filter(el=>getComputedStyle(el).display!=='none').map(el=>el.textContent.trim().replace(/\s*\/$/,''));
+    return {x:Math.round(r.x),width:Math.round(r.width),height:Math.round(r.height),visible,home:getComputedStyle(bar.querySelector('#navigation-first a'),'::before').maskImage.includes('svg'),viewport:document.documentElement.clientWidth};
+  });
+  await page.setViewportSize({width:1440,height:900});
+  await add();
+  const desktop=await read();
+  expect(desktop.x).toBe(0);
+  expect(desktop.width).toBe(desktop.viewport);
+  expect(desktop.height).toBe(40);
+  expect(desktop.home).toBe(true);
+  expect(desktop.visible.length).toBe(4);
+  await page.setViewportSize({width:375,height:800});
+  await add();
+  const mobile=await read();
+  expect(mobile.width).toBe(mobile.viewport);
+  expect(mobile.visible).toEqual(['Šperky']);
+  await noPageOverflow(page);
+});
