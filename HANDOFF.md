@@ -1,3 +1,21 @@
+# Aktualizace (Claude): úvodní text přes celou šířku
+
+**Zadání majitele:** `.welcome-wrapper` přes celou šířku.
+
+**Příčina:** Disco dává úvodnímu textu `.container-narrow` (max. 1178 px, na 1440+ okraje 100 px), takže byl užší než sekce úvodní stránky (1378 px).
+
+**Oprava** (`layout/_homepage.scss`):
+- `.welcome-wrapper.container-narrow` má šířku obsahu (stejnou jako nadpisy sekcí).
+- Sloupce z editoru (`.col-*`, odsazení 20 px): od 768 px má jejich obal záporný okraj jako `.row` Bootstrapu, na telefonu nemají odsazení. Text tak lícuje se sekcemi a stránka nepřetéká.
+
+**Ověření**
+- E-shop: lícování se sekcemi na 1920, 1200, 800 a 390 px, bez přetečení.
+- Snímky: nová oblast `.welcome-wrapper`, jinak beze změny.
+- Testy: 117 prošlo, nový `welcome.spec.cjs` na 1920, 800 a 390 px.
+- Dokumentace: příručka (úvodní stránka), komponenty.md.
+
+---
+
 # Aktualizace (Claude): barva textu na tmavém pozadí podle kontrastu
 
 **Dotaz majitele:** při tmavé barvě pozadí (např. černé) se má přizpůsobit barva písma, odkazů a ikon článků.

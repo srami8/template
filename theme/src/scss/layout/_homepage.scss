@@ -2,7 +2,37 @@
 // Nadpis je .homepage-group-title Disca (u produktových sekcí i u kategorií z js/home-categories.js),
 // produktová sekce .products-wrapper.product-slider-holder se sliderem Shoptetu.
 
+@use "../tools/breakpoints" as bp;
 @use "../tools/slider";
+
+// Úvodní text z administrace (.welcome-wrapper): Disco ho dává do .container-narrow (max. 1178 px
+// s okraji 100 px), na širokém displeji by byl užší než sekce nad ním a pod ním. Přes celou šířku obsahu.
+.as-theme .welcome-wrapper.container-narrow {
+  width: auto;
+  max-width: none;
+  margin-right: 0;
+  margin-left: 0;
+
+  // Sloupce z editoru (Bootstrap .col-*) mají odsazení 20 px, text by začínal dál než nadpisy sekcí.
+  // Od 768 px vedle sebe: obal sloupců jako .row Bootstrapu (záporný okraj, mezera mezi sloupci
+  // zůstává). Na telefonu pod sebou: bez odsazení (záporný okraj by stránku rozšířil).
+  :has(> [class*="col-"]) > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  @include bp.desktop {
+    :has(> [class*="col-"]) {
+      margin-right: -20px;
+      margin-left: -20px;
+
+      > [class*="col-"] {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+    }
+  }
+}
 
 // Nadpis sekce: v návrhu H2 zarovnaný vlevo (Disco ho má menší a na střed).
 .as-theme .homepage-group-title {
