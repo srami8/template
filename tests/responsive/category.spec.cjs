@@ -31,6 +31,7 @@ const page = (bestsellers = 5, {articles = false} = {}) => `<!doctype html><html
   @media(min-width:768px){.container{width:747px}}@media(min-width:992px){.container{width:972px}}
   @media(min-width:1200px){.container{width:1178px}}@media(min-width:1440px){.container{width:1418px}}
   /* Disco: buňky podkategorií jsou plovoucí sloupce Bootstrapu */.subcategories li{float:left;width:25%}
+  /* Disco: horní část kategorie má max. 1178 px */.category-top{max-width:1178px}
   ${css}</style></head><body class="type-category one-column-body"><main id="content" class="container content">
   <div class="category-top">
     <h1 class="category-title">Šperky</h1>
@@ -62,6 +63,9 @@ const boxes = (p, selector) => p.locator(selector).evaluateAll((els) => els.map(
 test('subcategories fill the row as buttons of the same height', async ({page: p}) => {
   await p.setViewportSize({width: 1440, height: 900});
   await p.setContent(page());
+
+  // Horní část vyplní celou šířku obsahu (Disco ji omezuje na 1178 px).
+  expect(Math.round((await box(p, '.category-top')).width)).toBe(1378);
 
   const links = await boxes(p, '.subcategories a');
   // Pět vedle sebe (1378 px / min. 240 px), šestá na dalším řádku, mezera 10 px.

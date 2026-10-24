@@ -17,7 +17,10 @@ $section-gap: 40px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   column-gap: 64px;
-  margin: 32px 0 0;
+  // Disco blok omezuje na 1178 px, na širších containerech by končil dřív než výpis produktů.
+  max-width: none;
+  // Pod horní částí lišta výpisu (řazení, filtry) ve stejném odstupu jako mezi sekcemi.
+  margin: 32px 0 $section-gap;
 
   > * {
     grid-column: 1 / -1;

@@ -1,3 +1,20 @@
+# Aktualizace (Claude): horní část kategorie přes celou šířku
+
+**Zadání majitele:** `.category-top` má být přes celou šířku containeru.
+
+**Příčina:** Disco dává `.category-top` `max-width: 1178px`. Od 1440 px tak horní část končila o 200 px dřív než výpis produktů a lišta řazení.
+
+**Oprava** (`components/_category.scss`):
+- `max-width: none`, horní část má teď stejnou šířku obsahu jako výpis (1920: 271–1649 px);
+- pod horní částí mezera 40 px k liště výpisu (podle Figmy). Dřív lišta řazení začínala hned pod kartami Nejprodávanějších.
+
+**Ověření**
+- Snímky: změna jen na kategorii.
+- Testy: 105 prošlých, nově hlídají šířku (1378 px při 1440).
+- Audit: 0 rozdílů.
+
+---
+
 # Aktualizace (Claude): články ke kategoriím ověřené na e-shopu
 
 **Postup:** majitel založil 3 testovací články. Přiřadil jsem je přes formulář nastavení (přes tunel, jako z administrace): Šperky 3 články, Náramky 1 (stejný článek u dvou kategorií).
