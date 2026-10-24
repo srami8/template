@@ -1,3 +1,19 @@
+# Aktualizace (Claude): účet v hlavičce i v objednávce
+
+**Chyba (majitel):** v košíku bylo přihlášení v horní liště, jinde v hlavičce.
+
+**Příčina:** `js/header.js` `renderAccountButton` vkládal kopii tlačítka účtu před košík v hlavičce a bez košíku skončil. V objednávce (`body.ordering-process`: košík, `/objednavka/krok-1/` …) Disco tlačítko košíku v hlavičce nemá (v kroku 1 ani hledání).
+
+**Oprava:** bez košíku se účet vloží před tlačítko menu `[data-target="navigation"]` (na desktopu skryté), jinak na konec `.navigation-buttons`.
+
+**Ověření**
+- Testy: 96 prošlých.
+- Snímky před a po: změna jen hlavičky košíku (1920, 390).
+- Košík a krok „Doprava a platba“ s produktem na 1920 a 390 px: účet v hlavičce, přihlášení v liště skryté.
+- Audit 0 rozdílů. Sada snímků má nově `#header` v košíku, audit ikonu účtu v košíku.
+
+---
+
 # Aktualizace (Claude): audit stejného vzhledu desktop vs. mobil
 
 **Zadání majitele:** mezera mezi hlavičkou a drobečky na mobilu, jiný vzhled nabídky měny na mobilu. Pak projít vše hotové, aby se komponenty na desktopu a mobilu nelišily, a průběžně hlásit nálezy.

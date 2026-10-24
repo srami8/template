@@ -9,8 +9,12 @@ function renderAccountButton() {
   const original = document.querySelector(
     '.top-navigation-tools .top-nav-button-login, .top-navigation-tools .top-nav-button-account',
   );
-  const cart = document.querySelector('#header .navigation-buttons .cart-count');
-  if (!original || !cart) return;
+  const buttons = document.querySelector('#header .navigation-buttons');
+  if (!original || !buttons) return;
+  // Patří před košík. V objednávce (košík, doprava …) Disco košík v hlavičce nemá, pak před
+  // tlačítko menu (na desktopu skryté), aby byl účet všude na stejném místě.
+  const anchor = buttons.querySelector(':scope > .cart-count')
+    || buttons.querySelector(':scope > [data-target="navigation"]');
 
   const proxy = original.cloneNode(true);
   proxy.removeAttribute('data-testid');
@@ -27,7 +31,8 @@ function renderAccountButton() {
     });
   }
 
-  cart.before(proxy);
+  if (anchor) anchor.before(proxy);
+  else buttons.append(proxy);
   document.documentElement.classList.add('as-account-in-header');
 }
 

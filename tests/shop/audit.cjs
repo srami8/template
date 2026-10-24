@@ -20,6 +20,7 @@ const ITEMS = [
   // Hlavička
   ['Hlavička: ikona košíku', '/', '#header .navigation-buttons [data-target="cart"]', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],
   ['Hlavička: ikona účtu', '/', '#header .as-account-button', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],
+  ['Košík: ikona účtu v hlavičce', '/kosik/', '#header .as-account-button', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],
   ['Hlavička: pole hledání', '/', '#header .search-input', null, { size: true }],
   ['Hlavička: lupa ve formuláři', '/', '#header .search-button', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],
   ['Informační lišta', '/', '.site-msg.information', null, { size: true }],

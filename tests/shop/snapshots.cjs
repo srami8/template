@@ -20,7 +20,7 @@ const PAGES = [
   ['detail', '/zbozi/dreveny-privesek-bracken-pendant-6/', ['.breadcrumbs', '.p-image-wrapper', '.p-detail-inner-header', '.p-data-wrapper']],
   ['search', '/vyhledavani/?string=test', ['.breadcrumbs', '#content']],
   ['contacts', '/kontakty/', ['.breadcrumbs', '#content']],
-  ['cart', '/kosik/', ['#content']],
+  ['cart', '/kosik/', ['#header', '#content']],
   ['login', '/login/', ['.breadcrumbs', '#content']],
 ];
 const VIEWPORTS = [['1920', { width: 1920, height: 1080 }, false], ['390', { width: 390, height: 844 }, true]];
