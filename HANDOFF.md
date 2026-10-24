@@ -1,3 +1,19 @@
+# Aktualizace (Claude): barva textu na tmavém pozadí podle kontrastu
+
+**Dotaz majitele:** při tmavé barvě pozadí (např. černé) se má přizpůsobit barva písma, odkazů a ikon článků.
+
+**Stav:** přepnutí už fungovalo (`.as-category-tint-dark`). Majitel měl uloženou světlou barvu `#fdf6e8`, proto ho neviděl.
+
+**Oprava:** `isDarkColor` (`settings-app/src/theme-config.mjs`) už nepoužívá pevnou hranici jasu 0,4. Bílý text zvolí, když má podle WCAG vyšší kontrast než tmavý text šablony (`#2e3545`). Středně syté barvy (např. `#1e9fe8`) tak mají tmavý text, černá a tmavé barvy bílý.
+
+**Ověření**
+- Testy: settings-app prošly, nové případy `#000000`, `#555555` (bílý text) a `#1e9fe8` (tmavý text).
+- E-shop: černé pozadí (podstrčené v prohlížeči) s obrázkem i bez něj na 1920 a 390 px. Bílý je nadpis, popis, tučné písmo, odkaz v popisu, nadpis článků, odkazy i ikony článků, podtržení při najetí myší funguje.
+
+**Poznámka:** volba barvy textu se počítá při uložení nastavení. Dříve uložená barva se přepočítá po dalším uložení.
+
+---
+
 # Aktualizace (Claude): barva na pozadí i u kategorie bez obrázku
 
 **Zadání majitele:** u vzhledu s barvou na pozadí se má barva zobrazit, i když kategorie nemá obrázek v popisu.

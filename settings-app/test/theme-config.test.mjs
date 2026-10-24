@@ -32,6 +32,10 @@ test('dark colours switch the text to white', () => {
   assert.equal(isDarkColor('#141615'), true);
   assert.equal(isDarkColor('#e9f6fd'), false);
   assert.equal(isDarkColor('#ffba34'), false);
+  assert.equal(isDarkColor('#000000'), true);
+  assert.equal(isDarkColor('#555555'), true);
+  // Středně sytá modrá: tmavý text má vyšší kontrast než bílý.
+  assert.equal(isDarkColor('#1e9fe8'), false);
   const c = themeConfigFromForm(form([['categoryLayout', 'image-wide'], ['categoryTint', '1'], ['categoryTintMode', 'custom'], ['categoryTintColor', '#1e3a5f']]));
   assert.equal(c.categoryTintDark, true);
 });

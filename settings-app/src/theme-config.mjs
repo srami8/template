@@ -69,13 +69,21 @@ export const TINTABLE_CATEGORY_LAYOUTS = ['image', 'image-wide'];
 export const CATEGORY_TINT_PLACEHOLDER = '#e9f6fd';
 const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 
-// Relativní jas barvy (WCAG). Na tmavém pozadí (pod 0,4) šablona přepne text na bílý.
-export function isDarkColor(hex) {
+// Relativní jas barvy (WCAG 2).
+function luminance(hex) {
   const channel = (i) => {
     const value = parseInt(hex.slice(i, i + 2), 16) / 255;
     return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
   };
-  return 0.2126 * channel(1) + 0.7152 * channel(3) + 0.0722 * channel(5) < 0.4;
+  return 0.2126 * channel(1) + 0.7152 * channel(3) + 0.0722 * channel(5);
+}
+
+// Tmavé pozadí = bílý text na něm má vyšší kontrast než tmavý text šablony (secondary-500, #2e3545).
+// Šablona pak přepne nadpis, popis, odkazy a ikony článků na bílou.
+const DARK_TEXT = '#2e3545';
+export function isDarkColor(hex) {
+  const background = luminance(hex) + 0.05;
+  return 1.05 / background > background / (luminance(DARK_TEXT) + 0.05);
 }
 
 // Ikony dostupné v theme/src/icons pro rychlé odkazy.
