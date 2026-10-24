@@ -36,6 +36,31 @@ $with-image: ":is(.as-intro-media, :has(> .category-perex img))";
   }
 }
 
+// Bílý text v pruhu s tmavým pozadím (obrázek na pozadí, tmavá vlastní barva pozadí).
+@mixin light-text {
+  > .category-title {
+    color: var(--as-white);
+  }
+
+  > .category-perex {
+    color: var(--as-white);
+
+    a,
+    a:hover,
+    strong,
+    b {
+      color: var(--as-white);
+    }
+  }
+
+  .as-category-articles__title,
+  .as-category-articles__list a,
+  .as-category-articles__list a:hover,
+  .as-category-articles__list a::before {
+    color: var(--as-white);
+  }
+}
+
 // Do přesunu obrázků JS je popis bez obrázků (první obrázek se jinak na chvíli ukáže v textu).
 @mixin hide-pending-images {
   &:not(.as-intro-media) > .category-perex {
@@ -196,7 +221,8 @@ $side-gap: 72px;
       grid-column: 1 / -1;
       @include full-bleed;
       z-index: -1;
-      background: var(--as-primary-50);
+      // Vlastní barva z nastavení šablony (vkládaný kód), jinak světlý odstín hlavní barvy.
+      background: var(--as-category-tint, var(--as-primary-50));
     }
 
     @if not $wide {

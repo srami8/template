@@ -1,3 +1,20 @@
+# Aktualizace (Claude): vlastní barva na pozadí popisu kategorie
+
+**Zadání majitele:** kde je na pozadí barva, má si ji uživatel zvolit.
+
+**Řešení**
+- **Nastavení:** zaškrtávátko „Světlé pozadí“ je teď „Barva na pozadí“ s volbou „Světlý odstín hlavní barvy e-shopu“ (výchozí, jako dosud) nebo „Vlastní barva“ (výběr barvy). Ukládá se `categoryTintColor` (#rrggbb, jiná hodnota se zahodí). Vlastní barva zůstává uložená i při vypnutém pozadí.
+- **Kód e-shopu:** barva jde jako `--as-category-tint` do stejného `<style>:root{…}` jako velikosti nadpisů (`rootStyle` v `theme-config.mjs`). CSS: `background: var(--as-category-tint, var(--as-primary-50))`.
+- **Čitelnost:** server spočítá jas barvy (WCAG). U tmavé (pod 0,4) uloží `categoryTintDark` a šablona dá na `<html>` `.as-category-tint-dark`: nadpis, popis, odkazy a články bíle, čára světlá. Bílý text sdílí mixin `light-text` s variantou obrázku na pozadí.
+
+**Ověření**
+- Testy: settings-app 2 sady prošly (nová `theme-config.test.mjs`: validace, jas, vložený styl), Playwright 113 prošlo (nový test tmavé barvy).
+- E-shop (podstrčené jen v prohlížeči): #1e3a5f s bílým textem na 1920 px, #ffe8d6 s tmavým textem na 390 px.
+
+**Poznámka:** v nastavení e-shopu je teď uložený vzhled „Obrázek na pozadí“ (uložil majitel 14:05 UTC).
+
+---
+
 # Aktualizace (Claude): vzhled popisu kategorie (varianty z Figmy)
 
 **Zadání majitele:** varianty popisu kategorie podle Figmy „Kategorie – typy popisů kategorie“ (1487:3697, komentáře #claude). Uživatel volí v nastavení šablony jeden vzhled pro všechny kategorie. Obrázek je první obrázek vložený do popisu kategorie. Responzivita je na Claudovi.

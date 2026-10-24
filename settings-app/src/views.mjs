@@ -14,6 +14,7 @@ import {
   HEADING_SIZES,
   CATEGORY_LAYOUTS,
   TINTABLE_CATEGORY_LAYOUTS,
+  CATEGORY_TINT_PLACEHOLDER,
 } from './theme-config.mjs';
 import { CATEGORY_ARTICLES_TITLE, MAX_ARTICLES_PER_CATEGORY, articleState } from './category-articles.mjs';
 
@@ -91,6 +92,9 @@ function layout(title, body, { eshopOrigin } = {}) {
   .as-categories { display: grid; gap: 8px; margin: 16px 0; padding: 0; list-style: none; }
   .as-categories li { display: flex; gap: 8px; align-items: center; }
   .as-categories select { flex: 1; }
+  .as-tint-colors { display: grid; gap: 4px; margin: 0 0 8px 34px; }
+  .as-tint-colors label { display: flex; gap: 10px; align-items: center; cursor: pointer; }
+  .as-tint-colors input[type="color"] { width: 44px; height: 28px; padding: 0 2px; border: 1px solid rgba(128, 128, 128, 0.4); border-radius: 4px; background: none; cursor: pointer; }
   .as-ca-block { margin: 0 0 16px; padding: 16px; border: 1px solid rgba(128, 128, 128, 0.3); border-radius: 8px; }
   .as-ca-block__head { display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .as-ca-block__head strong { font-size: 15px; }
@@ -388,19 +392,37 @@ export function settingsPage({
   ).join('')}
     <label class="as-variant" data-category-tint>
       <input class="checkboxField" type="checkbox" name="categoryTint" value="1" ${themeConfig.categoryTint ? 'checked' : ''}>
-      <span><strong>Světlé pozadí</strong><span class="as-hint">Pod popisem a obrázkem pruh ve světlém odstínu hlavní barvy e-shopu přes celou šířku okna. Jen u vzhledů s obrázkem vedle textu.</span></span>
+      <span><strong>Barva na pozadí</strong><span class="as-hint">Pod popisem a obrázkem pruh přes celou šířku okna. Jen u vzhledů s obrázkem vedle textu.</span></span>
     </label>
+    <div class="as-tint-colors" data-tint-colors>
+      <label><input class="radioField" type="radio" name="categoryTintMode" value="primary" ${themeConfig.categoryTintColor ? '' : 'checked'}>
+        <span>Světlý odstín hlavní barvy e-shopu</span></label>
+      <label><input class="radioField" type="radio" name="categoryTintMode" value="custom" ${themeConfig.categoryTintColor ? 'checked' : ''}>
+        <span>Vlastní barva</span>
+        <input type="color" name="categoryTintColor" value="${escape(themeConfig.categoryTintColor || CATEGORY_TINT_PLACEHOLDER)}" aria-label="Vlastní barva pozadí"></label>
+      <span class="as-hint">Na tmavé barvě se text sám přepne na bílý.</span>
+    </div>
     <script>
     (function () {
       var tint = document.querySelector('[data-category-tint]');
       var input = tint.querySelector('input');
+      var colors = document.querySelector('[data-tint-colors]');
       var tintable = ${JSON.stringify(TINTABLE_CATEGORY_LAYOUTS)};
       function update() {
         var checked = document.querySelector('input[name="categoryLayout"]:checked');
         var enabled = checked && tintable.indexOf(checked.value) !== -1;
         input.disabled = !enabled;
         tint.style.opacity = enabled ? '' : '0.5';
+        // Výběr barvy jen při zapnutém pozadí. Zakázaná pole se neodesílají, uložená barva by se
+        // ztratila, proto jen zašednout.
+        colors.style.opacity = enabled && input.checked ? '' : '0.5';
+        colors.style.pointerEvents = enabled && input.checked ? '' : 'none';
       }
+      // Volba barvy zapne vlastní barvu.
+      colors.querySelector('input[type="color"]').addEventListener('input', function () {
+        colors.querySelector('input[value="custom"]').checked = true;
+      });
+      input.addEventListener('change', update);
       document.querySelectorAll('input[name="categoryLayout"]').forEach(function (radio) { radio.addEventListener('change', update); });
       update();
     })();

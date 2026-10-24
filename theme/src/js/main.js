@@ -103,6 +103,8 @@ function start() {
   // aby hlavička a obsah po prvním vykreslení neposkočily (layout/_header.scss).
   if (config.categoryTint === true && ['image', 'image-wide'].includes(config.categoryLayout)) {
     document.documentElement.classList.add('as-category-tinted');
+    // Vlastní barvu pozadí dává vkládaný kód (--as-category-tint), na tmavé je text bílý.
+    if (config.categoryTintDark === true) document.documentElement.classList.add('as-category-tint-dark');
   }
   if (Array.isArray(config.quickLinks) && config.quickLinks.some((link) => link?.label && link?.url)) {
     document.documentElement.classList.add('as-has-quicklinks');

@@ -65,6 +65,18 @@ export const CATEGORY_LAYOUTS = [
   },
 ];
 export const TINTABLE_CATEGORY_LAYOUTS = ['image', 'image-wide'];
+// Vlastní barva světlého pozadí (#rrggbb). Bez ní světlý odstín hlavní barvy z administrace.
+export const CATEGORY_TINT_PLACEHOLDER = '#e9f6fd';
+const HEX_COLOR = /^#[0-9a-f]{6}$/i;
+
+// Relativní jas barvy (WCAG). Na tmavém pozadí (pod 0,4) šablona přepne text na bílý.
+export function isDarkColor(hex) {
+  const channel = (i) => {
+    const value = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel(1) + 0.7152 * channel(3) + 0.0722 * channel(5) < 0.4;
+}
 
 // Ikony dostupné v theme/src/icons pro rychlé odkazy.
 export const QUICK_LINK_ICONS = ['local-fire-department', 'local-offer', 'filter-vintage', 'schedule'];
@@ -91,6 +103,8 @@ export const DEFAULT_THEME_CONFIG = {
   headings: {},
   categoryLayout: 'default',
   categoryTint: false,
+  categoryTintColor: null,
+  categoryTintDark: false,
 };
 
 export { HEADING_SIZES };
@@ -207,8 +221,12 @@ export function themeConfigFromForm(form, { categories, previous } = {}) {
 
   const categoryLayout = CATEGORY_LAYOUTS.some((v) => v.value === form.get('categoryLayout')) ? form.get('categoryLayout') : 'default';
   const categoryTint = form.get('categoryTint') === '1' && TINTABLE_CATEGORY_LAYOUTS.includes(categoryLayout);
+  // Vlastní barvu ponecháváme i při vypnutém pozadí, ať se po zapnutí nemusí volit znovu.
+  const tintColor = String(form.get('categoryTintColor') || '').trim();
+  const categoryTintColor = form.get('categoryTintMode') === 'custom' && HEX_COLOR.test(tintColor) ? tintColor.toLowerCase() : null;
+  const categoryTintDark = Boolean(categoryTintColor) && isDarkColor(categoryTintColor);
 
-  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, headings, categoryLayout, categoryTint };
+  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, headings, categoryLayout, categoryTint, categoryTintColor, categoryTintDark };
 }
 
 function escapeAttribute(value) {
@@ -236,6 +254,15 @@ export function snippetConfig({ themeConfig, categoryArticles, categoryArticlesU
   return { ...base, categoryArticles: `${categoryArticlesUrl}?v=${assignmentsVersion(categoryArticles)}` };
 }
 
+// Proměnné CSS z nastavení do vkládaného kódu: velikosti nadpisů a vlastní barva světlého pozadí.
+export function rootStyle(themeConfig) {
+  const headings = headingStyle(themeConfig.headings).match(/:root\{(.*)\}/)?.[1];
+  const tint = themeConfig.categoryTint && HEX_COLOR.test(themeConfig.categoryTintColor || '')
+    ? `--as-category-tint:${themeConfig.categoryTintColor}` : '';
+  const declarations = [headings, tint].filter(Boolean).join(';');
+  return declarations ? `<style>:root{${declarations}}</style>` : '';
+}
+
 export function buildHeaderSnippet(themeConfig) {
   const base = escapeAttribute(config.assetsBase);
   const url = (file) => `${base}${file}?v=${encodeURIComponent(assetsVersion(file))}`;
@@ -250,7 +277,7 @@ export function buildHeaderSnippet(themeConfig) {
     .join('\n');
   const html = `<!-- aSteroid -->
 <script>window.asteroidConfig = ${inlineJson(themeConfig)};</script>
-${styles}${headingStyle(themeConfig.headings) ? `\n${headingStyle(themeConfig.headings)}` : ''}
+${styles}${rootStyle(themeConfig) ? `\n${rootStyle(themeConfig)}` : ''}
 <script src="${url('asteroid.js')}"></script>`;
 
   if (html.length > SNIPPET_LIMIT) {

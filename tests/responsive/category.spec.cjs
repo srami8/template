@@ -31,7 +31,7 @@ const photo = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" widt
 const perexWithImage = `<p><img src='${photo}' alt="Prádelna" width="300" height="200" style="width: 300px; float: left;"></p>
     <p>Úvodní popis kategorie s <a href="/odkaz">odkazem</a> a <strong>tučným textem</strong>, delší text na několik řádků.</p>`;
 
-const page = (bestsellers = 5, {articles = false, layout = 'default', tint = false, image = false} = {}) => `<!doctype html><html lang="cs"><head><meta charset="utf-8">
+const page = (bestsellers = 5, {articles = false, layout = 'default', tint = false, image = false, tintColor = null, tintDark = false} = {}) => `<!doctype html><html lang="cs"><head><meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1"><style>
   *,*::before,*::after{box-sizing:border-box}body{margin:0;font-family:sans-serif}.container{margin:0 auto;padding:0 20px}
   @media(min-width:768px){.container{width:747px}}@media(min-width:992px){.container{width:972px}}
@@ -39,7 +39,8 @@ const page = (bestsellers = 5, {articles = false, layout = 'default', tint = fal
   /* Disco: buňky podkategorií jsou plovoucí sloupce Bootstrapu */.subcategories li{float:left;width:25%}
   /* Disco: horní část kategorie má max. 1178 px */.category-top{max-width:1178px}
   ${css}${layout === 'default' ? '' : variantCss(layout)}</style>
-  <script>window.asteroidConfig = Object.assign(window.asteroidConfig || {}, {categoryLayout: '${layout}', categoryTint: ${tint}});</script></head><body class="type-category one-column-body"><main id="content" class="container content">
+  ${tintColor ? `<style>:root{--as-category-tint:${tintColor}}</style>` : ''}
+  <script>window.asteroidConfig = Object.assign(window.asteroidConfig || {}, {categoryLayout: '${layout}', categoryTint: ${tint}, categoryTintDark: ${tintDark}});</script></head><body class="type-category one-column-body"><main id="content" class="container content">
   <div class="category-top">
     <h1 class="category-title">Šperky</h1>
     <div class="category-perex">${image ? perexWithImage : '<p>Úvodní popis kategorie s <a href="/odkaz">odkazem</a>.</p>'}</div>
@@ -366,4 +367,20 @@ test('description image comes back after Shoptet replaces the category content (
   });
   await expect(p.locator('.as-category-intro__media')).toHaveCount(1);
   expect((await intro(p)).perexImages).toBe(0);
+});
+
+test('custom background colour from the settings; on a dark colour the text is white', async ({page: p}) => {
+  await serve(p, articleData(four));
+  await p.setViewportSize({width: 1440, height: 900});
+  await p.setContent(page(3, {articles: true, layout: 'image', tint: true, image: true, tintColor: '#1e3a5f', tintDark: true}));
+  await expect(p.locator('.as-category-articles')).toHaveCount(1);
+  const d = await intro(p);
+  expect(d.band.background).toBe('rgb(30, 58, 95)');
+  expect(d.titleColor).toBe('rgb(255, 255, 255)');
+  const colors = await p.evaluate(() => [
+    getComputedStyle(document.querySelector('.category-perex')).color,
+    getComputedStyle(document.querySelector('.as-category-articles__list a')).color,
+    getComputedStyle(document.querySelector('.as-category-articles__list a'), '::before').color,
+  ]);
+  expect(colors).toEqual(['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgb(255, 255, 255)']);
 });

@@ -18,21 +18,14 @@ $padding-mobile: 40px;
     grid-template-rows: $padding-mobile auto auto auto $padding-mobile;
     @include intro.band-top;
 
+    @include intro.light-text;
+
     > .category-title {
       grid-row: 2;
-      color: var(--as-white);
     }
 
     > .category-perex {
       grid-row: 3;
-      color: var(--as-white);
-
-      a,
-      a:hover,
-      strong,
-      b {
-        color: var(--as-white);
-      }
     }
 
     > .as-category-articles {
@@ -74,13 +67,6 @@ $padding-mobile: 40px;
     .as-category-intro__image {
       position: absolute;
       inset: 0;
-    }
-
-    .as-category-articles__title,
-    .as-category-articles__list a,
-    .as-category-articles__list a:hover,
-    .as-category-articles__list a::before {
-      color: var(--as-white);
     }
 
     @include bp.desktop {

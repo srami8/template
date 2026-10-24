@@ -12,3 +12,12 @@
 .as-theme.as-category-image.as-category-tinted .category-top {
   @include intro.side-tint;
 }
+
+// Tmavá vlastní barva pozadí (nastavení šablony spočítá jas): text bíle, čára pod popisem světlá.
+.as-theme.as-category-image.as-category-tinted.as-category-tint-dark .category-top#{intro.$with-image} {
+  @include intro.light-text;
+
+  > .as-category-articles {
+    border-top-color: color-mix(in srgb, var(--as-white) 30%, transparent);
+  }
+}
