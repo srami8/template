@@ -94,6 +94,21 @@ export async function getCategories(installation) {
   return categories;
 }
 
+// Všechny články e-shopu. Shoptet vrací nejvýš 10 na stránku, další stránky bereme po pěti najednou
+// (strop 2000 článků).
+export async function getArticles(installation) {
+  const path = (page) => `/api/articles?itemsPerPage=10&page=${page}`;
+  const first = await api(installation, 'GET', path(1));
+  const articles = [...(first.data?.articles ?? [])];
+  const pageCount = Math.min(first.data?.paginator?.pageCount ?? 1, 200);
+  for (let page = 2; page <= pageCount; page += 5) {
+    const batch = [];
+    for (let p = page; p < page + 5 && p <= pageCount; p += 1) batch.push(api(installation, 'GET', path(p)));
+    (await Promise.all(batch)).forEach((body) => articles.push(...(body.data?.articles ?? [])));
+  }
+  return articles;
+}
+
 export function setHeaderSnippet(installation, html) {
   return api(installation, 'POST', '/api/template-include', {
     data: { snippets: [{ location: 'common-header', html }] },

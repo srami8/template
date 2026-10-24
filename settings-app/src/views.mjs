@@ -13,6 +13,7 @@ import {
   PRODUCT_COLUMNS,
   HEADING_SIZES,
 } from './theme-config.mjs';
+import { CATEGORY_ARTICLES_TITLE, MAX_ARTICLES_PER_CATEGORY, articleState } from './category-articles.mjs';
 
 const SHOPTET_UI_CSS = 'https://cdn.jsdelivr.net/npm/@shoptet/ui@0.23.0-beta/dist/index.css';
 const IFRAME_RESIZER = 'https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.contentWindow.min.js';
@@ -82,6 +83,17 @@ function layout(title, body, { eshopOrigin } = {}) {
   .as-categories { display: grid; gap: 8px; margin: 16px 0; padding: 0; list-style: none; }
   .as-categories li { display: flex; gap: 8px; align-items: center; }
   .as-categories select { flex: 1; }
+  .as-ca-block { margin: 0 0 16px; padding: 16px; border: 1px solid rgba(128, 128, 128, 0.3); border-radius: 8px; }
+  .as-ca-block__head { display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .as-ca-block__head strong { font-size: 15px; }
+  .as-ca-items { display: grid; gap: 6px; margin: 12px 0; padding: 0; list-style: none; counter-reset: ca; }
+  .as-ca-items li { display: flex; gap: 8px; align-items: center; counter-increment: ca; }
+  .as-ca-items li::before { content: counter(ca) "."; min-width: 20px; opacity: 0.6; }
+  .as-ca-items li > span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .as-ca-state { padding: 2px 6px; border-radius: 4px; background: #fdf3d8; color: #7a5300; font-size: 12px; white-space: nowrap; }
+  .as-ca-search { display: flex; gap: 8px; }
+  .as-ca-search input, .as-ca-add select { flex: 1; }
+  .as-ca-add { display: flex; gap: 8px; margin-top: 8px; }
   .as-flash { margin-bottom: 16px; padding: 12px 16px; border-radius: 8px; }
   .as-flash--ok { background: #e7f7e1; color: #1f6a05; }
   .as-flash--err { background: #fde8e8; color: #9b1c1c; }
@@ -208,7 +220,143 @@ function homeCategoriesCard(homeCategories, choices) {
     </script>`;
 }
 
-export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, categoryChoices, token, lang, flash }) {
+// Popisek stavu článku, který se na e-shopu nezobrazí (v nastavení zůstává přiřazený).
+function articleStateLabel(article, now = Date.now()) {
+  const state = articleState(article, now);
+  if (state === 'hidden') return 'skrytý, nezobrazí se';
+  if (state === 'missing') return 'v e-shopu už není';
+  if (state === 'scheduled') return `zobrazí se od ${new Date(article.publishDate).toLocaleDateString('cs-CZ')}`;
+  return '';
+}
+
+// Články ke kategoriím: blok pro každou kategorii s nadpisem a seřaditelným seznamem článků,
+// články se hledají v seznamu článků e-shopu (datalist). Stav drží skryté inputy v pořadí seznamu,
+// skript jen přidává, přesouvá a odebírá řádky. Bez načtených článků nebo kategorií (chyba API)
+// zůstanou uložená přiřazení ve skrytých polích a výběr nejde měnit.
+function categoryArticlesCard(assignments, { articles, error }, choices) {
+  const entries = Object.entries(assignments || {});
+  const hidden = entries.map(([guid, a]) => `<input type="hidden" name="categoryArticles[${escape(guid)}][title]" value="${escape(a.title)}">${
+    a.articleIds.map((id) => `<input type="hidden" name="categoryArticles[${escape(guid)}][ids]" value="${id}">`).join('')}`).join('');
+
+  if (error || !articles || !choices) {
+    const message = error || 'Kategorie e-shopu se nepodařilo načíst, přiřazení teď nejde změnit. Uložená přiřazení zůstávají beze změny.';
+    return `${hidden}<div class="as-flash as-flash--err" role="alert">${escape(message)}</div>`;
+  }
+
+  const byId = new Map(articles.map((a) => [a.id, a]));
+  const labels = new Map(choices.map((c) => [c.guid, c.label]));
+  const now = Date.now();
+  const item = (guid, id) => {
+    const article = byId.get(id);
+    const state = articleStateLabel(article, now);
+    return `<li><input type="hidden" name="categoryArticles[${escape(guid)}][ids]" value="${id}">
+      <span>${escape(article?.title || `Článek ${id}`)}</span>${state ? `<em class="as-ca-state">${escape(state)}</em>` : ''}
+      <button class="btn btn-default btn-sm" type="button" data-ca-move="-1" aria-label="Posunout výš">↑</button>
+      <button class="btn btn-default btn-sm" type="button" data-ca-move="1" aria-label="Posunout níž">↓</button>
+      <button class="btn btn-secondary btn-sm" type="button" data-ca-remove>Odebrat</button></li>`;
+  };
+  const block = (guid, assignment = { title: '', articleIds: [] }) => `<div class="as-ca-block" data-ca-block="${escape(guid)}">
+      <div class="as-ca-block__head">
+        <strong>${escape(labels.get(guid) || 'Kategorie už v e-shopu není (přiřazení se nezobrazí)')}</strong>
+        <button class="btn btn-secondary btn-sm" type="button" data-ca-remove-block>Odebrat kategorii</button>
+      </div>
+      <input class="textField" type="text" name="categoryArticles[${escape(guid)}][title]" value="${escape(assignment.title)}"
+        placeholder="${escape(CATEGORY_ARTICLES_TITLE)}" maxlength="80" aria-label="Nadpis bloku článků">
+      <ol class="as-ca-items">${assignment.articleIds.map((id) => item(guid, id)).join('')}</ol>
+      <div class="as-ca-search">
+        <input class="textField" type="search" list="as-ca-articles" placeholder="Hledat článek podle názvu…" aria-label="Přidat článek" data-ca-search>
+      </div>
+    </div>`;
+
+  const options = articles.map((a) => {
+    const state = articleStateLabel(a, now);
+    return `<option value="${escape(`${a.title} (ID ${a.id})`)}">${escape(state)}</option>`;
+  }).join('');
+  const articleData = JSON.stringify(Object.fromEntries(articles.map((a) => [a.id, { title: a.title, state: articleStateLabel(a, now) }])))
+    .replace(/</g, '\\u003c');
+  const categoryOptions = choices.map((c) => `<option value="${escape(c.guid)}">${escape(c.label)}</option>`).join('');
+
+  return `<div data-ca data-max="${MAX_ARTICLES_PER_CATEGORY}">
+    ${articles.length ? '' : '<div class="as-flash as-flash--info" role="status">V e-shopu zatím nejsou žádné články (Blog / Články v administraci Shoptetu).</div>'}
+    <div data-ca-blocks>${entries.map(([guid, a]) => block(guid, a)).join('')}</div>
+    <div class="as-ca-add">
+      <select class="textField" data-ca-category aria-label="Kategorie">${categoryOptions}</select>
+      <button class="btn btn-secondary btn-md" type="button" data-ca-add-category>Přidat kategorii</button>
+    </div>
+    <datalist id="as-ca-articles">${options}</datalist>
+    <template data-ca-block-template>${block('__GUID__')}</template>
+    <template data-ca-item-template>${item('__GUID__', 0)}</template>
+    <script type="application/json" data-ca-data>${articleData}</script>
+  </div>
+  <script>
+  (function () {
+    var root = document.querySelector('[data-ca]');
+    var blocks = root.querySelector('[data-ca-blocks]');
+    var data = JSON.parse(root.querySelector('[data-ca-data]').textContent);
+    var max = Number(root.dataset.max);
+    var labels = {};
+    [].forEach.call(root.querySelectorAll('[data-ca-category] option'), function (o) { labels[o.value] = o.textContent; });
+
+    function fromTemplate(selector, guid) {
+      var html = root.querySelector(selector).innerHTML.split('__GUID__').join(guid);
+      var box = document.createElement('div');
+      box.innerHTML = html;
+      return box.firstElementChild;
+    }
+    function addArticle(block, id) {
+      var list = block.querySelector('.as-ca-items');
+      var ids = [].map.call(list.querySelectorAll('input'), function (input) { return Number(input.value); });
+      if (ids.indexOf(id) !== -1 || ids.length >= max) return;
+      var li = fromTemplate('[data-ca-item-template]', block.dataset.caBlock);
+      li.querySelector('input').value = id;
+      li.querySelector('span').textContent = data[id].title;
+      var state = li.querySelector('.as-ca-state');
+      if (data[id].state) {
+        if (!state) { state = document.createElement('em'); state.className = 'as-ca-state'; li.querySelector('span').after(state); }
+        state.textContent = data[id].state;
+      } else if (state) state.remove();
+      list.appendChild(li);
+    }
+
+    root.querySelector('[data-ca-add-category]').addEventListener('click', function () {
+      var guid = root.querySelector('[data-ca-category]').value;
+      var existing = blocks.querySelector('[data-ca-block="' + guid + '"]');
+      if (!existing) {
+        existing = fromTemplate('[data-ca-block-template]', guid);
+        existing.querySelector('strong').textContent = labels[guid];
+        blocks.appendChild(existing);
+      }
+      existing.querySelector('[data-ca-search]').focus();
+    });
+
+    root.addEventListener('change', function (event) {
+      var search = event.target.closest('[data-ca-search]');
+      if (!search) return;
+      var match = search.value.match(/\\(ID (\\d+)\\)$/);
+      if (match && data[match[1]]) {
+        addArticle(search.closest('[data-ca-block]'), Number(match[1]));
+        search.value = '';
+      }
+    });
+
+    root.addEventListener('click', function (event) {
+      var target = event.target;
+      if (target.closest('[data-ca-remove-block]')) return target.closest('[data-ca-block]').remove();
+      var li = target.closest('.as-ca-items li');
+      if (!li) return;
+      if (target.closest('[data-ca-remove]')) return li.remove();
+      var move = target.closest('[data-ca-move]');
+      if (move && move.dataset.caMove === '-1' && li.previousElementSibling) li.parentNode.insertBefore(li, li.previousElementSibling);
+      if (move && move.dataset.caMove === '1' && li.nextElementSibling) li.parentNode.insertBefore(li.nextElementSibling, li);
+    });
+  })();
+  </script>`;
+}
+
+export function settingsPage({
+  eshopName, eshopId, eshopOrigin, themeConfig, categoryChoices, categoryArticles = {}, articles = { articles: [], error: null },
+  token, lang, flash,
+}) {
   const variants = HEADER_VARIANTS.map(
     (v) => `<label class="as-variant" title="${escape(v.label)}">
       <input class="radioField" type="radio" name="header" value="${v.value}" ${themeConfig.header === v.value ? 'checked' : ''}>
@@ -276,6 +424,11 @@ export function settingsPage({ eshopName, eshopId, eshopOrigin, themeConfig, cat
           'Kategorie na úvodní stránce',
           homeCategoriesCard(themeConfig.homeCategories, categoryChoices),
           'Vybrané kategorie se zobrazí pod bannery s názvem, obrázkem a odkazem z administrace e-shopu. Víc než 6 kategorií se posouvá jako carousel. Po přejmenování kategorie nebo změně jejího obrázku nastavení znovu uložte.',
+        )}
+        ${card(
+          'Články ke kategoriím',
+          categoryArticlesCard(categoryArticles, articles, categoryChoices),
+          'Ke kategorii přiřaďte existující články e-shopu. Na stránce kategorie se zobrazí vedle popisu (na telefonu pod ním) v nastaveném pořadí. Název a odkaz článku se berou z e-shopu, skryté, smazané a dosud nezveřejněné články se nezobrazí. Odebrání článek nemaže.',
         )}
         ${card(
           'Produkty na úvodní stránce',

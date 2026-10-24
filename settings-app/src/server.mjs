@@ -5,18 +5,30 @@
 //   GET  /settings?eshopId=…&t=…      stránka nastavení s platnou relací (podepsaný token)
 //   GET  /auth/callback               návrat z plného OAuth ověření admina (otevření mimo administraci)
 //   POST /settings?eshopId=…          uložení nastavení a vložení kódu do e-shopu přes API
+//   GET  /public/<eshopId>/category-articles.json   články ke kategoriím pro šablonu (veřejné)
 
 import { createServer } from 'node:http';
 import { randomBytes } from 'node:crypto';
 import { config } from './config.mjs';
 import { getInstallation, saveInstallation } from './store.mjs';
-import { exchangeInstallCode, setHeaderSnippet, getCategories, adminAuthorizeUrl, verifyAdmin } from './shoptet.mjs';
+import { exchangeInstallCode, setHeaderSnippet, getCategories, getArticles, adminAuthorizeUrl, verifyAdmin } from './shoptet.mjs';
 import { finishInstall } from './install.mjs';
 import { createSessionToken, verifySessionToken } from './session.mjs';
-import { DEFAULT_THEME_CONFIG, themeConfigFromForm, buildHeaderSnippet, categoryChoices } from './theme-config.mjs';
+import { DEFAULT_THEME_CONFIG, themeConfigFromForm, buildHeaderSnippet, categoryChoices, snippetConfig } from './theme-config.mjs';
+import {
+  articleSummaries,
+  articlesErrorMessage,
+  categoryArticlesFromForm,
+  publishedCategoryArticles,
+} from './category-articles.mjs';
 import { settingsPage, messagePage } from './views.mjs';
 
 const STATE_TTL = 10 * 60 * 1000;
+// Zveřejněné články ke kategoriím: prohlížeč drží soubor 5 minut, server data z API obnovuje
+// nejdřív po 10 minutách (na pozadí, návštěvník dostane hned poslední platná data).
+const ARTICLES_MAX_AGE = 300;
+const ARTICLES_REFRESH = 10 * 60 * 1000;
+const refreshing = new Map(); // eshopId → Promise obnovy
 
 // Rozpracovaná plná OAuth ověření (jen pro otevření mimo administraci). Po restartu stačí začít znovu.
 const pendingStates = new Map(); // state → { eshopId, expiresAt }
@@ -68,6 +80,25 @@ async function loadCategories(installation, eshopId) {
   } catch (error) {
     console.error(`kategorie e-shopu ${eshopId}: ${error.message}`);
     return null;
+  }
+}
+
+// Články e-shopu z API. Úspěch obnoví i zveřejněná data (přejmenování, skrytí, smazání článku).
+// Při chybě vrací poslední načtené články a zprávu pro admina, uložené přiřazení se nemění.
+async function loadArticles(installation, eshopId) {
+  try {
+    const articles = articleSummaries(await getArticles(installation));
+    saveInstallation(eshopId, {
+      articlesCache: { items: articles, fetchedAt: new Date().toISOString() },
+      categoryArticlesPublished: {
+        data: publishedCategoryArticles(installation.categoryArticles, articles),
+        builtAt: Date.now(),
+      },
+    });
+    return { articles, error: null };
+  } catch (error) {
+    console.error(`články e-shopu ${eshopId}: ${error.message}`);
+    return { articles: installation.articlesCache?.items || null, error: articlesErrorMessage(error) };
   }
 }
 
@@ -135,13 +166,18 @@ async function handleSettingsGet(req, res, url) {
   }
 
   const flash = url.searchParams.get('saved') === '1' ? { type: 'ok', message: 'Uloženo, e-shop už používá nové nastavení.' } : null;
-  const categories = await loadCategories(installation, eshopId);
+  const [categories, articles] = await Promise.all([
+    loadCategories(installation, eshopId),
+    loadArticles(installation, eshopId),
+  ]);
   send(res, 200, settingsPage({
     eshopName: installation.eshopName,
     eshopId,
     eshopOrigin: new URL(installation.eshopUrl).origin,
     themeConfig: { ...DEFAULT_THEME_CONFIG, ...installation.themeConfig },
     categoryChoices: categories && categoryChoices(categories),
+    categoryArticles: installation.categoryArticles || {},
+    articles,
     token,
     lang,
     flash,
@@ -176,8 +212,11 @@ async function handleSettingsPost(req, res, url) {
 
   const categories = await loadCategories(installation, eshopId);
   const themeConfig = themeConfigFromForm(form, { categories, previous: installation.themeConfig });
+  // Bez načtených článků (chyba API) posílá stránka uložená přiřazení ve skrytých polích.
+  const categoryArticles = categoryArticlesFromForm(form);
+  const categoryArticlesUrl = `${publicUrl(req)}/public/${encodeURIComponent(eshopId)}/category-articles.json`;
   try {
-    await setHeaderSnippet(installation, buildHeaderSnippet(themeConfig));
+    await setHeaderSnippet(installation, buildHeaderSnippet(snippetConfig({ themeConfig, categoryArticles, categoryArticlesUrl })));
   } catch (error) {
     console.error(`uložení e-shopu ${eshopId}: ${error.message}`);
     return send(res, 502, settingsPage({
@@ -186,15 +225,58 @@ async function handleSettingsPost(req, res, url) {
       eshopOrigin: new URL(installation.eshopUrl).origin,
       themeConfig,
       categoryChoices: categories && categoryChoices(categories),
+      categoryArticles,
+      articles: { articles: installation.articlesCache?.items || null, error: null },
       token,
       lang,
       flash: { type: 'err', message: `Nepodařilo se uložit do e-shopu: ${error.message}` },
     }), { installation });
   }
 
-  saveInstallation(eshopId, { themeConfig });
+  const articles = installation.articlesCache?.items;
+  saveInstallation(eshopId, {
+    themeConfig,
+    categoryArticles,
+    categoryArticlesUrl,
+    // Hned zveřejnit z posledních načtených článků, server je pak obnovuje z API (handlePublicArticles).
+    ...(articles ? { categoryArticlesPublished: { data: publishedCategoryArticles(categoryArticles, articles), builtAt: 0 } } : {}),
+  });
   console.log(`uložení: e-shop ${eshopId}, hlavička ${themeConfig.header}, kategorií na úvodní stránce ${themeConfig.homeCategories.items.length}`);
   redirect(res, settingsUrl(eshopId, { t: token, lang, saved: '1' }));
+}
+
+// Obnova zveřejněných článků z API, nejvýš jedna naráz pro e-shop. Chyba API nic nemaže.
+function refreshPublishedArticles(eshopId) {
+  if (refreshing.has(eshopId)) return refreshing.get(eshopId);
+  const job = loadArticles(getInstallation(eshopId), eshopId).finally(() => refreshing.delete(eshopId));
+  refreshing.set(eshopId, job);
+  return job;
+}
+
+// Veřejný soubor pro šablonu: { categories: { <GUID kategorie>: { title, articles: [{ title, url }] } } }.
+// Čte ho prohlížeč návštěvníka z domény e-shopu (CORS), obsahuje jen zveřejněné články.
+async function handlePublicArticles(req, res, url) {
+  const eshopId = url.pathname.split('/')[2];
+  const installation = /^\d+$/.test(eshopId) && getInstallation(eshopId);
+  const headers = { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' };
+  if (!installation) {
+    res.writeHead(404, { ...headers, 'Cache-Control': 'no-store' });
+    return res.end('{"categories":{}}');
+  }
+
+  let published = installation.categoryArticlesPublished;
+  if (!published) {
+    await refreshPublishedArticles(eshopId);
+    published = getInstallation(eshopId).categoryArticlesPublished;
+  } else if (Date.now() - published.builtAt > ARTICLES_REFRESH) {
+    refreshPublishedArticles(eshopId);
+  }
+
+  res.writeHead(200, {
+    ...headers,
+    'Cache-Control': `public, max-age=${ARTICLES_MAX_AGE}, stale-while-revalidate=86400, stale-if-error=86400`,
+  });
+  res.end(JSON.stringify(published?.data || { categories: {} }));
 }
 
 // Kořen adresy: bez ID e-shopu nevíme, čí nastavení otevřít, tak jen poradíme, kudy dál.
@@ -218,7 +300,9 @@ createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
   // Jen názvy parametrů, hodnoty (code, state) jsou citlivé.
   console.log(`${req.method} ${url.pathname} [${[...url.searchParams.keys()].join(',')}]`);
-  const handler = routes[`${req.method} ${url.pathname}`];
+  const handler = /^\/public\/\d+\/category-articles\.json$/.test(url.pathname) && req.method === 'GET'
+    ? handlePublicArticles
+    : routes[`${req.method} ${url.pathname}`];
   if (!handler) return send(res, 404, 'Nenalezeno');
 
   try {

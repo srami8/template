@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { config } from './config.mjs';
 import { styleFiles } from '../../theme/src/js/styles.mjs';
 import { HEADING_SIZES, headingOverrides, headingStyle } from '../../theme/src/js/typography.mjs';
+import { assignmentsVersion, hasAssignments } from './category-articles.mjs';
 
 export const HEADER_VARIANTS = [
   { value: 'v1', label: 'Kategorie v řádku pod hlavičkou' },
@@ -194,6 +195,14 @@ function inlineJson(value) {
 export function assetsVersion(file = 'asteroid.css') {
   if (config.assetsVersion) return config.assetsVersion;
   return createHash('sha256').update(readFileSync(join(config.themeDist, file))).digest('hex').slice(0, 12);
+}
+
+// Konfigurace do kódu e-shopu: nastavení šablony a adresa souboru s články ke kategoriím
+// (jen když nějaká přiřazení jsou). Adresu ukládá server při uložení nastavení.
+export function snippetConfig({ themeConfig, categoryArticles, categoryArticlesUrl } = {}) {
+  const base = themeConfig || DEFAULT_THEME_CONFIG;
+  if (!categoryArticlesUrl || !hasAssignments(categoryArticles)) return base;
+  return { ...base, categoryArticles: `${categoryArticlesUrl}?v=${assignmentsVersion(categoryArticles)}` };
 }
 
 export function buildHeaderSnippet(themeConfig) {
