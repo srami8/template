@@ -1,7 +1,7 @@
 # AGENTS.md – aSteroid
 
 Pokyny pro vývojáře a AI agenty (Claude jako hlavní vývojář, Codex jako nezávislá kontrola).
-Zadání a principy: [docs/zadani.md](docs/zadani.md). Popis architektury: [README.md](README.md), [settings-app/README.md](settings-app/README.md).
+Zadání a principy: [docs/zadani.md](docs/zadani.md). Dokumentace pro vývoj: [docs/vyvoj.md](docs/vyvoj.md), [settings-app/README.md](settings-app/README.md).
 
 ## Projekt v kostce
 
@@ -41,6 +41,7 @@ Předání ke kontrole navíc uvádí: (1) které prvky, třídy a funkce Disca 
 - **Ověřování responzivity:** žádné překryvy loga, vyhledávání, účtu a košíku; hledání zůstává použitelné, dlouhé názvy a ceny se vejdou a otevřené panely umožní dosáhnout celého obsahu. Žádné globální `overflow-x: hidden` k maskování chyb. Testuj mezi breakpointy i při změně šířky už otevřené stránky. Pravidla a příkazy: [docs/responzivita.md](docs/responzivita.md).
 - **Obsah z administrace má přednost** před vlastním nastavením doplňku. Údaje se nezadávají dvakrát.
 - **Bezpečnost settings-app:** relace jako podepsaný token (ne cookie), CSRF řeší token ve formuláři, všechny výstupy přes `escape()`, JSON v `<script>` přes `inlineJson()`, z chyb Shoptetu se odstraňují tokeny.
+- **Dokumentace se píše průběžně.** Změna chování, nastavení nebo konfigurace = aktualizace [docs/vyvoj.md](docs/vyvoj.md) (vývoj) a příručky pro obchodníka (Claude Docs, odkaz v docs/vyvoj.md) ve stejném celku jako kód. Příručka popisuje, co obchodník vidí a kde to nastaví, bez technických detailů.
 - Komentáře česky, stručně: proč, ne co.
 
 ## Příkazy
@@ -60,7 +61,7 @@ Lokální testy responzivity používají izolované HTML a náhradní obsluhu r
 ## Ověření změn
 
 - Testovací e-shop: https://313980.myshoptet.com/ (šablona Disco). Ověřovat na šířce 1920 px a změřit rozměry proti Figmě.
-- Náhled variant bez ukládání: `?asteroid-header=v1|v2|v3`, `?asteroid-banners=default|content|fullwidth|cards`, `?asteroid-columns=4|5|6`. Banner Střed vedle sekce se přiřazuje názvem banneru „Nadpis sekce [L|P|R]“ (`js/section-banners.js`).
+- Náhled variant bez ukládání: `?asteroid-header=v1|v2|v3`, `?asteroid-banners=default|content|fullwidth|cards`, `?asteroid-columns=4|5|6`, `?asteroid-category=default|background|image|image-wide`, `?asteroid-category-tint=1`. Bannery podle značky v názvu („Nadpis sekce [L|P|R]“, „[1]“ …) řeší `js/homepage-banners.js`.
 - Figma: https://www.figma.com/design/jpEXMp36OXxRJqE0ortBfB/aSteroid
 
 ## Tajné údaje

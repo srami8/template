@@ -11,6 +11,7 @@ Stránka nastavení doplňku aSteroid. Node.js 18+, bez závislostí.
 | `GET /settings?eshopId=…&t=…` | Stránka nastavení s platnou relací | Zobrazí formulář nastavení. Bez platného tokenu přesměruje na plné OAuth ověření. |
 | `GET /auth/callback` | Shoptet po plném ověření admina (otevření mimo administraci) | Ověří, že přihlášený účet patří k e-shopu, a přesměruje na stránku s tokenem. |
 | `POST /settings?eshopId=…` | Formulář nastavení | Uloží nastavení a přes API `template-include` (pozice `common-header`) vloží do e-shopu `window.asteroidConfig` a načtení CSS/JS šablony. |
+| `GET /public/<eshopId>/category-articles.json` | Prohlížeč návštěvníka e-shopu (šablona) | Zveřejněné články ke kategoriím, viz [docs/clanky-ke-kategoriim.md](../docs/clanky-ke-kategoriim.md). |
 
 Relace admina je podepsaný token v adrese a ve formuláři, ne cookie: v iframe administrace prohlížeče cookies třetích stran blokují. Stránka používá Shoptet UI (`@shoptet/ui`), iframe-resizer pro výšku rámu a přebírá světlý / tmavý motiv administrace.
 
@@ -37,4 +38,4 @@ Propojení → API partner → Doplňky → doplněk aSteroid:
 - **URL pro získání OAuth kódu (instalace):** `<veřejná adresa>/install`
 - **URL pro autorizaci uživatele:** `<veřejná adresa>/auth/callback`
 - **Odkaz na externí nastavení doplňku (záložka Popis):** `<veřejná adresa>/settings?eshopId=#SHOP_ID#&code=#OAUTH_CODE#&lang=#LANGUAGE#`
-- **Práva:** HTML kódy v šabloně (template-include) zápis, informace o e-shopu čtení, kategorie (skupina Produkty) čtení. Po přidání práva vracelo API ještě několik minut 403, settings-app si pak při 403 vezme nový API token.
+- **Práva:** HTML kódy v šabloně (template-include) zápis, informace o e-shopu čtení, kategorie (skupina Produkty) čtení, články čtení (články ke kategoriím). Po přidání práva vracelo API ještě několik minut 403, settings-app si pak při 403 vezme nový API token.

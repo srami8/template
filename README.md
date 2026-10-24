@@ -16,55 +16,13 @@ Responzivní chování a jeho ověřování: [docs/responzivita.md](docs/responz
 | [`theme/`](theme/) | SCSS a JS šablony, které se vkládají do e-shopu nad HTML šablony Disco. Varianty hlavičky, layouty kategorie, komponenty. |
 | [`settings-app/`](settings-app/) | Stránka nastavení doplňku. Obchodník si v ní vybírá variantu hlavičky, layout kategorie atd. Konfiguraci propisuje do e-shopu přes Shoptet API. |
 
-## Jak to do sebe zapadá
+## Dokumentace
 
-```
-Obchodník v adminu Shoptetu
-  └─ „Přejít na nastavení doplňku“ → settings-app (OAuth ověření e-shopu)
-       └─ uloží volby do vlastní DB
-       └─ přes API /template-include vloží do e-shopu:
-            <script>window.asteroidConfig = { header: "v2", … }</script>
-            + odkaz na CSS/JS z theme/dist
+- **Pro vývoj:** [docs/vyvoj.md](docs/vyvoj.md) – architektura, konfigurace `window.asteroidConfig`, varianty, moduly, chování po AJAXu, testy, nasazení, provoz.
+- **Pro obchodníka:** příručka „aSteroid – příručka pro obchodníka“ (Claude Docs): https://claude.ai/artifact/X9RrPxJnCkjFkufZZ6FMjz
+- Pravidla práce: [AGENTS.md](AGENTS.md), deník změn: [HANDOFF.md](HANDOFF.md).
 
-E-shop (HTML Disco)
-  └─ theme JS přečte window.asteroidConfig → nastaví třídy na <body>
-  └─ theme CSS podle tříd zobrazí zvolenou variantu
-```
-
-## Konfigurace šablony
-
-Settings-app vkládá do e-shopu `window.asteroidConfig`. Všechny klíče jsou volitelné:
-
-```js
-window.asteroidConfig = {
-  header: 'v1',                 // varianta hlavičky: 'v1' | 'v2' | 'v3'
-  banners: 'default',           // bannery na úvodu: 'default' | 'content' | 'fullwidth' | 'cards'
-  categoryLayout: 'default',    // layout kategorie
-  phone: {                      // otevírací doba za telefonem v horní liště;
-    hours: 'po–pá: 9:00–17:00', // číslo se bere z kontaktních údajů v nastavení e-shopu
-  },
-  quickLinks: [                 // řádek rychlých odkazů pod hlavičkou
-    { label: 'Novinky', url: '/novinky/', icon: 'local-fire-department' },
-  ],
-  navLinks: [                   // v2: odkazy vedle „Katalogu produktů“
-    { label: 'Kontakt', url: '/kontakty/' },
-  ],
-  productCard: 'default',       // vzhled karet produktů (zatím jen 'default', třída .as-product-card-*)
-  productColumns: 6,            // produkty vedle sebe v sekcích úvodní stránky: 4 | 5 | 6 (bez hodnoty podle Shoptetu)
-  homeCategories: {             // kategorie na úvodní stránce (víc než 6 = carousel);
-    title: 'Tohle u nás zrovna frčí', // název, odkaz a obrázek převezme settings-app z API při uložení
-    items: [
-      { guid: '…', name: 'Šperky', url: '/sperky/', image: '/user/categories/thumb/sperky.jpg' },
-    ],
-  },
-};
-```
-
-Ikony (`icon`) odpovídají souborům v [`theme/src/icons`](theme/src/icons/).
-
-Náhled jiné varianty bez změny nastavení: přidejte k adrese e-shopu `?asteroid-header=v2`, `?asteroid-banners=cards` nebo `?asteroid-columns=6`.
-
-Bannery na úvodní stránce podle názvu (`js/homepage-banners.js`): doplňkové bannery s pozicí Zápatí (Shoptet jich pošle libovolný počet, Střed nejvýš dva) umístí konec interního názvu. `[1]`, `[2]` … = mozaika pod prvním pásem produktů, `[L]` / `[P]` / `[R]` = vedle produktové sekce se stejným nadpisem, bez značky = zůstane v zápatí. Přihlášený admin vidí na e-shopu štítek, kam banner patří.
+V kostce: obchodník v administraci Shoptetu otevře nastavení doplňku (settings-app), to přes API `template-include` vloží do e-shopu `window.asteroidConfig`, odkazy na CSS/JS z `theme/dist` a proměnné CSS. Skript šablony podle konfigurace nastaví třídy variant na `<html>` a CSS zobrazí zvolený vzhled nad HTML šablony Disco.
 
 ## Vývoj
 
