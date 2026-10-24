@@ -28,7 +28,9 @@ const STATE_TTL = 10 * 60 * 1000;
 // nejdřív po 10 minutách (na pozadí, návštěvník dostane hned poslední platná data).
 const ARTICLES_MAX_AGE = 300;
 const ARTICLES_REFRESH = 10 * 60 * 1000;
+const ARTICLES_RETRY = 60 * 1000;
 const refreshing = new Map(); // eshopId → Promise obnovy
+const lastRefresh = new Map(); // eshopId → čas posledního pokusu (při výpadku API nezkoušet každý požadavek)
 
 // Rozpracovaná plná OAuth ověření (jen pro otevření mimo administraci). Po restartu stačí začít znovu.
 const pendingStates = new Map(); // state → { eshopId, expiresAt }
@@ -214,7 +216,11 @@ async function handleSettingsPost(req, res, url) {
   const themeConfig = themeConfigFromForm(form, { categories, previous: installation.themeConfig });
   // Bez načtených článků (chyba API) posílá stránka uložená přiřazení ve skrytých polích.
   const categoryArticles = categoryArticlesFromForm(form);
-  const categoryArticlesUrl = `${publicUrl(req)}/public/${encodeURIComponent(eshopId)}/category-articles.json`;
+  // E-shop běží na HTTPS, soubor z jiné adresy (např. uložení přes localhost) by prohlížeč nenačetl.
+  // Pak necháme dříve uloženou adresu.
+  const ownUrl = `${publicUrl(req)}/public/${encodeURIComponent(eshopId)}/category-articles.json`;
+  const categoryArticlesUrl = ownUrl.startsWith('https://') ? ownUrl : installation.categoryArticlesUrl || null;
+  if (categoryArticlesUrl !== ownUrl) console.warn(`uložení: e-shop ${eshopId}, adresa ${ownUrl} není HTTPS, články zůstávají na ${categoryArticlesUrl}`);
   try {
     await setHeaderSnippet(installation, buildHeaderSnippet(snippetConfig({ themeConfig, categoryArticles, categoryArticlesUrl })));
   } catch (error) {
@@ -248,6 +254,7 @@ async function handleSettingsPost(req, res, url) {
 // Obnova zveřejněných článků z API, nejvýš jedna naráz pro e-shop. Chyba API nic nemaže.
 function refreshPublishedArticles(eshopId) {
   if (refreshing.has(eshopId)) return refreshing.get(eshopId);
+  lastRefresh.set(eshopId, Date.now());
   const job = loadArticles(getInstallation(eshopId), eshopId).finally(() => refreshing.delete(eshopId));
   refreshing.set(eshopId, job);
   return job;
@@ -268,7 +275,7 @@ async function handlePublicArticles(req, res, url) {
   if (!published) {
     await refreshPublishedArticles(eshopId);
     published = getInstallation(eshopId).categoryArticlesPublished;
-  } else if (Date.now() - published.builtAt > ARTICLES_REFRESH) {
+  } else if (Date.now() - published.builtAt > ARTICLES_REFRESH && Date.now() - (lastRefresh.get(eshopId) || 0) > ARTICLES_RETRY) {
     refreshPublishedArticles(eshopId);
   }
 

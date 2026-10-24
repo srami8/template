@@ -69,6 +69,8 @@ function layout(title, body, { eshopOrigin } = {}) {
   .as-intro h1 { margin: 0 0 4px; font-size: 20px; }
   .as-intro p { margin: 0; opacity: 0.75; }
   .as-page .card { margin-bottom: 16px; }
+  /* Shoptet UI nápovědu nezalamuje (nowrap), delší text by utekl z karty. */
+  .as-page .v2FormField__hint { display: block; white-space: normal; }
   .as-variant { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; cursor: pointer; }
   .as-headings { display: grid; gap: 8px; max-width: 420px; }
   .as-heading-field { display: grid; grid-template-columns: minmax(0, 1fr) 96px auto; align-items: center; gap: 12px; }

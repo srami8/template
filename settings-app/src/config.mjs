@@ -34,7 +34,8 @@ export const config = {
   clientSecret: env.SHOPTET_CLIENT_SECRET,
   installTokenUrl: `${partnerEshop}/action/ApiOAuthServer/token`,
   apiAccessTokenUrl: `${partnerEshop}/action/ApiOAuthServer/getAccessToken`,
-  apiBase: 'https://api.myshoptet.com',
+  // Jiná adresa jen pro zkoušku výpadku API (docs/clanky-ke-kategoriim.md).
+  apiBase: env.SHOPTET_API_BASE || 'https://api.myshoptet.com',
 
   // Kde na e-shopu leží sestavené theme (npm run deploy).
   assetsBase: env.ASSETS_BASE || '/user/documents/asteroid/',
