@@ -13,6 +13,7 @@ import { enhanceProductCards } from './product-cards';
 import { setHomepageProductColumns } from './homepage-products';
 import { placeHomepageBanners } from './homepage-banners';
 import { enhanceCategory } from './category';
+import { loadCategoryArticles, renderCategoryArticles } from './category-articles';
 import { trackViewportWidth } from './viewport';
 import { styleFiles } from './styles.mjs';
 
@@ -95,6 +96,9 @@ function start() {
     document.documentElement.classList.add('as-has-quicklinks');
   }
 
+  // Články ke kategorii stahujeme hned, ať jsou na DOMContentLoaded nejspíš k dispozici.
+  const categoryArticles = loadCategoryArticles(config);
+
   const init = () => {
     // Před spuštěním slideru Shoptetu (ten běží na DOMContentLoaded po nás). Bannery k sekcím
     // nejdřív, sekce vedle banneru má méně produktů.
@@ -110,6 +114,7 @@ function start() {
     enhanceCart();
     enhanceProductCards();
     enhanceCategory();
+    renderCategoryArticles(categoryArticles);
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

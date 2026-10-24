@@ -71,6 +71,8 @@ $section-gap: 40px;
     @media (min-width: bp.$large) {
       &:has(> .as-category-articles) {
         grid-template-columns: minmax(0, $text-width) minmax(0, 1fr);
+        // Výšku navíc z bloku článků (přes dva řádky) bere řádek popisu, ne nadpis.
+        grid-template-rows: auto 1fr;
 
         > .category-title,
         > .category-perex {
@@ -84,6 +86,61 @@ $section-gap: 40px;
           margin: 0;
           padding: 9px 0 40px 64px;
           border-left: 1px solid var(--as-secondary-75);
+        }
+      }
+    }
+  }
+
+  // Blok článků (Figma „Články“): nadpis H4, odkazy s ikonou článku. Pod popisem, od 992 px vedle něj.
+  > .as-category-articles {
+    margin: 32px 0 0;
+  }
+
+  .as-category-articles__title {
+    margin: 0 0 24px;
+    font-size: var(--as-font-size-h4);
+  }
+
+  .as-category-articles__list {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      margin: 0;
+      padding: 0;
+
+      &::before {
+        content: none;
+      }
+    }
+
+    a {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      color: var(--as-secondary-500);
+      font-size: var(--as-font-size-body);
+      line-height: 1.2;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+
+      // Ikona 24 px, první řádek textu (19 px) je vůči ní na střed.
+      &::before {
+        @include icon(text-snippet, 24px);
+        margin-top: -2.5px;
+        color: var(--as-primary-500);
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: var(--as-primary-600);
+        text-decoration: underline;
+
+        &::before {
+          color: var(--as-primary-600);
         }
       }
     }
