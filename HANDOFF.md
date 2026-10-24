@@ -1,3 +1,22 @@
+# Aktualizace (Claude): články ke kategoriím ověřené na e-shopu
+
+**Postup:** majitel založil 3 testovací články. Přiřadil jsem je přes formulář nastavení (přes tunel, jako z administrace): Šperky 3 články, Náramky 1 (stejný článek u dvou kategorií).
+
+**Nálezy a opravy**
+1. **Adresa souboru přes `http://localhost`:** uložení mimo tunel zapsalo do e-shopu adresu, kterou HTTPS stránka nenačte. Server teď ukládá jen adresu s HTTPS, jinak ponechá předchozí.
+2. **Vypršelý tunel:** dočasný tunel přestal fungovat („Tunnel not found“). Spuštěn nový: `https://addressed-dust-tulsa-returns.trycloudflare.com`.
+3. **Výpadek API:** při výpadku se server pokoušel o obnovu při každém požadavku. Teď nejvýš jednou za minutu. Pro zkoušku je nově `SHOPTET_API_BASE`.
+4. **Řazení, filtry a stránkování (AJAX):** Shoptet vymění celou `.category-top`, takže zmizel blok článků i pás Nejprodávanějších. Obojí se teď vytvoří znovu na `ShoptetDOMPageContentLoaded`. Přidaný test.
+5. **Nápověda v nastavení:** Shoptet UI ji nezalamuje (`nowrap`) a utíkala z karet. Opraveno globálně pro všechny karty.
+
+**Ověření**
+- Testy: 105 Playwright a 8 testů datové logiky prošlo.
+- E-shop na 1920 a 390 px: 0, 1 i 3 články, pořadí, nadpis, více kategorií, výpadek API, řazení. Podrobně v `docs/clanky-ke-kategoriim.md`.
+
+**Zbývá naživo:** přejmenování, skrytí, smazání a budoucí zveřejnění článku (vyžaduje úpravu článků v administraci).
+
+---
+
 # Aktualizace (Claude): články ke kategoriím (issue #1)
 
 **Zadání:** issue #1, část „články“ (přiřazení existujících článků ke kategoriím v nastavení, zveřejnění, blok v kategorii podle Figmy „Články“ 112:5596).

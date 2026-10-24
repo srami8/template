@@ -15,19 +15,21 @@ Admin v nastavení šablony přiřadí ke kategorii existující články e-shop
    - obsah: `{ "categories": { "<GUID>": { "title": "…", "articles": [{ "title": "…", "url": "/cesta/" }] } } }`;
    - jen články viditelné na webu (`visible`) s datem zveřejnění, které už nastalo; skryté, smazané a budoucí se vynechají, kategorie bez platného článku v souboru není;
    - odpověď: `Cache-Control: public, max-age=300, stale-while-revalidate=86400, stale-if-error=86400`, `Access-Control-Allow-Origin: *`;
-   - server data z API obnovuje nejdřív po 10 minutách, na pozadí (návštěvník dostane hned poslední platná data); obnoví je i každé otevření nastavení;
+   - server data z API obnovuje nejdřív po 10 minutách, na pozadí (návštěvník dostane hned poslední platná data); obnoví je i každé otevření nastavení; po neúspěšném pokusu zkouší znovu nejdřív za minutu;
    - **chyba API nic nemaže**: zůstanou poslední zveřejněná data i uložená přiřazení.
 4. **Kód v e-shopu**: do `window.asteroidConfig.categoryArticles` jde jen adresa souboru s verzí `?v=<otisk přiřazení>` (jen když nějaké přiřazení existuje). Po uložení nastavení se tak soubor nevezme z mezipaměti prohlížeče. Samotná data v kódu hlavičky nejsou (limit 8192 znaků).
 5. **Šablona** (`theme/src/js/category-articles.js`, styly `components/_category.scss`)
    - kategorii pozná podle `dataLayer[…].shoptet.category.guid` (ne podle názvu ani adresy);
    - soubor stahuje už při čtení hlavičky (dataLayer je před kódem šablony), blok vloží na DOMContentLoaded za `.category-perex` (bez popisu za nadpis);
    - bez platných článků (prázdný soubor, chyba, cizí nebo prázdný odkaz) se blok ani sloupec nevykreslí; blok se nevloží dvakrát;
+   - po řazení, filtrování a stránkování (AJAX Shoptetu vymění celou `.category-top`) se blok vloží znovu na `ShoptetDOMPageContentLoaded`, stejně jako pás Nejprodávanějších (`js/category.js`);
    - dlouhé názvy se zalamují, odkazy jsou v `nav` s nadpisem (`aria-labelledby`), ikona `text-snippet`.
 
 ## Provozní požadavky
 
 - **Oprávnění doplňku**: čtení článků (`/api/articles`). Bez něj karta v nastavení ukáže hlášku a přiřazení zůstanou beze změny. Přidání oprávnění do doplňku vyžaduje nové schválení u e-shopů.
-- **Stálá veřejná adresa settings-app** (`PUBLIC_URL`, HTTPS). Adresa souboru se ukládá při uložení nastavení a zapisuje do kódu e-shopu. Dočasný tunel (trycloudflare) se po restartu mění, pak je potřeba nastavení znovu uložit.
+- **Stálá veřejná adresa settings-app** (`PUBLIC_URL`, HTTPS). Adresa souboru se ukládá při uložení nastavení a zapisuje do kódu e-shopu (i při `npm run deploy`). Ukládá se jen adresa s HTTPS; uložení přes `http://localhost` ponechá předchozí. Dočasný tunel (trycloudflare) po čase vyprší a po restartu má jinou adresu, pak je potřeba nastavení znovu uložit.
+- **Zkouška výpadku API**: druhý server s nefunkční adresou API, např. `PORT=8790 SHOPTET_API_BASE=https://api.invalid.test node settings-app/src/server.mjs`.
 - **Dostupnost**: když server neběží, blok se nezobrazí (stránka jinak funguje). Prohlížeče drží poslední soubor až 24 h (`stale-if-error`).
 - **Zátěž**: jeden požadavek na soubor z každého prohlížeče za 5 minut. API Shoptetu se volá nejvýš jednou za 10 minut na e-shop; seznam článků se stahuje po 10 na stránku, nejvýš 2000 článků.
 - **Úložiště**: zatím JSON soubor (`settings-app/data`, mimo git). Pro ostrý provoz databáze.
@@ -48,4 +50,11 @@ Admin v nastavení šablony přiřadí ke kategorii existující články e-shop
 
 - `npm test -w settings-app`: přiřazení z formuláře (pořadí, duplicity, neplatné GUID / ID, limit), stavy článku (zveřejněný, skrytý, budoucí, smazaný), zveřejněná data (pořadí, cesty bez domény, výchozí nadpis, jeden článek u více kategorií, přejmenování), verze a hlášky chyb.
 - `tests/responsive/category.spec.cjs`: blok vedle popisu (desktop) a pod ním před podkategoriemi (telefon), pořadí, ikona, zalomení dlouhého názvu, žádný blok ani sloupec bez platných článků nebo při chybě souboru.
-- Na skutečném e-shopu zatím ověřit nejde: e-shop nemá žádný článek. Potřeba založit 4–5 testovacích článků (jeden skrytý, jeden s budoucím datem) a projít scénáře 0 / 1 / 4 články, dlouhý název, pořadí, více kategorií, přejmenování, skrytí, smazání, budoucí zveřejnění, výpadek API, desktop i mobil a funkční filtry.
+- Na e-shopu 313980 (3 testovací články, 24. 10. 2026), desktop 1920 i telefon 390:
+  - 0 článků (Dárky): bez bloku i sloupce; 1 článek (Náramky, bez popisu: blok za nadpisem); 3 články (Šperky);
+  - pořadí a vlastní nadpis po uložení hned; jeden článek u dvou kategorií; dlouhý název se zalamuje;
+  - blok za popisem a před podkategoriemi; posun obsahu (CLS) stejný jako u kategorie bez bloku;
+  - výpadek API: soubor dál vrací poslední data, přiřazení zůstala, nastavení ukáže hlášku a přiřazení drží ve skrytých polích, jen jeden pokus o API za minutu;
+  - řazení (AJAX): blok i Nejprodávanější se vrátí. Kategorie nemá parametrické filtry, filtrování proto vyzkoušené jen testem na stejné události.
+- Zatím neověřeno naživo (logiku hlídají testy): přejmenování, skrytí, smazání a budoucí zveřejnění článku. Stačí v administraci článek upravit a do 15 minut zkontrolovat kategorii.
+- Ikony mají primární barvu z administrace e-shopu (na testovacím e-shopu `#141615`, proto tmavé, ve Figmě modré).
