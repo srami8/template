@@ -59,5 +59,10 @@ function render(entry) {
 }
 
 export function renderCategoryArticles(pending) {
-  if (pending) pending.then(render);
+  if (!pending) return;
+  pending.then((entry) => {
+    render(entry);
+    // Po řazení, filtrování a stránkování (AJAX) Shoptet vymění .category-top i s blokem.
+    document.addEventListener('ShoptetDOMPageContentLoaded', () => render(entry));
+  });
 }

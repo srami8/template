@@ -39,7 +39,8 @@ const page = (bestsellers = 5, {articles = false} = {}) => `<!doctype html><html
     <div class="products-top-wrapper"><h2 class="products-top-header" id="productsTopHeading">Nejprodávanější</h2>
       <div id="productsTop" class="products products-inline products-top">${Array.from({length: bestsellers}, (_, i) => bestseller(i + 1)).join('')}</div>
       <div class="button-wrapper"><button class="btn">Zobrazit více</button></div></div>
-  </div></main>${articles ? config : ''}<script>${js}</script></body></html>`;
+  </div></main><script>window.__originalTop = document.querySelector('.category-top').outerHTML;</script>
+  ${articles ? config : ''}<script>${js}</script></body></html>`;
 
 const articleData = (articles, title = '') => ({categories: {[GUID]: {title, articles}}});
 const serve = (p, data) => p.route(ARTICLES_URL, (route) => route.fulfill({
@@ -196,4 +197,23 @@ test('no block when the file fails or has no entry for the category', async ({pa
   await p.setContent(page(5, {articles: true}));
   await p.waitForLoadState('networkidle');
   await expect(p.locator('.as-category-articles')).toHaveCount(0);
+});
+
+// Shoptet po řazení / filtrování / stránkování (AJAX) vymění .category-top a vyvolá ShoptetDOMPageContentLoaded.
+test('bestsellers and articles come back after Shoptet replaces the category content', async ({page: p}) => {
+  await serve(p, articleData(four));
+  await p.setViewportSize({width: 1440, height: 900});
+  await p.setContent(page(5, {articles: true}));
+  await expect(p.locator('.as-category-articles')).toHaveCount(1);
+  await p.evaluate(() => {
+    const top = document.querySelector('.category-top');
+    const fresh = document.createElement('div');
+    fresh.innerHTML = window.__originalTop;
+    top.replaceWith(fresh.firstElementChild);
+    document.dispatchEvent(new Event('ShoptetDOMPageContentLoaded'));
+  });
+  await expect(p.locator('.as-category-articles')).toHaveCount(1);
+  await expect(p.locator('.as-bestsellers > #productsTop')).toHaveCount(1);
+  expect(await p.locator('.as-detail-button').count()).toBe(5);
+  await expect(p.locator('.products-top-wrapper > .button-wrapper')).toBeHidden();
 });

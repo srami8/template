@@ -71,4 +71,7 @@ function enhanceBestsellers() {
 export function enhanceCategory() {
   if (!document.body.classList.contains('type-category')) return;
   enhanceBestsellers();
+  // Řazení, filtry a stránkování Shoptet načítá přes AJAX a .category-top vymění celou. Událost
+  // přijde hned po výměně (před vykreslením), pás se tak vytvoří znovu bez probliknutí.
+  document.addEventListener('ShoptetDOMPageContentLoaded', enhanceBestsellers);
 }
