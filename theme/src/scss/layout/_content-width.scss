@@ -1,0 +1,25 @@
+// Šířka obsahu stránek. Disco na textových stránkách, výpisu a detailu článku, přihlášení a registraci
+// přidává obalu obsahu (#content-wrapper) .container-narrow: od 1440 px 1178 px místo 1418 px. Obsah
+// má být všude stejně široký jako na úvodní stránce (lícuje s hlavičkou a patičkou).
+// Dlouhý běžný text (odstavce, seznamy) zůstává kvůli čitelnosti široký nejvýš 820 px (jako popis
+// kategorie), nadpisy, obrázky, tabulky a výpisy jdou přes celou šířku obsahu.
+
+@use "../tools/breakpoints" as bp;
+
+$text-width: 820px;
+
+.as-theme #content-wrapper.container-narrow {
+  @each $breakpoint, $width in bp.$container-widths {
+    @media (min-width: $breakpoint) {
+      width: $width;
+    }
+  }
+}
+
+// Detail článku (.news-item-detail .text) a textová stránka z administrace (.pageArticleDetail).
+// Odstavec s obrázkem, videem nebo tabulkou šířku neomezuje.
+.as-theme :is(.news-item-detail .text, .pageArticleDetail [itemprop="about"]) {
+  > :is(p, ul, ol, blockquote, dl):not(:has(img, iframe, video, table)) {
+    max-width: $text-width;
+  }
+}

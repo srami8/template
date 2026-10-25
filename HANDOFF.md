@@ -1,3 +1,20 @@
+# Aktualizace (Claude): stejná šířka obsahu na všech stránkách
+
+**Zadání majitele:** všechny stránky mají mít stejnou šířku obsahu jako úvodní stránka. Schválil návrh s omezením šířky běžného textu.
+
+**Příčina:** Disco přidává obalu obsahu (`#content-wrapper`) na textových stránkách, ve výpisu a detailu článku, na přihlášení a registraci `.container-narrow`. Od 1440 px tím obsah zúží z 1418 na 1178 px. Pod 1440 px jsou obě třídy stejné.
+
+**Řešení** (`layout/_content-width.scss`):
+- `#content-wrapper.container-narrow` má šířky `.container` Disca (747 / 972 / 1178 / 1418 px);
+- čitelnost: odstavce, seznamy, citace v detailu článku (`.news-item-detail .text`) a na textových stránkách (`.pageArticleDetail [itemprop="about"]`) max. 820 px; odstavec s obrázkem, videem nebo tabulkou přes celou šířku. Nadpisy a výpisy přes celou šířku.
+
+**Ověření**
+- Testy: nový `content-width.spec.cjs` (1920, 1440: šířka jako úvodní stránka, text 820 px, odstavec s obrázkem plný; 1200 a 390 beze změny).
+- Snímky: nové oblasti `#content` pro výpis článků, detail článku, obchodní podmínky a registraci.
+- Dokumentace: docs/vyvoj.md, komponenty.md (příručky pro obchodníka se netýká, nemá žádné nastavení).
+
+---
+
 # Aktualizace (Claude): karta článku – datum na úvodní stránce, „Číst článek“
 
 **Zadání majitele:** aktualizovaný návrh „Article“ (1627:5345) přidává „Číst článek“ se šipkou; na e-shopu chybí datum zveřejnění.
