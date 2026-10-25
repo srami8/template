@@ -36,7 +36,7 @@ Dne 25. 10. 2026 byly v prohlížeči porovnány šířky 1920 a 390 px na homep
 
 Automatické kontroly: build včetně hashů, testy settings-app (pořadí stylů, opt-in režim, starší formulář/snippet, závislosti fontů, simulace Blank) a testy registrace variant. Spuštění lokálního Chromia pro kompletní audit/snímky blokuje sandbox (MachPortRendezvous / permission denied); místo toho proběhlo skutečné měření v in-app prohlížeči.
 
-**Zbývající před aktivací:** ověřit skutečný plný košík, AJAX košík, dopravu/platbu a objednávkový formulář po vypnutí CSS v testovacím e-shopu. Nebyla odeslána objednávka, přihlašovací ani registrační data. Vypnutí CSS v administraci nebylo provedeno. Nové nastavení se objeví až po restartu settings-app.
+**Zbývající při aktivaci na testovacím e-shopu:** ověřit skutečný plný košík, AJAX košík, dopravu/platbu a objednávkový formulář po vypnutí CSS. Zkontrolovat také zachování písma a barevných proměnných z administrace; lokální simulace je zachovává, skutečný serverový přepínač zatím ověřen nebyl. Nebyla odeslána objednávka, přihlašovací ani registrační data. Vypnutí CSS v administraci nebylo provedeno. Nové nastavení se objeví až po restartu settings-app.
 
 ## Další čištění
 

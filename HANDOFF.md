@@ -10,7 +10,7 @@ Majitel schválil kompatibilní verzovaný základ z Disca s následným čišt�
 
 Ověření: build a kontrola integrity vendor souborů, 22 testů settings-app a 2 testy stylů prošly. Lokální veřejný náhled nad skutečným Shoptetem (`npm run preview:blank`) porovnal 11 typů stránek při 1920 a 390 px s/bez nativního CSS, bez horizontálního přetékání. Ověřeno otevření mobilního menu se 4 rychlými odkazy a nativní změna množství 1 → 2 → 1. Snímky a měření jsou v pracovních výstupech Codexu (`outputs/blank-*`). Sandbox blokuje start Chromia pro plný audit/snímky; kontrola proto proběhla v in-app prohlížeči. Plný košík, AJAX košík a kroky objednávky po skutečné aktivaci zbývají; lokální proxy nepovoluje POST. Žádná objednávka nebyla odeslána.
 
-Nasazení: viz stav dokončení v navazující zprávě; server settings-app potřebuje restart, aby zobrazil nový přepínač. Globální CSS Disca při přípravě nevypínáme.
+Nasazení: implementace `53db7b5` je na GitHubu. Původní checkout `/Users/apple/aSteroid` aktualizovaný; build nahrán přes SFTP. Hlavička aktualizována pouze u testovací instalace 313980, režim zůstává `disco`. HTTP kontrola CSS, JS i obou fontů vrátila 200 a shodné SHA256. Server settings-app potřebuje restart, aby zobrazil nový přepínač (v původním terminálu Ctrl+C, potom `npm run settings`). Globální CSS Disca nebylo vypnuto.
 
 ---
 
