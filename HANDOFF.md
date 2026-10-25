@@ -2,7 +2,7 @@
 
 Základ `d57aee3`, větev feature/responsive. Majitel upozornil na mezeru pod mobilními záložkami. Příčinou byl padding-bottom:16px na #category-header. Mobilní padding změněn na 0, společná čára nyní lícuje s podtržením aktivní záložky. Žádný nový DOM/JS, nativní řazení a desktopové styly zachované.
 
-Ověření: build a 2 testy registrace stylů prošly; audit opět blokuje start Chromia (MachPortRendezvous), nikoli aserce. In-app prohlížeč nad skutečným Shoptetem bez nativního CSS: 320/390/767/1920 px, rozdíl spodní hrany aktivní záložky a lišty 0 px, bez přetékání. Kontrola při 768 px zachovává dosavadní víceřádkové desktopové řazení. Nasazení a živé ověření následují.
+Ověření: build a 2 testy registrace stylů prošly; audit opět blokuje start Chromia (MachPortRendezvous), nikoli aserce. In-app prohlížeč nad skutečným Shoptetem bez nativního CSS: 320/390/767/1920 px, rozdíl spodní hrany aktivní záložky a lišty 0 px, bez přetékání. Kontrola při 768 px zachovává dosavadní víceřádkové desktopové řazení. Nasazeno jako `1d11ff6` na GitHub a SFTP, snippet pouze instalace 313980, nastavení Blank beze změny. HTTP 200 + shodné SHA256 CSS. Živý e-shop při 390 px: padding 0 px, rozdíl hran 0 px, nulové přetékání. Nativní AJAX přepnutí na Nejlevnější zachovává návaznost čáry (0 px). Snímek outputs/mobile-sorting-line-live.png.
 
 ---
 
