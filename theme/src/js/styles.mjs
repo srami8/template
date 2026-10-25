@@ -4,6 +4,7 @@
 // nemá vlastní soubor (vzhled je v základu), e-shop pro ni nic dalšího nenačítá.
 
 export const VARIANT_STYLES = {
+  styleMode: { prefix: 'base', values: ['blank'], base: ['disco'], beforeBase: true },
   header: { prefix: 'header', values: ['v1', 'v2'] },
   banners: { prefix: 'banners', values: ['default', 'content', 'fullwidth', 'cards'] },
   productCard: { prefix: 'product-card', values: ['default'] },
@@ -13,14 +14,15 @@ export const VARIANT_STYLES = {
 export const BASE_STYLE = 'asteroid';
 
 // Varianta bez nastavení (nebo s neznámou hodnotou): stejné výchozí jako v js/main.js.
-const DEFAULTS = { header: 'v1', banners: 'default', productCard: 'default', categoryLayout: 'default' };
+const DEFAULTS = { styleMode: 'disco', header: 'v1', banners: 'default', productCard: 'default', categoryLayout: 'default' };
 
-// Názvy souborů (bez .css) pro nastavení šablony, základ první.
+// Názvy souborů (bez .css): kompatibilní podklad, základ aSteroid, varianty.
 export function styleFiles(config = {}) {
+  const before = [];
   const files = [BASE_STYLE];
-  Object.entries(VARIANT_STYLES).forEach(([key, { prefix, values }]) => {
+  Object.entries(VARIANT_STYLES).forEach(([key, { prefix, values, beforeBase }]) => {
     const value = values.includes(config[key]) ? config[key] : DEFAULTS[key];
-    if (values.includes(value)) files.push(`${prefix}-${value}`);
+    if (values.includes(value)) (beforeBase ? before : files).push(`${prefix}-${value}`);
   });
-  return files;
+  return [...before, ...files];
 }

@@ -4,6 +4,7 @@
 
 import {
   HEADER_VARIANTS,
+  STYLE_MODES,
   BANNER_LAYOUTS,
   QUICK_LINK_ICONS,
   MAX_QUICK_LINKS,
@@ -370,6 +371,10 @@ export function settingsPage({
   eshopName, eshopId, eshopOrigin, themeConfig, categoryChoices, categoryArticles = {}, articles = { articles: [], error: null },
   token, lang, flash,
 }) {
+  const styleModes = STYLE_MODES.map((mode) => `<label class="as-variant">
+    <input class="radioField" type="radio" name="styleMode" value="${mode.value}" ${(themeConfig.styleMode || 'disco') === mode.value ? 'checked' : ''}>
+    <span><strong>${escape(mode.label)}</strong><span class="as-hint">${escape(mode.hint)}</span></span>
+  </label>`).join('');
   const variants = HEADER_VARIANTS.map(
     (v) => `<label class="as-variant" title="${escape(v.label)}">
       <input class="radioField" type="radio" name="header" value="${v.value}" ${themeConfig.header === v.value ? 'checked' : ''}>
@@ -487,6 +492,7 @@ export function settingsPage({
         <input type="hidden" name="t" value="${escape(token)}">
         <input type="hidden" name="lang" value="${escape(lang)}">
         ${card('Vzhled hlavičky', variants, `E-shop ${eshopName} (ID ${eshopId})`)}
+        ${card('Základ stylů', styleModes, 'Blank mode mění pouze zdroj základních stylů. Pro návrat nejprve zapněte CSS Shoptetu a potom zde zvolte výchozí styly Disca.')}
         ${card(
           'Bannery na úvodní stránce',
           bannerLayouts,

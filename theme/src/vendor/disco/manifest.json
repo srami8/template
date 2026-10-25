@@ -1,0 +1,29 @@
+{
+  "template": "Disco",
+  "templateId": 13,
+  "capturedOn": "2026-10-25",
+  "sources": [
+    {
+      "file": "main.css",
+      "url": "https://cdn.myshoptet.com/prj/dist/master/shop/dist/main-13.less.c8a6415be4516e0585b7.css",
+      "upstreamSha256": "5bb860205d3d0ed76ef84f2e4e6b264f910bfade2b562fc354f53b03ed2dee6a",
+      "sha256": "5bb860205d3d0ed76ef84f2e4e6b264f910bfade2b562fc354f53b03ed2dee6a"
+    },
+    {
+      "file": "shoptet.fedd00f6a218209e2440.woff2",
+      "url": "https://cdn.myshoptet.com/prj/dist/master/shop/dist/assets/shoptet.fedd00f6a218209e2440.woff2",
+      "sha256": "2c839c0fd08049bf786f11d35711ce6038738d0acfb3ccc5297256de2e93a298"
+    },
+    {
+      "file": "shoptet.41f4b9dfe85c4cf2ecb3.woff",
+      "url": "https://cdn.myshoptet.com/prj/dist/master/shop/dist/assets/shoptet.41f4b9dfe85c4cf2ecb3.woff",
+      "sha256": "ef76b369e4ce5e9d694b2ee3922177ad1b9996b67368532f2eccab80a5d016bb"
+    },
+    {
+      "file": "font-shoptet.css",
+      "url": "https://cdn.myshoptet.com/prj/dist/master/shop/dist/font-shoptet-13.css.3c47e30adfa2e9e2683b.css",
+      "upstreamSha256": "6d6309f1810b0872ba883c743eb9721c85f855298ab32ea8bd616067b985f759",
+      "sha256": "817983032b8dc34aa880161d9485902cad95dfd366a14a161c398889fcde15b9"
+    }
+  ]
+}

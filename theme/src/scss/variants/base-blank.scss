@@ -1,0 +1,4 @@
+// Kompatibilní základ pro Blank mode (jen vypnuté CSS, původní JS zůstává).
+// Načíst před asteroid.css. Zdroj a aktualizace: src/vendor/disco/README.md.
+@use "../../vendor/disco/font-shoptet.css";
+@use "../../vendor/disco/main.css";

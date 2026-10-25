@@ -3,14 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "npm run build:icons && npm run build:css && npm run build:js",
+    "build": "npm run build:icons && npm run build:blank-assets && npm run build:css && npm run build:js",
     "build:icons": "node scripts/build-icons.mjs",
     "build:css": "sass src/scss/main.scss:dist/asteroid.css src/scss/variants:dist --style=compressed --no-source-map",
     "build:js": "esbuild src/js/main.js --bundle --minify --target=es2018 --outfile=dist/asteroid.js",
     "deploy": "npm run build && node scripts/deploy.mjs",
-    "dev": "npm run build:icons && (npm run dev:css & npm run dev:js)",
+    "dev": "npm run build:icons && npm run build:blank-assets && (npm run dev:css & npm run dev:js)",
     "dev:css": "sass src/scss/main.scss:dist/asteroid.css src/scss/variants:dist --watch",
-    "dev:js": "esbuild src/js/main.js --bundle --target=es2018 --outfile=dist/asteroid.js --watch"
+    "dev:js": "esbuild src/js/main.js --bundle --target=es2018 --outfile=dist/asteroid.js --watch",
+    "build:blank-assets": "node scripts/build-blank-assets.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.25.0",

@@ -39,3 +39,32 @@ test('preview styles use their own version rather than the script version', () =
   context.ensureStyles({ styleVersions: { 'header-v2': 'css-version' } });
   assert.equal(inserted[0].href, 'https://shop.test/header-v2.css?v=css-version');
 });
+
+test('blank fallback precedes the theme with both older and missing stylesheet snippets', () => {
+  const source = readFileSync(new URL('../../theme/src/js/main.js', import.meta.url), 'utf8');
+  for (const initial of [[], ['asteroid'], ['header-v1']]) {
+    const ordered = [];
+    const element = (name) => ({
+      dataset: name ? { asStyle: name } : {},
+      href: name ? `https://shop.test/${name}.css` : '',
+      before(link) { ordered.splice(ordered.indexOf(this), 0, link); },
+      after(link) { ordered.splice(ordered.indexOf(this) + 1, 0, link); },
+    });
+    ordered.push(...initial.map(element));
+    const context = createContext({
+      URL, Date, encodeURIComponent,
+      ownScript: { src: 'https://shop.test/asteroid.js' },
+      document: {
+        querySelectorAll: () => [...ordered], createElement: () => element(),
+        head: { append: (link) => ordered.push(link) },
+      },
+      styleFiles: () => ['base-blank', 'asteroid', 'header-v1'],
+    });
+    runInContext(source.slice(source.indexOf('function ensureStyles('), source.indexOf('function start(')), context);
+    context.ensureStyles({});
+    context.ensureStyles({});
+    const names = ordered.map((link) => link.dataset.asStyle);
+    assert.ok(names.indexOf('base-blank') < names.indexOf('asteroid'), initial.join(','));
+    assert.equal(names.filter((name) => name === 'base-blank').length, 1);
+  }
+});

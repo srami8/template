@@ -1,3 +1,19 @@
+# Aktualizace (Codex): příprava CSS-only Blank mode
+
+Majitel schválil kompatibilní verzovaný základ z Disca s následným čištěním. Základ této změny: `0bc49d6`, větev `feature/responsive`.
+
+- Nový `styleMode` (`disco` / `blank`) v nastavení. Výchozí instalace zůstávají v dosavadním režimu. Ukládání ze staršího formuláře zachová volbu.
+- `base-blank.css` obsahuje snapshot nativního CSS Disca 13 a fontu ikon, načítá se před `asteroid.css`. SHA256 a zdrojové URL jsou v manifestu. Fonty se sestavují a nasazují lokálně.
+- Zachováno původní HTML, selektory i JS Disca. Žádná nová náhrada menu, košíku ani formulářů. Režim nepokrývá vypnutí JS ani přechod na Classic.
+- Přepínač CSS v administraci Shoptetu se tímto kódem sám nemění. Nejdřív zvolit Blank základ v aSteroidu a uložit, potom vypnout pouze CSS. Při návratu opačné pořadí.
+- Dokumentace a návod pro obchodníka: `docs/blank-mode.md`; externí Claude Docs příručka nebyla změněna.
+
+Ověření: build a kontrola integrity vendor souborů, 22 testů settings-app a 2 testy stylů prošly. Lokální veřejný náhled nad skutečným Shoptetem (`npm run preview:blank`) porovnal 11 typů stránek při 1920 a 390 px s/bez nativního CSS, bez horizontálního přetékání. Ověřeno otevření mobilního menu se 4 rychlými odkazy a nativní změna množství 1 → 2 → 1. Snímky a měření jsou v pracovních výstupech Codexu (`outputs/blank-*`). Sandbox blokuje start Chromia pro plný audit/snímky; kontrola proto proběhla v in-app prohlížeči. Plný košík, AJAX košík a kroky objednávky po skutečné aktivaci zbývají; lokální proxy nepovoluje POST. Žádná objednávka nebyla odeslána.
+
+Nasazení: viz stav dokončení v navazující zprávě; server settings-app potřebuje restart, aby zobrazil nový přepínač. Globální CSS Disca při přípravě nevypínáme.
+
+---
+
 # Aktualizace (Codex): opravy z revize a převzetí vývoje
 
 Základ: `34b7cfb` na `feature/responsive` (včetně poslední změny šířky obsahu od Claude).
