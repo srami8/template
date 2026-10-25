@@ -1,3 +1,23 @@
+# Aktualizace (Claude): karta článku – datum na úvodní stránce, „Číst článek“
+
+**Zadání majitele:** aktualizovaný návrh „Article“ (1627:5345) přidává „Číst článek“ se šipkou; na e-shopu chybí datum zveřejnění.
+
+**Příčina:** Shoptet do sekce článků na úvodní stránce datum nevypisuje (jen do výpisu rubriky). RSS e-shop nemá.
+
+**Řešení**
+- `js/article-cards.js` (nový):
+  - **úvodní stránka:** datum z výpisu rubriky přes `/cache/<rubrika>/` (jedno stažení na rubriku), článek mimo první stránku výpisu z detailu (`meta article:published_time`). Stahuje se až u sekce článků, uloží se do `localStorage` na 12 h, prázdný `<time>` drží místo (žádný posun);
+  - **výpis rubriky:** přidá odkaz `a.read-article` (Disco ho tam nemá);
+  - datum všude jednotně „10. 12. 2023“, `datetime` ve tvaru yyyy-mm-dd.
+- `_article-card.scss`: „Číst článek“ 16 px / 500, hlavní barva, podtržené, šipka 16 px (dřív skryté); datum v obou markupech.
+
+**Ověření**
+- Testy: `article-card.spec.cjs` 6 prošlo (nové: datum z výpisu i z detailu, uložení, odkaz ve výpisu).
+- E-shop: úvodní stránka 3× „24. 10. 2026“ jedním stažením `/cache/rubriky/nase-novinky/`, výpis rubriky s odkazy. Posun stránky způsobený kartou: 0.
+- **Nález:** CLS úvodní stránky 0,085 způsobuje carousel bannerů (posun o 1 px při načtení), ne články.
+
+---
+
 # Aktualizace (Claude): karta článku podle Figmy
 
 **Zadání majitele:** vzhled článku podle Figmy „Article“ (1627:5345) všude, kde se objevuje karta článku.

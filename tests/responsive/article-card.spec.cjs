@@ -1,12 +1,15 @@
 // Karta článku (components/_article-card.scss) v obou markupech Disca: sekce článků na úvodní stránce
 // (.homepage-blog-wrapper) a výpis rubriky (.news-wrapper). Kontroluje obrázek 3 : 2 se zaoblením,
-// mezery, datum s ikonou, skryté „Číst článek“ a počet sloupců.
+// mezery, datum s ikonou, „Číst článek“ a počet sloupců; skript (js/article-cards.js) doplní odkaz
+// ve výpisu a datum na úvodní stránce z výpisu rubriky (/cache/<rubrika>/), případně z detailu článku.
 const fs = require('node:fs');
 const path = require('node:path');
 const {test, expect} = require('@playwright/test');
 
 const dist = process.env.RESPONSIVE_THEME_DIST || path.join(__dirname, '../../theme/dist');
 const css = fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8');
+const js = fs.readFileSync(path.join(dist, 'asteroid.js'), 'utf8');
+const SHOP = 'https://shop.test';
 const image = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="920" height="1000"%3E%3Crect width="920" height="1000" fill="%23e6e8eb"/%3E%3C/svg%3E';
 const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
@@ -16,14 +19,14 @@ const listItem = (i) => `<article class="news-item"><a href="/clanek-${i}/" clas
   <h2><a href="/clanek-${i}/" data-testid="textArticleTitle">Jak správně nabíjet baterii v mrazech ${i}</a></h2>
   <time datetime="2023-12-10 10:00:00"> 10.12.2023 </time><div class="description"><p>${text}</p></div></article>`;
 
-const page = (body) => `<!doctype html><html lang="cs" class="as-theme"><head><meta charset="utf-8">
+const page = (body, script = '') => `<!doctype html><html lang="cs" class="as-theme"><head><meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1"><style>
   *,*::before,*::after{box-sizing:border-box}body{margin:0;font-family:sans-serif}.container{margin:0 auto;padding:0 20px}
   @media(min-width:768px){.container{width:747px}}@media(min-width:992px){.container{width:972px}}
   @media(min-width:1200px){.container{width:1178px}}@media(min-width:1440px){.container{width:1418px}}
   /* Disco: úzký kontejner, .row, sloupce karet */.container-narrow{max-width:100%}@media(min-width:1440px){.container-narrow{width:1178px;margin:0 100px}}
   .row{margin:0 -20px;display:flex;flex-wrap:wrap}.news-item{width:50%;padding:0 20px}
-  ${css}</style></head><body><main id="content" class="container content">${body}</main></body></html>`;
+  ${css}</style></head><body><main id="content" class="container content">${body}</main>${script}</body></html>`;
 
 const home = page(`<h2 class="homepage-group-title">Nejprodávanější</h2><div class="container-narrow"><div class="homepage-blog-wrapper row blog-wrapper">
   <div class="homepage-group-title h4">Nové články</div>${[1, 2, 3, 4].map(homeItem).join('')}</div></div>`);
@@ -58,7 +61,8 @@ for (const [name, html] of [['home', home], ['list', list]]) {
     expect(d.items[3].y).toBeGreaterThan(d.items[0].y);
     expect(d.items[1].x - (d.items[0].x + d.items[0].width)).toBe(20);
     if (name === 'home') {
-      expect(d.readMore).toBe('none');
+      // Prvek flexové karty prohlížeč hlásí jako flex (blokifikace inline-flex).
+      expect(d.readMore).toBe('flex');
       // Sekce přes celou šířku obsahu jako ostatní sekce úvodní stránky.
       expect(d.items[0].x).toBe(d.sectionTitle.x);
       expect(d.items[2].x + d.items[2].width).toBe(d.sectionTitle.x + d.sectionTitle.width);
@@ -80,3 +84,60 @@ for (const [name, html] of [['home', home], ['list', list]]) {
     expect(d.items[2].y).toBeGreaterThan(d.items[0].bottom);
   });
 }
+
+// Skript: úvodní stránka na smyšlené doméně, výpis rubriky (/cache/clanky/) má data článků 1–3,
+// článek 4 ve výpisu není a datum se vezme z jeho detailu.
+const homeLinks = (i) => homeItem(i).replace(`/clanek-${i}/`, `/clanky/clanek-${i}/`);
+const listing = `<!doctype html><html><body><div class="news-wrapper">${[1, 2, 3].map((i) => listItem(i).replace(/\/clanek-/g, '/clanky/clanek-')
+  .replace('2023-12-10', `2023-12-1${i}`)).join('')}</div></body></html>`;
+const detail = '<!doctype html><html><head><meta property="article:published_time" content="5.1.2022"></head><body><div class="news-item-detail"><time datetime="5.1.2022">5.1.2022</time></div></body></html>';
+
+async function serveHome(p) {
+  const calls = [];
+  const html = page(`<div class="container-narrow"><div class="homepage-blog-wrapper row blog-wrapper"><div class="homepage-group-title h4">Nové články</div>
+    ${[1, 2, 3, 4].map(homeLinks).join('')}</div></div>`, `<script>${js}</script>`).replace('<html lang="cs" class="as-theme">', '<html lang="cs">').replace('<body>', '<body class="type-index">');
+  await p.route(`${SHOP}/**`, (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname === '/') return route.fulfill({contentType: 'text/html', body: html});
+    calls.push(url.pathname);
+    if (url.pathname === '/cache/clanky/') return route.fulfill({contentType: 'text/html', body: listing});
+    if (url.pathname === '/cache/clanky/clanek-4/') return route.fulfill({contentType: 'text/html', body: detail});
+    return route.fulfill({status: 404, body: ''});
+  });
+  return calls;
+}
+
+test('homepage cards get the publication date from the section listing (detail as a fallback), stored for later', async ({page: p}) => {
+  await p.setViewportSize({width: 1440, height: 900});
+  const calls = await serveHome(p);
+  await p.goto(`${SHOP}/`);
+  await expect(p.locator('.homepage-blog-wrapper time:not(.as-article-date--pending)')).toHaveCount(4);
+  expect(await p.locator('.homepage-blog-wrapper time').allTextContents()).toEqual(['11. 12. 2023', '12. 12. 2023', '13. 12. 2023', '5. 1. 2022']);
+  expect(await p.locator('.homepage-blog-wrapper time').first().getAttribute('datetime')).toBe('2023-12-11');
+  expect(calls).toEqual(['/cache/clanky/', '/cache/clanky/clanek-4/']);
+  // Datum mezi nadpisem a perexem s mezerou 12 px, „Číst článek“ pod perexem.
+  const gap = await p.evaluate(() => {
+    const card = document.querySelector('.homepage-blog-wrapper .news-item');
+    const title = card.querySelector('.title').getBoundingClientRect();
+    const time = card.querySelector('time').getBoundingClientRect();
+    const more = card.querySelector('.read-article').getBoundingClientRect();
+    const description = card.querySelector('.description').getBoundingClientRect();
+    return {time: Math.round(time.top - title.bottom), more: Math.round(more.top - description.bottom)};
+  });
+  expect(gap).toEqual({time: 12, more: 12});
+
+  // Další návštěva: data z úložiště, nic se nestahuje.
+  await p.goto(`${SHOP}/`);
+  await expect(p.locator('.homepage-blog-wrapper time:not(.as-article-date--pending)')).toHaveCount(4);
+  expect(calls).toHaveLength(2);
+});
+
+test('section listing: "Read article" link added and the date written as in the design', async ({page: p}) => {
+  await p.setViewportSize({width: 1440, height: 900});
+  await p.setContent(page(`<div class="news-wrapper">${[1, 2].map(listItem).join('')}</div>`, `<script>${js}</script>`).replace('<html lang="cs" class="as-theme">', '<html lang="cs">'));
+  await expect(p.locator('.news-wrapper .read-article')).toHaveCount(2);
+  expect(await p.locator('.news-wrapper .read-article').first().getAttribute('href')).toBe('/clanek-1/');
+  await expect(p.locator('.news-wrapper .read-article').first()).toHaveText('Číst článek');
+  await expect(p.locator('.news-wrapper time').first()).toHaveText('10. 12. 2023');
+  expect(await p.locator('.news-wrapper .read-article').first().evaluate((el) => getComputedStyle(el, '::after').width)).toBe('16px');
+});

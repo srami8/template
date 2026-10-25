@@ -1,8 +1,10 @@
 // Karta článku (Figma „Article“ 1627:5345): obrázek 3 : 2 se zaoblením 8 px, pod ním nadpis H4,
-// datum s ikonou kalendáře a perex. Stejná všude, kde Disco článek vypisuje jako kartu (.news-item):
+// datum s ikonou kalendáře, perex a „Číst článek“ se šipkou. Stejná všude, kde Disco článek vypisuje
+// jako kartu (.news-item):
 //   úvodní stránka (.homepage-blog-wrapper): .news-item > a > .image > img + .text > .title, .description, .read-article
 //   výpis rubriky (.news-wrapper): article.news-item > a.news-item-link-img > img + h2 > a + time + .description
-// „Číst článek“ v návrhu není (celá karta je odkaz). Výpis: telefon 1 sloupec, od 768 px 2, od 1200 px 3.
+// Co v markupu chybí (datum na úvodní stránce, „Číst článek“ ve výpisu), doplňuje js/article-cards.js.
+// Výpis: telefon 1 sloupec, od 768 px 2, od 1200 px 3.
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
@@ -125,8 +127,9 @@
     color: var(--as-primary-600);
   }
 
-  > time {
+  time {
     display: inline-flex;
+    align-self: flex-start;
     align-items: center;
     gap: 4px;
     margin: 0;
@@ -136,6 +139,15 @@
 
     &::before {
       @include icon(calendar-today, 12px);
+    }
+  }
+
+  // Místo pro datum na úvodní stránce, než ho skript doplní (karta neposkočí).
+  .as-article-date--pending {
+    min-height: 17px;
+
+    &::before {
+      content: none;
     }
   }
 
@@ -150,7 +162,27 @@
     }
   }
 
+  // „Číst článek“ se šipkou (na úvodní stránce uvnitř odkazu karty, ve výpisu vlastní odkaz).
   .read-article {
-    display: none;
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    color: var(--as-primary-500);
+    font-size: var(--as-font-size-body);
+    font-weight: 500;
+    line-height: 1.2;
+    text-decoration: underline;
+
+    &::after {
+      @include icon(chevron-right, 16px);
+    }
+  }
+
+  a:hover .read-article,
+  .read-article:hover {
+    color: var(--as-primary-600);
   }
 }

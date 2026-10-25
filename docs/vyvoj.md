@@ -86,6 +86,7 @@ Ikony (`icon`) jsou soubory v `theme/src/icons` (`npm run build:icons` → `scss
 | `category.js` | Nejprodávanější: posuvný pás, šipky, tlačítko Detail |
 | `category-intro.js` | přesun prvního obrázku z popisu kategorie do `figure.as-category-intro__media` |
 | `shop-reviews.js` | hodnocení obchodu nad patičkou: data ze stránky hodnocení přes `/cache/<adresa>/` (serverová mezipaměť Shoptetu, ~25 kB gzip), stažení až u patičky, `sessionStorage` 30 min, 4 nejnovější recenze |
+| `article-cards.js` | karta článku: na úvodní stránce doplní datum zveřejnění z výpisu rubriky (`/cache/<rubrika>/`, chybějící z detailu článku; stažení u sekce, `localStorage` 12 h, místo pro datum předem), ve výpisu rubriky přidá „Číst článek“; datum jednotně „10. 12. 2023“ |
 | `category-articles.js` | blok článků ke kategorii (GUID z `dataLayer`, data stažená už v hlavičce) |
 
 ### SCSS (`theme/src/scss`)

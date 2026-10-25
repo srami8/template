@@ -71,6 +71,9 @@ const ITEMS = [
   ['Článek: perex', '/rubriky/nase-novinky/', '.news-wrapper .news-item .description', null, { size: true }],
   ['Článek na úvodní stránce: nadpis', '/', '.homepage-blog-wrapper .news-item .title', null, { size: true }],
   ['Článek na úvodní stránce: obrázek', '/', '.homepage-blog-wrapper .news-item .image', null, {}],
+  ['Článek: Číst článek', '/rubriky/nase-novinky/', '.news-wrapper .news-item .read-article', null, { size: true }],
+  ['Článek na úvodní stránce: Číst článek', '/', '.homepage-blog-wrapper .news-item .read-article', null, { size: true }],
+  ['Článek na úvodní stránce: datum', '/', '.homepage-blog-wrapper .news-item time', null, { size: true, scrollTo: '.homepage-blog-wrapper' }],
   // Karta produktu
   ['Karta: název', '/sperky/', '.products-block .p .name', null, { size: true }],
   ['Karta: cena', '/sperky/', '.products-block .p .price-final', null, { size: true }],
