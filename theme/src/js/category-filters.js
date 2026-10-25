@@ -1,5 +1,6 @@
 // Nativní filtry ponecháváme na místě. Disco neumí sbalit jednotlivé sekce; přidáváme jen
 // přístupné tlačítko nad jejich původní obsah. Hodnoty, formuláře, slider a AJAX řídí Shoptet.
+import { dismissDrawerOnBackdrop } from './drawer';
 const LABELS = {
   cs: { flags: 'Dle štítku', price: 'Dle ceny', filters: 'Filtry', close: 'Zavřít filtry' },
   sk: { flags: 'Podľa štítku', price: 'Podľa ceny', filters: 'Filtre', close: 'Zavrieť filtre' },
@@ -16,6 +17,7 @@ function syncMobileFilters() {
   if (!filters) return;
   const open = !mobile.matches || mobileOpen;
   filters.classList.toggle('visible', open);
+  filters.inert = !open;
   document.body.classList.toggle('filters-visible', mobile.matches && mobileOpen);
   if (mobile.matches) {
     filters.setAttribute('role', 'dialog');
@@ -28,7 +30,11 @@ function syncMobileFilters() {
     button.setAttribute('aria-expanded', String(open));
   });
 }
-mobile.addEventListener('change', syncMobileFilters);
+mobile.addEventListener('change', () => {
+  // Desktopový sidebar nesmí při návratu na mobil sám znovu otevřít dialog.
+  mobileOpen = false;
+  syncMobileFilters();
+});
 // Obsluha Shoptetu je delegovaná na html. Na document už čteme její výsledný stav.
 document.addEventListener('click', event => {
   const button = event.target.closest?.('[data-unveil="filters"]');
@@ -39,9 +45,13 @@ document.addEventListener('click', event => {
     syncMobileFilters();
     if (mobileOpen) filters.querySelector('.as-filter-close')?.focus();
     else document.querySelector('[data-as-filter-trigger]')?.focus();
-  } else if (mobileOpen && !filters.contains(event.target)) {
-    document.querySelector('[data-as-filter-trigger]')?.click();
   }
+});
+dismissDrawerOnBackdrop({
+  panel: () => document.getElementById('filters'),
+  trigger: () => document.querySelector('[data-as-filter-trigger]'),
+  isOpen: () => document.body?.classList.contains('filters-visible'),
+  close: () => document.querySelector('[data-as-filter-trigger]')?.click(),
 });
 document.addEventListener('keydown', event => {
   if (!mobile.matches || !mobileOpen) return;

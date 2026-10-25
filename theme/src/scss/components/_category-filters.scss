@@ -307,6 +307,9 @@
     }
     #filters {
       @include drawer.panel;
+      @include drawer.motion;
+      display: flex;
+      &.visible { @include drawer.revealed; }
       gap: 0;
       overflow-y: auto;
       background: var(--as-white);

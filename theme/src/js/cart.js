@@ -7,6 +7,7 @@
 
 import { contactFromShop, contactCard } from './contact';
 import { availableViewportHeight } from './viewport';
+import { dismissDrawerOnBackdrop } from './drawer';
 
 const OPEN_CLASS = 'cart-window-visible';
 const CONTACT_CLASS = 'as-cart-contact';
@@ -65,9 +66,13 @@ export function enhanceCart() {
   const button = document.querySelector('#header .cart-count[data-target="cart"]');
   const widget = document.getElementById('cart-widget');
   if (!button || !widget) return;
+  const mobile = window.matchMedia('(max-width: 767px)');
 
   const place = () => {
-    if (document.body.classList.contains(OPEN_CLASS)) placeWidget(widget, button);
+    const open = document.body.classList.contains(OPEN_CLASS);
+    widget.inert = mobile.matches && !open;
+    button.setAttribute('aria-expanded', String(open));
+    if (open) placeWidget(widget, button);
   };
   new MutationObserver(place).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   window.addEventListener('resize', place, { passive: true });
@@ -83,7 +88,6 @@ export function enhanceCart() {
   });
 
   const contact = contactFromShop();
-  const mobile = window.matchMedia('(max-width: 767px)');
   const redirect = button.getAttribute('data-redirect');
   const update = () => {
     mobileHeader(widget, button, mobile.matches);
@@ -99,4 +103,14 @@ export function enhanceCart() {
   new MutationObserver(update).observe(widget, { childList: true, subtree: true });
   mobile.addEventListener('change', syncMobile);
   syncMobile();
+  dismissDrawerOnBackdrop({
+    panel: () => widget,
+    trigger: () => button,
+    isOpen: () => document.body.classList.contains(OPEN_CLASS),
+    close: () => {
+      window.shoptet?.popups?.hideContentWindows?.();
+      button.setAttribute('aria-expanded', 'false');
+      button.focus();
+    },
+  });
 }

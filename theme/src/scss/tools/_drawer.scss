@@ -1,5 +1,21 @@
 // Pravý mobilní panel sdílený košíkem a filtry. Obsah i ovládání zůstávají nativní.
 @use "icon" as *;
+// Stejná délka a křivka jako mobilní menu. Display zůstává zachované i při
+// zavírání; visibility se skryje až po dojetí, inert v JS ihned vyřadí obsah z Tab.
+@mixin motion {
+  visibility: hidden;
+  transform: translateX(100%);
+  pointer-events: none;
+  transition: transform .25s ease, visibility 0s linear .25s;
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+}
+@mixin revealed {
+  visibility: visible;
+  transform: translateX(0);
+  pointer-events: auto;
+  transition: transform .25s ease;
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+}
 @mixin overlay {
   content: "";
   position: fixed;

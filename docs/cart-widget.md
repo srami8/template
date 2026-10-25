@@ -27,3 +27,10 @@ Build a dosavadní testy settings-app; nový regresní scénář v layout.spec.c
 Lokální vizuální fixture používá veřejný skutečný markup plného košíku bez skrytých hodnot, se zakázanými formulářovými požadavky. Nenahrazuje integrační ověření; nativní množství/odebrání a prázdný stav se ověřují po nasazení na testovacím e-shopu. Nebyla vytvořena ani odeslána objednávka.
 
 Živé ověření nasazení `d3d3594`: panel 300 × 844 px na šířce 390 px, nulové přetékání, nativní množství 1 → 2, odebrání → prázdný stav s jednou hlavičkou/kontaktem. Po nastavení dopravy server vrací skutečný limit 1199 Kč: při košíku 200 Kč zbývá 999 Kč a nativní progress má 16,68 %. Footer má 144,6 px jako návrh. Limity se neukládají do kódu. Testovací produkt byl odebrán, objednávka nebyla vytvořena. Sdílená geometrie panelu se nově používá i pro mobilní filtry (`tools/_drawer.scss`).
+
+
+## Jednotné chování mobilních panelů
+
+Košík i filtry se vysouvají zprava a zasouvají zpět za 250 ms s křivkou ease jako mobilní menu. Ztmavené pozadí lze tapnutím použít k zavření; zavírání využívá původní hideContentWindows Shoptetu. Sdílená capture obsluha `js/drawer.js` zachytí klik i před případným zastavením bublání nativním overlayem, klik uvnitř panelu ani na jeho spouštěč nezavírá. Spodní stránka při zavírání nedostane nechtěné kliknutí. Fokus se vrací na ikonu košíku a aria-expanded sleduje skutečný stav i při zavření křížkem/Escape.
+
+Společné mixiny motion/revealed v `tools/_drawer.scss` zachovávají display, animují transform a visibility skrývají až po dojetí. Zavřený panel má pointer-events:none a inert, takže nezachytává tap ani Tab. Respektuje prefers-reduced-motion; na desktopu tyto změny neplatí. Nativní data, načtení AJAX košíku a formuláře se nemění.

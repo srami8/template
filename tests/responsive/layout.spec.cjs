@@ -163,6 +163,7 @@ for(const [width,height] of [[320,600],[768,500],[1024,768],[1440,900]]) {
       await page.evaluate(popup=>document.body.classList.add(`${popup}-window-visible`),popup);
       await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
       const panel=page.locator(popup==='cart'?'#cart-widget':'#login');
+      if(popup==='cart' && width<768) await expect(panel).toHaveCSS('transform','matrix(1, 0, 0, 1, 0, 0)');
       const box=await panel.boundingBox();
       expect(box.x).toBeGreaterThanOrEqual(0);
       expect(box.x+box.width).toBeLessThanOrEqual(width);
@@ -544,6 +545,7 @@ test('mobile cart drawer matches the design and keeps its footer reachable', asy
   await expect(trigger).not.toHaveAttribute('data-redirect','true');
   await trigger.click();
   const panel=page.locator('#cart-widget');
+  await expect(panel).toHaveCSS('transform','matrix(1, 0, 0, 1, 0, 0)');
   const box=await panel.boundingBox();
   expect(box.x).toBe(90);
   expect(box.y).toBe(0);
@@ -561,4 +563,33 @@ test('mobile cart drawer matches the design and keeps its footer reachable', asy
   await page.setViewportSize({width:1280,height:900});
   await expect(trigger).toHaveAttribute('data-redirect','true');
   await expect(page.locator('.as-cart-close')).toHaveCount(0);
+});
+
+test('mobile drawer animates both ways and backdrop dismiss survives stopped bubbling', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await load(page);
+  const panel=page.locator('#cart-widget');
+  const trigger=page.locator('#header .cart-count');
+  // Shoptet může zastavit bublající click na překryvné vrstvě.
+  await page.evaluate(()=>document.documentElement.addEventListener('click', event=>{
+    if(event.target===document.body) event.stopPropagation();
+  }));
+  await expect(panel).toHaveCSS('visibility','hidden');
+  for(let i=0;i<2;i++) {
+    await trigger.click();
+    await expect(panel).toHaveCSS('transition-duration','0.25s');
+    await expect(panel).toHaveCSS('transform','matrix(1, 0, 0, 1, 0, 0)');
+    await expect(panel).not.toHaveAttribute('inert');
+    await page.mouse.click(35,400);
+    await expect(page.locator('body')).not.toHaveClass(/cart-window-visible/);
+    await expect(panel).toHaveAttribute('inert');
+    await expect(panel).toHaveCSS('visibility','hidden');
+    await expect(panel).toHaveCSS('transform','matrix(1, 0, 0, 1, 300, 0)');
+    await expect(trigger).toBeFocused();
+    await noPageOverflow(page);
+  }
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await trigger.click();
+  await expect(panel).toHaveCSS('transition-duration','0s');
+  await expect(panel).toHaveCSS('transform','matrix(1, 0, 0, 1, 0, 0)');
 });

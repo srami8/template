@@ -1,3 +1,18 @@
+# Oprava (Codex): chování mobilního košíku a filtrů sjednocené s menu
+
+Zadání majitele: automaticky domýšlet související UX, zejména animované vyjetí a zavření tapnutím na tmavý overlay. Základ `c78eeac`, větev `feature/responsive`.
+
+- Sdílené motion/revealed v tools/_drawer.scss: transform doprava, 250 ms ease stejně jako menu, animace i při zavírání, opožděné visibility místo display:none. Respektuje reduced-motion. Zavřený obsah inert + pointer-events:none, desktop bez této změny.
+- Sdílený js/drawer.js zachytává tap/click mimo panel v capture fázi před případným zastavením události Shoptetem. Nezavře při akci uvnitř, nepustí klik do podkladové stránky. Košík zavírá původní hideContentWindows, filtry původní data-unveil. Stav a fokus se obnoví, aria-expanded košíku sleduje i nativní zavírání.
+- Mobilní filtry zachovávají otevření při AJAXu; návrat z desktopu sám dialog neotevře. Žádná náhrada košíkového/filtrovacího API ani přesuny původního DOM.
+- AGENTS.md nově výslovně požaduje sjednocovat chování příbuzných panelů a ověřovat zavřený stav/opakování/AJAX, nejen snímek otevřeného panelu. Návody v docs/cart-widget.md a docs/kategorie.md, externí Claude Docs neupravované.
+
+Kontroly: build, 23 settings-app + 2 styles testy prošly. Audit nadále blokuje start Chromia (MachPortRendezvous / permission denied), browserové regresní testy nejsou označené za prošlé. Rozšířená fixture má stub nativního hideContentWindows; nová kontrola testuje capture i při zastaveném bublání, obě animace, opakování, inert/fokus a reduced-motion. V in-app prohlížeči nad skutečným Shoptetem bez nativního CSS ověřeno: oba panely při otevření začínají posunem 300 px, po dojetí 0; po tapnutí se stav zavře okamžitě, animace doběhne do 300 px a visibility:hidden. Filtr stock 13 → 11 zachová otevřený panel bez duplicit. Zavřené panely inert, nulové přetékání, nativní body scroll-lock.
+
+Nasazení a živá kontrola budou doplněné po publikování. Nastavení serveru ani globální Blank mode se nemění.
+
+---
+
 # Aktualizace (Codex): mobilní kategorie podle Figmy
 
 Navazuje na `d3d3594`, větev `feature/responsive`. Majitel potvrdil ořez podkategorií na **4,5 řádku** podle 1633:10268. Podrobnosti, návod pro obchodníka, ověření a limity: `docs/kategorie.md`.

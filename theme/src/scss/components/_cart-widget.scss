@@ -437,12 +437,17 @@
     // Pravý panel Figmy 300 px, na užším displeji nejvýše dostupná šířka.
     #cart-widget.popup-widget {
       @include drawer.panel;
+      @include drawer.motion;
+      // Disco zavřené okno přepíná display:none; to by okamžitě ukončilo animaci.
+      display: block;
       overflow: hidden;
 
       &::before {
         content: none;
       }
     }
+
+    body.cart-window-visible #cart-widget.popup-widget { @include drawer.revealed; }
 
     #cart-widget .cart-widget-inner {
       display: flex;

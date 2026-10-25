@@ -63,6 +63,9 @@ async function load(page, config = {}) {
     };
     window.originalNavigation = document.querySelector('#navigation');
     window.nativeClicks = 0;
+    window.shoptet = {popups: {hideContentWindows() {
+      ['navigation','search','login','cart'].forEach(name=>document.body.classList.remove(`${name}-window-visible`));
+    }}};
     // Stub pouze přepíná dokumentované třídy; skutečné chování Disca se zde neověřuje.
     document.addEventListener('click', event => {
       const trigger = event.target.closest('.toggle-window');
