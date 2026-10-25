@@ -292,7 +292,8 @@
     #category-header {
       gap: 12px;
       margin-bottom: 20px;
-      padding-bottom: 16px;
+      // Společná čára musí lícovat s podtržením aktivní záložky jako na desktopu.
+      padding-bottom: 0;
     }
 
     .category-header-pagination {

@@ -164,3 +164,5 @@ Testy izolovaných stránek: každá stránka v nové záložce (`setContent` po
 Mobilní kategorie podle Figmy (ořez popisu/článků, 4,5 řádku podkategorií, posuvné řazení a pravý panel filtrů): [kategorie.md](kategorie.md#mobilní-kategorie-163310268-163310605). Sdílený panel košíku/filtrů je v `tools/_drawer.scss`; nativní data a AJAX se nenahrazují.
 
 Mobilní panely mají společné chování v `js/drawer.js` a pohyb v `tools/_drawer.scss`: otevření/zavření 250 ms, tap na overlay v capture fázi, inert zavřeného obsahu a reduced-motion. U příbuzných prvků automaticky přebírat zavedené vzory menu; závazná kontrola chování je doplněná v AGENTS.md.
+
+Oprava mobilní čáry řazení: #category-header má padding-bottom:0, takže border-bottom navazuje na podtržení aktivní záložky. Viz docs/kategorie.md; desktopové řazení a JS beze změny.
