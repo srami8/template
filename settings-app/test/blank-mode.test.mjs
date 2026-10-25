@@ -49,3 +49,12 @@ test('blank foundation is self-contained and its icon fonts are deployed beside 
     assert.ok(existsSync(new URL(`../../theme/dist/${url}`, import.meta.url)));
   }
 });
+
+
+test('native AJAX fragments retain content and keep listing requests on the local preview', () => {
+  const fragment = '<div class="products-page">Produkt</div><button data-url="https://313980.myshoptet.com/pletene-kosiky/strana-2/">Další</button>';
+  const result = rewriteHtml(fragment, true);
+  assert.ok(result.includes('Produkt'));
+  assert.ok(result.includes('data-url="/pletene-kosiky/strana-2/"'));
+  assert.ok(!result.includes('base-blank.css'));
+});

@@ -6,6 +6,7 @@ Pravidla práce a spolupráce: [AGENTS.md](../AGENTS.md). Zadání a principy: [
 
 | Dokument | Obsah |
 |---|---|
+| [kategorie.md](kategorie.md) | sidebar, filtry, řazení a stránkování kategorie |
 | [blank-mode.md](blank-mode.md) | zapnutí CSS-only Blank mode, návrat a správa kompatibilního základu |
 | [komponenty.md](komponenty.md) | prvky Disca, kde se vypisují a kde je jejich jediný zdroj vzhledu |
 | [responzivita.md](responzivita.md) | responzivní chování hlavičky a postup ověření |
@@ -156,5 +157,5 @@ Testy izolovaných stránek: každá stránka v nové záložce (`setContent` po
 ## Známé mezery
 
 - Hlavička **V3** je v nastavení, ale nemá vlastní styly (soubor ani pravidla `.as-header-v3`).
-- Filtry a jejich vzhled v kategorii zatím podle Disca (návrh je doplní).
+- Sidebar, příznakové/cenové filtry, řazení a stránkování podle návrhu 1631:7129; implementace a ověření v [kategorie.md](kategorie.md). Další parametrické skupiny je nutné ověřit nad daty.
 - Úložiště settings-app je JSON soubor, ne databáze.

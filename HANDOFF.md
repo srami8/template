@@ -1,3 +1,21 @@
+# Aktualizace (Codex): kategorie – sidebar, filtry, řazení a stránkování
+
+Zadání majitele: implementovat návrh Figma `1631:7129` (řazení v sousední vrstvě `1631:6967`) nad původním Discem. Základ `00bef19`, větev `feature/responsive`. Podrobný popis v `docs/kategorie.md` (včetně návodu pro obchodníka).
+
+- Vlastní SCSS výpisu: sidebar 262 px / mezera 22 px, 2–4 sloupce produktů podle šířky, řazení záložkami na desktopu a dropdown na mobilu, spodní ovládání 48 px. Karty produktů používají dosavadní variantu.
+- Filtry mají karty 12 px, checkboxy 22 px se sdíleným mixinem, pilulky počtů a původní jQuery UI slider s úchyty 24 px. Barvy a font z administrace, ne natvrdo z Figmy.
+- Původní HTML formulářů, inputy/data-url, řazení i stránkování zůstávají. Nový JS doplňuje pouze nadpis štítků, sbalení sekcí a mobilní spouštěč přes nativní data-unveil. Pamatuje stav při AJAXu. Žádné vlastní filtrovací API ani přesun inputů/slideru; mobilní přesun provádí detectFilters() Shoptetu.
+- Při diagnostice byl v aside nejprve jen prázdný box-categories, i #filters-wrapper byl prázdný. Po změně nastavení majitelem server začal vracet skutečný box-filters (cena + příznaky). Nebyla to CSS/JS chyba aSteroidu.
+- Doplněné regresní testy a veřejná fixture filtrů, audit/snímky pro výpis. Opravené pořadí kompatibilního CSS v obecné testovací fixture (podklad před asteroid.css). Lokální proxy podporuje veřejný nativní POST dočtení produktů dvou testovacích kategorií, nezpřístupňuje objednávkové formuláře.
+
+Ověření: build a integrita vendor souborů; 23 testů settings-app + 2 testy registrace stylů prošly. Browserová sada včetně nových regresních testů zde není potvrzená: Chromium blokuje sandbox při startu (MachPortRendezvous / permission denied), selhání není výsledkem asercí. V in-app prohlížeči nad skutečným Shoptetem bez nativního CSS ověřeno: stock 13 → 11, cena klávesnicí 300 → 301 Kč / 13 → 12, řazení, stránka 2 se 4 produkty, dočtení 9 → 13, sbalení po AJAXu, mobilní otevření/aria a změny šířky 320–1920 px (9 šířek, nulové přetékání). Stejný vzhled 24 měřených prvků s původním CSS i bez něj při 1920 a 390 px. Důkazy: pracovní outputs/category-filters-*, category-native-blank-parity.json.
+
+Limity: další parametrické skupiny/obrázkové volby a „Zobrazit vše“ nejsou v datech testovací kategorie, je nutné je ověřit po doplnění dat. Zachovaný existující kontejner obsahu, jeho fonty a nastavení; odlišné produkty/texty a hlavní barva podle administrace jsou záměrně dynamické. Snapshot se neprořezával; nejde o dokončení migrace celého CSS.
+
+Nasazení: zatím lokální ověření; stav Git/SFTP bude doplněn po publikování.
+
+---
+
 # Rozhodnutí majitele: vlastní CSS při zachování vzhledu 1:1
 
 Navazuje na `7b9521c`, větev `feature/responsive`. Majitel potvrdil zapnutí volby Blank základu v aSteroidu a upřesnil dlouhodobý cíl: **postupně převzít CSS Disca do vlastních udržovatelných SCSS komponent aSteroidu tak, aby vypnutí výchozího CSS Shoptetu nezměnilo současný vzhled ani chování.**

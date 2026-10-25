@@ -1,0 +1,339 @@
+// Kategorie: sidebar, řazení a stránkování (Figma 1631:7129 + 1631:6967).
+// Ovládání, data-url, AJAX a přístupnost ponecháváme původnímu JS Shoptetu.
+@use "../tools/breakpoints" as bp;
+@use "../tools/button";
+@use "../tools/icon" as *;
+
+.as-theme body.type-category {
+  // Prázdný sidebar nesmí zúžit výpis. Horní popis a nejprodávanější zůstávají přes šířku.
+  #content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .category-top {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  #content > .sidebar-left {
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+
+    &:not(:has(.sidebar-inner > :not(:empty))) {
+      display: none;
+    }
+  }
+
+  .category-content-wrapper {
+    width: 100%;
+    min-width: 0;
+  }
+
+  @include bp.desktop {
+    #content:has(> .sidebar-left .sidebar-inner > :not(:empty)) {
+      grid-template-columns: minmax(200px, 262px) minmax(0, 1fr);
+      column-gap: 22px;
+    }
+  }
+
+  // Čtyři sloupce se sidebarem na širokém desktopu; úzké karty se samy zalomí níže.
+  #products.products-block {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    &::before,
+    &::after {
+      content: none;
+    }
+
+    > .product {
+      float: none;
+      width: auto;
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    @media (min-width: bp.$large) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media (min-width: bp.$wide) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  #category-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 32px;
+    padding: 0;
+    border-bottom: 1px solid var(--as-secondary-75);
+    font-family: var(--as-font-family);
+    font-size: var(--as-font-size-body);
+    line-height: 1.2;
+  }
+
+  .category-header-pagination {
+    order: 2;
+    margin: 0;
+    padding: 0 0 16px;
+    color: var(--as-secondary-400);
+    font-size: inherit;
+    line-height: inherit;
+
+    strong {
+      font-weight: 400;
+    }
+  }
+
+  .listSorting {
+    order: 1;
+    min-width: 0;
+    width: auto;
+    font-family: inherit;
+  }
+
+  .listSorting__control {
+    width: auto;
+    margin: 0;
+    padding: 0 16px 16px;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    color: var(--as-secondary-300);
+    font: inherit;
+    line-height: 1.2;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--as-secondary-500);
+      text-decoration: underline;
+    }
+
+    &--current {
+      border-bottom-color: var(--as-primary-500);
+      color: var(--as-secondary-500);
+      font-weight: 400;
+    }
+  }
+
+  @include bp.desktop {
+    // Stejná původní tlačítka jako v dropdownu, pouze CSS mění desktop na řádek záložek.
+    .sortingToggle {
+      display: none;
+    }
+
+    .listSorting .listSorting__controls {
+      position: static;
+      display: flex;
+      flex-wrap: wrap;
+      width: auto;
+      min-width: 0;
+      margin: 0 0 -1px;
+      padding: 0;
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+
+  .listingControls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: 20px;
+    margin: 72px 0 0;
+    padding: 0;
+    font-family: var(--as-font-family);
+
+    // Počet už je nad výpisem. Dole má návrh pouze tři původní ovládací prvky.
+    > .itemsTotal {
+      display: none;
+    }
+
+    .goToTop,
+    .loadMore,
+    .pagination {
+      flex: none;
+      width: auto;
+      min-width: 0;
+      margin: 0;
+    }
+
+    .loadMore {
+      order: 1;
+      justify-self: center;
+    }
+
+    .pagination {
+      order: 2;
+      justify-self: center;
+    }
+
+    .goToTop {
+      order: 3;
+      justify-self: center;
+    }
+
+    // Sdílený neutrální vzhled, stejný i pro jednotlivé stránky bez třídy .btn.
+    .loadMore__button,
+    .goToTop__button,
+    .pagination__link,
+    .pagination__currentPage {
+      @include button.base;
+      @include button.size(listing);
+      @include button.tertiary;
+    }
+
+    .loadMore__button {
+      width: auto;
+      max-width: 100%;
+      white-space: normal;
+
+      &::after {
+        @include icon(expand-more, 20px);
+      }
+    }
+
+    .goToTop__button::before {
+      @include icon(expand-less, 20px);
+      margin: 0;
+    }
+
+    .pagination__list {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      > li {
+        display: flex;
+        line-height: 1.2;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .pagination__link,
+    .pagination__currentPage {
+      width: auto;
+      min-width: 48px;
+      height: 48px;
+      min-height: 48px;
+      aspect-ratio: auto;
+      padding: 12px;
+    }
+
+    .pagination__currentPage {
+      border-color: var(--as-secondary-500);
+    }
+
+    .pagination__link--prev::before,
+    .pagination__link--next::before {
+      @include icon(chevron-right, 20px);
+    }
+
+    .pagination__link--prev::before {
+      transform: rotate(180deg);
+    }
+
+    @media (min-width: bp.$large) {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 16px;
+
+      .goToTop {
+        grid-column: 1;
+        grid-row: 1;
+        order: 1;
+        justify-self: start;
+      }
+
+      .loadMore {
+        grid-column: 2;
+        grid-row: 1;
+        order: 2;
+      }
+
+      .pagination {
+        grid-column: 3;
+        grid-row: 1;
+        order: 3;
+        justify-self: end;
+      }
+    }
+  }
+
+  @include bp.mobile {
+    #category-header {
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+    }
+
+    .category-header-pagination {
+      padding: 0;
+    }
+
+    .listSorting {
+      position: relative;
+      width: 100%;
+    }
+
+    .sortingToggle {
+      @include button.base;
+      @include button.size(listing);
+      @include button.tertiary;
+      width: 100%;
+      flex-wrap: wrap;
+      white-space: normal;
+    }
+
+    .listSorting__controls {
+      display: none;
+      width: 100%;
+      margin: 8px 0 0;
+      padding: 8px;
+      border: 1px solid var(--as-secondary-75);
+      border-radius: 12px;
+      background: var(--as-white);
+      box-shadow: 0 6px 12px rgb(0 0 0 / 8%);
+    }
+
+    .listSorting--open .listSorting__controls {
+      display: block;
+    }
+
+    .listSorting__control {
+      width: 100%;
+      padding: 12px;
+      white-space: normal;
+    }
+
+    .listingControls {
+      margin-top: 40px;
+    }
+  }
+}

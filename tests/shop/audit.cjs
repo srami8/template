@@ -57,6 +57,15 @@ const ITEMS = [
   ['Nejprodávanější: název', '/sperky/', '#productsTop .product .name', null, { size: true }],
   ['Nejprodávanější: cena', '/sperky/', '#productsTop .product .price-final', null, { size: true }],
   ['Nejprodávanější: tlačítko Detail', '/sperky/', '#productsTop .as-detail-button', null, { size: true }],
+  ['Filtry: karta', '/pletene-kosiky/', '#filters .filter-section-boolean', null, { open: { mobile: 'filters' } }],
+  ['Filtry: nadpis', '/pletene-kosiky/', '#filters .filter-section-boolean > h4', null, { size: true, open: { mobile: 'filters' } }],
+  ['Filtry: checkbox', '/pletene-kosiky/', '#stock + label', null, { pseudo: '::before', props: ['width', 'height', 'borderRadius', 'borderColor', 'backgroundColor'], open: { mobile: 'filters' } }],
+  ['Filtry: počet', '/pletene-kosiky/', '#stock + label .filter-count', null, { size: true, open: { mobile: 'filters' } }],
+  ['Filtry: cenový úchyt', '/pletene-kosiky/', '#slider .ui-slider-handle', null, { size: true, open: { mobile: 'filters' } }],
+  ['Výpis: načíst další', '/pletene-kosiky/', '.listingControls .loadMore__button', null, { size: true }],
+  ['Výpis: nahoru', '/pletene-kosiky/', '.listingControls .goToTop__button', null, { size: true }],
+  ['Výpis: aktuální stránka', '/pletene-kosiky/', '.listingControls .pagination__currentPage', null, { size: true }],
+  ['Výpis: další stránka', '/pletene-kosiky/', '.listingControls .pagination__link--next', null, { size: true }],
   // Hodnocení obchodu nad patičkou (načítá se po posunu k patičce)
   ['Hodnocení obchodu: průměr', '/', '.as-shop-reviews__score', null, { scrollTo: '#footer' }],
   ['Hodnocení obchodu: nadpis', '/', '.as-shop-reviews__title', null, { scrollTo: '#footer' }],
@@ -133,6 +142,10 @@ async function read(page, selector, opts) {
       if (opts.open?.[device] === 'catalog') {
         await page.locator('.as-catalog__toggle').click();
         await page.waitForTimeout(400);
+      }
+      if (opts.open?.[device] === 'filters') {
+        await page.locator('[data-as-filter-trigger]').click();
+        await page.locator('#filters').waitFor({state: 'visible'});
       }
       if (opts.search) {
         if (device === 'mobile') await page.locator('#header .search-input').scrollIntoViewIfNeeded();

@@ -1,6 +1,7 @@
 // Lokální náhled skutečného HTML: port 8792 původní CSS, 8793 CSS-only Blank mode.
 // Zachovává JS Shoptetu, font z administrace a ostatní doplňky. Nastavení e-shopu nemění.
-// Povolené jsou jen veřejné GET/HEAD; objednávku ani jiné formuláře proxy neodešle.
+// Veřejné GET/HEAD a prázdný nativní POST pro dočtení produktů dvou testovacích kategorií.
+// Objednávku, košík ani jiné formuláře proxy neodešle.
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
@@ -13,7 +14,8 @@ const nativeStyle = /\/shop\/dist\/(?:main-\d+\.less|font-shoptet-\d+\.css)[^/]*
 
 export function rewriteHtml(html, blank) {
   const match = html.match(/window\.asteroidConfig\s*=\s*(\{[^\n]*\});/);
-  if (!match) throw new Error('Ve stránce chybí konfigurace aSteroid.');
+  // Nativní AJAX může vrátit jen HTML fragment, který nemá hlavičku s konfigurací.
+  if (!match) return html.replace(/(data-url|href)=(["'])https:\/\/313980\.myshoptet\.com\//g, '$1=$2/');
   const config = { ...JSON.parse(match[1]), styleMode: blank ? 'blank' : 'disco' };
   let result = html.replace(match[0], `window.asteroidConfig = ${JSON.stringify(config).replace(/</g, '\\u003c')};`);
   result = result.replace(/<link\b[^>]*>/gi, (tag) => {
@@ -25,6 +27,8 @@ export function rewriteHtml(html, blank) {
   const styles = styleFiles(config).map((name) => `<link rel="stylesheet" href="/__as/${name}.css" data-as-style="${name}">`).join('\n');
   result = result.replace(/<script\b[^>]*src=["'][^"']*\/asteroid\.js[^"']*["'][^>]*><\/script>/,
     `${styles}\n<script src="/__as/asteroid.js"></script>`);
+  // Nativní řazení používá data-url i pro AJAX a history.pushState. V náhledu zůstane na proxy.
+  result = result.replace(/(data-url|href)=(["'])https:\/\/313980\.myshoptet\.com\//g, '$1=$2/');
   return result;
 }
 
@@ -32,7 +36,10 @@ export function startPreview(port, blank) {
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url, 'http://localhost');
-      if (!['GET', 'HEAD'].includes(req.method) || /^\/admin(?:\/|$)/.test(url.pathname)) {
+      const readMore = req.method === 'POST'
+        && /^\/(pletene-kosiky|sperky)\/(?:strana-\d+\/)?$/.test(url.pathname)
+        && req.headers['x-shoptet-xhr'] === 'Shoptet_Coo7ai';
+      if ((!['GET', 'HEAD'].includes(req.method) && !readMore) || /^\/admin(?:\/|$)/.test(url.pathname)) {
         res.writeHead(405); return res.end('Náhled podporuje jen veřejné čtení.');
       }
       if (url.pathname.startsWith('/__as/')) {
@@ -43,11 +50,18 @@ export function startPreview(port, blank) {
         res.writeHead(200, { 'Content-Type': types[name.split('.').pop()], 'Cache-Control': 'no-store' });
         return res.end(body);
       }
+      if (readMore) {
+        // Načtení dalších produktů neposílá formulářová data. Jiný POST zůstává zakázaný.
+        for await (const chunk of req) {
+          if (chunk.length) { res.writeHead(405); return res.end('Formuláře nejsou v náhledu povolené.'); }
+        }
+      }
       const target = new URL(url.pathname + url.search, SHOP);
       const headers = { 'User-Agent': req.headers['user-agent'] || 'aSteroid local preview' };
       if (req.headers.cookie) headers.Cookie = req.headers.cookie;
       if (req.headers['x-requested-with']) headers['X-Requested-With'] = req.headers['x-requested-with'];
-      const upstream = await fetch(target, { headers, redirect: 'manual' });
+      if (req.headers['x-shoptet-xhr']) headers['X-Shoptet-XHR'] = req.headers['x-shoptet-xhr'];
+      const upstream = await fetch(target, { method: req.method, headers, redirect: 'manual' });
       if (upstream.headers.has('location')) {
         const next = new URL(upstream.headers.get('location'), SHOP);
         res.writeHead(upstream.status, { Location: next.origin === SHOP ? next.pathname + next.search : next.href });

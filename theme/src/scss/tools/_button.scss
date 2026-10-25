@@ -6,9 +6,10 @@
 @use "sass:map";
 @use "icon" as *;
 
-// Výška = okraje + řádek 20 / 16 px + rámeček 2 × 1 px (md 52 px, sm 36 px).
+// Výška = okraje + řádek + rámeček 2 × 1 px (md 52 px, sm 36 px, listing 48 px).
 $sizes: (
   md: (padding: 15px 31px, font-size: var(--as-font-size-body), line-height: 20px),
+  listing: (padding: 13px 19px, font-size: var(--as-font-size-body), line-height: 20px),
   sm: (padding: 9px 23px, font-size: var(--as-font-size-caption), line-height: 16px),
 );
 
@@ -77,6 +78,20 @@ $sizes: (
     border-color: var(--as-conversion);
     background: color-mix(in srgb, var(--as-conversion) 10%, #fff);
     color: var(--as-conversion);
+  }
+}
+
+// Neutrální rámeček (Figma Tertiary): řazení, stránkování a ovládání výpisu.
+@mixin tertiary {
+  border-color: var(--as-secondary-100);
+  background: var(--as-white);
+  color: var(--as-secondary-400);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--as-secondary-500);
+    background: var(--as-secondary-50);
+    color: var(--as-secondary-500);
   }
 }
 

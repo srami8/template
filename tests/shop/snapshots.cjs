@@ -17,6 +17,7 @@ const SHOP = process.env.SHOP_URL || 'https://313980.myshoptet.com';
 const PAGES = [
   ['home', '/', ['#header', '.banners-row', '.homepage-products-heading-1 + .products-wrapper', '.as-banner-mosaic', '.welcome-wrapper', '.homepage-blog-wrapper']],
   ['category', '/sperky/', ['.breadcrumbs', '.category-top', '.products-block', '.category-header']],
+  ['category-listing', '/pletene-kosiky/', ['.sidebar', '#category-header', '#products', '.listingControls']],
   ['articles', '/rubriky/nase-novinky/', ['#content']],
   ['article', '/rubriky/nase-novinky/testovaci-clanky-dolor/', ['#content']],
   ['terms', '/obchodni-podminky/', ['#content']],

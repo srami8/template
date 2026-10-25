@@ -34,3 +34,15 @@ Barvy vždy z administrace e-shopu (tokeny `--as-primary-*`, `--as-conversion` z
 ## Kontrola stejného vzhledu
 
 `npm run audit` porovná u každé komponenty na skutečném e-shopu vizuální vlastnosti na 1920 a 390 px (barvy, písmo, tloušťka, zaoblení, rámečky, podtržení, zarovnání, ikony). Rozložení (šířky, odsazení řádků, pozice) neporovnává. Novou komponentu přidej do seznamu v `tests/shop/audit.cjs`.
+
+## Ovládání výpisu kategorie
+
+| Prvek | Původní rozhraní | Jediný zdroj vzhledu |
+|---|---|---|
+| Sidebar a produktová mřížka | `.sidebar-left`, `.sidebar-inner`, `.category-content-wrapper`, `#products.products-block` | `components/_category-listing.scss`, vzhled karet dál současná varianta |
+| Řazení | `.listSorting__control`, `.sortingToggle` | `components/_category-listing.scss`, neutrální tlačítko z `tools/_button.scss` |
+| Stránkování, načíst další, nahoru | `.listingControls`, `.pagination__link`, `.pagination__currentPage`, `.loadMore__button`, `.goToTop__button` | `components/_category-listing.scss` + `button.tertiary`, `size(listing)` (48 px) |
+| Karty filtrů a cenový slider | `#filters .filter-section`, `.slider-wrapper`, `#slider` | `components/_category-filters.scss` |
+| Checkboxy filtrů | původní `input[type=checkbox] + label`, `.filter-count` | `tools/_checkbox.scss` + uspořádání/count v `components/_category-filters.scss`; jiné formuláře zatím nepřeváděné |
+
+Data a nativní obsluhu Shoptetu zachováváme; vlastní JS doplňuje pouze sbalení/aria a mobilní spouštěč s původním data-unveil. Podrobnosti: [kategorie.md](kategorie.md).

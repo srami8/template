@@ -1,7 +1,7 @@
 // Stránka kategorie (Figma: „Kategorie“ 112:3621): horní blok .category-top Disca s nadpisem,
 // popisem (.category-perex), podkategoriemi (ul.subcategories.with-image) a „Nejprodávanější“
 // (.products-top-wrapper > #productsTop). Vedle popisu může být blok článků (js/category-articles.js).
-// Filtry a řazení zatím podle Disca (návrh je doplní později).
+// Výpis, filtry, řazení a stránkování: components/_category-listing.scss.
 
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;

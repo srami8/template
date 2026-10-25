@@ -30,7 +30,7 @@ Snapshot neznamená automatickou kompatibilitu s budoucími změnami Shoptetu. A
 - `http://127.0.0.1:8792/`: nativní CSS + místní build aSteroidu.
 - `http://127.0.0.1:8793/`: nativní main/font CSS odstraněné, místní base-blank + aSteroid.
 
-Náhled nemění nastavení e-shopu a nepovoluje POST formuláře ani administraci. Zachovává nativní skripty, písmo a další doplňky, takže nejde o izolovanou HTML maketu. Je to simulace vypnutí CSS, nikoli důkaz skutečného přepnutí serverového režimu.
+Náhled nemění nastavení e-shopu a nepovoluje formuláře ani administraci. Výjimkou je prázdný nativní POST pro veřejné dočtení produktů kategorií Pletené košíky a Šperky, viz [kategorie.md](kategorie.md). Zachovává nativní skripty, písmo a další doplňky, takže nejde o izolovanou HTML maketu. Je to simulace vypnutí CSS, nikoli důkaz skutečného přepnutí serverového režimu.
 
 Dne 25. 10. 2026 byly v prohlížeči porovnány šířky 1920 a 390 px na homepage, kategorii, detailu produktu, prázdném košíku, výpisu a detailu článku, obchodních podmínkách, registraci, hledání, kontaktech a přihlášení. Kontrolovány rozměry a computed styly hlavních komponent, nulové nativní CSS linky a nulové horizontální přetékání. Vizuálně ověřena homepage a mobilní menu/formulář. Nativní mobilní menu včetně rychlých odkazů a zvýšení/snížení množství fungují.
 
