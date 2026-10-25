@@ -10,6 +10,8 @@ Základ: `34b7cfb` na `feature/responsive` (včetně poslední změny šířky o
 
 Ověření: build; 17 testů settings-app (nově souběh ukládání a obnovy, opakování po výpadku bez cache, záložní URL po 404 a změna verze po CSS-only úpravě); 2 testy stylů. Vzhled a markup Disca se nemění, žádné nové DOM komponenty. Integrace zachovává dosavadní zdroje dat a události.
 
+Nasazení: soubory theme nahrány přes SFTP, hlavička aktualizována jen pro testovací instalaci 313980. HTTP ověření potvrdilo mapu styleVersions a binární shodu živého asteroid.js s buildem (SHA256 432c4b1c0132). Původní checkout /Users/apple/aSteroid je aktualizovaný. **Server settings-app stále běží jako původní proces: sandbox odmítl jeho ukončení (Operation not permitted). Serverové opravy se aktivují po restartu v původním terminálu: Ctrl+C, potom npm run settings z kořene repozitáře.** Nedokončený restart není dokončené nasazení serverové části.
+
 ---
 
 # Aktualizace (Claude): stejná šířka obsahu na všech stránkách
