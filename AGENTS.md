@@ -79,3 +79,6 @@ Lokální testy responzivity používají izolované HTML a náhradní obsluhu r
 ## CSS-only Blank mode
 
 Majitel schválil verzovaný kompatibilní základ z Disca a jeho postupné čištění. `styleMode: blank` načte `base-blank.css` a lokální font ikon; HTML i JavaScript Shoptetu zůstávají původní. Neměnit šablonu na Classic a nevypínat nativní JS. Vendor snapshot v `theme/src/vendor/disco/` má zdroje a kontrolní součty v manifestu; aktualizace je samostatně kontrolovaná změna. Pravidla o `!important` platí pro vlastní kód, snapshot zachovává původní CSS. Postup a limity: [docs/blank-mode.md](docs/blank-mode.md).
+
+
+**Závazný cíl potvrzený majitelem:** při postupném převodu CSS zachovat současný vzhled a ovládání 1:1 na mobilu i desktopu. Kompatibilní snapshot je přechodná pojistka. Po komponentách nahrazovat jeho pravidla vlastním SCSS v existující architektuře aSteroidu; po ověření je odebírat z aktivního podkladu. Převod každé komponenty testovat s vypnutým nativním CSS i bez jejích pravidel ze snapshotu. Cílem je nakonec fungovat bez původního CSS Disca i bez celé jeho kopie. Nejde o redesign a nevypíná se nativní JS. Podrobný postup, podmínky dokončení a evidence jsou v [docs/blank-mode.md](docs/blank-mode.md#závazný-cíl-migrace--zadání-pro-claude-i-codex).

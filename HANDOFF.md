@@ -1,3 +1,16 @@
+# Rozhodnutí majitele: vlastní CSS při zachování vzhledu 1:1
+
+Navazuje na `7b9521c`, větev `feature/responsive`. Majitel potvrdil zapnutí volby Blank základu v aSteroidu a upřesnil dlouhodobý cíl: **postupně převzít CSS Disca do vlastních udržovatelných SCSS komponent aSteroidu tak, aby vypnutí výchozího CSS Shoptetu nezměnilo současný vzhled ani chování.**
+
+- Snapshot není konečné řešení. Po komponentách doplnit vlastní styly, ověřit je bez nativního CSS i bez odpovídajících pravidel snapshotu a až potom zmenšovat aktivní kompatibilní podklad.
+- Používat dosavadní architekturu Claude, společné mixiny, nativní HTML/třídy/události a JavaScript Shoptetu. Zachovat stejný vzhled jednotlivých prvků napříč zařízeními.
+- Kompletní zadání, pořadí práce, podmínky dokončení a evidence jsou v `docs/blank-mode.md`. Pokyn je také v `AGENTS.md`; nový `CLAUDE.md` odkazuje Claude přímo na tato pravidla.
+- První krok: referenční pokrytí plného/AJAX košíku a objednávkových stavů, potom inventura CSS závislostí. Převod snapshotu zatím nezačal. Vypnutí původního CSS v Shoptetu majitel dosud výslovně nepotvrdil.
+
+Tento commit mění pouze dokumentaci a pokyny. Kontrola: `git diff --check`; build ani vizuální testy nejsou pro tuto změnu potřeba. Dokument je předání pro Claude; nejde o potvrzení, že ho již přečetl.
+
+---
+
 # Aktualizace (Codex): příprava CSS-only Blank mode
 
 Majitel schválil kompatibilní verzovaný základ z Disca s následným čištěním. Základ této změny: `0bc49d6`, větev `feature/responsive`.
