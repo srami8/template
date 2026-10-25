@@ -15,8 +15,8 @@ Admin v nastavení šablony přiřadí ke kategorii existující články e-shop
    - obsah: `{ "categories": { "<GUID>": { "title": "…", "articles": [{ "title": "…", "url": "/cesta/" }] } } }`;
    - jen články viditelné na webu (`visible`) s datem zveřejnění, které už nastalo; skryté, smazané a budoucí se vynechají, kategorie bez platného článku v souboru není;
    - odpověď: `Cache-Control: public, max-age=300, stale-while-revalidate=86400, stale-if-error=86400`, `Access-Control-Allow-Origin: *`;
-   - server data z API obnovuje nejdřív po 10 minutách, na pozadí (návštěvník dostane hned poslední platná data); obnoví je i každé otevření nastavení; po neúspěšném pokusu zkouší znovu nejdřív za minutu;
-   - **chyba API nic nemaže**: zůstanou poslední zveřejněná data i uložená přiřazení.
+   - server data z API obnovuje nejdřív po 10 minutách, na pozadí (návštěvník dostane hned poslední platná data); obnoví je i každé otevření nastavení; po neúspěšném pokusu zkouší znovu nejdřív za minutu (i bez první úspěšné cache);
+   - **chyba API nic nemaže**: zůstanou poslední zveřejněná data i uložená přiřazení. Bez první úspěšné cache vrací endpoint HTTP 503, `no-store` a `Retry-After: 60`, aby se výpadek neuložil jako úspěšný prázdný výsledek. Obnova po dokončení API čte aktuální přiřazení z úložiště, takže nepřepíše změnu uloženou během požadavku.
 4. **Kód v e-shopu**: do `window.asteroidConfig.categoryArticles` jde jen adresa souboru s verzí `?v=<otisk přiřazení>` (jen když nějaké přiřazení existuje). Po uložení nastavení se tak soubor nevezme z mezipaměti prohlížeče. Samotná data v kódu hlavičky nejsou (limit 8192 znaků).
 5. **Šablona** (`theme/src/js/category-articles.js`, styly `components/_category.scss`)
    - kategorii pozná podle `dataLayer[…].shoptet.category.guid` (ne podle názvu ani adresy);

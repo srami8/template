@@ -46,3 +46,32 @@ test('the colour goes to the inserted code together with heading sizes', () => {
   assert.equal(rootStyle({ headings: { h1: 40 }, categoryTint: true, categoryTintColor: '#ffe8d6' }),
     '<style>:root{--as-heading-size-h1:40px;--as-category-tint:#ffe8d6}</style>');
 });
+
+
+test('the header includes versions for preview variants and updates them after CSS-only changes', async () => {
+  const { mkdtempSync, writeFileSync, rmSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { config } = await import('../src/config.mjs');
+  const { buildHeaderSnippet } = await import('../src/theme-config.mjs');
+  const { VARIANT_STYLES, BASE_STYLE } = await import('../../theme/src/js/styles.mjs');
+  const directory = mkdtempSync(join(tmpdir(), 'asteroid-versions-'));
+  const previous = { themeDist: config.themeDist, assetsVersion: config.assetsVersion };
+  try {
+    config.themeDist = directory;
+    config.assetsVersion = null;
+    const names = [BASE_STYLE, ...Object.values(VARIANT_STYLES).flatMap(({ prefix, values }) => values.map((value) => `${prefix}-${value}`))];
+    for (const name of names) writeFileSync(join(directory, `${name}.css`), name);
+    writeFileSync(join(directory, 'asteroid.js'), 'same JavaScript');
+    const readConfig = (html) => JSON.parse(html.match(/window.asteroidConfig = (.*);<\/script>/)[1]);
+    const before = buildHeaderSnippet({ header: 'v1' });
+    writeFileSync(join(directory, 'header-v2.css'), 'updated preview CSS');
+    const after = buildHeaderSnippet({ header: 'v1' });
+    assert.notEqual(readConfig(before).styleVersions['header-v2'], readConfig(after).styleVersions['header-v2']);
+    assert.equal(readConfig(before).styleVersions['header-v1'], readConfig(after).styleVersions['header-v1']);
+    assert.equal(before.match(/<script src="([^"]+)"/)[1], after.match(/<script src="([^"]+)"/)[1]);
+  } finally {
+    Object.assign(config, previous);
+    rmSync(directory, { recursive: true, force: true });
+  }
+});

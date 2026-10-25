@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { config } from './config.mjs';
-import { styleFiles } from '../../theme/src/js/styles.mjs';
+import { styleFiles, VARIANT_STYLES, BASE_STYLE } from '../../theme/src/js/styles.mjs';
 import { HEADING_SIZES, headingOverrides, headingStyle } from '../../theme/src/js/typography.mjs';
 import { assignmentsVersion, hasAssignments } from './category-articles.mjs';
 
@@ -293,8 +293,11 @@ export function buildHeaderSnippet(themeConfig) {
   const styles = styleFiles(themeConfig)
     .map((name) => `<link rel="stylesheet" href="${url(`${name}.css`)}" data-as-style="${name}">`)
     .join('\n');
+  // I náhled nezvolené varianty potřebuje vlastní otisk CSS, ne otisk JavaScriptu.
+  const names = [BASE_STYLE, ...Object.values(VARIANT_STYLES).flatMap(({ prefix, values }) => values.map((value) => `${prefix}-${value}`))];
+  const styleVersions = Object.fromEntries(names.map((name) => [name, assetsVersion(`${name}.css`)]));
   const html = `<!-- aSteroid -->
-<script>window.asteroidConfig = ${inlineJson(themeConfig)};</script>
+<script>window.asteroidConfig = ${inlineJson({ ...themeConfig, styleVersions })};</script>
 ${styles}${rootStyle(themeConfig) ? `\n${rootStyle(themeConfig)}` : ''}
 <script src="${url('asteroid.js')}"></script>`;
 

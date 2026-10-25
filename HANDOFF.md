@@ -1,3 +1,17 @@
+# Aktualizace (Codex): opravy z revize a převzetí vývoje
+
+Základ: `34b7cfb` na `feature/responsive` (včetně poslední změny šířky obsahu od Claude).
+
+- Obnova článků po dokončení API čte aktuální přiřazení z úložiště; souběžné uložení tak nepřepíše starým veřejným výstupem.
+- Minutová pauza po chybě API platí i bez první cache. Bez posledních dat veřejný endpoint vrací 503, no-store a Retry-After: 60.
+- Recenze i data článkových karet po HTTP 404 na `/cache/` zkusí původní adresu.
+- Vložený kód předává `styleVersions` pro všechny soubory variant. Náhled používá hash svého CSS; starší snippet bez mapy obchází cache časovou verzí.
+- Testovací příkaz settings-app používá explicitní glob souborů (funguje i na Node 24).
+
+Ověření: build; 17 testů settings-app (nově souběh ukládání a obnovy, opakování po výpadku bez cache, záložní URL po 404 a změna verze po CSS-only úpravě); 2 testy stylů. Vzhled a markup Disca se nemění, žádné nové DOM komponenty. Integrace zachovává dosavadní zdroje dat a události.
+
+---
+
 # Aktualizace (Claude): stejná šířka obsahu na všech stránkách
 
 **Zadání majitele:** všechny stránky mají mít stejnou šířku obsahu jako úvodní stránka. Schválil návrh s omezením šířky běžného textu.

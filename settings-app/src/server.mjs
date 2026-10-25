@@ -93,7 +93,7 @@ async function loadArticles(installation, eshopId) {
     saveInstallation(eshopId, {
       articlesCache: { items: articles, fetchedAt: new Date().toISOString() },
       categoryArticlesPublished: {
-        data: publishedCategoryArticles(installation.categoryArticles, articles),
+        data: publishedCategoryArticles(getInstallation(eshopId)?.categoryArticles, articles),
         builtAt: Date.now(),
       },
     });
@@ -272,11 +272,16 @@ async function handlePublicArticles(req, res, url) {
   }
 
   let published = installation.categoryArticlesPublished;
-  if (!published) {
+  if (!published && Date.now() - (lastRefresh.get(eshopId) || 0) > ARTICLES_RETRY) {
     await refreshPublishedArticles(eshopId);
     published = getInstallation(eshopId).categoryArticlesPublished;
-  } else if (Date.now() - published.builtAt > ARTICLES_REFRESH && Date.now() - (lastRefresh.get(eshopId) || 0) > ARTICLES_RETRY) {
+  } else if (published && Date.now() - published.builtAt > ARTICLES_REFRESH && Date.now() - (lastRefresh.get(eshopId) || 0) > ARTICLES_RETRY) {
     refreshPublishedArticles(eshopId);
+  }
+
+  if (!published) {
+    res.writeHead(503, { ...headers, 'Cache-Control': 'no-store', 'Retry-After': String(ARTICLES_RETRY / 1000) });
+    return res.end('{"categories":{}}');
   }
 
   res.writeHead(200, {

@@ -64,7 +64,8 @@ async function fetchPage(path) {
   for (const url of [`/cache${path}`, path]) {
     try {
       const response = await fetch(url, { credentials: 'omit' });
-      if (response.status === 404) return null;
+      // Nedostupná cache neznamená, že neexistuje běžná stránka.
+      if (response.status === 404) continue;
       if (response.ok) return new DOMParser().parseFromString(await response.text(), 'text/html');
     } catch {
       // Zkusí se běžná adresa.

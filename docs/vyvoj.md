@@ -65,7 +65,7 @@ Ikony (`icon`) jsou soubory v `theme/src/icons` (`npm run build:icons` → `scss
 - Seznam: `theme/src/js/styles.mjs` (`VARIANT_STYLES`), sdílí ho šablona i settings-app. Hodnota v `base` (např. `categoryLayout: default`) nemá soubor.
 - Nová varianta: soubor `theme/src/scss/variants/<prefix>-<hodnota>.scss`, hodnota ve `styles.mjs`, volba v `theme-config.mjs` + `views.mjs`, třída v `main.js`. Test `styles.spec.cjs` hlídá shodu seznamu a sestavených souborů.
 - Styly varianty jen pod její třídou na `<html>`, sdílené části jako mixiny v `scss/tools/`.
-- Verze souborů (`?v=`) je otisk obsahu každého souboru zvlášť; Shoptet je posílá s mezipamětí na rok.
+- Verze souborů (`?v=`) je otisk obsahu každého souboru zvlášť; vkládaný kód předává i mapu `styleVersions` pro náhledy nezvolených variant. Starší kód bez mapy při dočtení použije časovou verzi, aby nevzal starou cache. Shoptet je posílá s mezipamětí na rok.
 
 ## Kód šablony
 
@@ -104,7 +104,7 @@ Breakpointy (`tools/_breakpoints.scss`): `bp.desktop` od 768 px (jako Disco), `$
 - **AJAX Shoptetu** (řazení, filtry, stránkování) vymění `.category-top` i výpis a vyvolá `ShoptetDOMPageContentLoaded`. Na ni se znovu spouští `category.js`, `category-intro.js` a vykreslení článků; karty produktů hlídá MutationObserver. Nová úprava DOM v kategorii musí být idempotentní a navázaná na tuto událost.
 - **Bez posunu stránky:** rozložení, které závisí na obsahu, se rozhoduje v CSS (`:has()`), JS jen dokončí (přesun obrázku, vložení bloku). Místo se drží předem (zástupný blok, `.as-has-quicklinks`). U variant popisu kategorie je naměřené CLS 0,005–0,016.
 - **Specificita Disca:** Disco používá `#header`, `#navigation`, `#productsTop` …, naše pravidla potřebují stejnou specificitu. Každé `!important` s důvodem v komentáři.
-- **Hodnocení obchodu bez vlastního serveru:** blok čte stránku hodnocení obchodu z `/cache/<adresa>/` (nedokumentovaná, ale funkční serverová mezipaměť Shoptetu, obsah shodný s běžnou adresou, odpověď ~20 ms; při chybě se zkusí běžná adresa). Adresa stránky z odkazu na stránce, jinak podle jazyka. Šetrnost pro stovky e-shopů: stahuje se až po přiblížení k patičce (IntersectionObserver, 800 px) a jednou za 30 minut návštěvy (`sessionStorage`, i prázdný výsledek). Markup se čte přes `data-testid` (`textRatingAverage`, `textRatingAuthor`, `textRating` …).
+- **Hodnocení obchodu bez vlastního serveru:** blok čte stránku hodnocení obchodu z `/cache/<adresa>/` (nedokumentovaná, ale funkční serverová mezipaměť Shoptetu, obsah shodný s běžnou adresou, odpověď ~20 ms; při chybě včetně HTTP 404 se zkusí běžná adresa). Adresa stránky z odkazu na stránce, jinak podle jazyka. Šetrnost pro stovky e-shopů: stahuje se až po přiblížení k patičce (IntersectionObserver, 800 px) a jednou za 30 minut návštěvy (`sessionStorage`, i prázdný výsledek). Markup se čte přes `data-testid` (`textRatingAverage`, `textRatingAuthor`, `textRating` …).
 - **Pásy přes celou šířku okna** používají `--as-viewport-width` (ne `100vw`, ten zahrnuje posuvník). `#content` má na desktopu `padding-top: 20px` (Disco), pásy navazující na drobečky ho vyrovnávají.
 - **Barvy jen z tokenů**, žádná pevná barva z Figmy tam, kde má Shoptet nastavení.
 

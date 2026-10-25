@@ -91,7 +91,8 @@ async function load(path) {
   for (const url of [`/cache${path}`, path]) {
     try {
       const response = await fetch(url, { credentials: 'omit', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-      if (response.status === 404) return null;
+      // Nedostupná cache neznamená, že neexistuje běžná stránka.
+      if (response.status === 404) continue;
       if (response.ok) return parseRatingPage(await response.text());
     } catch {
       // Zkusí se běžná adresa.

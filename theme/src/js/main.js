@@ -66,7 +66,7 @@ const ownScript = document.currentScript;
 
 // Styly zvolených variant vkládá do stránky už kód z nastavení šablony (link[data-as-style]).
 // Chybějící dočteme: náhled jiné varianty (?asteroid-header=v2) nebo starší vložený kód, který
-// načítal jen asteroid.css. Vedle souboru šablony, se stejnou verzí jako skript.
+// načítal jen asteroid.css. Vedle souboru šablony, s vlastním otiskem CSS z vloženého kódu.
 function ensureStyles(config) {
   const source = ownScript?.src ? new URL(ownScript.src) : null;
   if (!source) return;
@@ -79,7 +79,9 @@ function ensureStyles(config) {
   styleFiles(config).filter((name) => !loaded.has(name)).forEach((name) => {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = new URL(`${name}.css${source.search}`, source).href;
+    // Starší vložený kód ještě nemá mapu otisků: při dočtení raději obejdeme starou cache.
+    const version = config.styleVersions?.[name] || Date.now();
+    link.href = new URL(`${name}.css?v=${encodeURIComponent(version)}`, source).href;
     link.dataset.asStyle = name;
     if (last) last.after(link);
     else document.head.append(link);
