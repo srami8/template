@@ -12,7 +12,7 @@ Ověření: build a integrita vendor souborů; 23 testů settings-app + 2 testy 
 
 Limity: další parametrické skupiny/obrázkové volby a „Zobrazit vše“ nejsou v datech testovací kategorie, je nutné je ověřit po doplnění dat. Zachovaný existující kontejner obsahu, jeho fonty a nastavení; odlišné produkty/texty a hlavní barva podle administrace jsou záměrně dynamické. Snapshot se neprořezával; nejde o dokončení migrace celého CSS.
 
-Nasazení: zatím lokální ověření; stav Git/SFTP bude doplněn po publikování.
+Nasazení: implementace `aa32d0a` je na GitHubu. Původní checkout `/Users/apple/aSteroid` aktualizovaný, build nahrán přes SFTP a hlavička zapsána pouze testovací instalaci 313980 se zachovaným `styleMode: blank`. HTTP kontrola CSS a JS: 200 a shodné SHA256. Živá kontrola potvrdila 262px sidebar, čtyři sloupce, dva ovladače sekcí a funkční mobilní Filtry/aria bez přetékání. E-shop stále načítá také dvě původní main/font CSS Disca; skutečný serverový přepínač nebyl měněn. Shoda bez těchto stylů byla ověřena v lokálním náhledu. Snímky nasazení: outputs/category-live-desktop.png, category-live-mobile.png. Restart settings-app není potřeba (serverový kód se neměnil).
 
 ---
 
