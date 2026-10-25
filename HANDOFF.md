@@ -1,3 +1,25 @@
+# Aktualizace (Claude): karta článku podle Figmy
+
+**Zadání majitele:** vzhled článku podle Figmy „Article“ (1627:5345) všude, kde se objevuje karta článku.
+
+**Kde Disco kartu vypisuje** (ověřeno na e-shopu): sekce nových článků na úvodní stránce (`.homepage-blog-wrapper .news-item`, odkaz přes celou kartu, bez data, s „Číst článek“) a výpis rubriky (`.news-wrapper article.news-item`, s `<time>`). Patička má jen textový seznam článků, hledání karty nevypisuje.
+
+**Řešení** (`components/_article-card.scss`, jedna komponenta pro oba markupy):
+- obrázek 3 : 2 se zaoblením 8 px (`object-fit: cover`), mezera k nadpisu 20 px;
+- nadpis H4, datum 12 px s novou ikonou `calendar-today` (z Figmy), perex 16 px / 1,7, rozestupy 12 px; „Číst článek“ skryté;
+- mřížka: telefon 1 sloupec, od 768 px 2, od 1200 px 3, mezera 20 / 40 px;
+- sekce na úvodní stránce přes šířku obsahu (Disco `.container-narrow` 1178 px);
+- zrušen záporný okraj Disca (−44 px), za úvodním textem 72 px jako mezi ostatními sekcemi (desktop i telefon).
+
+**Ověření**
+- Testy: nový `article-card.spec.cjs` (oba markupy, 3 / 2 / 1 sloupec, poměr obrázku, mezery, datum).
+- Snímky: změna jen v oblastech článků (nové oblasti `.homepage-blog-wrapper` a rubrika `.news-wrapper`).
+- Rozestup za úvodním textem změřen na e-shopu: 72 px na 1920 i 390 px.
+- Audit: nové položky karty článku.
+- Dokumentace: příručka (stránky, rozměr obrázku článku), komponenty.md, docs/vyvoj.md.
+
+---
+
 # Aktualizace (Claude): hodnocení obchodu nad patičkou
 
 **Zadání majitele:** nad patičkou na každé stránce celkové hodnocení obchodu a 4 nejnovější recenze s prokliknutím na /hodnoceni-obchodu/ (návrh jako obrázek). Šablonu může mít až 500 e-shopů. Postup přes `/cache/hodnoceni-obchodu/` podle šablony Merkur, s vylepšeními.

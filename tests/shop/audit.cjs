@@ -63,6 +63,14 @@ const ITEMS = [
   ['Hodnocení obchodu: odkaz', '/', '.as-shop-reviews__all', null, { size: true, scrollTo: '#footer' }],
   ['Hodnocení obchodu: text recenze', '/', '.as-shop-reviews__text', null, { size: true, scrollTo: '#footer' }],
   ['Hodnocení obchodu: autor', '/', '.as-shop-reviews__author', null, { size: true, scrollTo: '#footer' }],
+  // Karta článku (úvodní stránka a výpis rubriky)
+  ['Článek: obrázek', '/rubriky/nase-novinky/', '.news-wrapper .news-item-link-img', null, {}],
+  ['Článek: nadpis', '/rubriky/nase-novinky/', '.news-wrapper .news-item > h2', null, { size: true }],
+  ['Článek: datum', '/rubriky/nase-novinky/', '.news-wrapper .news-item > time', null, { size: true }],
+  ['Článek: ikona data', '/rubriky/nase-novinky/', '.news-wrapper .news-item > time', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor', 'width'] }],
+  ['Článek: perex', '/rubriky/nase-novinky/', '.news-wrapper .news-item .description', null, { size: true }],
+  ['Článek na úvodní stránce: nadpis', '/', '.homepage-blog-wrapper .news-item .title', null, { size: true }],
+  ['Článek na úvodní stránce: obrázek', '/', '.homepage-blog-wrapper .news-item .image', null, {}],
   // Karta produktu
   ['Karta: název', '/sperky/', '.products-block .p .name', null, { size: true }],
   ['Karta: cena', '/sperky/', '.products-block .p .price-final', null, { size: true }],

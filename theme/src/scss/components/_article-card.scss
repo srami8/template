@@ -1,0 +1,156 @@
+// Karta článku (Figma „Article“ 1627:5345): obrázek 3 : 2 se zaoblením 8 px, pod ním nadpis H4,
+// datum s ikonou kalendáře a perex. Stejná všude, kde Disco článek vypisuje jako kartu (.news-item):
+//   úvodní stránka (.homepage-blog-wrapper): .news-item > a > .image > img + .text > .title, .description, .read-article
+//   výpis rubriky (.news-wrapper): article.news-item > a.news-item-link-img > img + h2 > a + time + .description
+// „Číst článek“ v návrhu není (celá karta je odkaz). Výpis: telefon 1 sloupec, od 768 px 2, od 1200 px 3.
+
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+.as-theme :is(.homepage-blog-wrapper, .news-wrapper) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px 20px;
+  // Disco sekci na úvodní stránce zasouvá záporným okrajem (−44 px) do odsazení úvodního textu.
+  margin: 0;
+
+  // Nadpis sekce na úvodní stránce přes všechny sloupce.
+  > .homepage-group-title {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  // Clearfix Bootstrapu (.row) by byl v mřížce další buňkou.
+  &::before,
+  &::after {
+    content: none;
+  }
+
+  @include bp.desktop {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: bp.$wide) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+// Sekce článků na úvodní stránce přes celou šířku obsahu (Disco ji dává do .container-narrow, 1178 px).
+.as-theme .container-narrow:has(> .homepage-blog-wrapper) {
+  width: auto;
+  max-width: none;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+// Za úvodním textem 72 px od jeho obsahu jako mezi ostatními sekcemi (úvodní text má dole odsazení
+// 44 px, na telefonu Disco navíc okraj 44 px).
+.as-theme .welcome-wrapper + .container-narrow:has(> .homepage-blog-wrapper) {
+  margin-top: -16px;
+
+  @include bp.desktop {
+    margin-top: 28px;
+  }
+}
+
+.as-theme .news-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  float: none;
+  width: auto;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+
+  // Úvodní stránka: celá karta je jeden odkaz.
+  > a:not(.news-item-link-img),
+  > a > .text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  // Obrázek 3 : 2, mezera k nadpisu 20 px (12 px mezera karty + 8 px).
+  > a > .image,
+  > .news-item-link-img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    margin: 0 0 8px;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--as-secondary-50);
+    // Disco obal obrázku na telefonu centruje, vzhled má být všude stejný.
+    text-align: left;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      object-fit: cover;
+    }
+  }
+
+  // Nadpis H4 (úvodní stránka .title, výpis h2 > a).
+  .title,
+  > h2 {
+    display: block;
+    margin: 0;
+    padding: 0;
+    color: var(--as-secondary-500);
+    font-family: var(--as-font-family-headings);
+    font-size: var(--as-font-size-h4);
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: left;
+    overflow-wrap: anywhere;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+
+  > a:hover .title,
+  > h2 a:hover {
+    color: var(--as-primary-600);
+  }
+
+  > time {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    color: var(--as-secondary-300);
+    font-size: 12px;
+    line-height: 1.4;
+
+    &::before {
+      @include icon(calendar-today, 12px);
+    }
+  }
+
+  .description {
+    margin: 0;
+    color: var(--as-secondary-400);
+    font-size: var(--as-font-size-body);
+    line-height: 1.7;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .read-article {
+    display: none;
+  }
+}
