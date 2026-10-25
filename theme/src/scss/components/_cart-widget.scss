@@ -215,6 +215,8 @@
   #cart-widget .cart-widget-bottom {
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 15px;
     margin: 0;
     padding: 24px 32px 32px;
     border: 0;
@@ -222,6 +224,7 @@
   }
 
   #cart-widget .cart-widget-button {
+    order: 1;
     width: auto;
     margin: 0;
     padding: 0;
@@ -231,6 +234,87 @@
       @include button.size(md);
       @include button.conversion;
       @include button.chevron;
+    }
+  }
+
+  // Text, částku i procento dodává Shoptet. Pouze vzhled původní cart-free-shipping.
+  #cart-widget .cart-free-shipping {
+    display: block;
+    position: relative;
+    inset: auto;
+    height: auto;
+    order: 0;
+    flex: 1 0 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 0 28px;
+    color: var(--as-secondary-500);
+    font-size: var(--as-font-size-small);
+    font-weight: 400;
+    line-height: 1.2;
+    text-align: left;
+
+    &::before {
+      @include icon(local-shipping, 20px);
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: var(--as-primary-500);
+    }
+
+    > div:not(.price-range),
+    > div > div:not(.price-range) {
+      display: block;
+      margin: 0;
+      padding: 0;
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    strong {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: 600;
+      line-height: inherit;
+      color: inherit;
+    }
+
+    .price-range {
+      display: block;
+      width: calc(100% + 28px);
+      max-width: none;
+      height: 4px;
+      margin: 8px 0 0 -28px;
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+      border-radius: var(--as-radius-pill);
+      background: var(--as-secondary-75);
+
+      > div {
+        height: 100%;
+        border-radius: inherit;
+        background: var(--as-primary-500);
+      }
+
+      &::before,
+      &::after {
+        content: none;
+      }
+    }
+
+    // Při dosažení dopravy zdarma Shoptet vrací jen potvrzení, bez původního progress baru.
+    &:not(:has(.price-range))::after {
+      content: "";
+      display: block;
+      width: calc(100% + 28px);
+      height: 4px;
+      margin: 8px 0 0 -28px;
+      border-radius: var(--as-radius-pill);
+      background: var(--as-primary-500);
     }
   }
 
@@ -347,22 +431,103 @@
   }
 
   @include bp.mobile {
-    // Polohu a otevírání panelu ponecháváme Discu, delší obsah včetně tlačítka se posouvá společně.
+    body.cart-window-visible::before {
+      position: fixed;
+      inset: 0;
+      z-index: 1002;
+      width: 100%;
+      height: 100%;
+      background: rgb(0 0 0 / 60%);
+      opacity: 1;
+    }
+
+    // Pravý panel Figmy 300 px, na užším displeji nejvýše dostupná šířka.
     #cart-widget.popup-widget {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 1003;
+      width: 300px;
+      max-width: var(--as-viewport-width, 100vw);
+      height: 100dvh;
+      max-height: 100dvh;
+      margin: 0;
       padding: 0;
-      max-height: calc(100dvh - var(--as-mobile-header-height, 80px));
+      border: 0;
+      border-radius: 0;
+      overflow: hidden;
+      overscroll-behavior: contain;
+      box-shadow: none;
+
+      &::before {
+        content: none;
+      }
+    }
+
+    #cart-widget .cart-widget-inner {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      padding: 0;
+      border-radius: 0;
+    }
+
+    #cart-widget .as-cart-header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      flex: 0 0 48px;
+      height: 48px;
+      border-bottom: 1px solid var(--as-secondary-75);
+      background: var(--as-white);
+    }
+
+    #cart-widget .as-cart-close {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--as-secondary-600);
+      cursor: pointer;
+
+      &::before {
+        @include icon(close, 24px);
+      }
+    }
+
+    // Posouvá se jen seznam, zavření a pokračování zůstávají dostupné.
+    #cart-widget .cart-widget-inner.full .cart-widget-products {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 0;
+      height: auto;
+      max-height: none;
+      overflow-x: hidden;
       overflow-y: auto;
       overscroll-behavior: contain;
     }
 
-    #cart-widget .cart-widget-inner { border-radius: 0; }
+    #cart-widget .cart-widget-products-inner {
+      padding: 0 16px;
+    }
 
     #cart-widget .cart-widget-inner.full .cart-widget-product {
       display: grid;
-      grid-template-columns: minmax(94px, auto) minmax(0, 1fr) 24px;
-      grid-template-areas: "image name name" "amount price remove";
-      gap: 12px;
-      padding: 16px;
+      // První řádek 48px obrázek + název; ve druhém má stejné počítadlo vlastní šířku 94px.
+      grid-template-columns: 48px 38px minmax(0, 1fr) 16px;
+      grid-template-areas: "image name name name" "amount amount price remove";
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
     }
 
     #cart-widget .cart-widget-product-image { grid-area: image; }
@@ -376,22 +541,44 @@
     #cart-widget .cart-widget-product-delete {
       grid-area: remove;
       visibility: visible;
-      width: auto;
-      .remove-item { width: 24px; height: 44px; align-items: center; justify-content: center; }
+      width: 16px;
+      .remove-item {
+        width: 32px;
+        height: 36px;
+        margin-left: -8px;
+        align-items: center;
+        justify-content: center;
+      }
     }
 
-    #cart-widget .cart-widget-bottom { padding: 20px 16px; }
+    #cart-widget .cart-widget-bottom {
+      display: flex;
+      flex: 0 0 auto;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      gap: 15px;
+      max-height: 50dvh;
+      overflow-y: auto;
+      padding: 16px 16px max(16px, env(safe-area-inset-bottom));
+      background: var(--as-white);
+      box-shadow: 0 -2px 2px rgb(0 0 0 / 13%);
+    }
+    #cart-widget .cart-free-shipping { flex: none; }
     #cart-widget .cart-widget-button {
       width: 100%;
       .btn { width: 100%; padding-right: 16px; padding-left: 16px; white-space: normal; }
     }
 
     #cart-widget .cart-widget-inner:not(.full) {
-      padding: 24px 16px;
+      padding: 0;
+      overflow-y: auto;
+      .cart-widget-products { flex: 0 0 auto; padding: 24px 16px 0; }
+      .cart-widget-products-inner { padding: 0; }
       .cart-widget-product { grid-template-columns: 48px minmax(0, 1fr); column-gap: 12px; }
       .cart-widget-product::before { width: 48px; height: 48px; }
     }
-    #cart-widget .as-cart-contact { grid-template-columns: 48px minmax(0, 1fr); column-gap: 12px; }
+    #cart-widget .as-cart-contact { grid-template-columns: 48px minmax(0, 1fr); column-gap: 12px; padding: 24px 16px; }
     #cart-widget .as-cart-contact__photo { width: 48px; height: 48px; }
     #cart-widget .as-cart-contact__link { min-height: 44px; overflow-wrap: anywhere; min-width: 0; }
   }

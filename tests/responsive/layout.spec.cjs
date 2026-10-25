@@ -531,3 +531,34 @@ test('breadcrumbs: full-width bar with home icon on desktop, only the last link 
   expect(mobile.visible).toEqual(['Šperky']);
   await noPageOverflow(page);
 });
+
+
+test('mobile cart drawer matches the design and keeps its footer reachable', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await load(page);
+  await page.locator('.cart-widget-products-inner').evaluate(list=>{
+    const original=list.firstElementChild;
+    for(let i=0;i<12;i++) list.append(original.cloneNode(true));
+  });
+  const trigger=page.locator('#header .cart-count');
+  await expect(trigger).not.toHaveAttribute('data-redirect','true');
+  await trigger.click();
+  const panel=page.locator('#cart-widget');
+  const box=await panel.boundingBox();
+  expect(box.x).toBe(90);
+  expect(box.y).toBe(0);
+  expect(box.width).toBe(300);
+  expect(box.height).toBe(844);
+  expect((await panel.locator('.as-cart-header').boundingBox()).height).toBe(48);
+  expect(await panel.locator('.cart-widget-products').evaluate(el=>el.scrollHeight>el.clientHeight)).toBe(true);
+  const before=await panel.locator('.cart-widget-bottom').boundingBox();
+  await panel.locator('.cart-widget-products').evaluate(el=>el.scrollTop=el.scrollHeight);
+  const after=await panel.locator('.cart-widget-bottom').boundingBox();
+  expect(after).toEqual(before);
+  expect(after.y+after.height).toBe(844);
+  await panel.locator('.as-cart-close').click();
+  await expect(page.locator('body')).not.toHaveClass(/cart-window-visible/);
+  await page.setViewportSize({width:1280,height:900});
+  await expect(trigger).toHaveAttribute('data-redirect','true');
+  await expect(page.locator('.as-cart-close')).toHaveCount(0);
+});

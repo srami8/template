@@ -6,6 +6,7 @@ Pravidla práce a spolupráce: [AGENTS.md](../AGENTS.md). Zadání a principy: [
 
 | Dokument | Obsah |
 |---|---|
+| [cart-widget.md](cart-widget.md) | mobilní panel košíku, nativní ovládání a doprava zdarma |
 | [kategorie.md](kategorie.md) | sidebar, filtry, řazení a stránkování kategorie |
 | [blank-mode.md](blank-mode.md) | zapnutí CSS-only Blank mode, návrat a správa kompatibilního základu |
 | [komponenty.md](komponenty.md) | prvky Disca, kde se vypisují a kde je jejich jediný zdroj vzhledu |

@@ -36,6 +36,31 @@ function addContactToEmpty(widget, contact) {
   inner.append(contactCard(contact, CONTACT_CLASS));
 }
 
+// Mobilní návrh má vlastní zavření, které původní markup okna neobsahuje.
+// Používá delegované hide-content-windows Shoptetu, nikoli jinou obsluhu košíku.
+function mobileHeader(widget, trigger, mobile) {
+  const inner = widget.querySelector('.cart-widget-inner');
+  if (!inner) return;
+  const current = inner.querySelector(':scope > .as-cart-header');
+  if (!mobile) {
+    if (current?.contains(document.activeElement)) trigger.focus();
+    current?.remove();
+    return;
+  }
+  if (current) return;
+  const lang = (document.documentElement.lang || 'cs').slice(0, 2);
+  const labels = { cs: 'Zavřít košík', sk: 'Zatvoriť košík', en: 'Close cart' };
+  const header = document.createElement('div');
+  header.className = 'as-cart-header';
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'as-cart-close toggle-window hide-content-windows';
+  close.setAttribute('aria-label', labels[lang] || labels.en);
+  close.addEventListener('click', () => requestAnimationFrame(() => trigger.focus()));
+  header.append(close);
+  inner.prepend(header);
+}
+
 export function enhanceCart() {
   const button = document.querySelector('#header .cart-count[data-target="cart"]');
   const widget = document.getElementById('cart-widget');
@@ -58,8 +83,20 @@ export function enhanceCart() {
   });
 
   const contact = contactFromShop();
-  if (contact) {
-    new MutationObserver(() => addContactToEmpty(widget, contact))
-      .observe(widget, { childList: true, subtree: true });
-  }
+  const mobile = window.matchMedia('(max-width: 767px)');
+  const redirect = button.getAttribute('data-redirect');
+  const update = () => {
+    mobileHeader(widget, button, mobile.matches);
+    if (contact) addContactToEmpty(widget, contact);
+  };
+  const syncMobile = () => {
+    // Bez atributu data-redirect nativní click/Enter otevře popup místo přechodu na /kosik/.
+    // Touch obsluhu, načtení dat i změny množství dál zajišťuje Shoptet.
+    if (mobile.matches) button.removeAttribute('data-redirect');
+    else if (redirect !== null) button.setAttribute('data-redirect', redirect);
+    update();
+  };
+  new MutationObserver(update).observe(widget, { childList: true, subtree: true });
+  mobile.addEventListener('change', syncMobile);
+  syncMobile();
 }

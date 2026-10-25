@@ -1,3 +1,17 @@
+# Aktualizace (Codex): mobilní panel košíku podle 1631:7130
+
+Navazuje na `1bbebe7`, větev `feature/responsive`. Mobil má pravý 300px panel přes 100dvh, 48px hlavičku se zavřením, dvouřádkové produkty a spodní pevné pokračování + skutečnou informaci o dopravě zdarma. Sdílené mixiny tlačítek a množství zůstávají stejné jako na desktopu. Podrobnosti a návod pro obchodníka: `docs/cart-widget.md`.
+
+Původní Shoptet desktopové/mobilní přepínače měly data-redirect=true. Na mobilu ho nyní dočasně odstraňujeme, takže nativní click/Enter otevře stávající popup; desktopový atribut se obnoví. Žádná nová košíková logika. Nová hlavička s tlačítkem používá nativní hide-content-windows; observer ji idempotentně obnovuje po AJAX. Mobilní breakpointy řídí jen umístění a rozložení. Nová ikona local-shipping je z Figmy; produktová data a obrázky zůstávají živé.
+
+Majitel zapnul nativní informace o dopravě zdarma; nyní server dodává cart-free-shipping s potvrzením dosažení hranice. Nepřebíráme pevnou částku 193 Kč z návrhu ani 700 Kč z banneru. Nativní procenta progress baru se zachovávají.
+
+Lokální měření potvrdilo panel x=90 při 390 px / x=20 při 320 px, šířku 300 px, hlavičku 48 px, zachovaný footer na dolním okraji a nativní zavření s návratem fokusu. Nová regresní kontrola dlouhého seznamu je v layout.spec.cjs, původní testovací stub zná i hide-content-windows. Browserové testy stále blokuje sandbox (MachPortRendezvous), nejsou označené za prošlé. Následuje živé ověření nativního AJAXu, odebrání a prázdného stavu po nasazení. Snímek původního veřejného markupu slouží jen k lokálnímu náhledu; skryté hodnoty z něj byly odstraněné.
+
+Nasazení a výsledek živé kontroly budou doplněné po publikování. Další aktivní zadání: mobilní kategorie podle uzlů 1633:10268 a 1633:10605; majitel potvrdil 4,5 řádku podkategorií. Toto předání se týká dokončovaného košíku, mobilní kategorie navazuje samostatným celkem.
+
+---
+
 # Aktualizace (Codex): kategorie – sidebar, filtry, řazení a stránkování
 
 Zadání majitele: implementovat návrh Figma `1631:7129` (řazení v sousední vrstvě `1631:6967`) nad původním Discem. Základ `00bef19`, větev `feature/responsive`. Podrobný popis v `docs/kategorie.md` (včetně návodu pro obchodníka).
