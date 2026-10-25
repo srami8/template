@@ -194,7 +194,8 @@ test('category articles on a phone come after the description and before subcate
   const perex = await box(p, '.category-perex');
   const articles = await box(p, '.as-category-articles');
   expect(Math.round(articles.width)).toBe(358);
-  expect(Math.round(articles.y - (perex.y + perex.height))).toBe(32);
+  const toggle = await box(p, '[data-as-disclosure="intro"]');
+  expect(Math.round(articles.y - (toggle.y + toggle.height))).toBe(32);
 });
 
 test('no block without valid articles, unsafe links are dropped', async ({page: p}) => {

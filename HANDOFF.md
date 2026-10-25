@@ -9,7 +9,7 @@ Navazuje na `d3d3594`, větev `feature/responsive`. Majitel potvrdil ořez podka
 
 Ověření: build, 23 settings-app + 2 styles testy prošly. Automatický audit/browserové testy blokuje start Chromia v sandboxu (MachPortRendezvous); nejsou potvrzené jako prošlé. Náhradní přímé ověření v in-app prohlížeči: bez nativního CSS stock 13 → 11, řazení, AJAX zachová panel bez duplikací, zavření a klávesnice. Šířky 320/390/767/768/992/1920 bez přetékání, návrat desktopového sidebaru. 12 položek a články z regresní fixture: ořez 308 px, pátý řádek na 280 px, rozbaleno 404 px, stále 12 položek; skutečné Šperky se 4 položkami bez nadbytečného tlačítka. Další parametrické skupiny na testovacím e-shopu chybějí. Snapshot Disca se neprořezával; migrace celého CSS není dokončená. Externí Claude Docs není upravená.
 
-Nasazení: bude doplněno po publikování a živé kontrole. Restart settings-app není potřeba, server se nemění.
+Nasazení implementace `489356d`: GitHub feature/responsive, původní checkout aktualizovaný, SFTP soubory a snippet pouze instalace 313980. HTTP 200 a shodné SHA256 pro CSS/JS/category-image-wide. styleMode zůstává blank, server stále načítá i dvě nativní CSS Disca. Živá kontrola: panel 300 × 844 při 390 px, popis 95 px, stock 13 → 11, zavření klepnutím na křížek a rozbalení popisu. Košík klepnutím otevře 300px panel bez navigace; po zvětšení obnoví data-redirect a 580px desktopové okno bez mobilní hlavičky. Nulové přetékání. Důkaz outputs/category-mobile-filters-live.png. Následná drobná oprava drží tlačítko Číst více před články i při pozdním načtení dat; ověřeno na dlouhém popisu v regresní fixture (95 → 285,6 px, články se odhalí s mezerou 32 px od tlačítka). Restart settings-app není potřeba, server se nemění.
 
 ---
 

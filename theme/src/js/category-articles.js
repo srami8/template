@@ -55,7 +55,8 @@ function render(entry) {
   block.append(heading, list);
 
   // Za popis (na telefonu tak před podkategorie), bez popisu za nadpis kategorie.
-  const anchor = top.querySelector(':scope > .category-perex') || top.querySelector(':scope > .category-title');
+  const anchor = top.querySelector(':scope > [data-as-disclosure="intro"]')
+    || top.querySelector(':scope > .category-perex') || top.querySelector(':scope > .category-title');
   if (anchor) anchor.after(block);
   else top.prepend(block);
   enhanceCategoryDisclosure();
