@@ -9,7 +9,7 @@ Zadání majitele: automaticky domýšlet související UX, zejména animované 
 
 Kontroly: build, 23 settings-app + 2 styles testy prošly. Audit nadále blokuje start Chromia (MachPortRendezvous / permission denied), browserové regresní testy nejsou označené za prošlé. Rozšířená fixture má stub nativního hideContentWindows; nová kontrola testuje capture i při zastaveném bublání, obě animace, opakování, inert/fokus a reduced-motion. V in-app prohlížeči nad skutečným Shoptetem bez nativního CSS ověřeno: oba panely při otevření začínají posunem 300 px, po dojetí 0; po tapnutí se stav zavře okamžitě, animace doběhne do 300 px a visibility:hidden. Filtr stock 13 → 11 zachová otevřený panel bez duplicit. Zavřené panely inert, nulové přetékání, nativní body scroll-lock.
 
-Nasazení a živá kontrola budou doplněné po publikování. Nastavení serveru ani globální Blank mode se nemění.
+Nasazeno jako `85b514c` na GitHub feature/responsive a SFTP; snippet zapsán pouze instalaci 313980 se zachovaným styleMode:blank. HTTP 200 + shodné SHA256 pro CSS/JS. Živý e-shop se dvěma nativními CSS: košík při vyjíždění změřen na translateX(294,276 px), po dojetí 0; tap na overlay zavře stav, vrátí fokus a aria-expanded:false, po dojetí translateX(300 px)/visibility:hidden/inert. Totéž ověřeno pro filtry včetně stock 13 → 11 po AJAXu. Při změně šířky 390 → 1920 → 390 se obnoví desktopový sidebar/redirect a po návratu je dialog zavřený, bez přetékání. Snímek outputs/mobile-drawer-behavior-live.png. Nastavení serveru ani globální Blank mode se nemění.
 
 ---
 
