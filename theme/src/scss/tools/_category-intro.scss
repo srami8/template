@@ -65,6 +65,13 @@ $with-image: ":is(.as-intro-media, :has(> .category-perex img))";
     z-index: -2;
   }
 
+  @include bp.mobile {
+    grid-template-rows: $padding-mobile auto auto auto auto $padding-mobile;
+    > [data-as-disclosure="intro"] { grid-row: 4; }
+    > .as-category-articles { grid-row: 5; }
+    &::before { grid-row-end: 7; }
+  }
+
   @include bp.desktop {
     grid-template-rows: $padding auto auto auto $padding;
 
@@ -98,6 +105,7 @@ $with-image: ":is(.as-intro-media, :has(> .category-perex img))";
   }
 
   .as-category-articles__title,
+  > .as-category-expand,
   .as-category-articles__list a,
   .as-category-articles__list a:hover,
   .as-category-articles__list a::before {
@@ -190,6 +198,12 @@ $side-gap: 72px;
       grid-row: 4;
     }
 
+    @include bp.mobile {
+      grid-template-rows: auto auto auto auto auto;
+      > [data-as-disclosure="intro"] { grid-row: 4; }
+      > .as-category-articles { grid-row: 5; }
+    }
+
     // Obrázek a do jeho přesunu (js/category-intro.js) stejně velký zástupný blok.
     > .as-category-intro__media,
     &:not(.as-intro-media)::after {
@@ -276,6 +290,11 @@ $side-gap: 72px;
       z-index: -1;
       // Vlastní barva z nastavení šablony (vkládaný kód), jinak světlý odstín hlavní barvy.
       background: var(--as-category-tint, var(--as-primary-50));
+    }
+
+    @include bp.mobile {
+      grid-template-rows: auto auto auto auto auto $side-padding-mobile;
+      &::before { grid-row-end: 7; }
     }
 
     @if not $wide {

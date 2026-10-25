@@ -8,7 +8,7 @@ Vzhled kategorie se používá automaticky. Horní popis, podkategorie a nejprod
 
 Filtry se nastavují v Shoptetu: prvek **Filtry** v **Vzhled a obsah → Šablony → Prvky** a jeho obsah v **Nastavení → Produkty → Parametrické filtry**. Samotný prvek Kategorie filtry nenahrazuje. U parametrů musí být nastavené přiřazení ke kategorii a hodnoty na produktech. Pokud server filtr nevypíše, aSteroid ho nevymýšlí z názvů produktů. Při této integraci se zpočátku vracel jen prázdný blok kategorií; po změně nastavení se začaly vypisovat cena a příznaky.
 
-Sekce filtrů lze sbalit jejich nadpisem. Na telefonu se celé filtry otevírají tlačítkem **Filtry**, řazení zůstává rozbalovací. Na desktopu je řazení řádkem záložek. V nabídce jsou skutečné možnosti Shoptetu (testovací e-shop má např. Abecedně, nikoli Nejnovější z návrhu). Text „Načíst další“ a počet určuje Shoptet podle zbývajících položek, nikoli pevné číslo z Figmy.
+Sekce filtrů lze sbalit jejich nadpisem. Na telefonu se celé filtry otevírají tlačítkem **Filtry** v pravém panelu. Řazení je řádkem záložek, na telefonu posuvným prstem. V nabídce jsou skutečné možnosti Shoptetu (testovací e-shop má např. Abecedně, nikoli Nejnovější z návrhu). Text „Načíst další“ a počet určuje Shoptet podle zbývajících položek, nikoli pevné číslo z Figmy.
 
 ## Implementace
 
@@ -34,3 +34,16 @@ Do auditu a snímků přidané ovládání výpisu a kategorie Pletené košíky
 Náhled `npm run preview:blank` navíc přeposílá prázdný nativní POST pro dočtení produktů **jen** na stránky kategorií Pletené košíky a Šperky s hlavičkou Shoptetu. Objednávkové/košíkové formuláře zůstávají nepovolené. HTML fragmenty bez hlavičky se zachovají, vlastní adresy e-shopu v odkazech a data-url se převádějí na lokální cestu, aby AJAX neopustil náhled.
 
 Další parametrické skupiny, barevné/obrázkové volby a dlouhý seznam se „Zobrazit vše“ v testovací kategorii zatím nejsou. Jejich skutečnou integraci je nutné ověřit po vyplnění dat; kontrola ceny a příznaků nenahrazuje ověření těchto typů. Kompatibilní snapshot Disca se v tomto celku neprořezává a úplná migrace CSS tím není dokončená.
+
+
+## Mobilní kategorie (1633:10268, 1633:10605)
+
+Popis se na telefonu ořízne na 95 px. **Číst více** odhalí zbytek textu i přiřazené články; opětovným stiskem se sbalí. Odkaz se nabídne také u krátkého popisu s články, bez obsahu k rozbalení se nenabízí. Články se dál přiřazují v dosavadním nastavení aSteroidu, text a obrázek popisu v administraci kategorie Shoptetu. Funguje i s obrázkovými a barevnými variantami úvodu.
+
+Podkategorie jsou ve dvou sloupcích s kartou 58 px, obrázkem 40 px a mezerou 8 px. Majitel potvrdil **4,5 řádku** (8 celých karet + náhled dalších dvou), nikoli 4,5 karty. Ořez 308 px zahrnuje horní odsazení 16 px. Při delším seznamu tlačítko **Zobrazit všechny kategorie** rozbalí původní položky; při kratším není potřeba. Na desktopu se popis, články i seznam zobrazují celé. Nejprodávanější na mobilu ukazuje jednu celou kartu, šipky má vpravo u nadpisu a nadále podporuje posun prstem/o jednu kartu.
+
+Mobilní **Filtry** (52 px) jsou nad posuvnými záložkami řazení. Panel má 300 px, celou dostupnou výšku, ztmavení 60 % a souvislé bílé sekce. Zavření: křížek, Escape nebo pozadí. Klávesnice zůstává v otevřeném panelu; po zavření se fokus vrací na spouštěč. Sekce lze sbalit jako na desktopu. Filtry, formuláře, ceny, parametry, řazení a AJAX dál obsluhuje Shoptet; inputy se nekopírují. Po AJAXu se obnoví doplňující ovládání a stav panelu. Dostupné volby řazení zůstávají z administrace, žádné vymyšlené „Nejnovější“.
+
+Technicky: `js/category-disclosure.js` doplňuje tlačítka a stavové atributy, sleduje změny rozměrů a obnovuje se i po asynchronním přidání článků. `category-filters.js` přidává hlavičku/zavření, aria a klávesnici nad nativním `data-unveil=filters`. Společné mixiny `tools/_drawer.scss` využívá i mobilní košík. Ikona `tune.svg` pochází z Figmy a používá stávající systém masek. Ostatní ikony se znovu používají.
+
+Ověření této úpravy: build, 23 testů settings-app a 2 testy registrace stylů prošly. Automatický audit opět skončil při startu Chromia (MachPortRendezvous / permission denied), nikoli na asercích; browserové regresní testy nejsou označené za prošlé. In-app prohlížeč nad skutečným HTML/JS Shoptetu bez nativního CSS: stock 13 → 11, AJAX řazení, zachování otevřeného panelu, Escape, návrat fokusu a zavření pozadím. Šířky 320/390/767/768/992/1920 bez vodorovného přetékání, desktopový sidebar a mobilní dialog se správně přepínají. Krátký seznam skutečných Šperků nemá nadbytečné rozbalení; 12 podkategorií a asynchronní články ověřené v lokální fixture regresního testu: 308 px, pátý řádek začíná na 280 px, po rozbalení 404 px a stále 12 položek. Parametrické skupiny, které testovací e-shop nevrací, zůstávají neověřené. Externí příručka Claude Docs není tímto zápisem upravená.

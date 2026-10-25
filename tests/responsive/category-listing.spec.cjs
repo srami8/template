@@ -61,8 +61,9 @@ test('responsive: controls stay available and the document never overflows', asy
     await expect(page.locator('.pagination')).toBeVisible();
     await expect(page.locator('.goToTop__button')).toBeVisible();
     if (width < 768) {
-      await expect(page.locator('.sortingToggle')).toBeVisible();
-      await expect(page.locator('.listSorting__controls')).toBeHidden();
+      await expect(page.locator('.sortingToggle')).toBeHidden();
+      await expect(page.locator('.listSorting__controls')).toBeVisible();
+      expect(await page.locator('.listSorting__controls').evaluate(el => getComputedStyle(el).overflowX)).toBe('auto');
     } else {
       await expect(page.locator('.sortingToggle')).toBeHidden();
       await expect(page.locator('.listSorting__control').first()).toBeVisible();

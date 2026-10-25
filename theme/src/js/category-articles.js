@@ -5,6 +5,8 @@
 // v hlavičce před kódem šablony, takže soubor se stahuje hned při čtení hlavičky a blok se vloží
 // na DOMContentLoaded (většinou už s daty, bez posunu obsahu). Prohlížeč soubor drží v mezipaměti.
 
+import { enhanceCategoryDisclosure } from './category-disclosure.js';
+
 function categoryGuid() {
   const layer = Array.isArray(window.dataLayer) ? window.dataLayer : [];
   const shoptet = layer.find((entry) => entry && entry.shoptet)?.shoptet;
@@ -56,6 +58,7 @@ function render(entry) {
   const anchor = top.querySelector(':scope > .category-perex') || top.querySelector(':scope > .category-title');
   if (anchor) anchor.after(block);
   else top.prepend(block);
+  enhanceCategoryDisclosure();
 }
 
 export function renderCategoryArticles(pending) {

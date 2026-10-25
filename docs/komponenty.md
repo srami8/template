@@ -46,3 +46,5 @@ Barvy vždy z administrace e-shopu (tokeny `--as-primary-*`, `--as-conversion` z
 | Checkboxy filtrů | původní `input[type=checkbox] + label`, `.filter-count` | `tools/_checkbox.scss` + uspořádání/count v `components/_category-filters.scss`; jiné formuláře zatím nepřeváděné |
 
 Data a nativní obsluhu Shoptetu zachováváme; vlastní JS doplňuje pouze sbalení/aria a mobilní spouštěč s původním data-unveil. Podrobnosti: [kategorie.md](kategorie.md).
+
+- `tools/_drawer.scss`: společná geometrie mobilního pravého panelu, overlay a zavření; používají `components/_cart-widget.scss` a `_category-filters.scss`. Obsah i akce zůstávají nativní. Mobilní rozbalení kategorií doplňuje `js/category-disclosure.js`, nepřesouvá původní obsah.

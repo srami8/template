@@ -160,3 +160,5 @@ Testy izolovaných stránek: každá stránka v nové záložce (`setContent` po
 - Hlavička **V3** je v nastavení, ale nemá vlastní styly (soubor ani pravidla `.as-header-v3`).
 - Sidebar, příznakové/cenové filtry, řazení a stránkování podle návrhu 1631:7129; implementace a ověření v [kategorie.md](kategorie.md). Další parametrické skupiny je nutné ověřit nad daty.
 - Úložiště settings-app je JSON soubor, ne databáze.
+
+Mobilní kategorie podle Figmy (ořez popisu/článků, 4,5 řádku podkategorií, posuvné řazení a pravý panel filtrů): [kategorie.md](kategorie.md#mobilní-kategorie-163310268-163310605). Sdílený panel košíku/filtrů je v `tools/_drawer.scss`; nativní data a AJAX se nenahrazují.

@@ -1,4 +1,5 @@
 import { enhanceCategoryFilters } from "./category-filters.js";
+import { enhanceCategoryDisclosure } from "./category-disclosure.js";
 
 // Stránka kategorie (styly components/_category.scss). Disco vypisuje „Nejprodávanější“
 // (#productsTop) jako zalamovaný seznam karet bez tlačítek a pod ním „Zobrazit více“. Podle návrhu
@@ -74,10 +75,12 @@ export function enhanceCategory() {
   if (!document.body.classList.contains('type-category')) return;
   enhanceBestsellers();
   enhanceCategoryFilters();
+  enhanceCategoryDisclosure();
   // Řazení, filtry a stránkování Shoptet načítá přes AJAX a .category-top vymění celou. Událost
   // přijde hned po výměně (před vykreslením), pás se tak vytvoří znovu bez probliknutí.
   document.addEventListener('ShoptetDOMPageContentLoaded', () => {
     enhanceBestsellers();
     enhanceCategoryFilters();
+    enhanceCategoryDisclosure();
   });
 }

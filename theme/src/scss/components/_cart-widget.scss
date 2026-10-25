@@ -7,6 +7,7 @@
 //   Prázdný košík: .cart-widget-inner bez .full, v .cart-widget-product jen text Shoptetu.
 // Doplněk .as-cart-contact a pozici okna (--as-popup-top / --as-popup-right) přidává js/cart.js.
 
+@use "../tools/drawer";
 @use "../tools/icon" as *;
 @use "../tools/button";
 @use "../tools/breakpoints" as bp;
@@ -431,32 +432,12 @@
   }
 
   @include bp.mobile {
-    body.cart-window-visible::before {
-      position: fixed;
-      inset: 0;
-      z-index: 1002;
-      width: 100%;
-      height: 100%;
-      background: rgb(0 0 0 / 60%);
-      opacity: 1;
-    }
+    body.cart-window-visible::before { @include drawer.overlay; }
 
     // Pravý panel Figmy 300 px, na užším displeji nejvýše dostupná šířka.
     #cart-widget.popup-widget {
-      position: fixed;
-      inset: 0 0 0 auto;
-      z-index: 1003;
-      width: 300px;
-      max-width: var(--as-viewport-width, 100vw);
-      height: 100dvh;
-      max-height: 100dvh;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
+      @include drawer.panel;
       overflow: hidden;
-      overscroll-behavior: contain;
-      box-shadow: none;
 
       &::before {
         content: none;
@@ -483,26 +464,7 @@
       background: var(--as-white);
     }
 
-    #cart-widget .as-cart-close {
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: var(--as-secondary-600);
-      cursor: pointer;
-
-      &::before {
-        @include icon(close, 24px);
-      }
-    }
+    #cart-widget .as-cart-close { @include drawer.close; }
 
     // Posouvá se jen seznam, zavření a pokračování zůstávají dostupné.
     #cart-widget .cart-widget-inner.full .cart-widget-products {

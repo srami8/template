@@ -84,8 +84,9 @@ test('subcategories fill the row as buttons of the same height', async ({page: p
 
   await p.setViewportSize({width: 390, height: 844});
   const mobile = await boxes(p, '.subcategories a');
-  expect(mobile[1].y).toBe(mobile[0].y + 72 + 10);
-  expect(mobile[0].width).toBe(350);
+  expect(mobile[1].y).toBe(mobile[0].y);
+  expect(mobile[2].y).toBe(mobile[0].y + 58 + 8);
+  expect(mobile[0].width).toBe(175);
 });
 
 test('bestsellers are a scrolling strip with arrows and a detail button', async ({page: p}) => {
@@ -134,13 +135,14 @@ test('bestsellers without overflow have no arrows', async ({page: p}) => {
 });
 
 // Vlastní stránka: setContent ponechává window, skript šablony by se podruhé nespustil.
-test('bestsellers on a phone show part of the next card', async ({page: p}) => {
+test('bestsellers on a phone show one full card and heading arrows', async ({page: p}) => {
   await p.setViewportSize({width: 390, height: 844});
   await p.setContent(page());
   const list = await box(p, '#productsTop');
   const cards = await boxes(p, '#productsTop > .product');
-  expect(cards[0].width).toBe(Math.round(list.width * 0.88));
-  expect(cards[1].x).toBeLessThan(list.x + list.width);
+  expect(cards[0].width).toBe(Math.round(list.width));
+  expect(cards[1].x).toBeGreaterThan(list.x + list.width);
+  await expect(p.locator('.as-bestsellers .navigation-next')).toBeVisible();
 });
 
 test('category articles sit beside the description on a desktop, in the stored order', async ({page: p}) => {
@@ -186,10 +188,12 @@ test('category articles on a phone come after the description and before subcate
   await p.setContent(page(5, {articles: true}));
   await expect(p.locator('.as-category-articles')).toHaveCount(1);
   await expect(p.locator('.as-category-articles__title')).toHaveText('Poradna');
-  expect(await p.locator('.category-perex + .as-category-articles + .subcategories').count()).toBe(1);
+  await expect(p.locator('.as-category-articles')).toBeHidden();
+  await p.locator('[data-as-disclosure="intro"]').click();
+  await expect(p.locator('.as-category-articles')).toBeVisible();
   const perex = await box(p, '.category-perex');
   const articles = await box(p, '.as-category-articles');
-  expect(Math.round(articles.width)).toBe(350);
+  expect(Math.round(articles.width)).toBe(358);
   expect(Math.round(articles.y - (perex.y + perex.height))).toBe(32);
 });
 
@@ -276,8 +280,9 @@ test('category layout "image" on a phone: image on top, then title, description 
   await p.setViewportSize({width: 390, height: 844});
   await p.setContent(page(3, {articles: true, layout: 'image', image: true}));
   await expect(p.locator('.as-category-articles')).toHaveCount(1);
+  await p.locator('[data-as-disclosure="intro"]').click();
   const d = await intro(p);
-  expect(d.figure.width).toBe(350);
+  expect(d.figure.width).toBe(358);
   expect(d.title.y).toBeGreaterThanOrEqual(d.figure.bottom + 24);
   expect(d.articles.y).toBeGreaterThan(d.perex.bottom);
   expect(d.listColumns).toBe('auto');
@@ -342,6 +347,7 @@ test('background colour is shown also for a category without an image (default l
     await serve(p, articleData(four));
     await p.setContent(page(3, {articles: true, layout, tint: true, tintColor: '#1e3a5f', tintDark: true}));
     await expect(p.locator('.as-category-articles')).toHaveCount(1);
+    if (width < 768) await p.locator('[data-as-disclosure="intro"]').click();
     const d = await intro(p);
     expect(d.figure).toBeNull();
     // Pruh přes celé okno ve zvolené barvě, navazuje na drobečky, text uvnitř odsazený (64 px, telefon 32 px).
@@ -409,4 +415,29 @@ test('custom background colour from the settings; on a dark colour the text is w
     getComputedStyle(document.querySelector('.as-category-articles__list a'), '::before').color,
   ]);
   expect(colors).toEqual(['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgb(255, 255, 255)']);
+});
+
+
+test('mobile: description reveals articles, 4.5 subcategory rows expand without duplication', async ({page: p}) => {
+  await serve(p, articleData(four));
+  await p.setViewportSize({width: 390, height: 844});
+  let html = page(3, {articles: true});
+  html = html.replace(/<ul class="subcategories with-image">[\s\S]*?<\/ul>/,
+    `<ul class="subcategories with-image">${Array.from({length: 12}, (_, i) => subcategory(i + 1)).join('')}</ul>`);
+  await p.setContent(html);
+  await expect(p.locator('.as-category-articles')).toBeHidden();
+  const subcategories = p.locator('.subcategories');
+  await expect(subcategories).toHaveCSS('max-height', '308px');
+  expect((await subcategories.boundingBox()).height).toBe(308);
+  const items = await boxes(p, '.subcategories a');
+  const bounds = await subcategories.boundingBox();
+  expect(items[8].y - bounds.y).toBe(280);
+  await p.locator('[data-as-disclosure="subcategories"]').click();
+  expect((await subcategories.boundingBox()).height).toBeGreaterThan(308);
+  await expect(subcategories.locator('li')).toHaveCount(12);
+  await p.locator('[data-as-disclosure="intro"]').click();
+  await expect(p.locator('.as-category-articles')).toBeVisible();
+  await p.setViewportSize({width: 1920, height: 1080});
+  await expect(p.locator('[data-as-disclosure="subcategories"]')).toBeHidden();
+  await expect(p.locator('.as-category-articles')).toBeVisible();
 });

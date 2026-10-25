@@ -2,6 +2,7 @@
 // do #filters-wrapper. Vzhled je společný pro obě polohy; nativní JS posuvníku se nemění.
 @use "../tools/breakpoints" as bp;
 @use "../tools/checkbox";
+@use "../tools/drawer";
 @use "../tools/button";
 @use "../tools/icon" as *;
 
@@ -289,6 +290,49 @@
 
     #filters-wrapper:has(.filters-wrapper) {
       margin-bottom: 20px;
+    }
+  }
+}
+
+// Filtrace 1633:10605: stejný panel jako košík, původní sekce bez samostatných karet.
+.as-theme body.type-category {
+  .as-filter-header { display: none; }
+  @include bp.mobile {
+    &.filters-visible { overflow: hidden; }
+    &.filters-visible::before { @include drawer.overlay; }
+    .filters-unveil-button-wrapper .unveil-button {
+      @include button.size(md);
+      &::before { content: none; }
+      &::after { @include icon(tune, 20px); }
+    }
+    #filters {
+      @include drawer.panel;
+      gap: 0;
+      overflow-y: auto;
+      background: var(--as-white);
+      .as-filter-header {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        order: 0;
+        display: block;
+        flex: 0 0 45px;
+        height: 45px;
+        border-bottom: 1px solid var(--as-secondary-75);
+        background: var(--as-white);
+      }
+      .as-filter-close { @include drawer.close(0, 6px); }
+      .filter-section input[type="checkbox"] + label,
+      .filter-count,
+      .slider-header { font-size: var(--as-font-size-small); }
+      .filter-section, .slider-wrapper {
+        flex: 0 0 auto;
+        padding: 24px 16px;
+        border: 0;
+        border-bottom: 1px solid var(--as-secondary-75);
+        border-radius: 0;
+        > h4 { font-size: var(--as-font-size-body); }
+      }
     }
   }
 }

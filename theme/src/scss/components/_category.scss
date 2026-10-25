@@ -458,3 +458,87 @@ $section-gap: 40px;
     }
   }
 }
+
+// Mobilní návrh 1633:10268. Původní seznam a popis se pouze oříznou, nezdvojují.
+.as-theme .category-top {
+  > .as-category-expand { display: none; }
+
+  @include bp.mobile {
+    margin-top: 24px;
+    margin-bottom: 32px;
+    > .category-title { margin-bottom: 8px; font-size: calc(var(--as-font-size-h1) * .833333); }
+    > .category-perex { font-size: var(--as-font-size-small); }
+    &[data-as-intro-collapsed="true"] {
+      > .category-perex { max-height: 95px; overflow: hidden; }
+      > .as-category-articles { display: none; }
+    }
+    > .as-category-expand {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
+      width: fit-content;
+      margin: 8px 0 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--as-primary-500);
+      font: inherit;
+      font-size: var(--as-font-size-small);
+      text-decoration: underline;
+      cursor: pointer;
+      &::after { @include icon(expand-more, 20px); }
+      &[aria-expanded="true"]::after { transform: rotate(180deg); }
+      &[hidden] { display: none; }
+    }
+    > .subcategories {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 58px;
+      align-content: start;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 16px;
+      a { height: 58px; gap: 12px; }
+      a::after { content: none; }
+      .image { flex-basis: 40px; width: 40px; height: 40px; }
+      .text { font-size: var(--as-font-size-small); }
+    }
+    &[data-as-subcategories-collapsed="true"] > .subcategories {
+      max-height: 308px;
+      overflow: hidden;
+    }
+    > [data-as-disclosure="subcategories"] {
+      justify-content: center;
+      width: 100%;
+      margin: 0;
+      padding: 16px 0;
+      border-block: 1px solid var(--as-secondary-75);
+    }
+    .products-top-wrapper { margin-top: 24px; }
+    .products-top-header { padding-right: 80px; font-size: var(--as-font-size-h5); }
+  }
+}
+
+.as-theme .as-bestsellers {
+  @include bp.mobile {
+    .product { flex-basis: 100%; }
+    .product-slider-navigation {
+      display: flex;
+      top: -44px;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--as-secondary-75);
+      box-shadow: none;
+    }
+    .navigation-prev { left: auto; right: 40px; }
+    .navigation-next { right: 0; }
+    #productsTop .product {
+      .p { grid-template-columns: 78px minmax(0, 1fr); min-height: 134px; padding: 16px; column-gap: 16px; }
+      .p > .image { width: 78px; height: 78px; }
+      .name { font-size: var(--as-font-size-small); }
+      .p-in, .p-in-in { gap: 8px; }
+      .as-detail-button { min-width: 94px; }
+      .price-save { top: 60px; left: 60px; }
+    }
+  }
+}

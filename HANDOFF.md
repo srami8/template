@@ -1,3 +1,18 @@
+# Aktualizace (Codex): mobilní kategorie podle Figmy
+
+Navazuje na `d3d3594`, větev `feature/responsive`. Majitel potvrdil ořez podkategorií na **4,5 řádku** podle 1633:10268. Podrobnosti, návod pro obchodníka, ověření a limity: `docs/kategorie.md`.
+
+- Popis 95 px + Číst více, které odhalí také přiřazené články. Krátký popis bez článků se zbytečně nesbaluje. Obnovuje se po AJAXu i po asynchronním načtení článků, funguje ve variantách s obrázkem/barevným pruhem.
+- Podkategorie 2 sloupce, karty 58 px / obrázek 40 px / mezera 8 px, ořez 308 px, rozbalení původních položek bez kopírování. Nejprodávanější: jedna celá mobilní karta a šipky u nadpisu.
+- Posuvné záložky řazení z původních tlačítek/data-url. Filtry před řazením; nativní obsah ve 300px pravém panelu, zavření křížkem/Escape/pozadím, klávesnice a návrat fokusu. Checkboxy, slider, formuláře a AJAX dál řídí Shoptet.
+- Přidaná pouze ovládací tlačítka, hlavička panelu a stavové atributy; seznamy ani formuláře se nepřesouvají. Nativní přesun filtrů provádí detectFilters(). Sdílený Sass drawer využívá i košík; ikona tune je z Figmy, ostatní ze stávající sady.
+
+Ověření: build, 23 settings-app + 2 styles testy prošly. Automatický audit/browserové testy blokuje start Chromia v sandboxu (MachPortRendezvous); nejsou potvrzené jako prošlé. Náhradní přímé ověření v in-app prohlížeči: bez nativního CSS stock 13 → 11, řazení, AJAX zachová panel bez duplikací, zavření a klávesnice. Šířky 320/390/767/768/992/1920 bez přetékání, návrat desktopového sidebaru. 12 položek a články z regresní fixture: ořez 308 px, pátý řádek na 280 px, rozbaleno 404 px, stále 12 položek; skutečné Šperky se 4 položkami bez nadbytečného tlačítka. Další parametrické skupiny na testovacím e-shopu chybějí. Snapshot Disca se neprořezával; migrace celého CSS není dokončená. Externí Claude Docs není upravená.
+
+Nasazení: bude doplněno po publikování a živé kontrole. Restart settings-app není potřeba, server se nemění.
+
+---
+
 # Aktualizace (Codex): mobilní panel košíku podle 1631:7130
 
 Navazuje na `1bbebe7`, větev `feature/responsive`. Mobil má pravý 300px panel přes 100dvh, 48px hlavičku se zavřením, dvouřádkové produkty a spodní pevné pokračování + skutečnou informaci o dopravě zdarma. Sdílené mixiny tlačítek a množství zůstávají stejné jako na desktopu. Podrobnosti a návod pro obchodníka: `docs/cart-widget.md`.
@@ -6,9 +21,9 @@ Původní Shoptet desktopové/mobilní přepínače měly data-redirect=true. Na
 
 Majitel zapnul nativní informace o dopravě zdarma; nyní server dodává cart-free-shipping s potvrzením dosažení hranice. Nepřebíráme pevnou částku 193 Kč z návrhu ani 700 Kč z banneru. Nativní procenta progress baru se zachovávají.
 
-Lokální měření potvrdilo panel x=90 při 390 px / x=20 při 320 px, šířku 300 px, hlavičku 48 px, zachovaný footer na dolním okraji a nativní zavření s návratem fokusu. Nová regresní kontrola dlouhého seznamu je v layout.spec.cjs, původní testovací stub zná i hide-content-windows. Browserové testy stále blokuje sandbox (MachPortRendezvous), nejsou označené za prošlé. Následuje živé ověření nativního AJAXu, odebrání a prázdného stavu po nasazení. Snímek původního veřejného markupu slouží jen k lokálnímu náhledu; skryté hodnoty z něj byly odstraněné.
+Lokální měření potvrdilo panel x=90 při 390 px / x=20 při 320 px, šířku 300 px, hlavičku 48 px, zachovaný footer na dolním okraji a nativní zavření s návratem fokusu. Nová regresní kontrola dlouhého seznamu je v layout.spec.cjs, původní testovací stub zná i hide-content-windows. Browserové testy stále blokuje sandbox (MachPortRendezvous), nejsou označené za prošlé. Živé ověření po nasazení potvrdilo nativní množství 1 → 2, odebrání do prázdného stavu, jedinou hlavičku a kontakt; testovací produkt byl následně odebrán. Snímek původního veřejného markupu slouží jen k lokálnímu náhledu; skryté hodnoty z něj byly odstraněné.
 
-Nasazení a výsledek živé kontroly budou doplněné po publikování. Další aktivní zadání: mobilní kategorie podle uzlů 1633:10268 a 1633:10605; majitel potvrdil 4,5 řádku podkategorií. Toto předání se týká dokončovaného košíku, mobilní kategorie navazuje samostatným celkem.
+Nasazeno a na GitHubu jako `d3d3594`. Ověřená skutečná informace dopravy: limit 1199 Kč, při košíku 200 Kč zbývá 999 Kč, progress 16,68 %, footer 144,6 px. Hodnoty pocházejí ze Shoptetu; nejsou v kódu. Snímek outputs/mobile-cart-live.png. Mobilní kategorie navazuje následujícím celkem.
 
 ---
 
