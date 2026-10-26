@@ -41,6 +41,9 @@ test('cart keeps native forms and controls, enables keyboard expansion and resto
  await expect(page.locator('.show-related').first()).toHaveAttribute('aria-expanded','true');
  await expect(page.locator('tr.related').first()).toBeVisible();
  await expect(page.locator('.quantity .increase').first()).toBeFocused();
+ // Druhá výměna bez nového focusin: obnova musí uložit i nově zaměřené tlačítko.
+ await page.evaluate(content=>{document.querySelector('.content-inner').innerHTML=content;document.dispatchEvent(new CustomEvent('ShoptetDOMCartContentLoaded'));},original);
+ await expect(page.locator('.quantity .increase').first()).toBeFocused();
  await expect(page.locator('.quantity-form').first()).toHaveAttribute('action','/action/Cart/setCartItemAmount/');
  await expect(page.locator('[data-testid="formDiscountCoupon"]')).toHaveAttribute('action','/action/Cart/addDiscountCoupon/');
  await expect(page.locator('#continue-order-button')).toHaveAttribute('href','/objednavka/krok-1/');

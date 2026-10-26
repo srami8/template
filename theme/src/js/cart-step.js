@@ -50,13 +50,14 @@ export function enhanceCartStep() {
   if (unveiled) window.shoptet?.images?.unveil?.();
   syncCoupon();
   if (lastFocus && !document.contains(lastFocus.node) && [document.body, document.documentElement].includes(document.activeElement)) {
-    const row = rows.find(item => rowKey(item) === lastFocus.key);
-    const target = row?.querySelector(lastFocus.selector) || rows[0]?.querySelector('.main-link') || document.getElementById('content');
+    const pendingFocus = lastFocus;
+    lastFocus = null;
+    const row = rows.find(item => rowKey(item) === pendingFocus.key);
+    const target = row?.querySelector(pendingFocus.selector) || rows[0]?.querySelector('.main-link') || document.getElementById('content');
     if (target) {
       if (target.id === 'content') target.tabIndex = -1;
       target.focus({ preventScroll: true });
     }
-    lastFocus = null;
   }
 }
 
