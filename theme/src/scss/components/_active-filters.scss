@@ -54,8 +54,6 @@
 
   @include bp.mobile {
     .category-content-wrapper > .active-filters { order: 2; margin-bottom: 24px; }
-    .category-content-wrapper > #category-header { order: 3; }
-    .category-content-wrapper > :is(#products, .listingControls, #productsListHeading) { order: 4; }
     .category-content-wrapper:has(> .active-filters) #filters-wrapper:has(.filters-wrapper) {
       margin-bottom: 16px;
       .unveil-button { margin-bottom: 0; }

@@ -1,3 +1,11 @@
+# Oprava (Codex): spodní popis kategorie na mobilu
+
+Základ `7136fef`, větev feature/responsive. Regrese z aktivních filtrů: produkty a stránkování dostaly order:4, ale nativní .category__secondDescription zůstala na order:3, a proto předběhla produkty i bez vybraného filtru. Žádný přesun popisu nebyl zadán. Mobilní layout nyní dává společné order:4 všemu běžnému obsahu a zachovává jeho nativní DOM pořadí; před něj posouvá pouze #filters-wrapper (1), .active-filters (2) a #category-header (3). Odstraněné duplicitní pořadí v _active-filters.scss. Bez změny JS, HTML, desktopu nebo nastavení administrace.
+
+Ověření: build a 3 statické testy stylů prošly; nový regresní test zahrnuje spodní popis za produkty i stránkováním, s/bez aktivních štítků při 320/390/767/768/1920 px. Chromium se v sandboxu nespustí (MachPortRendezvous), takže browserový test ani audit nejsou označené za prošlé. Stejné pořadí nad skutečným HTML ověřené in-app prohlížečem v lokálním Blank náhledu při uvedených pěti šířkách a se dvěma aktivními filtry na mobilu; popis je pod stránkováním.
+
+---
+
 # Úprava (Codex): jeden společný CSS základ štítků a nativní třídy
 
 Základ `13f1ca9`, větev feature/responsive. Majitel požaduje sdílení také ve výsledném CSS a maximální využití tříd Disca. Původní tools/tag.base sdílel zdroj SCSS, ale při každém include kopíroval deklarace. Nyní veřejné mixiny používají interní Sass placeholder: sestaví se jediné společné pravidlo pro původní searchWhisperer__additionalResults__link a .active-filters .input, stejně tak hover/focus. Varianta s křížkem řeší pouze rozdílné vykreslení tlačítka a ikonu.

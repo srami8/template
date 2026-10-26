@@ -56,3 +56,5 @@ Mobilní filtrace sdílí s košíkem animaci vysunutí/zavření 250 ms ease (s
 Mobilní čára pod řazením: odstraněné spodní odsazení 16 px na #category-header, aby společný border-bottom přesně navazoval na aktivní záložku stejně jako na desktopu. Rozložení a nativní ovládání řazení zůstávají. Ověřeno v náhledu bez nativního CSS při 320/390/767 a 1920 px: rozdíl spodních hran 0 px, bez přetékání. Na úzkém desktopu 768 px se existující záložky nadále zalamují do více řádků; desktopové styly tato oprava nemění.
 
 Aktivní filtry jako štítky s křížkem, vymazání všech a oba mobilní přehledy: [návod a implementace](active-filters.md). Používají společný vzhled štítků našeptávače a nativní rušení filtrů Shoptetu.
+
+Spodní popis kategorie (`.category__secondDescription`) zůstává na mobilu i desktopu za produkty a stránkováním. Mobilní CSS posouvá dopředu pouze filtry, aktivní štítky a řazení; zbytek zachovává původní pořadí Disca. Při přidání dalšího bloku kontrolovat i spodní popis, ne jen ovladače nad výpisem.

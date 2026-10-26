@@ -333,11 +333,12 @@
       white-space: nowrap;
     }
 
-    // Nativní filtr zůstává v #filters-wrapper; pořadí mění pouze layout.
+    // Dopředu patří jen filtr, aktivní štítky a řazení. Zbytek zachovává pořadí
+    // Disca, včetně spodního popisu za produkty a stránkováním.
     .category-content-wrapper { display: flex; flex-direction: column; }
-    .category-content-wrapper > * { order: 3; }
+    .category-content-wrapper > * { order: 4; }
     .category-content-wrapper > #filters-wrapper { order: 1; }
-    .category-content-wrapper > #category-header { order: 2; }
+    .category-content-wrapper > #category-header { order: 3; }
 
     .listingControls {
       margin-top: 40px;

@@ -19,8 +19,30 @@ function html(sidebar = false) {
 <h2 class="sr-only" id="productsListHeading">Výpis produktů</h2><div id="products" class="products products-page products-block">${Array.from({length: 8}, (_, i) => `<div class="product"><div class="p">Produkt ${i + 1}</div></div>`).join('')}</div>
 <div class="listingControls"><h3 class="sr-only">Ovládací prvky výpisu</h3><div class="loadMore"><button class="loadMore__button loadMore__button--products btn btn-secondary js-loadMore__button--products" data-url="/kategorie/strana-2/" type="button">Načíst další 4</button></div>
 <nav class="pagination"><h4 class="sr-only">Stránkování</h4><ul class="pagination__list"><li><strong class="pagination__currentPage" aria-current="page">1</strong></li><li><a class="pagination__link pagination__link--next btn btn-secondary" href="/kategorie/strana-2/" aria-label="Další"></a></li><li><a class="pagination__link pagination__link--last" href="/kategorie/strana-2/">2</a></li></ul></nav>
-<div class="itemsTotal">13 položek celkem</div><div class="goToTop"><a class="goToTop__button btn btn-secondary" href="#productsListHeading">Nahoru</a></div></div></div></main></body></html>`;
+<div class="itemsTotal">13 položek celkem</div><div class="goToTop"><a class="goToTop__button btn btn-secondary" href="#productsListHeading">Nahoru</a></div></div><div class="category__secondDescription"><p>Spodní popis kategorie patří za produkty a stránkování.</p></div></div></main></body></html>`;
 }
+
+test('bottom description stays after products and pagination with and without active filters', async ({page}) => {
+  for (const active of [false, true]) {
+    const markup = active
+      ? html(false).replace('<div id="category-header"', '<div class="active-filters"><button class="input">Novinka</button></div><div id="category-header"')
+      : html(false);
+    await page.setContent(markup);
+    for (const width of [320, 390, 767, 768, 1920]) {
+      await page.setViewportSize({width, height: 900});
+      const products = await page.locator('#products').boundingBox();
+      const pagination = await page.locator('.listingControls').boundingBox();
+      const description = await page.locator('.category__secondDescription').boundingBox();
+      expect(description.y, `${width}px, active=${active}`).toBeGreaterThanOrEqual(products.y + products.height);
+      expect(description.y, `${width}px, active=${active}`).toBeGreaterThanOrEqual(pagination.y + pagination.height);
+      if (active) {
+        const tags = await page.locator('.active-filters').boundingBox();
+        const sorting = await page.locator('#category-header').boundingBox();
+        expect(tags.y + tags.height).toBeLessThanOrEqual(sorting.y);
+      }
+    }
+  }
+});
 
 test('desktop: sidebar 262px, gap 22px, four product columns, 48px listing controls', async ({page}) => {
   await page.setViewportSize({width: 1920, height: 1080});
