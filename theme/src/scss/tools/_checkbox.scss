@@ -2,6 +2,19 @@
 // Používá původní input, takže zůstává funkční klávesnice, disabled i vazba label/for.
 @use "icon" as *;
 
+// Stejný čtverec také pro nativní tlačítko rozbalení kuponu.
+%as-checkbox-box {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--as-secondary-100);
+  border-radius: 6px;
+  background: var(--as-white);
+}
+
+@mixin box { @extend %as-checkbox-box; }
+
 @mixin control {
   input[type="checkbox"] {
     position: absolute;
@@ -30,16 +43,10 @@
     cursor: pointer;
 
     &::before {
-      content: "";
+      @include box;
       position: absolute;
       top: 50%;
       left: 0;
-      display: block;
-      width: 22px;
-      height: 22px;
-      border: 1px solid var(--as-secondary-100);
-      border-radius: 6px;
-      background: var(--as-white);
       transform: translateY(-50%);
     }
 

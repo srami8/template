@@ -1,3 +1,15 @@
+# První krok košíku (Codex) – Figma 1642:5563
+
+Základ `3b44344`, větev feature/responsive. Zadání: pečlivě převést návrh, maximálně zachovat Disco a sdílet opakované prvky. Majitel upřesnil shrnutí: skutečné nativní cenové řádky, nikoli zástupný opakovaný text. Podrobnosti docs/kosik-krok1.md.
+
+Cart.scss je layout nad nativní tabulkou a summary, bez DOM přesunů/kopií formulářů. Order-steps.scss styluje původní kroky společně pro celou objednávku. Množství zůstává ze společného quantity; remove button má jeden základ pro mini-košík/tabulku, checkbox box jeden zkompilovaný placeholder pro filtry/kupon. Nový návrh vyžaduje také slevovou lištu se stejným průběhem jako doprava, takže společný základ nově zahrnuje .extra.discount a lokální ikonu procent. Další nový asset je šipka kroků. Kurzorové ukázky Figmy nejsou runtime assety. Barvy/fonty z administrace a skutečné ceny/datum/limity z Shoptetu.
+
+JS přidává pouze ARIA a paměť rozbalení/fokusu po nativním ShoptetDOMCartContentLoaded; nové vizuální třídy nevznikají. Formuláře, data-url, nativní submit a backend se nemění. Odkaz na související produkty je nově dostupný i na mobilu a klávesnicí. Testovací košík byl před úkolem prázdný; přidány dva testovací produkty -6 a -17 (200 + 390 Kč), po ověření se mají odebrat. Žádná objednávka se neodesílá.
+
+Build a 5 statických testů stylů prošly. Tři relevantní browserové regrese blokuje spuštění Chromia, nejsou označené za prošlé. In-app náhled: 22 rozložení 320–1920 px včetně otevření/kuponu bez přetékání, zarovnané kroky a dostupné akce; devět šířek s dlouhými názvy a vysokou cenou, bez přetékání. Dvojí inicializace zachovala původních 13 formulářů a 44 vstupů. Skutečný AJAX a kupon se musí ověřit po nasazení. Blank nastavení a snapshot se nemění; nejde o dokončenou migraci. Externí Claude Docs nejsou tímto zápisem upravené.
+
+---
+
 # Oprava (Codex): společná doprava zdarma
 
 Základ `f86cf86`, větev feature/responsive. Majitel upozornil, že vzhled správný v mini-košíku chybí v prvním kroku a pravděpodobně v mezikroku. Příčina: pravidla byla omezená na #cart-widget. Přesunutá do jediné globální komponenty _free-shipping.scss nad nativními .cart-free-shipping / .extra.delivery; cart-widget řeší jen pořadí/flex. Stejný vzhled včetně dokončeného stavu funguje i v možnostech dopravy detailu. Text, částky a inline procento zůstávají Shoptetu. Bez změny JS/DOM/tříd; slevové lišty se nepřebarvují.

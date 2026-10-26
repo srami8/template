@@ -1,0 +1,90 @@
+@use "../tools/icon" as *;
+@use "../tools/breakpoints" as bp;
+
+.as-theme .ordering-process #content:has(.cart-header) { padding-top: 0; }
+
+// Původní aktivní/dokončené kroky a odkazy Shoptetu, společné všem krokům objednávky.
+.as-theme .ordering-process ol.cart-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 29px;
+  width: var(--as-viewport-width, 100vw);
+  max-width: none;
+  margin: 0 calc((100% - var(--as-viewport-width, 100vw)) / 2);
+  padding: 16px;
+  background: var(--as-primary-50);
+  list-style: none;
+  counter-reset: steps;
+  font-family: var(--as-font-family);
+
+  li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 29px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    &:not(:last-child)::after { @include icon(order-arrow, 40px); color: var(--as-secondary-200); }
+    > a, > strong {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--as-secondary-300);
+      font-size: var(--as-font-size-body);
+      font-weight: 400;
+      line-height: 1.2;
+      text-decoration: none;
+      &::before {
+        content: counter(steps);
+        counter-increment: steps;
+        display: flex;
+        flex: 0 0 40px;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        border: 0;
+        border-radius: 50%;
+        background: var(--as-white);
+        color: var(--as-secondary-400);
+        font-size: var(--as-font-size-body);
+        font-weight: 500;
+        line-height: 1;
+      }
+      span::after { content: none; }
+      &:hover, &:focus-visible { background: transparent; color: var(--as-secondary-500); }
+    }
+    &.active > :is(a, strong), &.completed > :is(a, strong) {
+      color: var(--as-secondary-500);
+      &::before { background: var(--as-primary-500); color: var(--as-white); }
+    }
+  }
+  @include bp.mobile {
+    gap: 12px;
+    align-items: stretch;
+    li {
+      flex: 1 1 0;
+      gap: 8px;
+      justify-content: center;
+      align-items: flex-start;
+      &:not(:last-child)::after { width: 16px; height: 24px; flex-basis: 16px; margin-top: 4px; }
+      > a, > strong {
+        flex-direction: column;
+        gap: 6px;
+        font-size: var(--as-font-size-caption);
+        text-align: center;
+        &::before { width: 32px; height: 32px; flex-basis: 32px; }
+      }
+    }
+  }
+}
+.as-theme .cart-emptied ol.cart-header { display: none; }

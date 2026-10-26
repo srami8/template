@@ -25,3 +25,5 @@ Build a 4 statické kontroly stylů prošly. Browserové testy / audit blokuje s
 Vendor snapshot ani nastavení Blank mode se touto opravou nemění. Odebrání podkladu zůstává samostatným migračním krokem.
 
 Nasazení `2a8fd8a`: GitHub feature/responsive, SFTP a snippet instalace 313980. Živé CSS se shoduje s buildem. Ověřen první krok při šesti uvedených šířkách bez přetékání; mini-košík na mobilu i desktopu a dialog možností dopravy mají stejné 4px lišty. Nativní aktualizace 1 → 7 kusů přepnula na skutečné potvrzení dopravy zdarma, zpět na 1 kus se vrátilo 999 Kč a původní procento. Testovací položka odebrána, košík vrácen prázdný. Mezikrok této instalace není aktivní, proto pro něj zůstává ověření skutečného markup z dema a kontrolního náhledu.
+
+Nový návrh prvního kroku (1642:5563) výslovně sjednocuje také slevovou motivaci. Společný základ proto nově zahrnuje `.extra.discount`, s ikonou procent a stejnou 4px lištou; původní údaj o oddělené nativní 16px slevové liště výše zachycuje stav před tímto novým zadáním. Více v [prvním kroku košíku](kosik-krok1.md).

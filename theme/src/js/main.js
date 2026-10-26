@@ -9,6 +9,7 @@ import { enhanceBanners } from './banners';
 import { renderHomeCategories } from './home-categories';
 import { enhanceLogin } from './login';
 import { enhanceCart } from './cart';
+import { enhanceCartStep } from './cart-step';
 import { enhanceProductCards } from './product-cards';
 import { setHomepageProductColumns } from './homepage-products';
 import { placeHomepageBanners } from './homepage-banners';
@@ -134,6 +135,7 @@ function start() {
     renderHomeCategories(config);
     enhanceLogin();
     enhanceCart();
+    enhanceCartStep();
     enhanceProductCards();
     enhanceCategoryIntro(config);
     enhanceCategory();

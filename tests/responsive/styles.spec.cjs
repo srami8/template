@@ -45,3 +45,15 @@ test('free shipping is one shared compiled rule for the widget and the native ch
   expect(bases[0][1]).toContain('.extra.delivery');
   expect(bases[0][1]).not.toContain('#cart-widget');
 });
+
+test('cart removal and coupon reuse compiled primitives shared with the existing widgets', () => {
+  const css = fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8');
+  const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  const removal = rules.filter(([,selector,body]) => selector.includes('.remove-item') && body.includes('display:flex') && body.replace(/\s/g,'').includes('width:var(--as-remove-size,16px)'));
+  expect(removal).toHaveLength(1);
+  expect(removal[0][1]).toContain('#cart-widget');
+  expect(removal[0][1]).toContain('.cart-table');
+  const checkbox = rules.filter(([,selector,body]) => selector.includes('.toggle-coupon-input-button::before') && body.includes('border-radius:6px'));
+  expect(checkbox).toHaveLength(1);
+  expect(checkbox[0][1]).toContain('input[type=checkbox]+label::before');
+});

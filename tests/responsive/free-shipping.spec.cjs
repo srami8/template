@@ -27,8 +27,8 @@ test('free shipping has identical appearance in all native contexts and preserve
   }
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
  }
- // Slevová motivace v mezikroku není doprava zdarma a zůstává nativních 16 px.
- expect(await page.locator('#popup .extra.discount .price-range').evaluate(e=>getComputedStyle(e).height)).toBe('16px');
+ // Nový návrh prvního kroku sjednocuje také slevovou motivaci; má stejnou 4px lištu.
+ expect(await page.locator('#popup .extra.discount .price-range').evaluate(e=>getComputedStyle(e).height)).toBe('4px');
  await expect(page.locator('#complete .extra.delivery .price-range')).toHaveCount(0);
  expect(await page.locator('#complete .extra.delivery').evaluate(e=>getComputedStyle(e,'::after').height)).toBe('4px');
  await expect(page.locator('#complete .extra.delivery')).toHaveText('Dopravu máte zdarma!');

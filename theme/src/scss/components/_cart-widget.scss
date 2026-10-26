@@ -183,33 +183,10 @@
   // Odebrání: šedý křížek 16 px (Disco tlačítko kreslí písmem ikon).
   #cart-widget .cart-widget-product-delete {
     flex: 0 0 16px;
+    visibility: visible;
     margin: 0;
     padding: 0;
 
-    .remove-item {
-      display: flex;
-      width: 16px;
-      height: 16px;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      background: none;
-      color: var(--as-secondary-200);
-      cursor: pointer;
-
-      &::before {
-        @include icon(close, 16px);
-        font-size: 0;
-      }
-
-      &::after {
-        content: none;
-      }
-
-      &:hover {
-        color: var(--as-secondary-500);
-      }
-    }
   }
 
   // „Pokračovat do košíku“: tlačítko Disca .btn.btn-conversion vpravo, se šipkou.

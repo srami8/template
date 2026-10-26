@@ -1,9 +1,9 @@
 @use "../tools/icon" as *;
 
-// Doprava zdarma je jeden prvek: mini-košík, první krok, mezikrok i přehled dopravy.
+// Společná motivace dopravou a slevou: mini-košík, kroky, mezikrok i přehled dopravy.
 // Nativní procento v inline width a text/částky se nemění. .price-range mimo dopravu
-// (např. motivace slevou) tento selektor vůbec nezasahuje.
-.as-theme :is(.cart-free-shipping, .extra.delivery) {
+// (např. motivace dárkem) tento selektor vůbec nezasahuje.
+.as-theme :is(.cart-free-shipping, .extra.delivery, .extra.discount) {
   display: block;
   position: relative;
   inset: auto;
@@ -82,3 +82,6 @@
     background: var(--as-primary-500);
   }
 }
+
+// Sleva používá stejný text a průběh; liší se jen skutečnou ikonou z návrhu.
+.as-theme .extra.discount::before { @include icon(percent, 20px); }

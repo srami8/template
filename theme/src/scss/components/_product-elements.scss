@@ -8,6 +8,7 @@
 @use "../tools/flag";
 @use "../tools/quantity";
 @use "../tools/rating";
+@use "../tools/button";
 
 .as-theme :is(body, .p-detail .add-to-cart, .cart-table .p-quantity) {
   @include quantity.stepper;
@@ -47,3 +48,6 @@
     font-size: inherit;
   }
 }
+
+// Původní .remove-item bez náhradního ovládání či kopií formulářů.
+.as-theme :is(#cart-widget, .cart-table) .remove-item { @include button.remove; }
