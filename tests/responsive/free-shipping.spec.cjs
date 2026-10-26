@@ -16,7 +16,7 @@ test('free shipping has identical appearance in all native contexts and preserve
   await page.setViewportSize({width,height:1500});
   const bars=await page.locator('#cart-widget .cart-free-shipping,#content .extra.delivery,#popup .extra.delivery,.shipping-options-popup .extra.delivery').evaluateAll(els=>els.map(e=>{
    const c=getComputedStyle(e),icon=getComputedStyle(e,'::before'),p=e.querySelector('.price-range'),pc=getComputedStyle(p),fill=p.firstElementChild;
-   return {font:c.fontSize,color:c.color,weight:c.fontWeight,line:c.lineHeight,icon:icon.maskImage,iconColor:icon.color,iconWidth:icon.width,trackHeight:pc.height,trackColor:pc.backgroundColor,radius:pc.borderRadius,fillColor:getComputedStyle(fill).backgroundColor,ratio:fill.getBoundingClientRect().width/p.getBoundingClientRect().width,native:fill.style.width};
+   return {font:c.fontSize,fontFamily:c.fontFamily,color:c.color,weight:c.fontWeight,line:c.lineHeight,icon:icon.maskImage,iconColor:icon.color,iconWidth:icon.width,trackHeight:pc.height,trackColor:pc.backgroundColor,radius:pc.borderRadius,fillColor:getComputedStyle(fill).backgroundColor,ratio:fill.getBoundingClientRect().width/p.getBoundingClientRect().width,native:fill.style.width};
   }));
   expect(bars).toHaveLength(4);
   for(const bar of bars){
