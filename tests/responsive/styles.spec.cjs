@@ -36,3 +36,12 @@ test('search and active filter tags share one compiled base rule on native selec
   expect(tagRules[0][1]).toContain('.active-filters .input');
   expect(css).not.toContain('.as-active-filters');
 });
+
+test('free shipping is one shared compiled rule for the widget and the native checkout elements', () => {
+  const css = fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8');
+  const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
+  const bases = rules.filter(([,selector,body]) => selector.includes('.cart-free-shipping') && body.includes('font-size:var(--as-font-size-small)'));
+  expect(bases).toHaveLength(1);
+  expect(bases[0][1]).toContain('.extra.delivery');
+  expect(bases[0][1]).not.toContain('#cart-widget');
+});

@@ -238,85 +238,10 @@
     }
   }
 
-  // Text, částku i procento dodává Shoptet. Pouze vzhled původní cart-free-shipping.
+  // Místo použití určuje pouze pozici. Vzhled dopravy je v _free-shipping.scss.
   #cart-widget .cart-free-shipping {
-    display: block;
-    position: relative;
-    inset: auto;
-    height: auto;
     order: 0;
     flex: 1 0 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0 0 0 28px;
-    color: var(--as-secondary-500);
-    font-size: var(--as-font-size-small);
-    font-weight: 400;
-    line-height: 1.2;
-    text-align: left;
-
-    &::before {
-      @include icon(local-shipping, 20px);
-      position: absolute;
-      top: 0;
-      left: 0;
-      color: var(--as-primary-500);
-    }
-
-    > div:not(.price-range),
-    > div > div:not(.price-range) {
-      display: block;
-      margin: 0;
-      padding: 0;
-      font-size: inherit;
-      line-height: inherit;
-    }
-
-    strong {
-      display: inline;
-      margin: 0;
-      padding: 0;
-      font-family: inherit;
-      font-size: inherit;
-      font-weight: 600;
-      line-height: inherit;
-      color: inherit;
-    }
-
-    .price-range {
-      display: block;
-      width: calc(100% + 28px);
-      max-width: none;
-      height: 4px;
-      margin: 8px 0 0 -28px;
-      padding: 0;
-      overflow: hidden;
-      border: 0;
-      border-radius: var(--as-radius-pill);
-      background: var(--as-secondary-75);
-
-      > div {
-        height: 100%;
-        border-radius: inherit;
-        background: var(--as-primary-500);
-      }
-
-      &::before,
-      &::after {
-        content: none;
-      }
-    }
-
-    // Při dosažení dopravy zdarma Shoptet vrací jen potvrzení, bez původního progress baru.
-    &:not(:has(.price-range))::after {
-      content: "";
-      display: block;
-      width: calc(100% + 28px);
-      height: 4px;
-      margin: 8px 0 0 -28px;
-      border-radius: var(--as-radius-pill);
-      background: var(--as-primary-500);
-    }
   }
 
   // Prázdný košík: ikona, nadpis (text Shoptetu) a vysvětlení, pod čarou kontakt.

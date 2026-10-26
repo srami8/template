@@ -54,3 +54,7 @@ Data a nativní obsluhu Shoptetu zachováváme; vlastní JS doplňuje pouze sbal
 Společný tag se v CSS emituje jednou pro původní searchWhisperer__additionalResults__link a active-filters/input. as-active-filters ani as-active-filters__clear nejsou potřeba; vlastní komponentový soubor filtrů řeší pouze kontext a rozmístění.
 
 Patička podle Figmy 1633:7416: [správa obsahu, nativní prvky a ověření](paticka.md). Původní formulář newsletteru, kontakty a menu Disca; platební a sociální řádek používá původní odkazy. Recenze obchodu se nemění.
+
+## Doprava zdarma – jeden vzhled ve všech kontextech
+
+Společné CSS je pouze v `components/_free-shipping.scss`, nad původními `.cart-free-shipping` a `.extra.delivery`. Obsahuje text/strong, ikonu, průběh `.price-range > div` a plný stav po dosažení limitu. `cart-widget` určuje jen umístění ve svém footeru. Pokryté výskyty: mini-košík, `/kosik/`, `.advanced-order` po přidání a `.shipping-options-popup` v detailu. Slevové / dárkové motivace používají také `.price-range`, ale tento styl je nezasahuje. Podrobnosti a kontroly: [doprava-zdarma.md](doprava-zdarma.md).

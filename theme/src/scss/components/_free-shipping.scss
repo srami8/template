@@ -1,0 +1,83 @@
+@use "../tools/icon" as *;
+
+// Doprava zdarma je jeden prvek: mini-košík, první krok, mezikrok i přehled dopravy.
+// Nativní procento v inline width a text/částky se nemění. .price-range mimo dopravu
+// (např. motivace slevou) tento selektor vůbec nezasahuje.
+.as-theme :is(.cart-free-shipping, .extra.delivery) {
+  display: block;
+  position: relative;
+  inset: auto;
+  height: auto;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 0 28px;
+  color: var(--as-secondary-500);
+  font-size: var(--as-font-size-small);
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: left;
+
+  &::before {
+    @include icon(local-shipping, 20px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--as-primary-500);
+  }
+
+  > span,
+  > div:not(.price-range),
+  > div > div:not(.price-range) {
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  strong {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 600;
+    line-height: inherit;
+    color: inherit;
+  }
+
+  .price-range {
+    display: block;
+    width: calc(100% + 28px);
+    max-width: none;
+    height: 4px;
+    margin: 8px 0 0 -28px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--as-radius-pill);
+    background: var(--as-secondary-75);
+
+    > div {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--as-primary-500);
+    }
+
+    &::before,
+    &::after {
+      content: none;
+    }
+  }
+
+  // Při dosažení dopravy zdarma Shoptet vrací jen potvrzení, bez původního progress baru.
+  &:has(strong):not(:has(.price-range))::after {
+    content: "";
+    display: block;
+    width: calc(100% + 28px);
+    height: 4px;
+    margin: 8px 0 0 -28px;
+    border-radius: var(--as-radius-pill);
+    background: var(--as-primary-500);
+  }
+}

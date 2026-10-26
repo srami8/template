@@ -174,3 +174,5 @@ Aktivní filtry kategorie (Figma 1633:7414 / 1633:10605): [active-filters.md](ac
 Spodní popis kategorie (`.category__secondDescription`) zůstává na mobilu i desktopu za produkty a stránkováním. Mobilní CSS posouvá dopředu pouze filtry, aktivní štítky a řazení; zbytek zachovává původní pořadí Disca. Při přidání dalšího bloku kontrolovat i spodní popis, ne jen ovladače nad výpisem.
 
 Patička podle Figmy 1633:7416: [správa obsahu, nativní prvky a ověření](paticka.md). Původní formulář newsletteru, kontakty a menu Disca; platební a sociální řádek používá původní odkazy. Recenze obchodu se nemění.
+
+Doprava zdarma se styluje globálně přes původní `.cart-free-shipping` a `.extra.delivery` v jediné komponentě, nikoli uvnitř konkrétního okna košíku. Text a procento dodává Shoptet. [Výskyty a ověření](doprava-zdarma.md).

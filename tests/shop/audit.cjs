@@ -17,6 +17,10 @@ const ICON = (pseudo) => ({ pseudo, props: ['maskImage', 'backgroundColor', 'col
 
 const DETAIL = '/zbozi/dreveny-privesek-bracken-pendant-6/';
 const ITEMS = [
+  // Vyžaduje neprázdný košík; plné stavy všech kontextů hlídá free-shipping.spec.cjs.
+  ['Doprava zdarma: první krok košíku', '/kosik/', '.extra.delivery', null, { size: true }],
+  ['Doprava zdarma: průběh prvního kroku', '/kosik/', '.extra.delivery .price-range', null, { size: true }],
+  ['Doprava zdarma: ikona prvního kroku', '/kosik/', '.extra.delivery', null, ICON('::before')],
   // Patička – stejné ovladače a ikony na všech zařízeních.
   ['Patička: pole newsletteru', '/', '#footer #newsletterWidget', null, { size: true }],
   ['Patička: tlačítko newsletteru', '/', '#footer .subscribe-form button[type="submit"]', null, { size: true }],

@@ -1,3 +1,13 @@
+# Oprava (Codex): společná doprava zdarma
+
+Základ `f86cf86`, větev feature/responsive. Majitel upozornil, že vzhled správný v mini-košíku chybí v prvním kroku a pravděpodobně v mezikroku. Příčina: pravidla byla omezená na #cart-widget. Přesunutá do jediné globální komponenty _free-shipping.scss nad nativními .cart-free-shipping / .extra.delivery; cart-widget řeší jen pořadí/flex. Stejný vzhled včetně dokončeného stavu funguje i v možnostech dopravy detailu. Text, částky a inline procento zůstávají Shoptetu. Bez změny JS/DOM/tříd; slevové lišty se nepřebarvují.
+
+Podrobnosti: docs/doprava-zdarma.md, mapa docs/komponenty.md. Skutečné HTML z testovacího obchodu a oficiálního dema (tam potvrzená .advanced-order včetně slevové motivace). Testovací obchod nyní ukazuje jen krátké oznámení, mezikrok nebyl v administraci zapínán. Demo košík po testu vrácen prázdný. Vlastní testovací košík byl před testem prázdný; přidán 1 produkt za 200 Kč kvůli skutečné kontrole, po testu se má vrátit prázdný.
+
+Build a 4 statické testy stylů prošly; browserovou regresi blokuje start Chromia. In-app náhled nativních markupů: 24 kombinací (čtyři kontexty × šest šířek), shodné fonty/barvy/ikona/4px výška/zaoblení, skutečné procento zachované, žádné přetékání; plný stav má 4px čáru a další slevová motivace zůstává 16 px. Přidaná statická regrese brání návratu ke scope #cart-widget. Vizuální podklady outputs/free-shipping-popup-fixture.png a free-shipping-fixture-checks.json. Snapshot Disca a Blank nastavení beze změny, není tvrzena dokončená migrace bez podkladu. Externí Claude Docs tímto zápisem nejsou upravené.
+
+---
+
 # Patička (Codex): nativní bloky Disca podle Figmy
 
 Základ `519e242`, větev feature/responsive. Zadání: patička z Figmy 1633:7416 mimo hotový pás recenzí. Majitel potvrdil nativní správu Instagramu, plateb, Blogu a Facebooku a zobrazení po jejich naplnění. Dokumentace a známé limity: docs/paticka.md.
