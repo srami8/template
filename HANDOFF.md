@@ -8,7 +8,7 @@ Ověření: build, 24 settings-app + 2 styles testy prošly. Audit blokuje start
 
 Při kontrole opraven lokální preview: přepis itemprop=item breadcrumb meta pro nativní pushState, aby po clear nezůstala stará query v historii. Nový Node regresní test. V HTML fixtures escapované </style v SVG data URL kompatibilního CSS (jinak předčasně ukončovalo inline style a část stylů se nenačetla); vendor snapshot nezměněný. Audit/snímky a browserové regrese doplněné o aktivní filtry. Server settings-app se nemění, restart není potřeba. Externí Claude Docs neupravované.
 
-Nasazení a živé ověření následují; globální serverový Blank mode se nemění.
+Nasazeno jako `c8e04a5` na GitHub feature/responsive, původní složka /Users/apple/aSteroid aktualizovaná, build nahrán na SFTP a snippet pouze instalace 313980. styleMode zůstává blank, globální serverový Blank mode nezměněný; živý e-shop stále obsahuje dvě nativní CSS. HTTP 200 a shodné SHA256 CSS/JS. Živě ověřeno: desktopové odebrání stock+Novinka 3 → Novinka 4; mobilní tap přímo na křížek 3 → 4 s oběma přehledy ve shodě a otevřeným panelem; clear → 13 bez štítků; cena 301–390 → 12 a její zrušení → 13. Ikony, odstupy, link bez nativních verzálek/červeného glyfu a žádné přetékání. Snímky outputs/active-filters-desktop-live.png, active-filters-mobile-panel-live.png a active-filters-mobile-listing-live.png. Nastavení serveru se neměnilo, restart není potřeba.
 
 ---
 
