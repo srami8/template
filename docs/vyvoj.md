@@ -166,3 +166,5 @@ Mobilní kategorie podle Figmy (ořez popisu/článků, 4,5 řádku podkategori�
 Mobilní panely mají společné chování v `js/drawer.js` a pohyb v `tools/_drawer.scss`: otevření/zavření 250 ms, tap na overlay v capture fázi, inert zavřeného obsahu a reduced-motion. U příbuzných prvků automaticky přebírat zavedené vzory menu; závazná kontrola chování je doplněná v AGENTS.md.
 
 Oprava mobilní čáry řazení: #category-header má padding-bottom:0, takže border-bottom navazuje na podtržení aktivní záložky. Viz docs/kategorie.md; desktopové řazení a JS beze změny.
+
+Aktivní filtry kategorie (Figma 1633:7414 / 1633:10605): [active-filters.md](active-filters.md). Společný tag mixin s našeptávačem, nativní .active-filters .input a #clear-filters; na mobilu přehled v panelu i nad řazením podle upřesnění majitele.

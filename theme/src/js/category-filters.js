@@ -1,6 +1,7 @@
 // Nativní filtry ponecháváme na místě. Disco neumí sbalit jednotlivé sekce; přidáváme jen
 // přístupné tlačítko nad jejich původní obsah. Hodnoty, formuláře, slider a AJAX řídí Shoptet.
 import { dismissDrawerOnBackdrop } from './drawer';
+import { enhanceActiveFilters } from './active-filters';
 const LABELS = {
   cs: { flags: 'Dle štítku', price: 'Dle ceny', filters: 'Filtry', close: 'Zavřít filtry' },
   sk: { flags: 'Podľa štítku', price: 'Podľa ceny', filters: 'Filtre', close: 'Zavrieť filtre' },
@@ -150,4 +151,5 @@ export function enhanceCategoryFilters() {
     });
     heading.append(button);
   });
+  enhanceActiveFilters(filters);
 }

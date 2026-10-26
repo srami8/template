@@ -48,3 +48,5 @@ Barvy vždy z administrace e-shopu (tokeny `--as-primary-*`, `--as-conversion` z
 Data a nativní obsluhu Shoptetu zachováváme; vlastní JS doplňuje pouze sbalení/aria a mobilní spouštěč s původním data-unveil. Podrobnosti: [kategorie.md](kategorie.md).
 
 - `tools/_drawer.scss`: společná geometrie mobilního pravého panelu, overlay a zavření; používají `components/_cart-widget.scss` a `_category-filters.scss`. Obsah i akce zůstávají nativní. Mobilní rozbalení kategorií doplňuje `js/category-disclosure.js`, nepřesouvá původní obsah.
+
+- Štítky našeptávače a aktivních filtrů: `tools/_tag.scss` (base/dismissible), `components/_search-whisperer.scss` a `_active-filters.scss`. Stav z nativních inputů doplňuje `js/active-filters.js`. Podrobnosti: [active-filters.md](active-filters.md).

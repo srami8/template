@@ -11,6 +11,7 @@
 @use "../tools/button";
 @use "../tools/breakpoints" as bp;
 @use "../tools/category-card";
+@use "../tools/tag";
 
 .as-theme {
   // Společný vzhled na všech zařízeních. Disco stylí našeptávač selektory s .search / #header,
@@ -183,23 +184,7 @@
     }
 
     .searchWhisperer__additionalResults__link {
-      display: inline-block;
-      max-width: 100%;
-      padding: 8px 16px;
-      border-radius: var(--as-radius-pill);
-      background: var(--as-primary-50);
-      color: var(--as-primary-500);
-      font-size: var(--as-font-size-small);
-      font-weight: 600;
-      line-height: 1.2;
-      text-decoration: none;
-      overflow-wrap: anywhere;
-
-      &:hover,
-      &:focus-visible {
-        background: var(--as-primary-500);
-        color: var(--as-white);
-      }
+      @include tag.base;
     }
 
     // Články jako seznam s ikonou dokumentu (seznam hned za nadpisem --article).

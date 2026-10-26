@@ -12,10 +12,17 @@ const SHOP = 'https://313980.myshoptet.com';
 const dist = new URL('../../theme/dist/', import.meta.url);
 const nativeStyle = /\/shop\/dist\/(?:main-\d+\.less|font-shoptet-\d+\.css)[^/]*\.css(?:\?.*)?$/;
 
+function localLinks(html) {
+  return html.replace(/(data-url|href)=(["'])https:\/\/313980\.myshoptet\.com\//g, '$1=$2/')
+    // makeFilterAjaxRequest bere novou adresu z posledního drobečku. Cizí origin
+    // by zablokoval pushState a další změna ceny by vrátila už zrušené filtry.
+    .replace(/(<meta\b(?=[^>]*\bitemprop=["']item["'])[^>]*\bcontent=["'])https:\/\/313980\.myshoptet\.com\//g, '$1/');
+}
+
 export function rewriteHtml(html, blank) {
   const match = html.match(/window\.asteroidConfig\s*=\s*(\{[^\n]*\});/);
   // Nativní AJAX může vrátit jen HTML fragment, který nemá hlavičku s konfigurací.
-  if (!match) return html.replace(/(data-url|href)=(["'])https:\/\/313980\.myshoptet\.com\//g, '$1=$2/');
+  if (!match) return localLinks(html);
   const config = { ...JSON.parse(match[1]), styleMode: blank ? 'blank' : 'disco' };
   let result = html.replace(match[0], `window.asteroidConfig = ${JSON.stringify(config).replace(/</g, '\\u003c')};`);
   result = result.replace(/<link\b[^>]*>/gi, (tag) => {
@@ -28,8 +35,7 @@ export function rewriteHtml(html, blank) {
   result = result.replace(/<script\b[^>]*src=["'][^"']*\/asteroid\.js[^"']*["'][^>]*><\/script>/,
     `${styles}\n<script src="/__as/asteroid.js"></script>`);
   // Nativní řazení používá data-url i pro AJAX a history.pushState. V náhledu zůstane na proxy.
-  result = result.replace(/(data-url|href)=(["'])https:\/\/313980\.myshoptet\.com\//g, '$1=$2/');
-  return result;
+  return localLinks(result);
 }
 
 export function startPreview(port, blank) {

@@ -4,7 +4,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { test, expect } = require('@playwright/test');
 const dist = process.env.RESPONSIVE_THEME_DIST || path.join(__dirname, '../../theme/dist');
-const css = ['base-blank.css', 'asteroid.css'].map(name => fs.readFileSync(path.join(dist, name), 'utf8')).join('\n');
+// SVG v kompatibilním CSS obsahuje </style>; uvnitř HTML fixture musí zůstat součástí URL.
+const css = ['base-blank.css', 'asteroid.css'].map(name => fs.readFileSync(path.join(dist, name), 'utf8').replace(/<\/style/gi, '%3C/style')).join('\n');
 
 function html(sidebar = false) {
   return `<!doctype html><html class="as-theme" lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style></head>
@@ -94,4 +95,57 @@ test('filter collapse survives a native AJAX content replacement without duplica
   // Původní formulář a inputy zůstávají integračním rozhraním Shoptetu.
   await expect(page.locator('#price-filter-form')).toHaveAttribute('action', '/action/ProductsListing/setPriceFilter/');
   await expect(page.locator('#stock')).toHaveAttribute('data-url', '/pletene-kosiky/?stock=1');
+});
+
+async function loadActiveFilters(page, longLabel = false) {
+  let filters = fs.readFileSync(path.join(__dirname, 'fixtures/category-filters.html'), 'utf8')
+    .replace('id="stock"', 'id="stock" checked')
+    .replace('id="dd[]2"', 'id="dd[]2" checked')
+    .replace('data-url="/pletene-kosiky/?stock=1"', 'data-url="/pletene-kosiky/?dd=2&amp;priceMin=301&amp;priceMax=390&amp;order=price"')
+    .replace('data-url="/pletene-kosiky/?dd=2"', 'data-url="/pletene-kosiky/?stock=1&amp;priceMin=301&amp;priceMax=390&amp;order=price"');
+  if (longLabel) filters = filters.replace('Na skladě <span', `${'Dlouhý název vybraného parametru '.repeat(5)}<span`);
+  const markup = html(false).replace('<div id="category-header"', `<div id="filters-wrapper">${filters}</div><div id="category-header"`);
+  await page.route('http://shop.test/**', route => route.fulfill({contentType:'text/html',body:markup}));
+  await page.goto('http://shop.test/pletene-kosiky/?stock=1&dd=2&priceMin=301&priceMax=390&order=price');
+  // Stub pouze nativního přepnutí panelu. Skutečné rušení/AJAX se ověřuje na e-shopu.
+  await page.evaluate(()=>document.documentElement.addEventListener('click', event=>{
+    if(event.target.closest('[data-unveil="filters"]')) document.getElementById('filters').classList.toggle('visible');
+  }));
+  await page.addScriptTag({content:fs.readFileSync(path.join(dist,'asteroid.js'),'utf8')});
+}
+
+test('active filters retain native removal URLs, count-free labels and a unique clear ID', async ({page}) => {
+  await page.setViewportSize({width:1920,height:1080});
+  await loadActiveFilters(page);
+  const summary = page.locator('[data-as-active-filters="listing"]');
+  await expect(summary.locator('.input')).toHaveCount(3);
+  await expect(summary.locator('.input').first()).toHaveText('Na skladě');
+  await expect(summary.locator('.input').first()).toHaveAttribute('data-url',/dd=2&priceMin=301&priceMax=390&order=price/);
+  const price = new URL(await summary.locator('.input').last().getAttribute('data-url'));
+  expect(price.searchParams.has('priceMin')).toBe(false);
+  expect(price.searchParams.get('stock')).toBe('1');
+  expect(price.searchParams.get('dd')).toBe('2');
+  expect(price.searchParams.get('order')).toBe('price');
+  await expect(summary.locator('.as-active-filters__clear a')).toHaveAttribute('href','http://shop.test/pletene-kosiky/?order=price');
+  await expect(page.locator('#clear-filters')).toHaveCount(1);
+  // Pseudo-ikona nechá event.target přímo na ovladači, jak vyžaduje nativní handler.
+  expect(await summary.locator('.input').first().evaluate(el=>el.children.length)).toBe(0);
+});
+
+test('mobile active filters appear in both places and long labels stay inside the drawer', async ({page}) => {
+  await page.setViewportSize({width:320,height:844});
+  await loadActiveFilters(page,true);
+  await page.locator('[data-as-filter-trigger]').click();
+  await expect(page.locator('#filters')).toHaveCSS('transform','matrix(1, 0, 0, 1, 0, 0)');
+  const drawer = page.locator('[data-as-active-filters="drawer"]');
+  await expect(drawer.locator('.input')).toHaveCount(3);
+  await expect(page.locator('[data-as-active-filters="listing"] .input')).toHaveCount(3);
+  const bounds = await drawer.boundingBox();
+  for (const box of await drawer.locator('.input,a').evaluateAll(els=>els.map(el=>el.getBoundingClientRect().toJSON()))) {
+    expect(box.x).toBeGreaterThanOrEqual(bounds.x);
+    expect(box.right).toBeLessThanOrEqual(bounds.x+bounds.width);
+  }
+  await expect(drawer.locator('.as-active-filters__clear')).toHaveCSS('margin-bottom','0px');
+  await expect(drawer.locator('.as-active-filters__clear a')).toHaveCSS('text-transform','none');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
 });

@@ -1,0 +1,80 @@
+@use "../tools/breakpoints" as bp;
+@use "../tools/tag";
+@use "../tools/icon" as *;
+
+.as-theme body.type-category {
+  .as-active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    margin: 0 0 40px;
+    padding: 0;
+    font-family: var(--as-font-family);
+  }
+
+  .as-active-filters .input { @include tag.dismissible; }
+
+  // Globální typografie #content p přidává 22px odstavec; nativní clear-filters
+  // navíc používá verzálky a červený glyf. Zde jde o odkaz ze společného návrhu.
+  #content .as-active-filters__clear,
+  #filters .as-active-filters__clear {
+    display: flex;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 0 0 16px;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 100%;
+      padding: 0;
+      color: var(--as-primary-500);
+      font-size: var(--as-font-size-small);
+      font-weight: 400;
+      line-height: 1.2;
+      text-decoration: underline;
+      text-transform: none;
+      overflow-wrap: anywhere;
+      &::before {
+        @include icon(close, 20px);
+        position: static;
+        margin: 0;
+        border: 0;
+        color: inherit;
+        font-size: 0;
+      }
+      &:hover { color: var(--as-primary-600); }
+    }
+  }
+
+  #filters > .as-active-filters { display: none; }
+
+  @include bp.mobile {
+    .category-content-wrapper > .as-active-filters { order: 2; margin-bottom: 24px; }
+    .category-content-wrapper > #category-header { order: 3; }
+    .category-content-wrapper > :is(#products, .listingControls, #productsListHeading) { order: 4; }
+    .category-content-wrapper:has(> .as-active-filters) #filters-wrapper:has(.filters-wrapper) {
+      margin-bottom: 16px;
+      .unveil-button { margin-bottom: 0; }
+    }
+
+    #filters > .as-active-filters {
+      order: 0;
+      display: flex;
+      flex: 0 0 auto;
+      margin: 0;
+      padding: 24px 16px;
+      border-bottom: 1px solid var(--as-secondary-75);
+      background: var(--as-white);
+
+      .as-active-filters__clear {
+        flex-basis: 100%;
+        margin-top: 12px;
+        padding-left: 0;
+      }
+    }
+  }
+}

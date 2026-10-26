@@ -1,3 +1,17 @@
+# Aktualizace (Codex): aktivní filtry jako štítky s křížkem
+
+Základ `608d2b0`, větev feature/responsive. Figma desktop 1633:7414 a mobil 1633:10605; majitel výslovně doplnil mobilní přehled **v panelu i nad řazením**. Podrobnosti a návod pro obchodníka: docs/active-filters.md.
+
+Společný tools/_tag.scss vychází z původního štítku našeptávače beze změny jeho vzhledu. Filtry přidávají close 16 px; clear link close 20 px používá stejnou existující ikonu. Nativní šablona na testovacím e-shopu nevypisuje přehled ani clear HTML, ale obsluha .active-filters .input a p#clear-filters a v main-3g existuje. Doplňujeme tyto ovladače nad původní inputy a využíváme nativní makeFilterAjaxRequest, žádný vlastní fetch ani kopie/přesuny formulářů. Mobilní clear kopie používá stejnou nativní funkci/událost bez duplicitního ID. Názvy/ceny/URL jsou skutečné, číselné badge z labelu se do štítku nekopírují. Při AJAXu se obnoví oba přehledy a fokus; po vymazání všech zmizí. Zachová se řazení a mobilní panel zůstane otevřený.
+
+Ověření: build, 24 settings-app + 2 styles testy prošly. Audit blokuje start Chromia (MachPortRendezvous), browserové regrese nejsou potvrzené. V in-app prohlížeči s nativním JS a bez nativního CSS ověřeno samostatné odebrání (stock+Novinka 3 → Novinka 4), clear → 13, cenový rozsah 301–390 → 12, jeho odebrání a vymazání všech se zachováním Nejlevnější, otevření panelu a fokusu. Shodných 8 vizuálních vlastností našeptávače/filtrů (outputs/active-filter-tag-parity.json). Šířky 320–1920 bez přetékání, dlouhý název ve fixture se vejde do 268px obsahu 300px panelu. Testovací data nemají další skutečné parametrické skupiny, ty zůstávají limitem živého ověření.
+
+Při kontrole opraven lokální preview: přepis itemprop=item breadcrumb meta pro nativní pushState, aby po clear nezůstala stará query v historii. Nový Node regresní test. V HTML fixtures escapované </style v SVG data URL kompatibilního CSS (jinak předčasně ukončovalo inline style a část stylů se nenačetla); vendor snapshot nezměněný. Audit/snímky a browserové regrese doplněné o aktivní filtry. Server settings-app se nemění, restart není potřeba. Externí Claude Docs neupravované.
+
+Nasazení a živé ověření následují; globální serverový Blank mode se nemění.
+
+---
+
 # Oprava (Codex): mobilní čára pod záložkami řazení
 
 Základ `d57aee3`, větev feature/responsive. Majitel upozornil na mezeru pod mobilními záložkami. Příčinou byl padding-bottom:16px na #category-header. Mobilní padding změněn na 0, společná čára nyní lícuje s podtržením aktivní záložky. Žádný nový DOM/JS, nativní řazení a desktopové styly zachované.

@@ -18,6 +18,7 @@ const PAGES = [
   ['home', '/', ['#header', '.banners-row', '.homepage-products-heading-1 + .products-wrapper', '.as-banner-mosaic', '.welcome-wrapper', '.homepage-blog-wrapper']],
   ['category', '/sperky/', ['.breadcrumbs', '.category-top', '.products-block', '.category-header']],
   ['category-listing', '/pletene-kosiky/', ['.sidebar', '#category-header', '#products', '.listingControls']],
+  ['category-filtered', '/pletene-kosiky/?stock=1&dd=2', ['[data-as-active-filters="listing"]', '#category-header', '#products']],
   ['articles', '/rubriky/nase-novinky/', ['#content']],
   ['article', '/rubriky/nase-novinky/testovaci-clanky-dolor/', ['#content']],
   ['terms', '/obchodni-podminky/', ['#content']],

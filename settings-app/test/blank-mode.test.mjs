@@ -58,3 +58,12 @@ test('native AJAX fragments retain content and keep listing requests on the loca
   assert.ok(result.includes('data-url="/pletene-kosiky/strana-2/"'));
   assert.ok(!result.includes('base-blank.css'));
 });
+
+test('native breadcrumb history stays on the preview origin after clearing filters', () => {
+  const html = '<meta itemprop="item" content="https://313980.myshoptet.com/pletene-kosiky/?order=price">'
+    + '<meta itemprop="position" content="3"><meta property="og:url" content="https://313980.myshoptet.com/pletene-kosiky/">';
+  const result = rewriteHtml(html, true);
+  assert.ok(result.includes('itemprop="item" content="/pletene-kosiky/?order=price"'));
+  assert.ok(result.includes('itemprop="position" content="3"'));
+  assert.ok(result.includes('property="og:url" content="https://313980.myshoptet.com/pletene-kosiky/"'));
+});
