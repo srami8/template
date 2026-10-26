@@ -34,6 +34,21 @@ Nové lokální assety: `order-arrow.svg` (Figma `1642:5898`) a `percent.svg` (`
 
 Build a 5 statických testů stylů prošly. Nová kontrola hlídá společný sestavený základ křížku a checkboxu. Dvě browserové regrese prvního kroku a aktualizovaná regrese motivací jsou připravené; jejich běh blokuje start Chromia v sandboxu (MachPortRendezvous), nikoli aserce. Nesmí se označit za prošlé.
 
-In-app prohlížeč nad skutečným zachyceným HTML: 22 běžných rozložení (otevřené/zavřené související produkty a kupon × 11 šířek 320–1920), bez přetékání, viditelné křížky a dostupné akce, zarovnaná čísla kroků. Dále devět šířek s dlouhými názvy a cenou 123 456 789 Kč, bez přetékání; rozbalení klávesnicí a kupon při 320 px. Po dvojí inicializaci zůstaly stejné původní uzly 13 formulářů a 44 vstupů. Jde o kontrolní náhled, původní serverové operace je nutné ověřit na živém e-shopu po nasazení.
+In-app prohlížeč nad skutečným zachyceným HTML: 22 běžných rozložení (otevřené/zavřené související produkty a kupon × 11 šířek 320–1920), bez přetékání, viditelné křížky a dostupné akce, zarovnaná čísla kroků. Dále devět šířek s dlouhými názvy a cenou 123 456 789 Kč, bez přetékání; rozbalení klávesnicí a kupon při 320 px. Po dvojí inicializaci zůstaly stejné původní uzly 13 formulářů a 44 vstupů. Jde o kontrolní náhled; skutečné serverové operace jsou ověřené odděleně níže.
 
 Šablona stále používá kompatibilní CSS podklad Disca. Tento redesign není dokončenou migrací bez vendor snapshotu; reset, formulářové stavy, nativní přepočty a data zůstávají závislostmi. Snapshot ani nastavení Blank mode se nemění.
+
+## Nasazení a živá kontrola
+
+Implementace `bc6e4a7`, oprava opakovaného obnovení fokusu `c8d1c2b`, GitHub `feature/responsive` a SFTP. Původní pracovní složka synchronizovaná, snippet aktualizovaný pouze instalaci 313980. CSS i JS vrací HTTP 200 a mají stejné SHA256 jako lokální build. Settings-app ani nastavení Blank se nemění.
+
+Na živém e-shopu ověřeno:
+
+- Nativní množství 1 → 2 → 3 → 2 → 1 a součet 590 → 790 → 990 → 790 → 590 Kč, včetně navazujícího ovládání klávesou Enter bez nového zaměření. Rozbalení souvisejících produktů i fokus přežijí opakovanou výměnu HTML. Regrese zahrnuje dvě navazující výměny.
+- Přidání souvisejícího produktu -33 (980 Kč) a jeho odebrání (590 Kč), přepočet nativní dopravy.
+- Neplatný kupon vrátí původní hlášení Shoptetu. Neuplatněný rozepsaný kód zablokuje pokračování a zobrazí původní upozornění; po vymazání pokračování funguje.
+- Přechod na dopravu/platbu a zpět, bez odeslání objednávky. Společný průvodce má i v dalším kroku 72px pás.
+- Otevřený související blok při 11 šířkách 320–1920 px: bez vodorovného přetékání, zarovnané kroky a dostupné tlačítko pokračování.
+- Mini-košík používá stejnou masku křížku/barvu, desktop 16px ovladač, mobil zachovává větší dotykovou plochu. Checkbox filtrů zachovává 22 × 22 px / radius 6 px.
+
+Snímky: `outputs/cart-step1-desktop-live.png`, `outputs/cart-step1-mobile-live.png`; měření `outputs/cart-step1-live-checks.json` v pracovním prostoru Codex. Testovací košík byl na začátku i na konci prázdný, všechny vlastní testovací položky odstraněné. Platný kupon, další daňové řádky ani slevová motivace nejsou v testovacích datech k dispozici; jejich skutečné serverové stavy zůstávají limitem ověření.
