@@ -17,6 +17,13 @@ const ICON = (pseudo) => ({ pseudo, props: ['maskImage', 'backgroundColor', 'col
 
 const DETAIL = '/zbozi/dreveny-privesek-bracken-pendant-6/';
 const ITEMS = [
+  // Patička – stejné ovladače a ikony na všech zařízeních.
+  ['Patička: pole newsletteru', '/', '#footer #newsletterWidget', null, { size: true }],
+  ['Patička: tlačítko newsletteru', '/', '#footer .subscribe-form button[type="submit"]', null, { size: true }],
+  ['Patička: ikona e-mailu', '/', '#footer .contact-box .mail', null, ICON('::before')],
+  ['Patička: ikona telefonu', '/', '#footer .contact-box .tel', null, ICON('::before')],
+  ['Patička: sociální ikona Facebook', '/', '#footer .as-footer-socials .facebook', null, ICON('::before')],
+  ['Patička: copyright', '/', '#footer .copyright', null, { size: true }],
   // Hlavička
   ['Hlavička: ikona košíku', '/', '#header .navigation-buttons [data-target="cart"]', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],
   ['Hlavička: ikona účtu', '/', '#header .as-account-button', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],

@@ -52,3 +52,5 @@ Data a nativní obsluhu Shoptetu zachováváme; vlastní JS doplňuje pouze sbal
 - Štítky našeptávače a aktivních filtrů: `tools/_tag.scss` (base/dismissible), `components/_search-whisperer.scss` a `_active-filters.scss`. Stav z nativních inputů doplňuje `js/active-filters.js`. Podrobnosti: [active-filters.md](active-filters.md).
 
 Společný tag se v CSS emituje jednou pro původní searchWhisperer__additionalResults__link a active-filters/input. as-active-filters ani as-active-filters__clear nejsou potřeba; vlastní komponentový soubor filtrů řeší pouze kontext a rozmístění.
+
+Patička podle Figmy 1633:7416: [správa obsahu, nativní prvky a ověření](paticka.md). Původní formulář newsletteru, kontakty a menu Disca; platební a sociální řádek používá původní odkazy. Recenze obchodu se nemění.

@@ -172,3 +172,5 @@ Aktivní filtry kategorie (Figma 1633:7414 / 1633:10605): [active-filters.md](ac
 Štítky našeptávače a filtrů mají jeden společný základ i v sestaveném CSS (Sass placeholder za API tools/tag.base). Komponenta filtrů používá přímo nativní .active-filters/.input/#clear-filters; JS nedoplňuje čistě vizuální as-* třídy. Test styles.spec.cjs hlídá společné výsledné pravidlo.
 
 Spodní popis kategorie (`.category__secondDescription`) zůstává na mobilu i desktopu za produkty a stránkováním. Mobilní CSS posouvá dopředu pouze filtry, aktivní štítky a řazení; zbytek zachovává původní pořadí Disca. Při přidání dalšího bloku kontrolovat i spodní popis, ne jen ovladače nad výpisem.
+
+Patička podle Figmy 1633:7416: [správa obsahu, nativní prvky a ověření](paticka.md). Původní formulář newsletteru, kontakty a menu Disca; platební a sociální řádek používá původní odkazy. Recenze obchodu se nemění.

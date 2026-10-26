@@ -1,0 +1,285 @@
+@use "../tools/breakpoints" as bp;
+@use "../tools/button";
+@use "../tools/icon" as *;
+
+// Původní #footer a bloky Disca; formuláře, menu i data zůstávají Shoptetu.
+.as-theme #footer {
+  margin-top: 64px;
+  padding: 0;
+  border: 0;
+  background: var(--as-white);
+  color: var(--as-secondary-400);
+  font-family: var(--as-font-family);
+  font-size: var(--as-font-size-small);
+  line-height: 1.7;
+
+  .footer-rows {
+    padding: 48px 0 0;
+    border-top: 1px solid var(--as-secondary-75);
+  }
+
+  .custom-footer {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 48px 20px;
+    margin: 0;
+    padding: 0;
+    &::before, &::after { content: none; }
+    > :where(div) { float: none; clear: none; width: auto; min-width: 0; padding: 0; }
+  }
+
+  .pageElement__heading, h4 {
+    margin: 0 0 32px;
+    color: var(--as-secondary-500);
+    font-size: var(--as-font-size-h5);
+    font-weight: 500;
+    line-height: 1.2;
+    text-transform: none;
+  }
+  a { overflow-wrap: anywhere; }
+  .custom-footer > div > ul:not(.payments) {
+    margin: 0;
+    padding: 0;
+    li { margin: 0; padding: 0 0 12px; list-style: none; }
+    a { color: var(--as-secondary-400); text-decoration: none; }
+    a:hover, a:focus-visible { color: var(--as-primary-500); text-decoration: underline; }
+  }
+
+  .custom-footer__instagram {
+    position: relative;
+    grid-column: 1 / -1;
+    order: -3;
+    // Shoptet vypisuje i prázdný obal, když Instagram není naplněný.
+    &:not(:has(.instagram-widget img)) { display: none; }
+    .pageElement__heading, h4 { font-size: var(--as-font-size-h3); margin-bottom: 48px; padding-right: 180px; }
+  }
+  .instagram-widget {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 20px;
+    max-width: none;
+    width: 100%;
+    > a:not(.instagram-follow-btn) {
+      width: auto;
+      padding: 0;
+      aspect-ratio: 1;
+      border-radius: 4px;
+      img { position: static; display: block; width: 100%; height: 100%; object-fit: cover; transform: none; }
+    }
+    .instagram-follow-btn {
+      position: absolute;
+      top: 4px;
+      right: 0;
+      margin: 0;
+      padding: 0;
+      color: var(--as-primary-500);
+      font-size: var(--as-font-size-body);
+      font-weight: 500;
+      text-decoration: underline;
+      span { padding: 0; }
+      span::before { content: none; }
+      &::after { @include icon(chevron-right, 16px); margin-left: 12px; vertical-align: middle; }
+    }
+  }
+
+  .custom-footer__contact, .custom-footer__newsletter {
+    position: relative;
+    grid-column: span 2;
+    order: -2;
+    padding: 64px 80px;
+    background: var(--as-primary-50);
+    .pageElement__heading { margin-bottom: 4px; font-size: var(--as-font-size-h3); }
+    p { margin: 0; }
+    > p, .newsletter-header > p { font-size: var(--as-font-size-body); }
+  }
+  .custom-footer__contact {
+    // Dva nativní bloky vyplní každý polovinu mezery gridu, takže karta je souvislá.
+    margin-right: -10px;
+    border-radius: 12px 0 0 12px;
+    &::after {
+      content: ''; position: absolute; top: 64px; bottom: 64px; right: 0;
+      width: 1px; background: var(--as-primary-200); pointer-events: none;
+    }
+    .contact-box { margin-top: 32px; display: flex; gap: 32px; align-items: center; min-height: 0; padding: 0; }
+    .contact-box > img { position: static; display: block; flex: 0 0 64px; width: 64px; height: 64px; max-width: none; border-radius: 12px; object-fit: cover; }
+    .contact-box > strong { display: block; }
+    .contact-box ul { min-width: 0; margin: 0; padding: 0; }
+    .contact-box li { padding: 0; list-style: none; }
+    .contact-box li + li { margin-top: 12px; }
+    .contact-box li > span { display: flex; gap: 12px; align-items: center; padding: 0; }
+    .contact-box li > span::before { position: static; flex-shrink: 0; color: var(--as-primary-500); }
+    .contact-box .mail::before { @include icon(mail-outline, 24px); }
+    .contact-box :is(.tel, .cellphone)::before { @include icon(phone, 24px); }
+    .contact-box a { color: var(--as-secondary-500); font-size: var(--as-font-size-h5); font-weight: 500; line-height: 1.2; }
+    .contact-box a:hover { color: var(--as-primary-600); }
+  }
+  .custom-footer__newsletter {
+    order: -1;
+    margin-left: -10px;
+    border-radius: 0 12px 12px 0;
+    .newsletter-header { position: relative; z-index: 1; margin-bottom: 32px; }
+    .pageElement__heading { padding-right: 64px; }
+  }
+  // Samostatný blok nesmí čekat na druhý ani zůstat s polovičním zaoblením.
+  .custom-footer:not(:has(> .custom-footer__newsletter)) > .custom-footer__contact,
+  .custom-footer:not(:has(> .custom-footer__contact)) > .custom-footer__newsletter {
+    grid-column: 1 / -1; margin: 0; border-radius: 12px;
+    &::before, &::after { content: none; }
+  }
+
+  .as-footer-newsletter-art {
+    position: absolute; top: 24px; right: 24px; width: 144px; height: 108px; color: var(--as-primary-100); pointer-events: none;
+    i { position: absolute; transform: rotate(15deg); }
+    i:nth-child(1) { @include icon(mail-outline, 72px); top: 0; left: 0; }
+    i:nth-child(2) { @include icon(mail-outline, 32px); top: 68px; left: 60px; }
+    i:nth-child(3) { @include icon(mail-outline, 56px); top: 0; left: 84px; }
+  }
+
+  .subscribe-form {
+    width: 100%; max-width: none; margin: 0;
+    --as-newsletter-action-space: 148px;
+    --form-controls-font-size: var(--as-font-size-small);
+    --form-controls-line-height: 1.4286;
+    --form-controls-computed-line-height: 20px;
+    --form-controls-padding-y: 10px;
+    --form-controls-padding-x: 16px;
+    --form-controls-computed-height: 42px;
+    --smart-labels-computed-height: 52px;
+    --form-controls-border-radius: var(--as-radius-pill);
+    --colors-forms-border: var(--as-secondary-100);
+    --colors-forms-activated: var(--as-primary-500);
+    > fieldset {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 0;
+      min-width: 0; margin: 0; padding: 0; border: 0;
+      > :is(.form-group, fieldset) { grid-column: 1 / -1; min-width: 0; margin: 0; }
+      > .form-group:has(input[type="email"]) { grid-row: 1; }
+      > .sr-only { position: absolute; }
+      > button {
+        @include button.base;
+        @include button.size(sm);
+        @include button.primary;
+        grid-column: 2; grid-row: 1; align-self: start; z-index: 2;
+        min-height: 40px; margin: 4px; padding-right: 31px; padding-left: 31px;
+      }
+      // Bezpečnostní kontrola zůstává viditelná, odeslání je pak až za ní a souhlasy.
+      &:has(> fieldset) > button { grid-column: 1 / -1; grid-row: auto; justify-self: start; margin: 0; }
+    }
+    .form-group:has(input[type="email"]) {
+      > label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+      .form-control-wrapper { position: relative; width: 100%; max-width: none; }
+      .form-control-wrapper::before { @include icon(mail-outline, 24px); position: absolute; top: 12px; left: 16px; z-index: 1; color: var(--as-secondary-400); pointer-events: none; }
+      input {
+        display: block; width: 100%; height: 48px; min-height: 48px;
+        padding: 10px var(--as-newsletter-action-space) 10px 56px; border: 1px solid transparent; border-radius: var(--as-radius-pill);
+        background: var(--as-white); color: var(--as-secondary-500);
+        font-family: var(--as-font-family); font-size: var(--as-font-size-body); line-height: 26px;
+        box-shadow: 0 0 10px color-mix(in srgb, var(--as-primary-600) 20%, transparent);
+        &::placeholder { color: var(--as-secondary-200); opacity: 1; }
+        &:focus { border-color: var(--as-primary-500); outline: 2px solid var(--as-primary-100); outline-offset: 2px; }
+        &.error-field, &[aria-invalid="true"] { border-color: var(--as-danger); }
+      }
+    }
+    &:has(> fieldset > fieldset) { --as-newsletter-action-space: 16px; }
+    .consents { font-size: var(--as-font-size-small); line-height: 1.7; }
+    .consents .label { margin: 0; padding: 0; color: var(--as-secondary-400); font-weight: 400; text-align: left; white-space: normal; }
+    .consents a { color: var(--as-primary-500); text-decoration: none; }
+    .consents a:hover { text-decoration: underline; }
+    fieldset.box { padding: 16px; border: 1px solid var(--as-primary-200); border-radius: 8px; background: transparent; }
+    fieldset.box h2 { font-size: var(--as-font-size-h6); margin: 0 0 12px; }
+    fieldset.box .form-group { margin-bottom: 12px; }
+    fieldset.box .form-control { max-width: 100%; border-radius: var(--as-radius-pill); }
+  }
+
+  .news-item-widget {
+    margin: 0; padding: 0 0 12px; border: 0;
+    + .news-item-widget { margin-top: 8px; }
+    :is(h5, .newsItemWidget__heading) { margin: 0; font-size: var(--as-font-size-small); font-weight: 400; line-height: 1.7; }
+    a { color: var(--as-secondary-400); }
+    &:has(time) {
+      border-bottom: 1px solid var(--as-secondary-75);
+      :is(h5, .newsItemWidget__heading) { font-weight: 500; }
+      a { color: var(--as-secondary-500); }
+    }
+    time { color: var(--as-secondary-300); }
+  }
+  iframe { max-width: 100%; border: 0; }
+  #fb-widget-wrap, .fb-page, .fb-page > span { max-width: 100%; }
+
+  .as-footer-meta {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 24px; margin: 64px 0 48px;
+    > div { float: none; width: auto; max-width: 100%; padding: 0; }
+    .pageElement__heading, h4 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  }
+  ul.payments {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0; padding: 0;
+    &::before, &::after { content: none; }
+    li { display: flex; align-items: center; justify-content: center; float: none; clear: none; width: 100px; height: 50px; padding: 8px; border-radius: 4px; background: var(--as-secondary-50); }
+    img { max-width: 80px; max-height: 30px; width: auto; height: auto; object-fit: contain; }
+  }
+  .as-footer-socials {
+    display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 0 auto; padding: 0; list-style: none;
+    li { margin: 0; padding: 0; }
+    .social-icon {
+      display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px;
+      padding: 0; border-radius: 4px; color: var(--as-primary-500); background: var(--as-white); text-decoration: none;
+      &::before { margin: 0; font-size: 25px; }
+      &:hover, &:focus-visible { color: var(--as-primary-600); background: var(--as-primary-50); }
+    }
+    .facebook::before { @include icon(brand-facebook, 25px); }
+    .twitter::before { @include icon(brand-twitter, 25px); }
+    .tiktok::before { @include icon(brand-tiktok, 25px); }
+  }
+
+  .footer-bottom {
+    margin: 48px 0 0; padding: 0; background: transparent; color: var(--as-secondary-300);
+    > .container {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;
+      padding: 32px 0; border-top: 1px solid var(--as-secondary-75); border-bottom: 1px solid var(--as-secondary-75);
+      &::before, &::after { content: none; }
+    }
+    #signature { order: 2; float: none; width: auto; max-width: 100%; margin: 0; color: inherit; text-align: left; }
+    #signature a { color: inherit; }
+    #signature img { width: 17px; height: 17px; }
+    .copyright { order: 1; float: none; font-weight: 400; }
+    .copyright strong { font-weight: 400; }
+  }
+  &:has(.as-footer-meta) .footer-bottom { margin-top: 0; }
+
+  @media (max-width: 1199px) {
+    .custom-footer__contact, .custom-footer__newsletter { padding: 40px 32px; }
+    .custom-footer__contact .contact-box { gap: 16px; }
+    .as-footer-newsletter-art { top: 8px; right: 8px; opacity: .65; }
+  }
+  @media (max-width: 991px) {
+    .custom-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 20px; }
+    .custom-footer__contact, .custom-footer__newsletter { grid-column: 1 / -1; margin: 0; padding: 40px; border-radius: 12px; }
+    .custom-footer__contact::before, .custom-footer__contact::after { content: none; }
+    .instagram-widget { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .as-footer-meta { margin-top: 40px; }
+  }
+  @include bp.mobile {
+    .footer-rows { width: auto; padding: 32px 16px 0; }
+    .custom-footer { gap: 32px 16px; }
+    .custom-footer__contact, .custom-footer__newsletter { padding: 32px 24px; }
+    .custom-footer__contact .contact-box { gap: 16px; }
+    .custom-footer__contact .contact-box > img { width: 56px; height: 56px; flex-basis: 56px; }
+    .custom-footer__contact .contact-box a { font-size: var(--as-font-size-body); }
+    .custom-footer__instagram .pageElement__heading, .custom-footer__instagram h4 { padding-right: 0; margin-bottom: 20px; }
+    .custom-footer__facebook { grid-column: 1 / -1; }
+    .instagram-widget { gap: 12px; }
+    .instagram-widget .instagram-follow-btn { position: static; grid-column: 1 / -1; justify-self: end; }
+    .as-footer-meta { gap: 20px; margin: 32px 0; }
+    .as-footer-socials { margin-left: 0; }
+    .footer-bottom > .container { width: auto; margin: 0 16px; padding: 24px 0; flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 479px) {
+    .subscribe-form > fieldset { grid-template-columns: minmax(0, 1fr); }
+    .subscribe-form > fieldset > button { grid-column: 1; grid-row: auto; justify-self: start; margin: 0; }
+    .subscribe-form { --as-newsletter-action-space: 16px; }
+    .custom-footer__newsletter .pageElement__heading { padding-right: 32px; }
+    .as-footer-newsletter-art { opacity: .45; }
+  }
+}
+
+.as-theme .as-shop-reviews + #footer { margin-top: 0; }

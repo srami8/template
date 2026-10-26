@@ -17,6 +17,7 @@ import { enhanceCategoryIntro } from './category-intro';
 import { loadCategoryArticles, renderCategoryArticles } from './category-articles';
 import { renderShopReviews } from './shop-reviews';
 import { enhanceArticleCards } from './article-cards';
+import { enhanceFooter } from './footer';
 import { trackViewportWidth } from './viewport';
 import { styleFiles } from './styles.mjs';
 
@@ -139,6 +140,7 @@ function start() {
     renderCategoryArticles(categoryArticles);
     renderShopReviews(config);
     enhanceArticleCards();
+    enhanceFooter();
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

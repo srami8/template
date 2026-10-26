@@ -1,3 +1,13 @@
+# Patička (Codex): nativní bloky Disca podle Figmy
+
+Základ `519e242`, větev feature/responsive. Zadání: patička z Figmy 1633:7416 mimo hotový pás recenzí. Majitel potvrdil nativní správu Instagramu, plateb, Blogu a Facebooku a zobrazení po jejich naplnění. Dokumentace a známé limity: docs/paticka.md.
+
+Styly v components/_footer.scss využívají původní #footer/.custom-footer, contact-box, subscribe-form, menu, widgety a podpis. Nový footer.js doplňuje jen text podpory, výchozí popisky a dekoraci; nezmění vlastní nadpis newsletteru. Původní sociální li a případný platební blok přesune do nového spodního obalu (důvod předem vysvětlen majiteli), bez kopií. Formulář, inputy ani kontaktní box se nepřesouvají. Zachované souhlasy, CAPTCHA, validace, URL i hodnoty polí. Obálka/telefon jsou existující ikony, tři sociální SVG z Figmy přes stávající masky; button.primary sdílí základ a velikosti tlačítek. Nativní Blog/O nás/Facebook ověřeny na oficiálním demu Disca. Instagram a platby na této instalaci zatím nemají obsah, živá integrace zůstává k ověření po naplnění.
+
+Ověření: build a 3 statické kontroly stylů prošly; 2 nové browserové testy a audit blokuje start Chromia, nikoli aserce. In-app izolovaná nativní patička: 33 geometrií 320–1920 px, CAPTCHA / bez CAPTCHA / dlouhý e-mail, bez přetékání, stejné původní formuláře, pole, odkazy a rozepsané hodnoty po dvou inicializacích. Lokální Blank náhled skutečného Shoptetu: prázdné odeslání zachytí původní validace, zaměří e-mail a vypíše chyby e-mailu/CAPTCHA. Bez odeslání odběru a bez řešení CAPTCHA. Vendor snapshot a nastavení Blank se nemění; nejde o dokončenou migraci bez podkladu. Externí Claude Docs tímto zápisem nejsou upravené.
+
+---
+
 # Oprava (Codex): spodní popis kategorie na mobilu
 
 Základ `7136fef`, větev feature/responsive. Regrese z aktivních filtrů: produkty a stránkování dostaly order:4, ale nativní .category__secondDescription zůstala na order:3, a proto předběhla produkty i bez vybraného filtru. Žádný přesun popisu nebyl zadán. Mobilní layout nyní dává společné order:4 všemu běžnému obsahu a zachovává jeho nativní DOM pořadí; před něj posouvá pouze #filters-wrapper (1), .active-filters (2) a #category-header (3). Odstraněné duplicitní pořadí v _active-filters.scss. Bez změny JS, HTML, desktopu nebo nastavení administrace.
