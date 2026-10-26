@@ -1,7 +1,9 @@
 // Sdílený štítek našeptávače a aktivních filtrů (CTA/Search tag).
 @use "icon" as *;
 
-@mixin base {
+// Placeholder spojí oba nativní selektory do jediného CSS pravidla. Samotný
+// mixin s deklaracemi by stejný základ vykopíroval pro každé místo použití.
+%as-tag-base {
   display: inline-block;
   max-width: 100%;
   padding: 8px 16px;
@@ -19,6 +21,10 @@
     background: var(--as-primary-500);
     color: var(--as-white);
   }
+}
+
+@mixin base {
+  @extend %as-tag-base;
 }
 
 @mixin dismissible {

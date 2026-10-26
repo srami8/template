@@ -168,3 +168,5 @@ Mobilní panely mají společné chování v `js/drawer.js` a pohyb v `tools/_dr
 Oprava mobilní čáry řazení: #category-header má padding-bottom:0, takže border-bottom navazuje na podtržení aktivní záložky. Viz docs/kategorie.md; desktopové řazení a JS beze změny.
 
 Aktivní filtry kategorie (Figma 1633:7414 / 1633:10605): [active-filters.md](active-filters.md). Společný tag mixin s našeptávačem, nativní .active-filters .input a #clear-filters; na mobilu přehled v panelu i nad řazením podle upřesnění majitele.
+
+Štítky našeptávače a filtrů mají jeden společný základ i v sestaveném CSS (Sass placeholder za API tools/tag.base). Komponenta filtrů používá přímo nativní .active-filters/.input/#clear-filters; JS nedoplňuje čistě vizuální as-* třídy. Test styles.spec.cjs hlídá společné výsledné pravidlo.

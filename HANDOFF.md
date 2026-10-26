@@ -1,3 +1,15 @@
+# Úprava (Codex): jeden společný CSS základ štítků a nativní třídy
+
+Základ `13f1ca9`, větev feature/responsive. Majitel požaduje sdílení také ve výsledném CSS a maximální využití tříd Disca. Původní tools/tag.base sdílel zdroj SCSS, ale při každém include kopíroval deklarace. Nyní veřejné mixiny používají interní Sass placeholder: sestaví se jediné společné pravidlo pro původní searchWhisperer__additionalResults__link a .active-filters .input, stejně tak hover/focus. Varianta s křížkem řeší pouze rozdílné vykreslení tlačítka a ikonu.
+
+Odstraněné vlastní třídy as-active-filters a as-active-filters__clear a jejich přidávání přes JS. Rozložení se styluje přes nativní .active-filters/.input a původní p#clear-filters (mobilní kopie bez duplicitního ID). JS ponechává jen nativní třídy nových ovladačů, stavové datové atributy, aria a doplnění chybějícího přehledu do požadovaných dvou umístění. Filtrovací funkce, data-url a formuláře beze změny. Samostatný _active-filters.scss zůstává souborem rozložení; nevytváří vlastní vzhled štítku.
+
+Build: CSS 170001 → 169616 B (gzip 24769 → 24754 B), JS 48846 → 48653 B (gzip 14761 → 14713 B). Úspora je malá, hlavní přínos je jeden zdroj i jedno výsledné pravidlo a méně závislostí na vlastních třídách. Doplněná statická regrese nad dist CSS, browserová regrese požaduje pouze nativní class=active-filters/input. Návod docs/active-filters.md aktualizovaný.
+
+Ověření: build a 3 statické testy stylů včetně nového testu nad sestaveným CSS prošly. Audit nadále blokuje start Chromia (MachPortRendezvous), browserové regrese nejsou označené za prošlé. In-app prohlížeč bez nativního CSS: přehledy mají pouze class=active-filters, tlačítka class=input a clear odstavec žádnou vlastní třídu; 3 → 4 při odebrání stock, clear → 13, mobilní panel zůstává otevřený, bez přetékání. Osm vlastností našeptávače a filtrů je znovu shodných, tentokrát i s aktuálním písmem Mulish z administrace. Nasazení následuje.
+
+---
+
 # Aktualizace (Codex): aktivní filtry jako štítky s křížkem
 
 Základ `608d2b0`, větev feature/responsive. Figma desktop 1633:7414 a mobil 1633:10605; majitel výslovně doplnil mobilní přehled **v panelu i nad řazením**. Podrobnosti a návod pro obchodníka: docs/active-filters.md.

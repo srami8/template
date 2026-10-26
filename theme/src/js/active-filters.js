@@ -63,7 +63,7 @@ function renderSummary({ slot, anchor, items, clear, labels }) {
   if (!items.length) { summary?.remove(); return; }
   if (!summary) {
     summary = document.createElement('div');
-    summary.className = 'active-filters as-active-filters';
+    summary.className = 'active-filters';
     summary.dataset.asActiveFilters = slot;
     if (slot === 'listing') anchor.before(summary);
     else anchor.after(summary);
@@ -86,7 +86,6 @@ function renderSummary({ slot, anchor, items, clear, labels }) {
     summary.append(button);
   });
   const holder = document.createElement('p');
-  holder.className = 'as-active-filters__clear';
   const link = document.createElement('a');
   link.href = clear;
   link.textContent = labels.clear;
@@ -112,10 +111,6 @@ export function enhanceActiveFilters(filters) {
   // Pokud Shoptet začne posílat svůj přehled, zachováme ho na místě i s jeho ovladači.
   const native = document.querySelector('.active-filters:not([data-as-active-filters])');
   const nativeSlot = native ? (filters.contains(native) ? 'drawer' : 'listing') : null;
-  if (native) {
-    native.classList.add('as-active-filters');
-    native.querySelectorAll('p:has(a)').forEach(node => node.classList.add('as-active-filters__clear'));
-  }
   const { items, clear } = selectedFilters(filters, native);
   const anchors = { listing: header, drawer: filters.querySelector(':scope > .as-filter-header') };
   Object.entries(anchors).forEach(([slot, anchor]) => {

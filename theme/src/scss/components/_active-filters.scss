@@ -3,7 +3,7 @@
 @use "../tools/icon" as *;
 
 .as-theme body.type-category {
-  .as-active-filters {
+  .active-filters {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -14,12 +14,12 @@
     font-family: var(--as-font-family);
   }
 
-  .as-active-filters .input { @include tag.dismissible; }
+  .active-filters .input { @include tag.dismissible; }
 
   // Globální typografie #content p přidává 22px odstavec; nativní clear-filters
   // navíc používá verzálky a červený glyf. Zde jde o odkaz ze společného návrhu.
-  #content .as-active-filters__clear,
-  #filters .as-active-filters__clear {
+  #content .active-filters > p,
+  #filters .active-filters > p {
     display: flex;
     max-width: 100%;
     margin: 0;
@@ -50,18 +50,18 @@
     }
   }
 
-  #filters > .as-active-filters { display: none; }
+  #filters > .active-filters { display: none; }
 
   @include bp.mobile {
-    .category-content-wrapper > .as-active-filters { order: 2; margin-bottom: 24px; }
+    .category-content-wrapper > .active-filters { order: 2; margin-bottom: 24px; }
     .category-content-wrapper > #category-header { order: 3; }
     .category-content-wrapper > :is(#products, .listingControls, #productsListHeading) { order: 4; }
-    .category-content-wrapper:has(> .as-active-filters) #filters-wrapper:has(.filters-wrapper) {
+    .category-content-wrapper:has(> .active-filters) #filters-wrapper:has(.filters-wrapper) {
       margin-bottom: 16px;
       .unveil-button { margin-bottom: 0; }
     }
 
-    #filters > .as-active-filters {
+    #filters > .active-filters {
       order: 0;
       display: flex;
       flex: 0 0 auto;
@@ -70,7 +70,7 @@
       border-bottom: 1px solid var(--as-secondary-75);
       background: var(--as-white);
 
-      .as-active-filters__clear {
+      > p {
         flex-basis: 100%;
         margin-top: 12px;
         padding-left: 0;

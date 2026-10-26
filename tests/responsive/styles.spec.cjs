@@ -26,3 +26,13 @@ test('heading defaults are the same in the settings and in the CSS tokens', asyn
   expect(headingStyle({})).toBe('');
   expect(headingStyle({h1: 40, h2: 28, h3: 'x', h4: 500})).toBe('<style>:root{--as-heading-size-h1:40px}</style>');
 });
+
+test('search and active filter tags share one compiled base rule on native selectors', () => {
+  const css = fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8');
+  const tagRules = [...css.matchAll(/([^{}]+)\{([^{}]+)\}/g)]
+    .filter(([, selector, declarations]) => selector.includes('.searchWhisperer__additionalResults__link')
+      && declarations.includes('padding:8px 16px'));
+  expect(tagRules).toHaveLength(1);
+  expect(tagRules[0][1]).toContain('.active-filters .input');
+  expect(css).not.toContain('.as-active-filters');
+});

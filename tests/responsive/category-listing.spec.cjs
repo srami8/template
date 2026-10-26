@@ -118,7 +118,9 @@ test('active filters retain native removal URLs, count-free labels and a unique 
   await page.setViewportSize({width:1920,height:1080});
   await loadActiveFilters(page);
   const summary = page.locator('[data-as-active-filters="listing"]');
+  await expect(summary).toHaveAttribute('class','active-filters');
   await expect(summary.locator('.input')).toHaveCount(3);
+  await expect(summary.locator('.input').first()).toHaveAttribute('class','input');
   await expect(summary.locator('.input').first()).toHaveText('Na skladě');
   await expect(summary.locator('.input').first()).toHaveAttribute('data-url',/dd=2&priceMin=301&priceMax=390&order=price/);
   const price = new URL(await summary.locator('.input').last().getAttribute('data-url'));
@@ -126,7 +128,7 @@ test('active filters retain native removal URLs, count-free labels and a unique 
   expect(price.searchParams.get('stock')).toBe('1');
   expect(price.searchParams.get('dd')).toBe('2');
   expect(price.searchParams.get('order')).toBe('price');
-  await expect(summary.locator('.as-active-filters__clear a')).toHaveAttribute('href','http://shop.test/pletene-kosiky/?order=price');
+  await expect(summary.locator('p > a')).toHaveAttribute('href','http://shop.test/pletene-kosiky/?order=price');
   await expect(page.locator('#clear-filters')).toHaveCount(1);
   // Pseudo-ikona nechá event.target přímo na ovladači, jak vyžaduje nativní handler.
   expect(await summary.locator('.input').first().evaluate(el=>el.children.length)).toBe(0);
@@ -145,7 +147,7 @@ test('mobile active filters appear in both places and long labels stay inside th
     expect(box.x).toBeGreaterThanOrEqual(bounds.x);
     expect(box.right).toBeLessThanOrEqual(bounds.x+bounds.width);
   }
-  await expect(drawer.locator('.as-active-filters__clear')).toHaveCSS('margin-bottom','0px');
-  await expect(drawer.locator('.as-active-filters__clear a')).toHaveCSS('text-transform','none');
+  await expect(drawer.locator('p')).toHaveCSS('margin-bottom','0px');
+  await expect(drawer.locator('p > a')).toHaveCSS('text-transform','none');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
 });

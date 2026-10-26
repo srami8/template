@@ -59,7 +59,7 @@ const ITEMS = [
   ['Nejprodávanější: tlačítko Detail', '/sperky/', '#productsTop .as-detail-button', null, { size: true }],
   ['Aktivní filtry: štítek', '/pletene-kosiky/?stock=1&dd=2', '[data-as-active-filters="listing"] .input', null, { size: true }],
   ['Aktivní filtry: křížek', '/pletene-kosiky/?stock=1&dd=2', '[data-as-active-filters="listing"] .input', '[data-as-active-filters="drawer"] .input', { ...ICON('::after'), open: { mobile: 'filters' } }],
-  ['Aktivní filtry: vymazání', '/pletene-kosiky/?stock=1&dd=2', '[data-as-active-filters="listing"] .as-active-filters__clear a', null, { size: true }],
+  ['Aktivní filtry: vymazání', '/pletene-kosiky/?stock=1&dd=2', '[data-as-active-filters="listing"] > p a', null, { size: true }],
   ['Filtry: karta', '/pletene-kosiky/', '#filters .filter-section-boolean', null, { open: { mobile: 'filters' } }],
   ['Filtry: nadpis', '/pletene-kosiky/', '#filters .filter-section-boolean > h4', null, { size: true, open: { mobile: 'filters' } }],
   ['Filtry: checkbox', '/pletene-kosiky/', '#stock + label', null, { pseudo: '::before', props: ['width', 'height', 'borderRadius', 'borderColor', 'backgroundColor'], open: { mobile: 'filters' } }],
