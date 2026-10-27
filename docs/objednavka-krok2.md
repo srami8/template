@@ -35,8 +35,10 @@ Nativní checkout při volbě metody poslouchá pouze `mousedown` na `.radio-wra
 
 ## Nasazení a skutečná integrace
 
-Nasazeno `543cefc` + `ea91d66` na GitHub feature/responsive a SFTP, původní složka synchronizovaná. Snippet pouze instalace 313980, CSS/JS HTTP 200 a stejné SHA256 jako build. Šest statických kontrol prošlo; browserové regrese, audit a snapshots blokuje start Chromia (MachPortRendezvous). Syntaxe nového testu ověřená, browserové regrese se neoznačují za prošlé.
+Nasazeno `543cefc` + `ea91d66` + `ca7cdea` na GitHub feature/responsive a SFTP, původní složka synchronizovaná. Snippet pouze instalace 313980, CSS/JS HTTP 200 a stejné SHA256 jako build. Šest statických kontrol prošlo; browserové regrese, audit a snapshots blokuje start Chromia (MachPortRendezvous). Syntaxe nového testu ověřená, browserové regrese se neoznačují za prošlé.
 
 In-app živě: obě hlavičky při 11 šířkách 320–1920 bez přetékání/překryvů, telefon uvnitř hlavičky, žádná kopie účtu. Mobilní i desktopové přihlášení se otevře/zavře, krok 3 má stejnou hlavičku i s variantou v2. První krok po návratu má původní variantu s hledáním a společné součty/CTA fungují při 390/1920. Platby kliknutím i klávesnicí přepočítají 295 → 318 → 295 Kč včetně nativního DPH; EUR → CZK se vrátí na 295 Kč. V EUR nemá obchod dostupné dopravy/platby. Packeta se otevře v původním dialogu a dá se zavřít; výdejní místo nebylo vybrané, nepokračování bez něj ověřené, konkrétní chybové hlášení nezachycené. Volba adresy a převodu dovolí přejít do třetího kroku. Bez zadání osobních údajů/odeslání objednávky. Testovací produkt -6 nakonec odstraněný, košík opět prázdný.
 
 Snímky `outputs/checkout-step2-desktop-live.png`, `checkout-step2-mobile-live.png`, `checkout-step3-header-desktop-live.png`, `checkout-step3-header-mobile-live.png`; měření `checkout-step2-live-checks.json`. Telefon už Shoptet vrací. Obrázky rekapitulace a vícejazyčný markup na této instalaci stále chybí; je nutné dokončit ověření, až budou dostupné.
+
+Závěrečná drobná úprava ca7cdea prodlužuje desktopový oddělovač rekapitulace až ke spodní hraně viewportu (živě 1080/1080 px), na mobilu bez minimální výšky. Finální CSS znovu HTTP 200 a stejné SHA256. Desktopový snímek aktualizovaný, dočasná položka znovu odebraná a košík ověřen prázdný.
