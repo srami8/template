@@ -7,7 +7,7 @@ const fixture=fs.readFileSync(path.join(__dirname,'fixtures/checkout-step2.html'
 const css=name=>fs.readFileSync(path.join(dist,name+'.css'),'utf8').replace(/<\/style/gi,'%3C/style');
 for(const variant of ['v1','v2'])test(`native checkout fits both headers without changing the form contracts: ${variant}`,async({page})=>{
  const html=fixture.replaceAll('Dřevěný přívěsek Bracken Pendant','Dlouhý název výrobku s podrobnými informacemi '.repeat(5)).replaceAll('285 Kč','123 456 789 Kč');
- await page.setContent(`<!doctype html><html class="as-theme as-header-${variant} as-account-in-header"><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css('base-blank')}${css('asteroid')}${css('header-'+variant)}</style></head><body class="ordering-process in-krok-1 ums_forms_redesign--on">${html}</body></html>`);
+ await page.setContent(`<!doctype html><html class="as-theme as-header-${variant} as-account-in-header"><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css('base-blank')}${css('asteroid')}${css('header-'+variant)}</style></head><body class="desktop ordering-process in-krok-1 ums_forms_redesign--on">${html}</body></html>`);
  await expect(page.locator('#order-form')).toHaveAttribute('action','/action/orderingProcess/Step1Validate/');
  await expect(page.locator('#orderFormButton')).toHaveAttribute('form','order-form');
  await expect(page.locator('#payment-currency')).toHaveAttribute('name','currency');

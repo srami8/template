@@ -65,3 +65,11 @@ test('cart and checkout compile the price breakdown into one shared rule',()=>{
  expect(rules[0][1]).toContain('.in-kosik .summary .price-wrapper');
  expect(rules[0][1]).toContain('.in-krok-1 #checkoutSidebar .price-wrapper');
 });
+
+test('native footer and checkout contacts share one compiled link style',()=>{
+ const css=fs.readFileSync(path.join(dist,'asteroid.css'),'utf8');
+ const rules=[...css.matchAll(/([^{}]+)\{([^{}]+)\}/g)].filter(([,s,d])=>s.includes('.contact-box a')&&d.includes('font-size:var(--as-font-size-h5)'));
+ expect(rules).toHaveLength(1);
+ expect(rules[0][1]).toContain('.custom-footer__contact .contact-box a');
+ expect(rules[0][1]).toContain('#checkoutSidebar .checkout-box .contact-box a');
+});

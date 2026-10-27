@@ -1,3 +1,15 @@
+# Oprava hlavičky, hoveru a návrat kontaktu (Codex)
+
+Základ ac0d3c5, feature/responsive. Majitel dodal snímky špatného centrování hlavičky a hranatého/skákajícího hoveru; aktualizoval Figmu 1645:8015 o kontakt 1647:9627. Dokumentace docs/objednavka-krok2.md na konci.
+
+Živě reprodukován nativní hover: .desktop .shipping-billing-table .radio-wrapper:hover přidá 1px border + hranatý shadow, výška 76 → 78 px. Cílené &:hover pravidlo vrací obal na border0/shadow none; vlastní label se stejným 1px borderem/radiusem řeší pouze barvy a zaoblený stín. Header má explicitní střed hlavního řádku pro logo/telefon/tools, reset offsetů a clearfixů, mobil separátní telefonní řádek. Platí pro oba poslední kroky a varianty v1/v2.
+
+Kontakt se vrací na původním místě .checkout-box, žádné kopie ani přesuny formulářů/údajů. Původní toggle span dostává text/ARIA heading a kontaktní box je stále viditelný, bez rozbalovací animace; skutečné jméno/fotka/telefon/mail z administrace. Prázdný blok se neukazuje. Sdílený tools/contact vytažený z patičky, stejné fonty/linky/ikony sestavené jednou; lokálně rozložení/foto64 radius10 gap16. Přesný phone-contact.svg24 z Figmy, mail-outline24 existující. Ostatní pole/JS dopravy a přepočty nezměněné.
+
+In-app náhled 52 kombinací: v1/v2 × běžný/dlouhý kontakt × 13 šířek 320–2560. Bez přetékání/překryvů, všechny desktopové středy stejné, mobil logo/tools stejné a telefon v hlavičce. Hover všech 4 metod: 76px výška i další pozice beze změny, vnější border0/shadow none. Kontakt bez jména64px, prázdný skrytý. Kontroly outputs/checkout-fixes-preview-checks.json a checkout-hover-before-fix.json. Browserové regrese nyní obsahují .desktop i skutečný hover; start Chromia stále blokuje MachPortRendezvous. Nasazení/živá kontrola probíhá, vlastní testovací produkt -6 je nutné nakonec odebrat (košík byl původně prázdný).
+
+---
+
 # Doplnění obrázků rekapitulace (Codex)
 
 Majitel v administraci nenašel volbu obrázků. Zdroj 3a2a5b8, feature/responsive. Nutnost přidání pouze img do původního odkazu byla předem vysvětlena; žádné formuláře/texty/ceny se nekopírují ani nepřesouvají. Společný styl checkout-images pro kroky 2/3, původní .cart-item-name a; bez vlastní vizuální třídy, 48 px / radius 8 / gap 16. Podrobnosti docs/objednavka-krok2.md, část Obrázky rekapitulace.

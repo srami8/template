@@ -1,0 +1,28 @@
+@use "../tools/contact";
+
+.as-theme body:is(.in-krok-1, .in-krok-2) #checkoutSidebar .checkout-box {
+  display: none;
+  // Prázdný nativní blok nevytváříme; údaje i fotka se spravují pouze v Shoptetu.
+  &:has(.contact-box a) { display: block; }
+  margin: 0 0 24px; padding: 0 0 32px; border: 0; border-bottom: 1px solid var(--as-secondary-75); background: none;
+  .toggle-contacts {
+    display: block; width: auto; height: auto; min-height: 0; margin: 0 0 24px; padding: 0; border: 0; border-radius: 0; background: none;
+    color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-h4); font-weight: 500; line-height: 1.2; text-align: left; text-transform: none;
+    cursor: default; pointer-events: none;
+    &::before, &::after { content: none; }
+  }
+  // Disco kontakt schovává a animuje jako rozbalovací box. V návrhu je stále viditelný.
+  > .box.box-sm { display: block; height: auto; margin: 0; padding: 0; border: 0; overflow: visible; visibility: visible; transform: none; transition: none; background: none; }
+  .contact-box {
+    @include contact.card;
+    display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: start; gap: 0 16px;
+    > img { grid-column: 1; grid-row: 1 / span 2; border-radius: 10px; }
+    > strong { grid-column: 2; grid-row: 1; margin: 0 0 8px; font-size: var(--as-font-size-small); line-height: 1.2; }
+    > ul { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; gap: 8px; }
+    &:not(:has(> strong)) > ul { grid-row: 1; }
+    &:not(:has(> img)) { grid-template-columns: minmax(0, 1fr); > strong, > ul { grid-column: 1; } }
+    li { margin: 0; min-width: 0; word-break: normal; &:has(.tel), &:has(.cellphone) { order: -1; } }
+    li + li { margin-top: 0; }
+    a { min-width: 0; }
+  }
+}

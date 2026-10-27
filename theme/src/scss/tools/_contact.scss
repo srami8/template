@@ -1,0 +1,17 @@
+// Kontaktní údaje Shoptetu: jeden základ v patičce a v dokončení objednávky.
+@use "icon" as *;
+%as-contact {
+  display: flex; gap: 32px; align-items: center; min-height: 0; padding: 0;
+  > img { position: static; display: block; flex: 0 0 64px; width: 64px; height: 64px; max-width: none; border-radius: 12px; object-fit: cover; }
+  > strong { display: block; }
+  ul { min-width: 0; margin: 0; padding: 0; }
+  li { padding: 0; list-style: none; }
+  li + li { margin-top: 12px; }
+  li > span { display: flex; gap: 12px; align-items: center; padding: 0; }
+  li > span::before { position: static; inset: auto; margin: 0; transform: none; flex-shrink: 0; color: var(--as-primary-500); }
+  .mail::before { @include icon(mail-outline, 24px); }
+  :is(.tel, .cellphone)::before { @include icon(phone-contact, 24px); }
+  a { color: var(--as-secondary-500); font-size: var(--as-font-size-h5); font-weight: 500; line-height: 1.2; overflow-wrap: anywhere; }
+  a:hover { color: var(--as-primary-600); }
+}
+@mixin card { @extend %as-contact; }

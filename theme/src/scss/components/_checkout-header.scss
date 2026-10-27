@@ -4,6 +4,7 @@
 @use "../tools/dropdown";
 
 .as-theme body:is(.in-krok-1, .in-krok-2) {
+  --as-checkout-header-row-height: 79px;
   --as-header-text: var(--as-secondary-500);
   --as-header-muted: var(--as-secondary-400);
   .overall-wrapper { position: relative; padding-top: 0; }
@@ -11,7 +12,7 @@
   #header {
     position: relative; top: auto; height: 79px; min-height: 0; margin: 0; padding: 0; border: 0;
     background: var(--as-white); box-shadow: none; transform: none; transition: none; z-index: 100;
-    .header-top { height: 100%; margin: 0; padding: 0; background: none; }
+    .header-top { height: var(--as-checkout-header-row-height); margin: 0; padding: 0; background: none; }
     .header-top-wrapper {
       display: flex; align-items: center; width: calc(100% - 32px); max-width: 1420px; height: 100%; min-height: 0; margin: 0 auto; padding: 0;
       &::before, &::after { content: none; }
@@ -24,19 +25,19 @@
   .top-navigation-bar {
     position: absolute; top: 0; right: 0; left: 0; z-index: 101; display: block; width: calc(100% - 32px); max-width: 1420px; height: 79px;
     margin: 0 auto; padding: 0; border: 0; background: transparent; pointer-events: none;
-    > .container { display: flex; justify-content: flex-end; align-items: center; gap: 24px; width: 100%; max-width: none; height: 100%; min-height: 0; padding: 0; }
+    > .container { &::before, &::after { content: none; } display: flex; justify-content: flex-end; align-items: center; gap: 24px; width: 100%; max-width: none; height: 100%; min-height: 0; padding: 0; }
     .top-navigation-menu, .top-nav-button-register { display: none; }
     .as-topbar-phone {
-      position: absolute; left: 35%; display: inline-flex; align-items: center; gap: 6px; max-width: 33%; margin: 0; padding: 0;
+      position: absolute; top: calc(var(--as-checkout-header-row-height) / 2); left: 35%; transform: translateY(-50%); display: inline-flex; align-items: center; gap: 6px; max-width: 33%; margin: 0; padding: 0;
       color: var(--as-secondary-400); font-size: var(--as-font-size-small); line-height: 20px; text-decoration: none; pointer-events: auto; transition: none;
       strong { color: var(--as-secondary-500); font-weight: 500; }
       &::before { @include icon(phone, 16px); flex-shrink: 0; }
     }
-    .top-navigation-tools { display: flex; flex: 0 0 auto; align-items: center; gap: 24px; margin: 0; padding: 0; pointer-events: auto; }
+    .top-navigation-tools { position: absolute; top: calc(var(--as-checkout-header-row-height) / 2); right: 0; bottom: auto; left: auto; transform: translateY(-50%); display: flex; flex: 0 0 auto; align-items: center; gap: 24px; margin: 0; padding: 0; pointer-events: auto; }
     .top-nav-button-login, .top-nav-button-account {
-      position: relative; display: inline-flex; align-items: center; gap: 7px; width: auto; height: 44px; margin: 0; padding: 0; border: 0;
+      position: relative; inset: auto; transform: none; display: inline-flex; align-items: center; gap: 7px; width: auto; height: 44px; margin: 0; padding: 0; border: 0;
       background: none; color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-small); line-height: 20px; text-decoration: none;
-      &::before { @include icon(perm-identity, 32px); position: static; margin: 0; }
+      &::before { @include icon(perm-identity, 32px); position: static; inset: auto; transform: none; margin: 0; }
     }
     .dropdown {
       position: relative; display: flex; align-items: center; height: 44px; margin: 0; padding: 0; border: 0;
@@ -51,13 +52,14 @@
     .top-navigation-bar .as-topbar-phone { left: 22%; max-width: 39%; flex-wrap: wrap; gap: 0 6px; }
   }
   @media (max-width: 767px) {
+    --as-checkout-header-row-height: 72px;
     #header { height: 72px; .site-name { max-width: 38%; } }
     .top-navigation-bar { height: 72px;
       .top-navigation-tools { gap: 12px; }
       .top-nav-button-login, .top-nav-button-account { width: 36px; overflow: hidden; font-size: 0; gap: 0; &::before { width: 24px; height: 24px; } }
-      .as-topbar-phone { top: 64px; right: auto; bottom: auto; left: 0; display: block; width: 100%; max-width: 100%; height: auto; padding-left: 22px; font-size: var(--as-font-size-caption); strong { white-space: nowrap; } &::before { position: absolute; top: 2px; left: 0; } }
+      .as-topbar-phone { transform: none; top: 64px; right: auto; bottom: auto; left: 0; display: block; width: 100%; max-width: 100%; height: auto; padding-left: 22px; font-size: var(--as-font-size-caption); strong { white-space: nowrap; } &::before { position: absolute; top: 2px; left: 0; } }
       .dropdown > button { gap: 4px; font-size: var(--as-font-size-caption); }
     }
-    &:has(.as-topbar-phone) { #header, .top-navigation-bar { height: 104px; } }
+    &:has(.as-topbar-phone) { --as-checkout-header-row-height: 64px; #header, .top-navigation-bar { height: 104px; } }
   }
 }

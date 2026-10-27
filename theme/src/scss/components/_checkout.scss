@@ -14,8 +14,6 @@
   .co-box { margin: 0 0 40px; padding: 0; border: 0; background: none; }
   .co-box h2, #summary-box > h2 { display: block; margin: 0 0 24px; padding: 0; color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-h4); font-weight: 500; line-height: 1.2; &::before { content: none; } }
   #checkoutSidebar {
-    // Kontaktní box zůstává zdrojem skutečného telefonu v hlavičce, návrh zde další blok nemá.
-    .checkout-box { display: none; }
     .order-summary, .order-summary-inner { position: static; width: auto; margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
     .order-summary-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 24px; width: 100%; margin: 0; padding: 16px 0; border: 0; border-bottom: 1px solid var(--as-secondary-75); line-height: 1.2; }
     .cart-item-name { grid-column: 1; grid-row: 1 / span 2; min-width: 0; padding: 0; a { color: var(--as-secondary-400); font-size: var(--as-font-size-small); font-weight: 400; overflow-wrap: anywhere; } }
@@ -50,7 +48,9 @@
   .shipping-billing-table { display: flex; flex-direction: column; gap: 10px; width: 100%; margin: 0; padding: 0; border: 0; }
   .radio-wrapper {
     @include radio.control;
-    position: relative; width: 100%; margin: 0; padding: 0; border: 0; container-type: normal;
+    position: relative; width: 100%; margin: 0; padding: 0; border: 0; border-radius: 10px; box-shadow: none; container-type: normal;
+    // Disco při hoveru přidává rámeček a hranatý stín na obal: měnil rozměry o 2 px.
+    &:hover { border: 0; box-shadow: none; }
     input[type="radio"] + label {
       display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px 24px;
       min-height: 76px; width: 100%; margin: 0; padding: 16px 16px 16px 62px; border: 1px solid var(--as-secondary-75); border-radius: 10px; background: var(--as-white);
