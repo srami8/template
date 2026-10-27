@@ -6,7 +6,7 @@ Figma 1645:8015, hlavička 1645:8338. Navazuje na první krok košíku. Maximál
 
 Krok Doprava a platba používá skutečné dopravy, platební metody, ceny, podmínky dostupnosti, výdejní místa, měny a cenový rozpis Shoptetu. Ukázkové dopravce, Apple/Google Pay, loga, texty a ceny z Figmy aSteroid nevytváří. Pokud obchod nabízí jedinou zemi doručení, Shoptet nemusí vypisovat její výběr; vlastní náhradní pole nepřidáváme.
 
-Poslední dva kroky objednávky mají jednu zjednodušenou hlavičku nezávislou na nastavení varianty v1/v2: logo obchodu, dostupný telefon, měna/jazyk podle aktivovaných funkcí a původní přihlášení nebo účet. Menu, rychlé odkazy, propagační pás a hledání se v těchto krocích nezobrazují. První krok košíku a zbytek obchodu nadále používají zvolenou hlavičku.
+Poslední dva kroky objednávky mají na počítači (od 768 px) jednu zjednodušenou hlavičku nezávislou na nastavení varianty v1/v2: logo obchodu, dostupný telefon, měna/jazyk podle aktivovaných funkcí a původní přihlášení nebo účet. Menu, rychlé odkazy, propagační pás a hledání se tam nezobrazují. Na telefonu mají stejnou kompaktní hlavičku jako košík (Figma 1686:10094, rozhodnutí majitele 27. 10.): menu, logo, lupa a účet v řádku 56 px; měna je v menu.
 
 Telefon je stále z nativní `.contact-box .tel a`; otevírací doba ze stávajícího nastavení šablony. Je-li kontakt v objednávce vypnutý, aSteroid nevloží náhradní ani ukázkové číslo. Důsledkem je hlavička bez telefonu. Měnu i přihlášení obsluhuje Shoptet. Jazyk se zobrazí, jen pokud jej obchod skutečně nabízí; jeho vícejazyčný markup na testovací instalaci zatím není k dispozici a je potřeba ho ověřit při aktivaci.
 
@@ -16,7 +16,7 @@ Telefon je stále z nativní `.contact-box .tel a`; otevírací doba ze stávaj�
 
 Žádné přemisťování, klonování nebo nahrazování formulářů, žádný vlastní fetch, přepočet cen ani výběr výdejního místa. Původní `name`, `value`, `data-*`, `for/id`, `form=order-form` a akce `Step1ChooseDelivery/Step1Validate` zůstávají Shoptetu. CSS respektuje checked, disabled, inactive a chyby nativních formulářů. Nativní mobilní schování nadpisu základních údajů přebíjí cílený selektor se stejným ID.
 
-`components/_checkout-header.scss` platí pouze pro `body.in-krok-1/.in-krok-2`. Původní topbar a #header zůstávají ve stejném místě DOM. Topbar leží nad řádkem loga, prázdné plochy nepohlcují kliknutí; původní ovladače jsou dostupné. `enhanceHeader` v těchto dvou krocích pouze doplní již existující telefon a nevytváří kopii účtu, rychlé odkazy ani katalog. `enhanceMobileHeader` zde nezavádí sticky/kompaktní chování. Třetí krok dostává tuto hlavičku, nikoli nový redesign jeho formulářů.
+`components/_checkout-header.scss` platí pouze pro `body.in-krok-1/.in-krok-2` od 768 px (skrytí informační lišty na všech šířkách). Původní topbar a #header zůstávají ve stejném místě DOM. Topbar leží nad řádkem loga, prázdné plochy nepohlcují kliknutí; původní ovladače jsou dostupné. `enhanceHeader` doplní telefon, kopii účtu a rychlé odkazy jako v košíku (na počítači je objednávková hlavička skrývá s `.navigation-buttons`, na telefonu jsou účet v řádku a odkazy v menu); katalog v2 ne. Původní účet v topbaru zůstává na počítači viditelný, pravidlo objednávkové hlavičky je specifičtější než `.as-account-in-header`. Na telefonu je hlavička kompaktní od začátku (`_mobile-header.scss`) a `enhanceMobileHeader` ji při posunu dolů schová jako všude jinde. Třetí krok dostává tuto hlavičku, nikoli nový redesign jeho formulářů.
 
 ## Sdílení prvků
 

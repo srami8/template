@@ -31,7 +31,7 @@ Referenční stylesheet: `cdn.myshoptet.com/prj/dist/master/shop/dist/main-13.le
 Figma: „Header - mobile“, „Header - mobile - sticky“, „Menu - level 1/2/3“. Hlavička je pevná `#header` Disca (styly `components/_mobile-header.scss`, JS `js/mobile-header.js`).
 - **Nahoře na stránce:** pod informační lištou (`--as-header-offset`); řádek s hamburgerem, logem, účtem a košíkem; pod ním vždy viditelné pole hledání.
 - **Po odjetí lišty:** kompaktní (`html.as-header-compact`): lupa místo pole, lupa otevře hledání Disca.
-- **V košíku** (`body.in-kosik`, Figma 1686:10094) je kompaktní hned od začátku: menu, logo, lupa, účet, výška 56 px. Stejná hlavička bude i v dalších krocích objednávky (zatím mají vlastní `components/_checkout-header.scss`). Otevřené hledání se vysune přes obsah; `js/header.js` při něm výšku neměří.
+- **V košíku a krocích objednávky** (`body.in-kosik`, `.in-krok-1`, `.in-krok-2`, Figma 1686:10094) je kompaktní hned od začátku: menu, logo, lupa, účet, výška 56 px. Objednávková hlavička `components/_checkout-header.scss` platí jen od 768 px. Otevřené hledání se vysune přes obsah; `js/header.js` při něm výšku neměří.
 - **Při posunu dolů** se schová (`html.as-header-hidden`), při posunu nahoru se vrátí.
 - **Místo pro hlavičku:** `.overall-wrapper` drží místo plné hlavičky (`--as-info-height + --as-mobile-header-height`). Výšku `js/header.js` měří jen v plném stavu, takže se obsah při přepnutí neposouvá.
 

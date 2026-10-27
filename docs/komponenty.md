@@ -62,7 +62,7 @@ Společné CSS je pouze v `components/_free-shipping.scss`, nad původními `.ca
 
 První krok košíku podle Figmy 1642:5563, telefon 1686:10094: [nativní prvky, sdílené komponenty a ověření](kosik-krok1.md). Kroky objednávky (`components/_order-steps.scss`) mají na telefonu jeden řádek s popiskem jen u aktivního kroku ve všech třech krocích. Původní tabulka, související produkty a kupony, společné kroky objednávky; žádné kopírování formulářů.
 
-Objednávka: `tools/checkout` sdílí součty a navigaci s prvním krokem; kolečko voleb dopravy/platby je globální radio (`components/_choices.scss`), `_checkout.scss` mění jen jeho polohu v kartě; `components/checkout-header` společnou hlavičku kroků 2 a 3; pravý panel `#checkoutSidebar` stojí na místě i proti posouvání skriptem Shoptetu (`_checkout.scss`); formulář třetího kroku `components/_checkout-form.scss`. Viz [objednavka-krok2.md](objednavka-krok2.md).
+Objednávka: `tools/checkout` sdílí součty a navigaci s prvním krokem; kolečko voleb dopravy/platby je globální radio (`components/_choices.scss`), `_checkout.scss` mění jen jeho polohu v kartě; `components/checkout-header` společnou hlavičku kroků 2 a 3 na počítači (na telefonu kompaktní mobilní hlavička jako košík, `_mobile-header.scss`); pravý panel `#checkoutSidebar` stojí na místě i proti posouvání skriptem Shoptetu (`_checkout.scss`); formulář třetího kroku `components/_checkout-form.scss`. Viz [objednavka-krok2.md](objednavka-krok2.md).
 
 Obrázky rekapitulace: jeden `components/checkout-images` pro nativní `.cart-item-name a > img` v krocích 2/3. Zdroj dat a minimální doplnění DOM: `js/checkout-images.js`, viz [objednavka-krok2.md](objednavka-krok2.md#obrázky-rekapitulace-bez-volby-v-administraci).
 

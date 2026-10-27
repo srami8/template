@@ -1,65 +1,59 @@
-// Poslední dva kroky mají jednu hlavičku bez ohledu na zvolenou variantu obchodu.
+// Poslední dva kroky mají na počítači jednu hlavičku bez ohledu na zvolenou variantu obchodu
+// (logo, telefon, měna, účet). Na telefonu mají stejnou kompaktní hlavičku jako košík (Figma
+// 1686:10094, components/_mobile-header.scss), proto tu je vše od 768 px.
 // Původní topbar a #header zůstávají na místě; původní přihlášení i dropdowny obsluhuje Disco.
+@use "../tools/breakpoints" as bp;
 @use "../tools/icon" as *;
 @use "../tools/dropdown";
 
 .as-theme body:is(.in-krok-1, .in-krok-2) {
-  --as-checkout-header-row-height: 79px;
-  --as-header-text: var(--as-secondary-500);
-  --as-header-muted: var(--as-secondary-400);
-  .overall-wrapper { position: relative; padding-top: 0; }
   .site-msg.information { display: none; }
-  #header {
-    position: relative; top: auto; height: 79px; min-height: 0; margin: 0; padding: 0; border: 0;
-    background: var(--as-white); box-shadow: none; transform: none; transition: none; z-index: 100;
-    .header-top { height: var(--as-checkout-header-row-height); margin: 0; padding: 0; background: none; }
-    .header-top-wrapper {
-      display: flex; align-items: center; width: calc(100% - 32px); max-width: 1420px; height: 100%; min-height: 0; margin: 0 auto; padding: 0;
-      &::before, &::after { content: none; }
+  @include bp.desktop {
+    --as-checkout-header-row-height: 79px;
+    --as-header-text: var(--as-secondary-500);
+    --as-header-muted: var(--as-secondary-400);
+    .overall-wrapper { position: relative; padding-top: 0; }
+    #header {
+      position: relative; top: auto; height: 79px; min-height: 0; margin: 0; padding: 0; border: 0;
+      background: var(--as-white); box-shadow: none; transform: none; transition: none; z-index: 100;
+      .header-top { height: var(--as-checkout-header-row-height); margin: 0; padding: 0; background: none; }
+      .header-top-wrapper {
+        display: flex; align-items: center; width: calc(100% - 32px); max-width: 1420px; height: 100%; min-height: 0; margin: 0 auto; padding: 0;
+        &::before, &::after { content: none; }
+      }
+      .site-name { position: static; flex: 0 1 145px; width: 145px; max-width: 30%; margin: 0; padding: 0; transform: none; text-align: left; }
+      .site-name a { display: block; max-width: 100%; }
+      .site-name img { display: block; width: auto; max-width: 100%; height: auto; max-height: 40px; object-fit: contain; }
+      .search, .navigation-buttons, .header-bottom, .as-quicklinks, .menu-helper { display: none; }
     }
-    .site-name { position: static; flex: 0 1 145px; width: 145px; max-width: 30%; margin: 0; padding: 0; transform: none; text-align: left; }
-    .site-name a { display: block; max-width: 100%; }
-    .site-name img { display: block; width: auto; max-width: 100%; height: auto; max-height: 40px; object-fit: contain; }
-    .search, .navigation-buttons, .header-bottom, .as-quicklinks, .menu-helper { display: none; }
-  }
-  .top-navigation-bar {
-    position: absolute; top: 0; right: 0; left: 0; z-index: 101; display: block; width: calc(100% - 32px); max-width: 1420px; height: 79px;
-    margin: 0 auto; padding: 0; border: 0; background: transparent; pointer-events: none;
-    > .container { &::before, &::after { content: none; } display: flex; justify-content: flex-end; align-items: center; gap: 24px; width: 100%; max-width: none; height: 100%; min-height: 0; padding: 0; }
-    .top-navigation-menu, .top-nav-button-register { display: none; }
-    .as-topbar-phone {
-      position: absolute; top: calc(var(--as-checkout-header-row-height) / 2); left: 35%; transform: translateY(-50%); display: inline-flex; align-items: center; gap: 6px; max-width: 33%; margin: 0; padding: 0;
-      color: var(--as-secondary-400); font-size: var(--as-font-size-small); line-height: 20px; text-decoration: none; pointer-events: auto; transition: none;
-      strong { color: var(--as-secondary-500); font-weight: 500; }
-      &::before { @include icon(phone, 16px); flex-shrink: 0; }
+    .top-navigation-bar {
+      position: absolute; top: 0; right: 0; left: 0; z-index: 101; display: block; width: calc(100% - 32px); max-width: 1420px; height: 79px;
+      margin: 0 auto; padding: 0; border: 0; background: transparent; pointer-events: none;
+      > .container { &::before, &::after { content: none; } display: flex; justify-content: flex-end; align-items: center; gap: 24px; width: 100%; max-width: none; height: 100%; min-height: 0; padding: 0; }
+      .top-navigation-menu, .top-nav-button-register { display: none; }
+      .as-topbar-phone {
+        position: absolute; top: calc(var(--as-checkout-header-row-height) / 2); left: 35%; transform: translateY(-50%); display: inline-flex; align-items: center; gap: 6px; max-width: 33%; margin: 0; padding: 0;
+        color: var(--as-secondary-400); font-size: var(--as-font-size-small); line-height: 20px; text-decoration: none; pointer-events: auto; transition: none;
+        strong { color: var(--as-secondary-500); font-weight: 500; }
+        &::before { @include icon(phone, 16px); flex-shrink: 0; }
+      }
+      .top-navigation-tools { position: absolute; top: calc(var(--as-checkout-header-row-height) / 2); right: 0; bottom: auto; left: auto; transform: translateY(-50%); display: flex; flex: 0 0 auto; align-items: center; gap: 24px; margin: 0; padding: 0; pointer-events: auto; }
+      .top-nav-button-login, .top-nav-button-account {
+        position: relative; inset: auto; transform: none; display: inline-flex; align-items: center; gap: 7px; width: auto; height: 44px; margin: 0; padding: 0; border: 0;
+        background: none; color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-small); line-height: 20px; text-decoration: none;
+        &::before { @include icon(perm-identity, 32px); position: static; inset: auto; transform: none; margin: 0; }
+      }
+      .dropdown {
+        position: relative; display: flex; align-items: center; height: 44px; margin: 0; padding: 0; border: 0;
+        > span { display: none; }
+        > button { display: inline-flex; align-items: center; gap: 8px; height: 44px; margin: 0; padding: 0; border: 0; background: none; color: var(--as-secondary-500); font-size: var(--as-font-size-small); line-height: 20px; }
+        > button::before { @include icon(account-balance-wallet, 16px); position: static; }
+        .caret { display: inline-block; width: 16px; height: 16px; margin: 0; border: 0; background: none; mask: none; &::before { content: none; } &::after { @include icon(expand-more, 16px); color: var(--as-secondary-200); } }
+        .dropdown-menu { @include dropdown.panel; top: 100%; right: 0; left: auto; min-width: 120px; }
+      }
     }
-    .top-navigation-tools { position: absolute; top: calc(var(--as-checkout-header-row-height) / 2); right: 0; bottom: auto; left: auto; transform: translateY(-50%); display: flex; flex: 0 0 auto; align-items: center; gap: 24px; margin: 0; padding: 0; pointer-events: auto; }
-    .top-nav-button-login, .top-nav-button-account {
-      position: relative; inset: auto; transform: none; display: inline-flex; align-items: center; gap: 7px; width: auto; height: 44px; margin: 0; padding: 0; border: 0;
-      background: none; color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-small); line-height: 20px; text-decoration: none;
-      &::before { @include icon(perm-identity, 32px); position: static; inset: auto; transform: none; margin: 0; }
+    @media (max-width: 1199px) {
+      .top-navigation-bar .as-topbar-phone { left: 22%; max-width: 39%; flex-wrap: wrap; gap: 0 6px; }
     }
-    .dropdown {
-      position: relative; display: flex; align-items: center; height: 44px; margin: 0; padding: 0; border: 0;
-      > span { display: none; }
-      > button { display: inline-flex; align-items: center; gap: 8px; height: 44px; margin: 0; padding: 0; border: 0; background: none; color: var(--as-secondary-500); font-size: var(--as-font-size-small); line-height: 20px; }
-      > button::before { @include icon(account-balance-wallet, 16px); position: static; }
-      .caret { display: inline-block; width: 16px; height: 16px; margin: 0; border: 0; background: none; mask: none; &::before { content: none; } &::after { @include icon(expand-more, 16px); color: var(--as-secondary-200); } }
-      .dropdown-menu { @include dropdown.panel; top: 100%; right: 0; left: auto; min-width: 120px; }
-    }
-  }
-  @media (max-width: 1199px) {
-    .top-navigation-bar .as-topbar-phone { left: 22%; max-width: 39%; flex-wrap: wrap; gap: 0 6px; }
-  }
-  @media (max-width: 767px) {
-    --as-checkout-header-row-height: 72px;
-    #header { height: 72px; .site-name { max-width: 38%; } }
-    .top-navigation-bar { height: 72px;
-      .top-navigation-tools { gap: 12px; }
-      .top-nav-button-login, .top-nav-button-account { width: 36px; overflow: hidden; font-size: 0; gap: 0; &::before { width: 24px; height: 24px; } }
-      .as-topbar-phone { transform: none; top: 64px; right: auto; bottom: auto; left: 0; display: block; width: 100%; max-width: 100%; height: auto; padding-left: 22px; font-size: var(--as-font-size-caption); strong { white-space: nowrap; } &::before { position: absolute; top: 2px; left: 0; } }
-      .dropdown > button { gap: 4px; font-size: var(--as-font-size-caption); }
-    }
-    &:has(.as-topbar-phone) { --as-checkout-header-row-height: 64px; #header, .top-navigation-bar { height: 104px; } }
   }
 }

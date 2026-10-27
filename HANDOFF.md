@@ -1,3 +1,18 @@
+# Hlavička kroků 2 a 3 na telefonu jako v košíku (Claude)
+
+**Zadání:** majitel schválil použít mobilní hlavičku košíku (Figma 1686:10094: menu, logo, lupa, účet, 56 px) i v krocích 2 a 3 na telefonu.
+
+**Co se změnilo:**
+- `_checkout-header.scss`: objednávková hlavička (logo, telefon, měna, účet v topbaru) platí jen od 768 px; skrytí informační lišty zůstává na všech šířkách. Starý mobilní blok (72/104 px s telefonem) zrušen.
+- `_mobile-header.scss`: kompaktní hlavička od začátku pro `:is(.in-kosik, .in-krok-1, .in-krok-2)`.
+- `_mobile-menu.scss`: Disco v krocích 2 a 3 (`.id--16/.id--17`) skrývá `#navigation`; na telefonu ho vracíme, menu je stejné jako v košíku (měna, rychlé odkazy, telefon dole). Hledání a tlačítka hlavičky už vracela mobilní hlavička.
+- `js/header.js`: kopie účtu a rychlé odkazy se tvoří i v krocích 2 a 3 (na počítači je objednávková hlavička skrývá, původní účet v topbaru zůstává viditelný díky specifičtějšímu pravidlu), katalog v2 ne. `js/mobile-header.js`: kroky 2 a 3 už nevynechává (schování při posunu jako jinde).
+- Testy `checkout-interactions` a `checkout-step2`: na telefonu kontrolují hlavičku 56 px v jednom řádku, skrytý topbar, viditelné menu a hledání (fixture s `id--16`); od 768 px původní kontroly.
+
+**Ověření:** živě s podstrčeným CSS/JS (headless, košíky vyprázdněny, žádná objednávka): krok 2 i 3 na 390 px hlavička 56 px, kroky hned pod ní, menu s rychlými odkazy, přihlášení, hledání bez posunu obsahu, schování při posunu; počítač 1920: hlavička kroků 2 a 3 po pixelech shodná. Jeden běh kontroly přerušil výpadek sítě před vyprázdněním testovacího košíku; ten zůstal jen v zavřené anonymní relaci headless prohlížeče (bez objednávky a údajů). Sada 173/173, settings-app 5/5.
+
+---
+
 # Košík na telefonu podle Figmy 1686:10094 a související produkty v panelu 1686:10386 (Claude)
 
 **Zadání:** první krok košíku v mobilní verzi a podobné (související) produkty jako vysouvací panel stejně jako menu nebo mini-košík; využít hotové a nepřidávat zbytečně třídy. Majitel během práce upravil hlavičku v návrhu (menu, logo, lupa, účet) a určil, že **takto bude vypadat hlavička i v dalších krocích košíku**; zaoblení karty zůstává všude 10 px.

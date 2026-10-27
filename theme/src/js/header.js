@@ -141,15 +141,12 @@ function enhanceV2(config) {
 }
 
 export function enhanceHeader(config) {
-  // V dokončení objednávky zůstává původní účet v topbaru; nevytváříme skrytou kopii ani katalog.
-  if (document.body.matches('.in-krok-1, .in-krok-2')) {
-    renderPhone(config);
-    return;
-  }
+  // V dokončení objednávky má počítač vlastní hlavičku s původním účtem v topbaru (kopie účtu
+  // i rychlé odkazy jsou tam skryté); telefon má hlavičku i menu jako košík. Katalog v2 ne.
   renderAccountButton();
   renderPhone(config);
   renderQuickLinks(config);
-  if (config.header === 'v2') enhanceV2(config);
+  if (config.header === 'v2' && !document.body.matches('.in-krok-1, .in-krok-2')) enhanceV2(config);
 
   // Mobilní Disco má pevnou hlavičku a ve .overall-wrapper rezervuje jen 50 / 80 px. Naše hlavička
   // s polem hledání je vyšší; obsah musí začínat až pod ní. Měříme jen plnou hlavičku: kompaktní
