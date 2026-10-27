@@ -1,0 +1,26 @@
+// Stejné součty a navigace v košíku i dalších krocích; extend sestaví společné CSS jednou.
+@use "button";
+@use "icon" as *;
+%as-checkout-price {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 7px 16px; width: 100%; margin: 0; padding: 0;
+  :is(.price-label, .price) { flex: none; margin: 0; padding: 0; font-size: var(--as-font-size-small); font-weight: 400; line-height: 1.2; white-space: normal; }
+  .price-label { color: var(--as-secondary-400); text-align: left; }
+  .price { color: var(--as-secondary-400); text-align: right; }
+  .price-primary { color: var(--as-secondary-500); font-weight: 500; }
+  .price-label.price-primary { font-size: var(--as-font-size-body); }
+  .price.price-primary { font-size: var(--as-font-size-h2); }
+}
+%as-checkout-forward {
+  @include button.base; @include button.size(md); @include button.conversion; @include button.chevron;
+  justify-content: space-between; width: 100%; .order-button-text { text-transform: none; }
+}
+%as-checkout-back {
+  display: inline-flex; align-items: center; gap: 12px; width: auto; margin: 0; padding: 0; border: 0; background: none;
+  color: var(--as-secondary-400); font-size: var(--as-font-size-small); font-weight: 400; line-height: 1.2; text-decoration: underline; text-transform: none;
+  &::before { @include icon(chevron-right, 20px); position: static; margin: 0; transform: rotate(180deg); }
+  &::after { content: none; }
+  &:hover { color: var(--as-primary-500); background: none; }
+}
+@mixin price { @extend %as-checkout-price; }
+@mixin forward { @extend %as-checkout-forward; }
+@mixin back { @extend %as-checkout-back; }

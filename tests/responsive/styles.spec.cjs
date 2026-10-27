@@ -57,3 +57,11 @@ test('cart removal and coupon reuse compiled primitives shared with the existing
   expect(checkbox).toHaveLength(1);
   expect(checkbox[0][1]).toContain('input[type=checkbox]+label::before');
 });
+
+test('cart and checkout compile the price breakdown into one shared rule',()=>{
+ const css=fs.readFileSync(path.join(dist,'asteroid.css'),'utf8');
+ const rules=[...css.matchAll(/([^{}]+)\{([^{}]+)\}/g)].filter(([,s,d])=>s.includes('.price-wrapper')&&d.includes('grid-template-columns:minmax(0, 1fr) auto'));
+ expect(rules).toHaveLength(1);
+ expect(rules[0][1]).toContain('.in-kosik .summary .price-wrapper');
+ expect(rules[0][1]).toContain('.in-krok-1 #checkoutSidebar .price-wrapper');
+});

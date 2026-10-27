@@ -60,3 +60,5 @@ Patička podle Figmy 1633:7416: [správa obsahu, nativní prvky a ověření](pa
 Společné CSS je pouze v `components/_free-shipping.scss`, nad původními `.cart-free-shipping` a `.extra.delivery`. Obsahuje text/strong, ikonu, průběh `.price-range > div` a plný stav po dosažení limitu. `cart-widget` určuje jen umístění ve svém footeru. Pokryté výskyty: mini-košík, `/kosik/`, `.advanced-order` po přidání a `.shipping-options-popup` v detailu. Slevové / dárkové motivace používají také `.price-range`, ale tento styl je nezasahuje. Podrobnosti a kontroly: [doprava-zdarma.md](doprava-zdarma.md).
 
 První krok košíku podle Figmy 1642:5563: [nativní prvky, sdílené komponenty a ověření](kosik-krok1.md). Původní tabulka, související produkty a kupony, společné kroky objednávky; žádné kopírování formulářů.
+
+Objednávka: `tools/checkout` sdílí součty a navigaci s prvním krokem; `tools/radio` původní volby dopravy/platby; `components/checkout-header` společnou hlavičku kroků 2 a 3. Viz [objednavka-krok2.md](objednavka-krok2.md).

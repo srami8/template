@@ -1,0 +1,12 @@
+// Původní input + label: stejné kolečko pro dopravu, platby i budoucí nativní volby.
+@mixin control {
+  input[type="radio"] { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+  input[type="radio"] + label {
+    position: relative;
+    &::before { content: ""; position: absolute; top: 50%; left: 16px; display: block; width: 22px; height: 22px; margin: 0; border: 1px solid var(--as-secondary-100); border-radius: 50%; background: var(--as-white); transform: translateY(-50%); }
+    &::after { content: none; }
+  }
+  input[type="radio"]:checked + label::before { border: 7px solid var(--as-primary-500); background: var(--as-white); }
+  input[type="radio"]:focus-visible + label { outline: 2px solid var(--as-primary-500); outline-offset: 3px; }
+  input[type="radio"]:disabled + label { cursor: not-allowed; &::before { border-color: var(--as-secondary-100); } }
+}

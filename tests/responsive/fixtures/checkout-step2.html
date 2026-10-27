@@ -1,0 +1,427 @@
+<div class="overall-wrapper"><div class="user-action"><div class="container">
+    <div class="user-action-in">
+                    <div id="login" class="user-action-login popup-widget login-widget stay-open" role="dialog" aria-labelledby="loginHeading">
+        <div class="popup-widget-inner"><button type="button" class="as-dialog-close" aria-label="Zavřít"></button>
+                            <h2 id="loginHeading">Přihlášení k vašemu účtu</h2><div id="customerLogin">     <form action="/action/Customer/Login/" method="post" id="formLoginIncluded" class="csrf-enabled login-form" data-testid="formLogin" novalidate=""><input type="hidden" name="useHistory"><div class="form-group smart-label-wrapper"><label for="loginWidgetEmail"><span class="required-asterisk">E-mail</span></label><div class="form-control-wrapper js-validated-element-wrapper"><input type="email" name="email" id="loginWidgetEmail" class="form-control js-validate js-validate-required" data-testid="inputEmail" autocomplete="email" required="" autofocus=""></div></div><div class="form-group smart-label-wrapper"><label for="loginWidgetPassword"><span class="required-asterisk">Heslo</span></label><div class="form-control-wrapper js-validated-element-wrapper"><input type="password" name="password" id="loginWidgetPassword" class="form-control js-validate js-validate-required" data-testid="inputPassword" autocomplete="current-password" required=""><button type="button" class="as-password-toggle" aria-controls="loginWidgetPassword" aria-label="Zobrazit heslo" aria-pressed="false"></button><span class="sr-only" inert=""><span>Nevyplňujte toto pole</span><label>Surname<input type="text" name="surname" value="" autocomplete="off" tabindex="-1"></label></span>
+</div></div><div class="form-group submit-wrapper"><button type="submit" class="btn btn-primary" data-testid="buttonSubmit">Přihlásit se</button></div><p class="alternative-links"><a href="/registrace/" data-testid="signup" rel="nofollow">Nová registrace</a><a href="/klient/zapomenute-heslo/" rel="nofollow">Zapomenuté heslo</a></p><input type="hidden" name="__csrf__"></form>
+</div>                    </div>
+    </div>
+
+                <div id="cart-widget" class="user-action-cart popup-widget cart-widget loader-wrapper" data-testid="popupCartWidget" role="dialog" aria-hidden="true">
+            <div class="popup-widget-inner cart-widget-inner place-cart-here full">
+                <div class="loader-overlay">
+                    <div class="loader"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div><div class="top-navigation-bar" data-testid="topNavigationBar">
+
+    <div class="container">
+
+                            <div class="top-navigation-menu">
+                <ul class="top-navigation-bar-menu">
+                                            <li class="top-navigation-menu-item-1344">
+                            <a href="/o-nas/" title="O nás">O nás</a>
+                        </li>
+                                            <li class="top-navigation-menu-item-27">
+                            <a href="/jak-nakupovat/" title="Jak nakupovat">Jak nakupovat</a>
+                        </li>
+                                            <li class="top-navigation-menu-item--51">
+                            <a href="/hodnoceni-obchodu/" title="Hodnocení obchodu">Hodnocení obchodu</a>
+                        </li>
+                                    </ul>
+                <div class="top-navigation-menu-trigger">Více</div>
+                <ul class="top-navigation-bar-menu-helper"></ul>
+            </div>
+        
+        <div class="top-navigation-tools">
+                <div class="dropdown" data-testid="topnavCurrencyDropdown">
+        <span>Ceny v:</span>
+        <button id="topNavigationDropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            CZK
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="topNavigationDropdown"><li><a href="/action/Currency/changeCurrency/?currencyCode=CZK" rel="nofollow">CZK</a></li><li><a href="/action/Currency/changeCurrency/?currencyCode=EUR" rel="nofollow">EUR</a></li></ul>
+    </div>
+            <button class="top-nav-button top-nav-button-login toggle-window" type="button" data-target="login" aria-haspopup="dialog" aria-controls="login" aria-expanded="false" data-testid="signin"><span>Přihlášení</span></button>
+    <a href="/registrace/" class="top-nav-button top-nav-button-register" data-testid="headerSignup">Registrace</a>
+        </div>
+
+    </div>
+
+</div>
+<header id="header">
+        <div class="header-top">
+            <div class="container navigation-wrapper header-top-wrapper">
+                <div class="site-name"><a href="/" data-testid="linkWebsiteLogo"><img src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/logos/astreoid.png" alt="Můj e-shop" fetchpriority="low" loading="eager"></a></div>
+                <div class="search" itemscope="" itemtype="https://schema.org/WebSite">
+                    <meta itemprop="headline" content="Objednávka - platba a doprava"><meta itemprop="url" content="https://313980.myshoptet.com">                    <form action="/action/ProductSearch/prepareString/" method="post" id="formSearchForm" class="search-form compact-form js-search-main" itemprop="potentialAction" itemscope="" itemtype="https://schema.org/SearchAction" data-testid="searchForm" novalidate="">
+    <fieldset>
+        <meta itemprop="target" content="https://313980.myshoptet.com/vyhledavani/?string={string}">
+        <input type="hidden" name="language">
+        
+            
+    <span class="search-input-icon" aria-hidden="true"></span>
+
+<input type="search" name="string" class="query-input form-control search-input js-search-input" placeholder="Napište, co hledáte" autocomplete="off" required="" itemprop="query-input" aria-label="Vyhledávání" data-testid="searchInput">
+            <button type="submit" class="btn btn-default search-button" data-testid="searchBtn">Hledat</button>
+        
+    </fieldset>
+</form><div class="searchWhisperer"></div>
+                </div>
+                <div class="navigation-buttons">
+                    <a href="#" class="toggle-window" data-target="search" data-testid="linkSearchIcon"><span class="sr-only">Hledat</span></a>
+                                        <button class="top-nav-button top-nav-button-login as-account-button" type="button" data-target="login" aria-haspopup="dialog" aria-controls="login" aria-expanded="false"><span>Přihlášení</span></button><a href="#" class="toggle-window" data-target="navigation" data-testid="hamburgerMenu" aria-label="Menu"></a>
+                </div>
+            </div>
+        </div>
+        <nav class="as-quicklinks" aria-label="Rychlé odkazy"><div class="container"><ul><li><a href="/novinky/"><span class="as-icon as-icon--local-fire-department" aria-hidden="true"></span>Novinky</a></li><li><a href="/akce/"><span class="as-icon as-icon--local-offer" aria-hidden="true"></span>Akční nabídka</a></li><li><a href="/"><span class="as-icon as-icon--filter-vintage" aria-hidden="true"></span>Pečujte o své tělo</a></li><li><a href="/"><span class="as-icon as-icon--schedule" aria-hidden="true"></span>Poslední šance</a></li></ul></div></nav><div class="header-bottom">
+            <div class="container navigation-wrapper header-bottom-wrapper js-navigation-container">
+                <nav id="navigation" aria-label="Hlavní menu" data-collapsible="true" class="fitted visible"><div class="navigation-in menu"><button class="as-menu-close" type="button" aria-label="Zavřít menu"></button><ul class="menu-level-1" role="menubar" data-testid="headerMenuItems"><li class="menu-item-1377 ext" role="none"><a href="/produkty-lawood/" data-testid="headerMenuItem" role="menuitem" aria-haspopup="true" aria-expanded="false"><b>Produkty</b><span class="submenu-arrow"></span></a><ul class="menu-level-2" aria-label="Produkty" tabindex="-1" role="menu"><li class="as-menu-back"><button type="button" aria-label="Zpět: Produkty">Produkty</button></li><li class="as-menu-all"><a href="https://313980.myshoptet.com/produkty-lawood/">Zobrazit vše</a></li><li class="menu-item-1372" role="none"><a href="/pletene-kosiky/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/categories/thumb/produkt2.jpg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/categories/thumb/produkt2.jpg" fetchpriority="low" loading="lazy"></a><div><a href="/pletene-kosiky/" data-testid="headerMenuItem" role="menuitem"><span>Pletené košíky</span></a>
+                        </div></li><li class="menu-item-1357" role="none"><a href="/sportovni-trofeje/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/categories/thumb/produkt2-1.jpg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/categories/thumb/produkt2-1.jpg" fetchpriority="low" loading="lazy"></a><div><a href="/sportovni-trofeje/" data-testid="headerMenuItem" role="menuitem"><span>Sportovní trofeje</span></a>
+                        </div></li><li class="menu-item-1354" role="none"><a href="/domacnost/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" fetchpriority="low" loading="lazy"></a><div><a href="/domacnost/" data-testid="headerMenuItem" role="menuitem"><span>Domácnost</span></a>
+                        </div></li><li class="menu-item-1314 has-third-level as-has-level-3" role="none"><a href="/sperky/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" fetchpriority="low" loading="lazy"></a><div><a href="/sperky/" data-testid="headerMenuItem" role="menuitem"><span>Šperky</span></a>
+                                                    <ul class="menu-level-3" role="menu"><li class="as-menu-back"><button type="button" aria-label="Zpět: Šperky">Šperky</button></li><li class="as-menu-all"><a href="https://313980.myshoptet.com/sperky/">Zobrazit vše</a></li>
+                                                                    <li class="menu-item-1360" role="none">
+                                        <a href="/drevene-naramky/" data-testid="headerMenuItem" role="menuitem">
+                                            Náramky</a>,                                    </li>
+                                                                    <li class="menu-item-1363" role="none">
+                                        <a href="/nausnice/" data-testid="headerMenuItem" role="menuitem">
+                                            Náušnice</a>,                                    </li>
+                                                                    <li class="menu-item-1366" role="none">
+                                        <a href="/nahrdelniky/" data-testid="headerMenuItem" role="menuitem">
+                                            Náhrdelníky</a>,                                    </li>
+                                                                    <li class="menu-item-1369" role="none">
+                                        <a href="/broze/" data-testid="headerMenuItem" role="menuitem">
+                                            Brože</a>                                    </li>
+                                                            </ul>
+                        </div></li><li class="menu-item-1351" role="none"><a href="/drevene-dekorace/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" fetchpriority="low" loading="lazy"></a><div><a href="/drevene-dekorace/" data-testid="headerMenuItem" role="menuitem"><span>Dekorace</span></a>
+                        </div></li><li class="menu-item-1348" role="none"><a href="/darky/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" fetchpriority="low" loading="lazy"></a><div><a href="/darky/" data-testid="headerMenuItem" role="menuitem"><span>Dárky</span></a>
+                        </div></li></ul></li>
+<li class="menu-item-1380" role="none"><a href="/udalosti/" data-testid="headerMenuItem" role="menuitem" aria-expanded="false"><b>Události</b></a></li>
+<li class="menu-item-1383" role="none"><a href="/fotoalba/" data-testid="headerMenuItem" role="menuitem" aria-expanded="false"><b>Fotoalba</b></a></li>
+<li class="menu-item-1386" role="none"><a href="/domov/" data-testid="headerMenuItem" role="menuitem" aria-expanded="false"><b>Domov</b></a></li>
+<li class="menu-item-1389" role="none"><a href="/novinky/" data-testid="headerMenuItem" role="menuitem" aria-expanded="false"><b>Novinky</b></a></li>
+</ul>
+    <ul class="as-menu-pages"><li><a href="/o-nas/">O nás</a></li><li><a href="/jak-nakupovat/">Jak nakupovat</a></li><li><a href="/hodnoceni-obchodu/">Hodnocení obchodu</a></li></ul><ul class="navigationActions" role="menu">
+                    <li class="ext as-menu-currency" role="none">
+                <a href="#" role="menuitem" aria-haspopup="true" aria-expanded="false" data-testid="navigationLanguageSwitch">
+                                            <span>
+                            <span>Měna</span>
+                            <span>CZK</span>
+                        </span>
+                                        <span class="submenu-arrow"></span>
+                </a>
+                <ul class="navigationActions__submenu menu-level-2" role="menu">
+                    <li role="none">
+                                                    <ul role="group" aria-label="Měna">
+                                                                    <li class="navigationActions__submenu__item navigationActions__submenu__item--active" role="none">
+                                        <a href="/action/Currency/changeCurrency/?currencyCode=CZK" rel="nofollow" role="menuitem">CZK</a>
+                                    </li>
+                                                                    <li class="navigationActions__submenu__item" role="none">
+                                        <a href="/action/Currency/changeCurrency/?currencyCode=EUR" rel="nofollow" role="menuitem">EUR</a>
+                                    </li>
+                                                            </ul>
+                                                                    </li>
+                </ul>
+            </li>
+                            <li role="none">
+                                    <a href="/login/?backTo=%2Fobjednavka%2Fkrok-1%2F" rel="nofollow" data-testid="signin" role="menuitem"><span>Přihlášení</span></a>
+                            </li>
+                        </ul>
+</div><span class="navigation-close"></span></nav><div class="menu-helper" data-testid="hamburgerMenu" aria-hidden="true" tabindex="-1"><span>Více</span><ul class="menu-level-1" role="menubar" data-testid="headerMenuItems"><li class="menu-item-1377 ext splitted" role="none"><a href="/produkty-lawood/" data-testid="headerMenuItem" role="menuitem" aria-haspopup="true" aria-expanded="false"><b>Produkty</b><span class="submenu-arrow"></span></a><ul class="menu-level-2" aria-label="Produkty" tabindex="-1" role="menu"><li class="as-menu-back"><button type="button" aria-label="Zpět: Produkty">Produkty</button></li><li class="as-menu-all"><a href="https://313980.myshoptet.com/produkty-lawood/">Zobrazit vše</a></li><li class="menu-item-1372" role="none"><a href="/pletene-kosiky/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/categories/thumb/produkt2.jpg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/categories/thumb/produkt2.jpg" fetchpriority="low" loading="lazy"></a><div><a href="/pletene-kosiky/" data-testid="headerMenuItem" role="menuitem"><span>Pletené košíky</span></a>
+                        </div></li><li class="menu-item-1357" role="none"><a href="/sportovni-trofeje/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/categories/thumb/produkt2-1.jpg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/categories/thumb/produkt2-1.jpg" fetchpriority="low" loading="lazy"></a><div><a href="/sportovni-trofeje/" data-testid="headerMenuItem" role="menuitem"><span>Sportovní trofeje</span></a>
+                        </div></li><li class="menu-item-1354" role="none"><a href="/domacnost/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" fetchpriority="low" loading="lazy"></a><div><a href="/domacnost/" data-testid="headerMenuItem" role="menuitem"><span>Domácnost</span></a>
+                        </div></li><li class="menu-item-1314 has-third-level as-has-level-3" role="none"><a href="/sperky/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" fetchpriority="low" loading="lazy"></a><div><a href="/sperky/" data-testid="headerMenuItem" role="menuitem"><span>Šperky</span></a>
+                                                    <ul class="menu-level-3" role="menu"><li class="as-menu-back"><button type="button" aria-label="Zpět: Šperky">Šperky</button></li><li class="as-menu-all"><a href="https://313980.myshoptet.com/sperky/">Zobrazit vše</a></li>
+                                                                    <li class="menu-item-1360" role="none">
+                                        <a href="/drevene-naramky/" data-testid="headerMenuItem" role="menuitem">
+                                            Náramky</a>,                                    </li>
+                                                                    <li class="menu-item-1363" role="none">
+                                        <a href="/nausnice/" data-testid="headerMenuItem" role="menuitem">
+                                            Náušnice</a>,                                    </li>
+                                                                    <li class="menu-item-1366" role="none">
+                                        <a href="/nahrdelniky/" data-testid="headerMenuItem" role="menuitem">
+                                            Náhrdelníky</a>,                                    </li>
+                                                                    <li class="menu-item-1369" role="none">
+                                        <a href="/broze/" data-testid="headerMenuItem" role="menuitem">
+                                            Brože</a>                                    </li>
+                                                            </ul>
+                        </div></li><li class="menu-item-1351" role="none"><a href="/drevene-dekorace/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" fetchpriority="low" loading="lazy"></a><div><a href="/drevene-dekorace/" data-testid="headerMenuItem" role="menuitem"><span>Dekorace</span></a>
+                        </div></li><li class="menu-item-1348" role="none"><a href="/darky/" class="menu-image" data-testid="headerMenuItem" tabindex="-1" aria-hidden="true"><img src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" alt="" aria-hidden="true" width="140" height="100" data-src="https://cdn.myshoptet.com/prj/dist/master/cms/templates/frontend_templates/00/img/folder.svg" fetchpriority="low" loading="lazy"></a><div><a href="/darky/" data-testid="headerMenuItem" role="menuitem"><span>Dárky</span></a>
+                        </div></li></ul></li>
+<li class="menu-item-1380 splitted" role="none"><a href="/udalosti/" data-testid="headerMenuItem" role="menuitem" aria-expanded="false"><b>Události</b></a></li>
+<li class="menu-item-1383 splitted" role="none"><a href="/fotoalba/" data-testid="headerMenuItem" role="menuitem" aria-expanded="false"><b>Fotoalba</b></a></li>
+<li class="menu-item-1386 splitted" role="none"><a href="/domov/" data-testid="headerMenuItem" role="menuitem" aria-expanded="false"><b>Domov</b></a></li>
+<li class="menu-item-1389 splitted" role="none"><a href="/novinky/" data-testid="headerMenuItem" role="menuitem" aria-expanded="false"><b>Novinky</b></a></li>
+</ul></div>
+            </div>
+        </div>
+    </header><!-- / header -->
+
+
+<div id="content-wrapper" class="container content-wrapper">
+            
+                    
+        <div class="content-wrapper-in">
+                        <main id="content" class="content wide">
+                                    <h1 class="sr-only">Objednávka - platba a doprava</h1>
+                                                        <div class="content-inner">
+                <ol class="cart-header step-1"><li class="step step-1 completed" data-testid="step1"><a href="/kosik/" rel="nofollow"><span>Nákupní košík</span></a></li><li class="step step-2 active" data-testid="step2"><strong><span>Doprava &amp;&nbsp;platba</span></strong></li><li class="step step-3" data-testid="step3"><strong><span>Informace o&nbsp;vás</span></strong></li></ol>
+
+
+<div class="cart-inner">
+            <div class="row cart-row"><div id="checkoutContent" class="col-md-8"><div class="cart-content">
+        
+        
+<form method="post" action="/action/orderingProcess/Step1ChooseDelivery/" id="select-country-payment" novalidate="">
+
+        <div class="box box-sm box-bg-default co-box co-basic-information">
+
+                        <h2 class="order-icon order-information">Základní údaje objednávky</h2>
+            
+                <div class="row">
+
+                    
+                                                                
+                    
+                    
+                        <div class="col-sm-12">
+
+                            <div class="form-group form-group-wrapped smart-label-wrapper populated">
+
+                                                                <label for="payment-currency">Měna</label>
+                                
+                                <select name="currency" id="payment-currency" class="form-control" data-testid="comboboxPaymentCurrency" type="select">
+            <option value="CZK" selected="selected">CZK</option>
+            <option value="EUR">EUR</option>
+    </select>
+
+                            </div>
+
+                        </div>
+
+                    
+                    
+                </div>
+
+        </div>
+
+    </form>
+
+    <form name="orderForm" action="/action/orderingProcess/Step1Validate/" method="post" id="order-form" class="order-delivery-payment-form">
+        <input type="hidden" name="language">
+        <div class="box box-sm box-bg-default co-box co-delivery-method">
+                        <h2 class="order-icon order-delivery">Zvolte způsob dopravy</h2>
+                                                        <div id="order-shipping-methods" class="shipping-billing-table" data-type="Způsob dopravy" data-type-code="shipping" data-testid="shippingMethods">
+                                                                                                                                                                        <div id="shipping-14" class="radio-wrapper active" data-id="shipping-14" data-testid="shippingMethod">
+                                                                                                                                                                                    <input type="radio" name="shippingId" id="shippingId-14" value="14" data-guid="6f11a4bf-2a56-11ea-ac23-ac1f6b0076ec" data-external="" data-code="zasilkovna" data-relations="3,23,2,5,29,32,35,38,41,44,47,50,53,56,59,62,65,68" class=" choose-branch zasilkovna-choose-branch" checked="">
+                                <label for="shippingId-14">
+                                    <span class="payment-info">
+                                        <b class="shipping-billing-name">Zásilkovna - Doručení na pobočku</b>
+                                                                                                                            <input type="hidden" name="shippingMethodBranch[14]">
+                                            <span class="sublabel new-gen-choose" data-new-gen-code="packeta" data-testid="deliveryPoint">
+                                                                                                    <a href="#">Zvolte odběrné místo</a>
+                                                                                            </span>
+                                                                                                                        
+
+                                                                                                                    </span>
+                                                                            <span class="payment-logo">
+                                            <img src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/system/zasilkovna.png" alt="" fetchpriority="low" loading="eager">
+                                                                                    </span>
+                                                                        <strong class="payment-shipping-price
+    " data-preserve-value="1" data-shipping-price-wv="62" data-shipping-price-wov="51.239669421488" data-shipping-price-vat="10.760330578512" data-shipping-price-id="14" data-testid="billingMethodPrice">
+                        62 Kč
+            </strong>
+                                </label>
+                                                    </div>
+                                                                                                                                                                    <div id="shipping-20" class="radio-wrapper" data-id="shipping-20" data-testid="shippingMethod">
+                                                                                                                        <input type="radio" name="shippingId" id="shippingId-20" value="20" data-guid="e2dbb4aa-2a58-11ea-ac23-ac1f6b0076ec" data-external="" data-code="" data-relations="23,3,5,29,32,35,38,41,44,47,50,53,56,59,62,65,68" class="">
+                                <label for="shippingId-20">
+                                    <span class="payment-info">
+                                        <b class="shipping-billing-name">Zásilkovna - Doručení na adresu</b>
+                                                                                                                                                                                                                                                    
+
+                                                                                                                    </span>
+                                                                        <strong class="payment-shipping-price
+    " data-preserve-value="1" data-shipping-price-wv="95" data-shipping-price-wov="78.512396694215" data-shipping-price-vat="16.487603305785" data-shipping-price-id="20" data-testid="billingMethodPrice">
+                        95 Kč
+            </strong>
+                                </label>
+                                                    </div>
+                                    </div>
+                                    </div>
+        <div class="box box-sm box-bg-default co-box co-payment-method">
+                        <h2 class="order-icon order-payment">Zvolte způsob platby</h2>
+                                                    <div id="order-billing-methods" class="shipping-billing-table" data-type="Platba" data-type-code="billing" data-testid="paymentMethods">
+                                                                                                <div class="radio-wrapper  active" data-id="billing-3" data-guid="d538520e-e920-11e0-baa3-7dc668b75ca8" data-testid="paymentMethod">
+                                <input type="radio" name="billingId" id="billingId-3" value="3" data-guid="d538520e-e920-11e0-baa3-7dc668b75ca8" data-payment-type="cashOnDelivery" checked="checked">
+                                <label for="billingId-3" class="billing-name name-billingId-3 active" id="name-billingId-3">
+                                    <span class="payment-info">
+                                        <b class="shipping-billing-name">Dobírkou</b>
+                                                                                <em class="not-possible-info">Tato kombinace dopravy a platby není možná.</em>
+                                    </span>
+                                    
+                                                                            
+                                    <strong class="payment-shipping-price
+" data-billing-price-wv="23" data-billing-price-wov="19.00826446281" data-billing-price-vat="3.9917355371901" data-billing-price-id="3" data-testid="billingMethodPrice">
+                                                    23 Kč
+                                        </strong>
+                                </label>
+                            </div>
+                                                                                                                        <div class="radio-wrapper" data-id="billing-5" data-guid="6f2c8e36-3faf-11e2-a723-705ab6a2ba75" data-testid="paymentMethod">
+                                <input type="radio" name="billingId" id="billingId-5" value="5" data-guid="6f2c8e36-3faf-11e2-a723-705ab6a2ba75" data-payment-type="transfer">
+                                <label for="billingId-5" class="billing-name name-billingId-5 active" id="name-billingId-5">
+                                    <span class="payment-info">
+                                        <b class="shipping-billing-name">Převodem</b>
+                                                                                <em class="not-possible-info">Tato kombinace dopravy a platby není možná.</em>
+                                    </span>
+                                    
+                                                                            
+                                    <strong class="payment-shipping-price
+ for-free" data-billing-price-wv="0" data-billing-price-wov="0" data-billing-price-vat="0" data-billing-price-id="5" data-testid="billingMethodPrice">
+                                                                ZDARMA                                                </strong>
+                                </label>
+                            </div>
+                                                            </div>
+                                    </div>
+        <input type="hidden" name="gopayPayInstrument" id="gopayPayInstrument">
+            </form>
+    
+            </div></div><div id="checkoutSidebar" class="col-md-4"><div class="cart-content">
+        <div class="order-summary">
+
+    
+                    <div class="checkout-box">
+                
+
+                
+
+    <span class="btn btn-block btn-default toggle-contacts" data-original-text="Potřebujete pomoc?&lt;br /&gt;" data-text="Skrýt kontakty">Potřebujete pomoc?<br></span>
+
+<div class="box box-sm box-bg-default">
+
+    <div class="contact-box" data-testid="contactbox" data-editorid="contact">
+
+        
+            
+            <img src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/merchant/merchant.png" alt="                                    Kontakt                            " data-src="https://cdn.myshoptet.com/usr/313980.myshoptet.com/user/merchant/merchant.png" fetchpriority="low" loading="lazy">
+        
+        
+        <ul>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+                    </ul>
+
+    </div>
+
+</div>
+            </div>
+            
+
+    <div class="order-summary-inner" id="summary-box">
+        <h2 class="h4">Rekapitulace objednávky</h2>
+
+            
+                    <div class="order-summary-item" data-micro="cartItem" data-micro-identifier="f77e1d88-66e1-11ef-8114-8acbaefb8f38" data-micro-sku="87877" data-testid="recapCartItem">
+                <div class="cart-item-name">
+                                                                                                        <a href="/zbozi/dreveny-privesek-bracken-pendant-6/" title="Dřevěný přívěsek Bracken Pendant" data-testid="recapItemName">  Dřevěný přívěsek Bracken Pendant</a>
+                                                                                                                    </div>
+
+                <div class="cart-item-amount" data-testid="recapItemAmount">
+                    1
+                                            <span class="unit-value">ks</span>
+                                    </div>
+
+                                                        <div class="cart-item-price" data-testid="recapItemPrice">
+                        
+                                                                                                                        200 Kč
+                                                                                                        </div>
+                            </div>
+                        <div class="order-summary-item helper">
+    <div>
+        <strong>
+            Celkem za zboží:
+        </strong>
+    </div>
+        <div data-testid="recapItemTotalPrice">
+        200 Kč
+    </div>
+</div>
+    
+
+<div id="shipping-billing-summary" class="order-recapitulation"><div class="recapitulation-single recapitulation-shipping-billing" data-testid="recapCartItem">
+                <span class="recapitulation-shipping-billing-label">
+                    Způsob dopravy:
+                </span>
+                <strong class="recapitulation-shipping-billing-info" data-testid="recapDeliveryMethod">
+                    <span data-testid="recapItemPrice">
+                        
+                        62 Kč
+            
+                    </span>
+                    Zásilkovna - Doručení na pobočku
+                </strong>
+                
+            </div><div class="recapitulation-single recapitulation-shipping-billing last" data-testid="recapCartItem">
+                <span class="recapitulation-shipping-billing-label">
+                    Platba:
+                </span>
+                <strong class="recapitulation-shipping-billing-info" data-testid="recapDeliveryMethod">
+                    <span data-testid="recapItemPrice">
+                        
+                                                    23 Kč
+                                        
+                    </span>
+                    Dobírkou
+                </strong>
+                
+            </div></div><div class="order-summary-item price">
+    <div class="price-wrapper">
+            <span class="price-label price-primary">Celkem k úhradě:</span>
+    <strong class="price price-primary">
+                    <span data-price-total-wv="200" data-price-total-vat="34.71" data-testid="recapFullPrice">285 Kč</span>
+            </strong>
+            <span class="price-label price-secondary">Cena bez DPH:</span>
+        <strong class="price price-secondary">
+                            <span data-price-total-wov="165.29" data-testid="recapFullPriceNoVat">235,54 Kč</span>
+                    </strong>
+        </div>
+</div>
+
+    </div>
+</div>
+    
+    <div class="next-step next-step--step-1">
+    <a href="/kosik/" class="btn btn-lg next-step-back" rel="nofollow" data-testid="buttonPrevStep">Zpět</a>
+    <button type="submit" form="order-form" id="orderFormButton" class="btn btn-lg btn-conversion next-step-forward" data-testid="buttonNextStep"><span class="order-button-text">Pokračovat</span></button>
+</div>
+
+            </div></div></div>
+    </div>
+
+                                                                                            
+
+
+
+        
+    </div>
+                            </main>
+        </div>
+        
+                    
+        
+</div>
+        
+        
+                    
+        </div>

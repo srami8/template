@@ -178,3 +178,7 @@ Patička podle Figmy 1633:7416: [správa obsahu, nativní prvky a ověření](pa
 Doprava zdarma se styluje globálně přes původní `.cart-free-shipping` a `.extra.delivery` v jediné komponentě, nikoli uvnitř konkrétního okna košíku. Text a procento dodává Shoptet. [Výskyty a ověření](doprava-zdarma.md).
 
 První krok košíku podle Figmy 1642:5563: [nativní prvky, sdílené komponenty a ověření](kosik-krok1.md). Původní tabulka, související produkty a kupony, společné kroky objednávky; žádné kopírování formulářů.
+
+## Objednávka: doprava a platba
+
+Společná hlavička posledních dvou kroků nezávisí na variantě z administrace; formuláře zůstávají Shoptetu. Popis, nativní třídy, sdílené komponenty a limity: [objednavka-krok2.md](objednavka-krok2.md).

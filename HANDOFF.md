@@ -1,3 +1,15 @@
+# Objednávka krok 2 a společná hlavička 2/3 (Codex)
+
+Figma 1645:8015, základ 3b3acc5, feature/responsive. Podrobnosti docs/objednavka-krok2.md. Nativní formuláře, inputy, label/for, data atributy a validace zachované; nový layout jen kroku 2 nad #checkoutContent/#checkoutSidebar/.radio-wrapper/.order-summary-item. Žádný nový fetch, přepočet nebo JS ovladač dopravy/platby. Hlavička nad původním topbarem a #header platí pro body.in-krok-1/in-krok-2 bez ohledu na variantu. EnhanceHeader zde nevytváří proxy účtu, rychlé odkazy ani katalog; mobilní sticky režim se v těchto krocích nepoužívá. Původní přihlášení a měna zůstávají nativní. Step 3 formuláře se neredesignují.
+
+Sdílený tools/checkout přes Sass placeholder skládá součty a navigační akce prvního i druhého kroku jednou. Tools/radio styluje původní dvojici input/label, checked/disabled/inactive/focus a nativní js-error-field. Order-steps přidává přesný 20px order-check z Figmy pro dokončený krok. Ostatní ikony existující. Částky, DPH, dopravci, platební služby, loga a země jsou ze Shoptetu. Uživateli požádáno zapnutí kontaktů a obrázků: kontakt už server vrací, obrázky v rekapitulaci stále ne; vícejazyčný markup na instalaci zatím chybí. Žádné ukázkové fotky/loga/čísla se nevkládají.
+
+Build a šest statických kontrol prošly. Dvě browserové regrese, audit i snapshots blokuje start Chromia (MachPortRendezvous), nejsou označené za prošlé. Kontroly v in-app náhledu: obě varianty × 11 šířek normální/dlouhý obsah, vysoká cena, disabled platba; opravené umístění telefonu × 22 geometrií bez přesahu; hlavička skutečného HTML kroku 3 při 6 šířkách × 2 variantách bez překryvu. Data outputs/checkout-step2-preview-checks.json (initial zachycuje i dřívější přechodové rozměry telefonu, opravený stav je phoneFixed). Před nasazením uloženo checkout-step2-before.png. Nativně před nasazením ověřeny volby adresa/převod → 295 Kč / 243,80 bez DPH a přechod na krok 3, bez vyplnění údajů nebo objednání.
+
+Testovací košík byl na začátku prázdný; přidán vlastní produkt -6 za 200 Kč, po dokončení QA se musí odebrat. Nasazení a živá kontrola ještě probíhají. Blank nastavení/snapshot ani settings-app se nemění. Externí Claude Docs nejsou tímto zápisem upravené.
+
+---
+
 # První krok košíku (Codex) – Figma 1642:5563
 
 Základ `3b44344`, větev feature/responsive. Zadání: pečlivě převést návrh, maximálně zachovat Disco a sdílet opakované prvky. Majitel upřesnil shrnutí: skutečné nativní cenové řádky, nikoli zástupný opakovaný text. Podrobnosti docs/kosik-krok1.md.

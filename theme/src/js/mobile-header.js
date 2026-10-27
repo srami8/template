@@ -11,6 +11,8 @@ const HIDDEN = 'as-header-hidden';
 const TOLERANCE = 4;
 
 export function enhanceMobileHeader() {
+  // Zjednodušená objednávková hlavička je v toku stránky a nemá kompaktní/sticky variantu.
+  if (document.body.matches('.in-krok-1, .in-krok-2')) return;
   const header = document.getElementById('header');
   if (!header) return;
 

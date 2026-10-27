@@ -141,6 +141,11 @@ function enhanceV2(config) {
 }
 
 export function enhanceHeader(config) {
+  // V dokončení objednávky zůstává původní účet v topbaru; nevytváříme skrytou kopii ani katalog.
+  if (document.body.matches('.in-krok-1, .in-krok-2')) {
+    renderPhone(config);
+    return;
+  }
   renderAccountButton();
   renderPhone(config);
   renderQuickLinks(config);

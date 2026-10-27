@@ -17,6 +17,11 @@ const ICON = (pseudo) => ({ pseudo, props: ['maskImage', 'backgroundColor', 'col
 
 const DETAIL = '/zbozi/dreveny-privesek-bracken-pendant-6/';
 const ITEMS = [
+  // Objednávka vyžaduje připravený neprázdný košík; audit sám nic nepřidává.
+  ['Objednávka: dopravní volba', '/objednavka/krok-1/', '#order-shipping-methods label', null, { size: true }],
+  ['Objednávka: radio', '/objednavka/krok-1/', '#order-shipping-methods label', null, { pseudo: '::before', props: ['width', 'height', 'borderRadius', 'borderColor', 'borderWidth', 'backgroundColor'] }],
+  ['Objednávka: pokračovat', '/objednavka/krok-1/', '#orderFormButton', null, { size: true }],
+  ['Objednávka: hlavní součet', '/objednavka/krok-1/', '#checkoutSidebar .price.price-primary', null, { size: true }],
   // První krok – stejné ovladače a vizuální prvky na mobilu i desktopu.
   ['Košík: název produktu', '/kosik/', '.cart-table .main-link', null, { size: true }],
   ['Košík: cena řádku', '/kosik/', '.cart-table .p-total .price-final', null, { size: true }],
