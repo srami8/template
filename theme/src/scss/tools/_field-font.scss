@@ -1,6 +1,7 @@
-// Písmo polí na telefonu. Safari na iPhonu při fokusu přiblíží stránku, když má pole písmo menší
-// než 16 px, proto mají pole pod 768 px Body/Default (16 px) místo velikosti z návrhu. Řádek
-// (line-height) zůstává, rozměry polí se nemění. Volá se v pravidle pole za jeho font-size.
+// Písmo pole s menším písmem z návrhu na telefonu. Safari na iPhonu při fokusu přiblíží stránku,
+// když má pole písmo menší než 16 px, proto má takové pole pod 768 px Body/Default (16 px). Řádek
+// (line-height) zůstává, rozměry se nemění. Volá se v pravidle pole za jeho font-size. Běžná pole
+// mají 16 px všude (components/_fields.scss), mixin používá jen počítadlo (tools/_quantity.scss, 13 px).
 @use "breakpoints" as bp;
 
 @mixin phone {

@@ -91,7 +91,7 @@ $forms: "#login .login-form, #formLogin.login-form";
   // (--*-computed-*) Shoptet počítá na :root, proto je tu nastavujeme taky:
   // pole s popiskem = řádek 20 + rámeček 2 + okraje 2 × 10, k tomu místo na zmenšený popisek.
   #{$forms} {
-    // Písmo a řádek jsou z globálních polí (components/_fields.scss, na telefonu 16 px).
+    // Písmo a řádek jsou z globálních polí (components/_fields.scss, 16 px).
     --form-controls-computed-line-height: 20px;
     --form-controls-padding-y: 10px;
     --form-controls-padding-x: 48px;

@@ -27,8 +27,8 @@ test('text fields, textarea and select follow Figma on every width',async({page}
  for(const width of [320,390,767,768,992,1920]){
   await page.setViewportSize({width,height:900});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth),String(width)).toBeLessThanOrEqual(1);
-  // Na telefonu 16 px (iPhone při fokusu přibližuje pole s menším písmem), rozměry stejné.
-  const fontSize=width<768?'16px':'14px';
+  // Písmo 16 px na všech šířkách (Figma; menší by iPhone při fokusu přiblížil).
+  const fontSize='16px';
   for(const sel of ['#fullName','#email','#plain','#currency','#country'])
    expect(await style(page,sel),`${sel} @${width}`).toMatchObject({height:52,radius:'100px',border:'rgb(213, 215, 218)',background:'rgb(255, 255, 255)',color:'rgb(46, 53, 69)',fontSize});
   expect((await style(page,'#message')).fontSize).toBe(fontSize);
@@ -39,7 +39,7 @@ test('text fields, textarea and select follow Figma on every width',async({page}
  expect((await style(page,'#message')).radius).toBe('26px');
  // Plovoucí popisek je v prázdném poli svisle na středu, šedý jako placeholder.
  const label=await page.evaluate(()=>{const l=document.querySelector('label[for="fullName"]'),i=document.querySelector('#fullName');const lr=l.getBoundingClientRect(),ir=i.getBoundingClientRect();return {center:Math.round(lr.top+lr.height/2-ir.top),color:getComputedStyle(l).color,size:getComputedStyle(l).fontSize};});
- expect(label).toEqual({center:26,color:'rgb(130, 134, 143)',size:'14px'});
+ expect(label).toEqual({center:26,color:'rgb(130, 134, 143)',size:'16px'});
  expect(await page.evaluate(()=>getComputedStyle(document.querySelector('#plain'),'::placeholder').color)).toBe('rgb(130, 134, 143)');
  // Select: text od 24 px, šipka v hlavní barvě z administrace na středu pole, 24 px od kraje.
  for(const [sel,wrap] of [['#currency','.form-group:has(> #currency)'],['#country','.form-control-wrapper:has(> #country)']]){

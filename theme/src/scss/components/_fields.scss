@@ -3,15 +3,15 @@
 // formulářů Shoptetu, body.ums_forms_redesign--on) kreslí .form-control z proměnných --form-*,
 // proto základ nastavujeme jimi a doplňujeme jen stavy, které proměnné nemají.
 // Vlastní návrh mají a zůstávají: hledání v hlavičce, newsletter v patičce, kupon v košíku.
-// Na telefonu mají všechna pole písmo 16 px (tools/_field-font.scss).
+// Písmo je ve všech polích 16 px (Body/Default jako v komponentách Forms a návrzích stránek);
+// menší by iPhone při fokusu přiblížil.
 @use "../tools/icon" as *;
-@use "../tools/breakpoints" as bp;
 
 // Stejný prvek jako :root Disca (dopočítané --*-computed-* se počítají na něm), vyšší specificita.
 html.as-theme {
-  // Pole 52 px: řádek 20 + okraje 2 × 15 + rámeček 2.
-  --form-controls-font-size: var(--as-font-size-small);
-  --form-controls-line-height: 1.4286;
+  // Pole 52 px: řádek 20 (16 × 1.25) + okraje 2 × 15 + rámeček 2.
+  --form-controls-font-size: var(--as-font-size-body);
+  --form-controls-line-height: 1.25;
   --form-controls-padding-y: 15px;
   --form-controls-padding-x: 16px;
   --form-controls-border-radius: var(--as-radius-pill);
@@ -20,13 +20,6 @@ html.as-theme {
   --colors-forms-activated: var(--as-secondary-400);
   --colors-forms-critical: var(--as-danger);
   --colors-forms-disabled: var(--as-secondary-50);
-
-  // Na telefonu 16 px, jinak iPhone při fokusu přibližuje stránku (tools/_field-font.scss).
-  // Řádek 16 × 1.25 = 20 px, pole zůstávají 52 px.
-  @include bp.mobile {
-    --form-controls-font-size: var(--as-font-size-body);
-    --form-controls-line-height: 1.25;
-  }
 }
 
 .as-theme {

@@ -53,7 +53,7 @@ const ITEMS = [
   ['Hlavička: ikona košíku', '/', '#header .navigation-buttons [data-target="cart"]', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],
   ['Hlavička: ikona účtu', '/', '#header .as-account-button', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],
   ['Košík: ikona účtu v hlavičce', '/kosik/', '#header .as-account-button', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],
-  ['Hlavička: pole hledání', '/', '#header .search-input', null, {}],
+  ['Hlavička: pole hledání', '/', '#header .search-input', null, { size: true }],
   ['Hlavička: lupa ve formuláři', '/', '#header .search-button', null, { pseudo: '::before', props: ['maskImage', 'backgroundColor'] }],
   ['Informační lišta', '/', '.site-msg.information', null, { size: true }],
   ['Informační lišta: text', '/', '.site-msg.information .text', null, { size: true }],
@@ -95,10 +95,9 @@ const ITEMS = [
   ['Volby: radio', '/registrace/', '#retail + label', null, { pseudo: '::before', props: ['width', 'height', 'borderRadius', 'borderColor', 'borderWidth', 'backgroundColor'] }],
   ['Volby: checkbox', '/registrace/', '#sendNewsletter + label', null, { pseudo: '::before', props: ['width', 'height', 'borderRadius', 'borderColor', 'backgroundColor'] }],
   ['Volby: popisek', '/registrace/', '#sendNewsletter + label', null, { size: true }],
-  // Písmo polí je na telefonu 16 px (iPhone při fokusu přibližuje menší), velikost se u polí neporovnává.
-  ['Pole: text', '/kontakty/', '#content input[name="fullName"]', null, {}],
-  ['Pole: popisek', '/kontakty/', '#content .smart-label-wrapper:has(input[name="fullName"]) > label', null, {}],
-  ['Pole: textarea', '/kontakty/', '#content textarea[name="message"]', null, {}],
+  ['Pole: text', '/kontakty/', '#content input[name="fullName"]', null, { size: true }],
+  ['Pole: popisek', '/kontakty/', '#content .smart-label-wrapper:has(input[name="fullName"]) > label', null, { size: true }],
+  ['Pole: textarea', '/kontakty/', '#content textarea[name="message"]', null, { size: true }],
   ['Filtry: karta', '/pletene-kosiky/', '#filters .filter-section-boolean', null, { open: { mobile: 'filters' } }],
   ['Filtry: nadpis', '/pletene-kosiky/', '#filters .filter-section-boolean > h4', null, { size: true, open: { mobile: 'filters' } }],
   ['Filtry: checkbox', '/pletene-kosiky/', '#stock + label', null, { pseudo: '::before', props: ['width', 'height', 'borderRadius', 'borderColor', 'backgroundColor'], open: { mobile: 'filters' } }],
@@ -143,7 +142,7 @@ const ITEMS = [
   // Ostatní
   ['Drobečky: odkaz', '/sperky/', '.breadcrumbs > span:not(#navigation-first) a', '.breadcrumbs > span:has(+ [data-testid="breadcrumbsLastLevel"]) a', { size: true }],
   ['Drobečky: pruh', '/sperky/', '.breadcrumbs', null, { size: true }],
-  ['Přihlášení: pole', '/login/', '#formLogin input[name="email"]', null, {}],
+  ['Přihlášení: pole', '/login/', '#formLogin input[name="email"]', null, { size: true }],
   ['Přihlášení: tlačítko', '/login/', '#formLogin .submit-wrapper .btn', null, { size: true }],
   ['Přihlášení: odkazy', '/login/', '#formLogin .alternative-links a', null, { size: true }],
 ];

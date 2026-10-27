@@ -1,3 +1,17 @@
+# Písmo ve všech polích 16 px (Claude)
+
+**Zadání:** majitel rozhodl sjednotit písmo ve všech polích e-shopu na 16 px podle návrhu (komponenty Forms „Input / Text“, „Input / Dropdown“ a návrh kroku 3 mají 16 px, jen ukázka stavu Focus 14 px).
+
+**Co se změnilo:**
+- `components/_fields.scss`: `--form-controls-font-size: var(--as-font-size-body)` a řádek `1.25` na všech šířkách (pole dál 52 px); zrušen blok jen pro telefon. Platí i pro plovoucí popisek v prázdném poli.
+- Hledání v hlavičce, kupon a select měny v kroku 1 mají `--as-font-size-body`; patička (newsletter) už písmo polí nenastavuje a dědí ho.
+- `tools/_field-font.scss` zůstává jen pro číslo v počítadle (Figma Stepper 13 px, na telefonu 16 px).
+- Testy: `fields.spec` čeká 16 px na všech šířkách; audit u polí („Pole“, „Hlavička: pole hledání“, „Přihlášení: pole“) opět porovnává i velikost.
+
+**Ověření:** na e-shopu před nasazením s podstrčeným CSS: rozměry všech polí na 1920 px beze změny, jediné pole pod 16 px je počítadlo (záměr). Snímky po nasazení: desktop změněn jen v textu polí (hledání, kontakty, přihlášení, registrace), telefon beze změny; rozdíly v článcích, výsledcích hledání (pořadí produktů) a štítku na homepage nesouvisí. Snímky „před“ byly přerušeny výpadkem sítě (ERR_NETWORK_CHANGED) u kroku objednávky, zbylé stránky mají snímek z předchozího běhu se stejným stavem.
+
+---
+
 # Třetí krok objednávky podle Figmy 1685:9631 (Claude)
 
 **Zadání:** nakódovat třetí krok košíku (Informace o vás, `/objednavka/krok-2/`) podle desktopového návrhu; mobilní návrh zatím není.

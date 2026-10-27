@@ -1,7 +1,6 @@
 @use "../tools/checkout";
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
-@use "../tools/field-font";
 
 // Společný pravý panel a jeho sloupce; osobní formulář se níže nestyluje.
 .as-theme body:is(.in-krok-1, .in-krok-2) {
@@ -60,7 +59,7 @@
   .co-basic-information label { position: static; display: block; width: auto; height: auto; margin: 0; padding: 0; color: var(--as-secondary-400); font-size: var(--as-font-size-small); line-height: 1.2; transform: none; pointer-events: auto; }
   // Šipka je globální (components/_fields.scss); tady je popisek nad polem, proto zdola.
   .co-basic-information .form-group:has(> select)::after { @include icon(chevron-right, 20px); position: absolute; top: auto; right: 24px; bottom: 16px; transform: rotate(90deg); color: var(--as-primary-500); pointer-events: none; }
-  .co-basic-information select.form-control { width: 100%; max-width: 100%; min-height: 52px; appearance: none; background-image: none; margin: 0; padding: 14px 48px 14px 24px; border: 1px solid var(--as-secondary-100); border-radius: var(--as-radius-pill); background-color: var(--as-white); color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-small); line-height: 22px; @include field-font.phone; }
+  .co-basic-information select.form-control { width: 100%; max-width: 100%; min-height: 52px; appearance: none; background-image: none; margin: 0; padding: 14px 48px 14px 24px; border: 1px solid var(--as-secondary-100); border-radius: var(--as-radius-pill); background-color: var(--as-white); color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-body); line-height: 22px; }
   .shipping-billing-table { display: flex; flex-direction: column; gap: 10px; width: 100%; margin: 0; padding: 0; border: 0; }
   .radio-wrapper {
     position: relative; width: 100%; margin: 0; padding: 0; border: 0; border-radius: 10px; box-shadow: none; container-type: normal;

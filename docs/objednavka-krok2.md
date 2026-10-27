@@ -86,7 +86,7 @@ Lokální kontrola skutečného HTML: oba kroky × 11 šířek 320–1920 px bez
 
 ## Pole a select (Figma 93:2578)
 
-Pole kontaktního kroku a select měny/země prvního kroku mají globální vzhled polí (`components/_fields.scss`): 52 px, pilulka, plovoucí popisek, fokus, chyba a zakázaný stav. Šipka selectu je globální; `_checkout.scss` v prvním kroku jen drží popisek nad polem a šipku proto umisťuje zdola (`top: auto; bottom: 16px`). Na telefonu mají pole i select písmo 16 px, aby iPhone při fokusu stránku nepřibližoval.
+Pole kontaktního kroku a select měny/země prvního kroku mají globální vzhled polí (`components/_fields.scss`): 52 px, pilulka, plovoucí popisek, fokus, chyba a zakázaný stav. Šipka selectu je globální; `_checkout.scss` v prvním kroku jen drží popisek nad polem a šipku proto umisťuje zdola (`top: auto; bottom: 16px`). Pole i select mají písmo 16 px (komponenty Forms).
 
 ## Třetí krok podle Figmy 1685:9631 (Informace o vás)
 
@@ -100,6 +100,6 @@ Levý formulář `#checkoutContent` má vlastní komponentu `components/_checkou
 - Volby: řádek skupiny je flex, aby popisek inline-block neseděl na účaří a mezery odpovídaly (24 px pod zemí, 12 px mezi „Doručit na jinou adresu“ a „Zadat poznámku“).
 - Pravý panel: souhlasy 32 px pod součtem, text 16 px `--as-secondary-300` s podtrženými odkazy; finální tlačítko „Objednat“ (20 px) a pod ním celé původní „s povinností platby“ (16 px), na středu, bez šipky, výška 74 px.
 
-Mobilní návrh zatím není; pod 992 px je formulář v jednom sloupci se stejným vzhledem. Písmo v polích zůstává globální (14 px, na telefonu 16 px); návrh kroku 3 i komponenty Forms mají v poli 16 px, jen stav Focus 14 px – k rozhodnutí majitele.
+Mobilní návrh zatím není; pod 992 px je formulář v jednom sloupci se stejným vzhledem. Písmo v polích je globálně 16 px jako v návrhu (rozhodnutí majitele 27. 10.).
 
 Ověření: test `tests/responsive/checkout-step3.spec.cjs` nad skutečným HTML (`fixtures/checkout-step3.html`, bez skriptů a osobních údajů, zkrácený seznam zemí): rozměry a mezery podle Figmy na 1920 px, popisek ve stavech fokus/vyplněno, telefon fokus/chyba, 11 šířek 320–1920 se všemi rozbalenými částmi bez přetékání, jména polí formuláře beze změny. Živě na e-shopu 1920/390 zavřené i rozbalené části, výběr předvolby +421 se propíše do `phoneCode`; testovací produkt jen v headless prohlížeči, košík vyprázdněn, bez osobních údajů a objednávky.
