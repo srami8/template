@@ -1,0 +1,33 @@
+// Pole s popiskem nad sebou (Figma 93:2578 „Input / Text“ a „Input / Dropdown“, Type=Has label).
+// Plovoucí popisek Shoptetu (.smart-label-wrapper > label) zůstává v DOM, jen stojí nad polem ve
+// všech stavech (prázdné, fokus, vyplněné) a pole má běžné okraje (52 px). Volá se v bloku
+// formuláře; vzhled pole samotného je globální (components/_fields.scss).
+@mixin above {
+  .smart-label-wrapper {
+    --form-controls-padding-y: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    // Shoptet popisek při fokusu/vyplnění zmenšuje a posouvá do pole, tady zůstává stejný.
+    // Display se nemění: Shoptet skrývá jeden ze dvou popisků země třídou .js-location--hidden.
+    > label,
+    &:is(.focused, .populated) > label,
+    > .label {
+      position: static;
+      margin: 0;
+      padding: 0;
+      color: var(--as-secondary-400);
+      font-family: var(--as-font-family);
+      font-size: var(--as-font-size-body);
+      font-weight: 400;
+      line-height: 1.2;
+      transform: none;
+      transition: none;
+    }
+
+    :is(input, select, textarea).form-control {
+      padding-top: var(--form-controls-padding-y);
+    }
+  }
+}

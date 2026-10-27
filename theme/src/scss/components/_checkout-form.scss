@@ -1,0 +1,211 @@
+@use "../tools/breakpoints" as bp;
+@use "../tools/field-label";
+@use "../tools/icon" as *;
+
+// Třetí krok objednávky (Figma 1685:9631, „Informace o vás“): přihlášení, osobní údaje, fakturační
+// a doručovací adresa, poznámka a „Zůstaňme v kontaktu“. Původní formulář Shoptetu (#order-form,
+// jména polí, rozbalování .js-hidden/.visible, předvolby telefonu, validace) zůstává, mění se jen
+// rozložení. Vzhled polí a voleb je globální, pravý panel je společný s druhým krokem (_checkout.scss).
+.as-theme body.in-krok-2 #checkoutContent {
+  @include field-label.above;
+
+  .cart-content,
+  .co-box,
+  fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  // Přihlášení: šedý box s ikonou účtu. Text s odkazem je jeden tok (flex by ho rozdělil).
+  .cart-content > .helper {
+    position: relative;
+    margin: 0 0 40px;
+    padding: 16px 16px 16px 72px;
+    border-radius: 12px;
+    background: var(--as-secondary-50);
+    color: var(--as-secondary-500);
+    font-family: var(--as-font-family);
+    font-size: var(--as-font-size-body);
+    line-height: 1.7;
+
+    &::before {
+      @include icon(perm-identity, 32px);
+      position: absolute;
+      top: 50%;
+      left: 16px;
+      color: var(--as-secondary-500);
+      transform: translateY(-50%);
+    }
+
+    a {
+      color: var(--as-primary-500);
+      font-weight: 400;
+      text-decoration: underline;
+
+      &:hover {
+        color: var(--as-primary-600);
+      }
+    }
+  }
+
+  // Povinná pole značí hvězdička v popisku; legenda je pro čtečky skrytá už Shoptetem.
+  .form-legend {
+    display: none;
+  }
+
+  // Sekce: nadpis a pole pod sebou po 24 px, od 992 px některá pole ve dvou sloupcích.
+  :is(.co-contact-information, .co-billing-address > fieldset, .co-shipping-address, .form-option-block, #company-info) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+
+    > h2 {
+      margin: 0;
+    }
+  }
+
+  .form-group {
+    margin: 0;
+  }
+
+  // Řádek s volbou je vysoký jako volba (22 px): popisek inline-block by jinak seděl na účaří
+  // řádku skupiny a mezery nad ním by narostly o pixel.
+  .form-group:has(> input:is([type="checkbox"], [type="radio"]) + label) {
+    display: flex;
+  }
+
+  // Disco omezuje šířku polí (440 / 220 / 120 px), v návrhu vyplňují sloupec.
+  .form-control-wrapper,
+  .form-control:is(.short, .small),
+  select.form-control {
+    max-width: none;
+  }
+
+  @media (min-width: bp.$large) {
+    :is(.co-contact-information, .co-billing-address > fieldset, .form-option-block, #company-info) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      > * {
+        grid-column: 1 / -1;
+      }
+
+      // E-mail s telefonem, město s PSČ.
+      > .form-group:has(#email):has(+ .phone-form-group),
+      > .form-group:has(#email) + .phone-form-group,
+      > .form-group:has(:is(#billCity, #billZip, #deliveryCity, #deliveryZip)) {
+        grid-column: auto;
+      }
+    }
+  }
+
+  // Rozestupy sekcí: 40 px, volby pod adresou 24 px a mezi sebou 12 px.
+  .co-contact-information {
+    margin-bottom: 40px;
+  }
+
+  .co-billing-address > .form-group {
+    margin-top: 24px;
+  }
+
+  #shipping-address.visible {
+    margin-top: 40px;
+  }
+
+  .co-box-additional {
+    margin-top: 12px;
+  }
+
+  #shipping-address.visible + .co-box-additional,
+  #note.visible {
+    margin-top: 24px;
+  }
+
+  .stay-in-touch {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 40px;
+
+    h2 {
+      margin: 0 0 12px;
+    }
+  }
+
+  // Telefon: předvolba a číslo v jedné pilulce, oddělené svislou čarou (Figma). Rámeček, fokus
+  // a chyba jsou na obalu, šířka předvolby se řídí jejím obsahem (+1 až +1242).
+  .phone-combined-input {
+    align-items: stretch;
+    height: var(--form-controls-computed-height);
+    border: var(--form-controls-border-width) solid var(--as-secondary-100);
+    border-radius: var(--as-radius-pill);
+    background: var(--as-white);
+
+    &:focus-within {
+      border-color: var(--as-secondary-400);
+      box-shadow: 0 0 5px rgb(114 114 114 / 39%);
+    }
+
+    &:has(input:is(.error-field, .js-error-field)) {
+      border-color: var(--as-danger);
+      box-shadow: 0 0 5px color-mix(in srgb, var(--as-danger) 39%, transparent);
+    }
+
+    .country-flags {
+      flex: none;
+      height: auto;
+      padding: 0 12px 0 16px;
+      border: 0;
+      border-right: 1px solid var(--as-secondary-100);
+      border-radius: 0;
+    }
+
+    input.form-control {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: auto;
+      border: 0;
+      border-radius: 0 var(--as-radius-pill) var(--as-radius-pill) 0;
+      background: none;
+
+      &:focus,
+      &:is(.error-field, .js-error-field) {
+        border: 0;
+        box-shadow: none;
+      }
+    }
+  }
+
+  // Země je daná dopravou z předchozího kroku: Shoptet ji vypíše textem (.form-control-wrapper--with-note),
+  // u nákupu na firmu jako zakázaný select. Oba stavy vypadají jako zakázaný výběr (components/_fields.scss).
+  .form-control-wrapper--with-note {
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: var(--form-controls-computed-height);
+    padding: 0 48px 0 24px;
+    border: var(--form-controls-border-width) solid var(--as-secondary-100);
+    border-radius: var(--as-radius-pill);
+    background: var(--as-secondary-50);
+    color: var(--as-secondary-400);
+    font-family: var(--as-font-family);
+    font-size: var(--form-controls-font-size);
+    line-height: 20px;
+
+    strong {
+      font-weight: 400;
+    }
+
+    &::after {
+      @include icon(chevron-right, 20px);
+      position: absolute;
+      top: 50%;
+      right: 24px;
+      color: var(--as-secondary-300);
+      transform: translateY(-50%) rotate(90deg);
+    }
+  }
+}

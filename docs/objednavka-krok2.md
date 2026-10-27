@@ -87,3 +87,19 @@ Lokální kontrola skutečného HTML: oba kroky × 11 šířek 320–1920 px bez
 ## Pole a select (Figma 93:2578)
 
 Pole kontaktního kroku a select měny/země prvního kroku mají globální vzhled polí (`components/_fields.scss`): 52 px, pilulka, plovoucí popisek, fokus, chyba a zakázaný stav. Šipka selectu je globální; `_checkout.scss` v prvním kroku jen drží popisek nad polem a šipku proto umisťuje zdola (`top: auto; bottom: 16px`). Na telefonu mají pole i select písmo 16 px, aby iPhone při fokusu stránku nepřibližoval.
+
+## Třetí krok podle Figmy 1685:9631 (Informace o vás)
+
+Levý formulář `#checkoutContent` má vlastní komponentu `components/_checkout-form.scss` (`body.in-krok-2`). Formulář, jména polí, akce `Step2Validate`, rozbalování `.js-hidden/.visible` (firma, jiná adresa, poznámka, informace o registraci), předvolby telefonu a validace zůstávají Shoptetu; mění se jen rozložení a vzhled.
+
+- Přihlášení: šedý box `--as-secondary-50`, rádius 12 px, ikona `perm-identity` 32 px vlevo, odkaz v hlavní barvě. Text s odkazem zůstává jedním tokem (ikona je absolutně, ne flex).
+- Nadpisy sekcí H4 bez ikon Disca (společné pravidlo s krokem 2 v `_checkout.scss`), legenda „Povinná pole“ skrytá (povinnost značí hvězdička, legendu má Shoptet `aria-hidden`).
+- Pole: popisek nad polem (`tools/_field-label.scss`), mezi skupinami 24 px, sekce po 40 px. Od 992 px dva sloupce: e-mail s telefonem (jen když telefon následuje), město s PSČ (fakturační i doručovací); ostatní a celý formulář pod 992 px přes celou šířku. Disco omezení šířek (440/220/120 px) zrušené.
+- Telefon: předvolba a číslo v jedné pilulce, svislá čára mezi nimi, šířka předvolby podle obsahu. Rámeček, fokus i chyba jsou na `.phone-combined-input` (`:focus-within`, `:has(.js-error-field)`), původní seznam zemí Disca se otevírá beze změny.
+- Země: text `.form-control-wrapper--with-note` i zakázaný select vypadají jako zakázaný výběr (šedé pozadí, šipka `--as-secondary-300`); u nákupu na firmu Shoptet zobrazí aktivní select s globálním vzhledem.
+- Volby: řádek skupiny je flex, aby popisek inline-block neseděl na účaří a mezery odpovídaly (24 px pod zemí, 12 px mezi „Doručit na jinou adresu“ a „Zadat poznámku“).
+- Pravý panel: souhlasy 32 px pod součtem, text 16 px `--as-secondary-300` s podtrženými odkazy; finální tlačítko „Objednat“ (20 px) a pod ním celé původní „s povinností platby“ (16 px), na středu, bez šipky, výška 74 px.
+
+Mobilní návrh zatím není; pod 992 px je formulář v jednom sloupci se stejným vzhledem. Písmo v polích zůstává globální (14 px, na telefonu 16 px); návrh kroku 3 i komponenty Forms mají v poli 16 px, jen stav Focus 14 px – k rozhodnutí majitele.
+
+Ověření: test `tests/responsive/checkout-step3.spec.cjs` nad skutečným HTML (`fixtures/checkout-step3.html`, bez skriptů a osobních údajů, zkrácený seznam zemí): rozměry a mezery podle Figmy na 1920 px, popisek ve stavech fokus/vyplněno, telefon fokus/chyba, 11 šířek 320–1920 se všemi rozbalenými částmi bez přetékání, jména polí formuláře beze změny. Živě na e-shopu 1920/390 zavřené i rozbalené části, výběr předvolby +421 se propíše do `phoneCode`; testovací produkt jen v headless prohlížeči, košík vyprázdněn, bez osobních údajů a objednávky.

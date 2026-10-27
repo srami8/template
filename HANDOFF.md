@@ -1,3 +1,19 @@
+# Třetí krok objednávky podle Figmy 1685:9631 (Claude)
+
+**Zadání:** nakódovat třetí krok košíku (Informace o vás, `/objednavka/krok-2/`) podle desktopového návrhu; mobilní návrh zatím není.
+
+**Co se změnilo:**
+- Nová komponenta `components/_checkout-form.scss` pro levý formulář: box přihlášení s ikonou, nadpisy H4 bez ikon Disca, popisky nad poli, dva sloupce od 992 px (e-mail + telefon, město + PSČ), sekce po 40 px, telefon s předvolbou v jedné pilulce, země jako zakázaný výběr. Formulář a chování Shoptetu beze změny.
+- Nový mixin `tools/_field-label.scss` `above` (Figma „Has label“): plovoucí popisek drží nad polem ve všech stavech.
+- `_checkout.scss` (společný pravý panel): souhlasy podle návrhu, finální tlačítko na dva řádky na středu bez šipky (74 px); nadpisy sekcí kroku 3 sdílí pravidlo s krokem 2.
+- Test `checkout-step3.spec.cjs` + fixture `checkout-step3.html` (skutečné HTML, bez skriptů a osobních údajů).
+
+**Ověření:** živě na e-shopu před nasazením s podstrčeným CSS i po nasazení (1920/390, zavřené i rozbalené části, výběr předvolby), testovací produkt jen v headless prohlížeči, košík vyprázdněn, žádná objednávka. Snímky před/po: beze změny mimo známé kolísání článků. Audit 5 rozdílů ze 113 (dosavadní). Sada 171/171, settings-app 5/5.
+
+**Otevřené:** mobilní návrh (zatím odvozený: jeden sloupec pod 992 px). Písmo v polích: návrh kroku 3 a komponenty Forms mají 16 px, globálně je 14 px (podle stavu Focus) – rozhodne majitel. Text země je v šabloně `--as-secondary-400` jako globální zakázané pole (v návrhu `--as-secondary-300`).
+
+---
+
 # Pole na telefonu 16 px (Claude)
 
 **Zadání:** po převodu polí na 14 px podle Figmy nastavit polím na telefonu 16 px, aby iPhone (Safari) při fokusu stránku nepřibližoval.

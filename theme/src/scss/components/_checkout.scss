@@ -26,9 +26,14 @@
     .price-wrapper { @include checkout.price; }
     .next-step { position: static; display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; margin: 32px 0 0; padding: 0; background: none; }
     :is(.next-step-forward, .next-step-finish) { @include checkout.forward; order: 0; }
-    // Původní závazné označení finálního tlačítka zůstává celé a může se zalomit.
-    .next-step-finish { display: grid; grid-template-columns: max-content minmax(0, 1fr) 20px; gap: 6px; white-space: normal; .order-button-text { font-size: inherit; line-height: inherit; } .order-button-suffix { margin: 0; padding: 0; height: auto; font-size: var(--as-font-size-small); line-height: 20px; text-align: left; white-space: normal; } }
-    .consents-first { margin-top: 24px; }
+    // Finální tlačítko (Figma 1685:9631): „Objednat“ a pod ním celé původní závazné označení, na středu
+    // a bez šipky; označení se na úzké šířce může zalomit.
+    .next-step-finish { flex-direction: column; justify-content: center; gap: 0; padding: 16px 32px; white-space: normal; &::after { content: none; } .order-button-text { font-size: var(--as-font-size-h4); line-height: 20px; } .order-button-suffix { margin: 0; padding: 0; height: auto; font-size: var(--as-font-size-body); font-weight: 400; line-height: 20px; text-align: center; white-space: normal; } }
+    // Souhlasy nad tlačítkem: volba hodnocení a text s odkazy na podmínky.
+    .consents { margin: 0; }
+    .consents-first { margin-top: 32px; }
+    .consents + .consents { margin-top: 8px; }
+    .consents .label { margin: 0; color: var(--as-secondary-300); font-family: var(--as-font-family); font-size: var(--as-font-size-body); font-weight: 400; line-height: 1.2; a { color: inherit; font-weight: 400; text-decoration: underline; &:hover { color: var(--as-primary-500); } } }
     .next-step-back { @include checkout.back; position: static; order: 1; }
   }
   @media (max-width: 991px) { .cart-row { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; } #checkoutSidebar { padding-left: 24px; } }
@@ -42,6 +47,7 @@
 .as-theme body.in-krok-1 .cart-content,
 .as-theme body.in-krok-2 #checkoutSidebar .cart-content { margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
 .as-theme body.in-krok-1 .co-box h2,
+.as-theme body.in-krok-2 #checkoutContent :is(.co-box, .stay-in-touch) h2,
 .as-theme body:is(.in-krok-1, .in-krok-2) #summary-box > h2 { display: block; margin: 0 0 24px; padding: 0; color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-h4); font-weight: 500; line-height: 1.2; &::before { content: none; } }
 
 // Jen krok dopravy a platby; třetí krok zatím zachovává své nativní formulářové stavy.
