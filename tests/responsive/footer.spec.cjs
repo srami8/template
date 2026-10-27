@@ -37,8 +37,10 @@ test('footer preserves the original form, field values, links and merchant text 
   await expect(page.locator('.custom-footer__instagram')).toBeHidden();
 });
 
-test('footer stays within the page across breakpoints, with and without CAPTCHA', async ({page}) => {
+test('footer stays within the page across breakpoints, with and without CAPTCHA', async ({browser}) => {
   for (const captcha of [true, false]) {
+    // Vlastní stránka: setContent ponechává window a druhé vložení skriptu by spadlo na const LABELS.
+    const page = await browser.newPage();
     await page.setContent(markup(captcha));
     await page.addScriptTag({content: `${enhance}\nenhanceFooter();`});
     for (const width of [320,390,479,480,767,768,991,992,1199,1200,1920]) {
@@ -59,5 +61,6 @@ test('footer stays within the page across breakpoints, with and without CAPTCHA'
       await expect(page.locator('#signature')).toBeVisible();
       await expect(page.locator('.as-footer-socials a').first()).toBeVisible();
     }
+    await page.close();
   }
 });

@@ -14,7 +14,8 @@ async function setup(page,{fail=false,storageBlocked=false,badImage=false}={}){
  await page.route('https://shop.test/**',route=>{
   const u=new URL(route.request().url());
   if(u.pathname==='/kosik/'){cartRequests++;return route.fulfill({status:fail?503:200,contentType:'text/html',body:html(cart,'in-kosik')});}
-  if(u.pathname.endsWith('.svg'))return route.fulfill({status:badImage?404:200,contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="blue"/></svg>'});
+  // Nefunkční obrázek vrací chybovou stránku; 404 s platným SVG by prohlížeč vykreslil bez události error.
+  if(u.pathname.endsWith('.svg'))return badImage?route.fulfill({status:404,contentType:'text/html',body:'Nenalezeno'}):route.fulfill({contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="blue"/></svg>'});
   return route.fulfill({contentType:'text/html',body:html(checkout(),'in-krok-1')});
  });
  return ()=>cartRequests;

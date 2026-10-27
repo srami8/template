@@ -138,6 +138,13 @@ Cesty, relace a nastavení doplňku: [settings-app/README.md](../settings-app/RE
 
 Testy izolovaných stránek: každá stránka v nové záložce (`setContent` ponechává `window`, skript šablony se podruhé nespustí); ResizeObserver hlásí změnu šířky až po vykreslení.
 
+**Dva druhy testovacích stránek – kdy načítat CSS Disca (`base-blank.css`):**
+- **Zjednodušená napodobenina markupu** (`tests/responsive/fixture.cjs`, jednotlivé stránky v `*.spec.cjs` sestavené ručně): **bez** `base-blank.css`. Potřebnou geometrii Disca mají vepsanou samy; skutečné CSS Disca na zjednodušeném HTML dává jiné rozměry než na e-shopu a testy by hlásily neexistující chyby (stalo se 25.–27. 10.: 20 falešných selhání).
+- **Skutečné HTML ze Shoptetu** (`tests/responsive/fixtures/*.html`, např. košík, objednávka, filtry, patička, doprava zdarma): **s** `base-blank.css` před `asteroid.css`, stejně jako na e-shopu.
+- Shodu vzhledu bez nativního CSS (Blank mode) ověřuje `npm run preview:blank` nad skutečným e-shopem, ne zjednodušená stránka.
+- Simulace nefunkčního obrázku: 404 bez obrazových dat (404 s platným SVG prohlížeč vykreslí bez události `error`).
+- Celou sadu spouštět před každým commitem; „ověřeno v náhledu“ ji nenahrazuje.
+
 ## Postup změny
 
 1. Ověřit markup a chování Disca na testovacím e-shopu (https://313980.myshoptet.com/) a místa, kde se prvek vypisuje ([komponenty.md](komponenty.md)).

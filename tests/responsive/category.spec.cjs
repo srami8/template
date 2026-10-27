@@ -432,7 +432,8 @@ test('mobile: description reveals articles, 4.5 subcategory rows expand without 
   expect((await subcategories.boundingBox()).height).toBe(308);
   const items = await boxes(p, '.subcategories a');
   const bounds = await subcategories.boundingBox();
-  expect(items[8].y - bounds.y).toBe(280);
+  // Pátý řádek na 280 px (zlomky pixelu podle zaokrouhlení vykreslení).
+  expect(items[8].y - bounds.y).toBeCloseTo(280, 0);
   await p.locator('[data-as-disclosure="subcategories"]').click();
   expect((await subcategories.boundingBox()).height).toBeGreaterThan(308);
   await expect(subcategories.locator('li')).toHaveCount(12);

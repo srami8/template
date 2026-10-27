@@ -1,3 +1,17 @@
+# Oprava (Claude): testy po předávce od Codexu
+
+**Zjištění:** Codex v sandboxu nemohl spustit prohlížeč, browserové testy proto od 25. 10. nikdo nespustil. Na `c75c31f` selhávalo 23 ze 163.
+
+**Příčiny a opravy (jen testy, šablona beze změny):**
+- **20 selhání – zjednodušená testovací stránka s CSS Disca.** `fixture.cjs` od Codexovy úpravy načítal `base-blank.css` (celé CSS Disca) do zjednodušené napodobeniny markupu; skutečné CSS Disca na ní dává jiné rozměry než na e-shopu (hlavička 154 px místo ≤ 120 apod.). Ověřeno: stejný kód bez podkladu prochází. `fixture.cjs` opět bez `base-blank.css`; testy nad skutečným HTML ze Shoptetu (`fixtures/*.html`) ho dál načítají.
+- **category.spec (4,5 řádku podkategorií):** 280,125 vs 280 px – porovnání s tolerancí pod 0,5 px.
+- **checkout-images.spec (nefunkční obrázek):** test vracel 404 s platným SVG, Chrome ho vykreslil bez události `error`. Nyní 404 bez obrázku; test potvrzuje, že `checkout-images.js` nefunkční obrázek skutečně odstraní.
+- **footer.spec:** druhé vložení skriptu do stejné stránky spadlo na `const LABELS`; každý průchod má vlastní stránku. Skript patičky je v pořádku.
+
+**Ověření:** celá sada 163/163 třikrát po sobě, settings-app prošly. Pravidlo pro testovací stránky doplněné do docs/vyvoj.md (Testy a kontrola). E-shop ani nasazené soubory se nemění.
+
+---
+
 # Společný pravý panel objednávky 2/3 (Codex)
 
 Základ 4a08a98, feature/responsive. Zadání: vzhled kontaktu a rekapitulace kroku 3 stejný jako krok 2, bez duplikace. Rozšířený jeden blok `_checkout.scss` nad nativními třídami; kontakt i součty/CTA dál využívají společné Sass komponenty. Žádné nové JS, třídy ani kopie/přesuny DOM. Nativní servisní řádky kroku 3 mají jen cílené CSS rozložení, finální tlačítko zachovává celý závazný text. Osobní pole, souhlasy, action, ceny a submit původní. Podrobnosti a ověření na konci docs/objednavka-krok2.md.

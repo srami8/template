@@ -3,10 +3,12 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '../..');
 const dist = process.env.RESPONSIVE_THEME_DIST || path.join(root, 'theme/dist');
-// Základ a všechny soubory variant (platí jen se svou třídou na <html>, jako na e-shopu).
-const css = ['base-blank.css', 'asteroid.css', ...fs.readdirSync(dist).filter((file) => file.endsWith('.css') && !['asteroid.css', 'base-blank.css'].includes(file)).sort()]
-  // SVG v podkladu nesmí předčasně ukončit obalový <style> testovacího HTML.
-  .map((file) => fs.readFileSync(path.join(dist, file), 'utf8').replace(/<\/style/gi, '%3C/style')).join('\n');
+// Základ a všechny soubory variant (platí jen se svou třídou na <html>, jako na e-shopu). Bez kompatibilního
+// podkladu Disca (base-blank.css): tato stránka je zjednodušená napodobenina markupu a potřebnou geometrii
+// Disca má vepsanou níže. Skutečné CSS Disca na ní dává jiné rozměry než na e-shopu; patří jen k testům nad
+// skutečným HTML ze Shoptetu (tests/responsive/fixtures/*.html).
+const css = ['asteroid.css', ...fs.readdirSync(dist).filter((file) => file.endsWith('.css') && !['asteroid.css', 'base-blank.css'].includes(file)).sort()]
+  .map((file) => fs.readFileSync(path.join(dist, file), 'utf8')).join('\n');
 const js = fs.readFileSync(path.join(dist, 'asteroid.js'), 'utf8');
 const image = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="240" height="100" viewBox="0 0 240 100"%3E%3Crect width="240" height="100" fill="%23e6e8eb"/%3E%3C/svg%3E';
 const img = (className = '') => `<img class="${className}" src='${image}' alt="">`;
