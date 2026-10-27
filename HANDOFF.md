@@ -1,3 +1,18 @@
+# Pole na telefonu 16 px (Claude)
+
+**Zadání:** po převodu polí na 14 px podle Figmy nastavit polím na telefonu 16 px, aby iPhone (Safari) při fokusu stránku nepřibližoval.
+
+**Co se změnilo:**
+- Pod 768 px mají všechna pole písmo 16 px (Body/Default), od 768 px zůstává velikost z návrhu. Rozměry polí se nemění (52 px, řádek 20 px).
+- Globální pole (`components/_fields.scss`): na telefonu `--form-controls-font-size: var(--as-font-size-body)` a `--form-controls-line-height: 1.25`. Platí i pro plovoucí popisky (jako placeholder 16 px, po vyplnění zmenšené nahoře beze změny).
+- Přihlášení (`_login.scss`) už písmo a řádek nenastavuje, dědí je z globálních polí.
+- Nový mixin `tools/_field-font.scss` `phone` pro pole s vlastním `font-size`: hledání v hlavičce (`layout/_header.scss`), kupon (`_cart.scss`), select měny v kroku 1 (`_checkout.scss`), číslo v počítadle množství (`tools/_quantity.scss`, karta, detail, košík, okno košíku; dosud 13 px). Newsletter už 16 px měl.
+- Testy: `fields.spec` čeká 16 px pod 768 px a 14 px od 768 px (i hledání a textarea), popisek na středu na všech šířkách; `layout.spec` počítadlo 16/13 px, jinak stejný vzhled. Audit u polí („Pole“, „Hlavička: pole hledání“, „Přihlášení: pole“) neporovnává velikost písma.
+
+**Ověření:** sken všech polí na 390 px na živém e-shopu (úvodní stránka, kategorie, detail, hledání, registrace, přihlášení, kontakty, hodnocení, zapomenuté heslo, článek, košík, krok 1 a 2 objednávky; testovací produkt jen v headless prohlížeči, košík vyprázdněn, žádná objednávka): žádné viditelné pole pod 16 px (zbývá jen skrytá past na spam v `.sr-only`), rozměry polí beze změny. Snímky před/po nasazení: desktop beze změny, na telefonu se změnil jen text v polích a počítadlech; články kolísají jako dřív. Audit 5 rozdílů ze 113 (dosavadní). Sada 168/168, settings-app 5/5.
+
+---
+
 # Textová pole a select v celém e-shopu (Claude)
 
 **Zadání:** Figma 93:2578 (styly inputů) – textová pole a select všude v e-shopu.

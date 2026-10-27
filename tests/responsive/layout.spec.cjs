@@ -313,6 +313,9 @@ test('cart controls share their visual style on mobile and desktop', async ({pag
       };
     }));
   }
+  // Číslo v počítadle má na telefonu 16 px (iPhone jinak při fokusu přibližuje), jinak stejný vzhled.
+  expect(snapshots.map(s=>s.input.fontSize)).toEqual(['16px','13px']);
+  for(const s of snapshots)delete s.input.fontSize;
   expect(snapshots[0]).toEqual(snapshots[1]);
   expect(snapshots[0].quantity.borderRadius).not.toBe('0px');
 });

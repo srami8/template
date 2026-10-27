@@ -6,6 +6,7 @@
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
 @use "../tools/dropdown";
+@use "../tools/field-font";
 
 // Řádek rychlých odkazů na desktopu: odkaz 44 px (dotykový cíl) + spodní linka.
 $quicklinks-height: 45px;
@@ -84,6 +85,7 @@ $quicklinks-height: 45px;
     font-family: var(--as-font-family);
     font-size: var(--as-font-size-small);
     line-height: 20px;
+    @include field-font.phone;
 
     &::placeholder {
       color: var(--as-secondary-300);

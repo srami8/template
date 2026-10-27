@@ -14,7 +14,8 @@ ${smart('disabledField','Zakázané','<input type="text" id="disabledField" clas
 <div class="form-group"><label for="country">Země</label><div class="form-control-wrapper"><select id="country" class="form-control"><option>Česká republika</option></select></div></div>
 <input type="text" class="form-control" id="plain" placeholder="Heslo">
 </fieldset></form>
-<form class="search-form"><input type="search" class="query-input form-control search-input" id="search"></form></main>`;
+<form class="search-form"><input type="search" class="query-input form-control search-input" id="search"></form></main>
+<div id="header"><form class="search-form"><input type="search" class="query-input form-control search-input" id="headerSearch"></form></div>`;
 // Bez přechodů Disca (transition: all), stav se měří hned.
 async function load(page,primary){
  await page.setContent(`<!doctype html><html class="as-theme"><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style><style>*{transition:none!important}</style>${primary?`<style>:root{--color-primary:${primary}}</style>`:''}</head><body class="desktop in-kontakty ums_forms_redesign--on">${body}</body></html>`);
@@ -23,11 +24,17 @@ const style=(page,sel,pseudo)=>page.evaluate(([sel,pseudo])=>{const e=document.q
 
 test('text fields, textarea and select follow Figma on every width',async({page})=>{
  await load(page,'#d63384');
- for(const width of [320,390,767,992,1920]){
+ for(const width of [320,390,767,768,992,1920]){
   await page.setViewportSize({width,height:900});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth),String(width)).toBeLessThanOrEqual(1);
+  // Na telefonu 16 px (iPhone při fokusu přibližuje pole s menším písmem), rozměry stejné.
+  const fontSize=width<768?'16px':'14px';
   for(const sel of ['#fullName','#email','#plain','#currency','#country'])
-   expect(await style(page,sel),`${sel} @${width}`).toMatchObject({height:52,radius:'100px',border:'rgb(213, 215, 218)',background:'rgb(255, 255, 255)',color:'rgb(46, 53, 69)',fontSize:'14px'});
+   expect(await style(page,sel),`${sel} @${width}`).toMatchObject({height:52,radius:'100px',border:'rgb(213, 215, 218)',background:'rgb(255, 255, 255)',color:'rgb(46, 53, 69)',fontSize});
+  expect((await style(page,'#message')).fontSize).toBe(fontSize);
+  expect((await style(page,'#headerSearch')).fontSize).toBe(fontSize);
+  const center=await page.evaluate(()=>{const l=document.querySelector('label[for="fullName"]'),i=document.querySelector('#fullName');const lr=l.getBoundingClientRect(),ir=i.getBoundingClientRect();return Math.round(lr.top+lr.height/2-ir.top);});
+  expect(center,String(width)).toBe(26);
  }
  expect((await style(page,'#message')).radius).toBe('26px');
  // Plovoucí popisek je v prázdném poli svisle na středu, šedý jako placeholder.

@@ -2,6 +2,7 @@
 // Markup Shoptetu je všude stejný (košík, karta produktu, detail): span.quantity > label > input.amount,
 // button.increase, button.decrease (Disco má tlačítka v pořadí +, −, mřížka je prohodí).
 // Volá se uvnitř bloku, který počítadlo obsahuje.
+@use "field-font";
 
 @mixin stepper {
   .quantity {
@@ -38,6 +39,7 @@
       line-height: 1.2;
       text-align: center;
       appearance: textfield;
+      @include field-font.phone;
 
       &::-webkit-inner-spin-button,
       &::-webkit-outer-spin-button {

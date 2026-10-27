@@ -86,4 +86,4 @@ Lokální kontrola skutečného HTML: oba kroky × 11 šířek 320–1920 px bez
 
 ## Pole a select (Figma 93:2578)
 
-Pole kontaktního kroku a select měny/země prvního kroku mají globální vzhled polí (`components/_fields.scss`): 52 px, pilulka, plovoucí popisek, fokus, chyba a zakázaný stav. Šipka selectu je globální; `_checkout.scss` v prvním kroku jen drží popisek nad polem a šipku proto umisťuje zdola (`top: auto; bottom: 16px`).
+Pole kontaktního kroku a select měny/země prvního kroku mají globální vzhled polí (`components/_fields.scss`): 52 px, pilulka, plovoucí popisek, fokus, chyba a zakázaný stav. Šipka selectu je globální; `_checkout.scss` v prvním kroku jen drží popisek nad polem a šipku proto umisťuje zdola (`top: auto; bottom: 16px`). Na telefonu mají pole i select písmo 16 px, aby iPhone při fokusu stránku nepřibližoval.

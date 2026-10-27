@@ -1,0 +1,10 @@
+// Písmo polí na telefonu. Safari na iPhonu při fokusu přiblíží stránku, když má pole písmo menší
+// než 16 px, proto mají pole pod 768 px Body/Default (16 px) místo velikosti z návrhu. Řádek
+// (line-height) zůstává, rozměry polí se nemění. Volá se v pravidle pole za jeho font-size.
+@use "breakpoints" as bp;
+
+@mixin phone {
+  @include bp.mobile {
+    font-size: var(--as-font-size-body);
+  }
+}
