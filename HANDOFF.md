@@ -1,3 +1,17 @@
+# Nekonečný posun stránky v objednávce (Claude)
+
+**Zadání:** ve třetím kroku objednávky stránka při posunu stále rostla, v levé části dole vznikalo prázdné místo a dalo se posouvat donekonečna.
+
+**Příčina:** skript Shoptetu `fixSidebar` (checkout-3g.js) od 992 px při každém posunu stránky posouvá pravý panel `#checkoutSidebar` inline stylem `position: relative; top: …`, aby jel s obrazovkou. Počítá s panelem vysokým jen jako jeho obsah. V šabloně je panel natažený na celou výšku řádku (svislá dělicí čára), takže posunutý přesáhl stránku, prodloužil ji, skript ho při dalším posunu posunul znovu atd. Týká se kroků 2 i 3 (stejný skript i panel), projeví se, když je formulář aspoň tak vysoký jako panel a stránka je jen o kousek delší než okno.
+
+**Co se změnilo:**
+- `_checkout.scss` (společný blok kroků 2 a 3): `#checkoutSidebar { position: relative !important; top: 0 !important; }` – panel stojí na místě (původní poloha sloupce Bootstrapu), inline styl Shoptetu nic neposune. Návrh Figmy panel jedoucí s obrazovkou nemá.
+- Test `checkout-step3.spec.cjs`: inline styly skriptu (`relative; top: 400px`, `static`) v obou krocích neposunou panel ani neprodlouží stránku. Na dosavadním CSS z e-shopu test padá.
+
+**Ověření:** živě na e-shopu, posun po 8–20 px jako na touchpadu: před opravou 1920×1080 stránka rostla 1247 → 1290 px a dál, 1440×800 s rozbalenými částmi 2241 → 2615 px a dál; s opravou (podstrčené CSS i po nasazení) zůstává 1247 / 2241 px a posun končí na konci stránky. Testovací produkt jen v headless prohlížeči, košík vyprázdněn, žádná objednávka. Snímky před/po: beze změny kromě data článků na homepage (před snímkem ještě nevykreslené) a vyhlazení štítku Tip; soubory `articles-*-_news_wrapper` jsou staré z 25. 10. Audit 5 rozdílů ze 113 (dosavadní). Sada 172/172, settings-app 5/5.
+
+---
+
 # Písmo ve všech polích 16 px (Claude)
 
 **Zadání:** majitel rozhodl sjednotit písmo ve všech polích e-shopu na 16 px podle návrhu (komponenty Forms „Input / Text“, „Input / Dropdown“ a návrh kroku 3 mají 16 px, jen ukázka stavu Focus 14 px).

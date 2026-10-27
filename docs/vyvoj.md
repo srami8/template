@@ -197,4 +197,4 @@ Rekapitulace kroků 2/3 nyní doplňuje pouze chybějící img z nativního koš
 
 Aktualizace objednávky: kontakt nad rekapitulací opět viditelný, sdílí základ s patičkou (`tools/contact`). Hover regrese musí zahrnovat nativní `.desktop` a skutečný :hover, jinak se konflikt Disca neprojeví. Detaily a živé ověření: [objednavka-krok2.md](objednavka-krok2.md#oprava-hoveru-centrování-a-vrácení-kontaktu-podle-aktualizované-figmy).
 
-Pravý kontakt a rekapitulace kroků 2/3 používají společný CSS blok nad nativním `#checkoutSidebar`, včetně finálního tlačítka se zachovaným závazným textem. Žádný nový JS ani vlastní vizuální třídy. [Podrobnosti](objednavka-krok2.md#společná-rekapitulace-kroků-2-a-3).
+Pravý kontakt a rekapitulace kroků 2/3 používají společný CSS blok nad nativním `#checkoutSidebar`, včetně finálního tlačítka se zachovaným závazným textem. Žádný nový JS ani vlastní vizuální třídy. Panel je natažený na výšku řádku, proto ho CSS drží na místě proti skriptu Shoptetu `fixSidebar`, který ho při posunu stránky posouvá (jinak se stránka prodlužuje donekonečna). [Podrobnosti](objednavka-krok2.md#společná-rekapitulace-kroků-2-a-3).

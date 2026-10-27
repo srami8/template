@@ -74,6 +74,22 @@ test('label stays above the field in every state and the phone shows focus and e
  expect((await style(page,'.phone-combined-input')).border).toBe('rgb(239, 40, 40)');
 });
 
+test('Shoptet sidebar script cannot shift the panel and lengthen the page in either checkout step',async({page})=>{
+ await load(page,1440);
+ for(const step of ['in-krok-2','in-krok-1']){
+  await page.evaluate(step=>{document.body.classList.remove('in-krok-1','in-krok-2');document.body.classList.add(step);},step);
+  const height=await page.evaluate(()=>document.documentElement.scrollHeight),top=(await box(page,'#checkoutContent')).y;
+  expect(height,step).toBeGreaterThan(1000);
+  // Inline styly, které při posunu píše fixSidebar (checkout-3g.js); posunutý panel by stránku prodloužil.
+  for(const inline of ['position: relative; top: 400px;','position: static;']){
+   await page.locator('#checkoutSidebar').evaluate((e,s)=>e.setAttribute('style',s),inline);
+   expect((await box(page,'#checkoutSidebar')).y,`${step} ${inline}`).toBe(top);
+   expect(await page.evaluate(()=>document.documentElement.scrollHeight),`${step} ${inline}`).toBe(height);
+   expect(await page.locator('#checkoutSidebar').evaluate(e=>getComputedStyle(e).position)).toBe('relative');
+  }
+ }
+});
+
 test('step 3 fits every width with all sections open and keeps the native form',async({page})=>{
  await load(page);
  const names=await page.locator('#order-form').evaluate(f=>[...f.elements].map(e=>e.name).filter(Boolean));

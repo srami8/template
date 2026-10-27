@@ -10,6 +10,11 @@
   .cart-row { display: grid; grid-template-columns: minmax(0, 700fr) minmax(0, 432fr); gap: 48px; min-height: calc(100vh - 151px); margin: 0; &::before, &::after { content: none; } }
   #checkoutContent, #checkoutSidebar { float: none; width: auto; min-width: 0; margin: 0; padding: 48px 0; }
   #checkoutSidebar { padding-left: 40px; border-left: 1px solid var(--as-secondary-75); }
+  // Shoptet (checkout-3g.js, fixSidebar) od 992 px při posunu stránky posouvá panel inline stylem
+  // (position, top), aby jel s obrazovkou. Panel je tu natažený na celou výšku řádku (svislá čára),
+  // posunutý by přesáhl stránku a prodlužoval ji při každém posunu donekonečna, proto stojí na místě.
+  // !important: jinak inline styl skriptu nepřebije; relative je původní poloha sloupce Bootstrapu.
+  #checkoutSidebar { position: relative !important; top: 0 !important; }
   #checkoutSidebar {
     .order-summary, .order-summary-inner { position: static; width: auto; margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
     .order-summary-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 24px; width: 100%; margin: 0; padding: 16px 0; border: 0; border-bottom: 1px solid var(--as-secondary-75); line-height: 1.2; }
