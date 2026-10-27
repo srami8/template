@@ -27,6 +27,9 @@ const PAGES = [
   ['search', '/vyhledavani/?string=test', ['.breadcrumbs', '#content']],
   ['contacts', '/kontakty/', ['.breadcrumbs', '#content']],
   ['cart', '/kosik/', ['#header', '#content']],
+  // Vyžaduje připravený košík; skript sám produkty ani dopravy nenastavuje.
+  ['checkout-shipping', '/objednavka/krok-1/', ['#header', '#checkoutSidebar']],
+  ['checkout-contact', '/objednavka/krok-2/', ['#header', '#checkoutSidebar']],
   ['login', '/login/', ['.breadcrumbs', '#content']],
 ];
 const VIEWPORTS = [['1920', { width: 1920, height: 1080 }, false], ['390', { width: 390, height: 844 }, true]];

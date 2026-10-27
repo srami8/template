@@ -1,3 +1,13 @@
+# Doplnění obrázků rekapitulace (Codex)
+
+Majitel v administraci nenašel volbu obrázků. Zdroj 3a2a5b8, feature/responsive. Nutnost přidání pouze img do původního odkazu byla předem vysvětlena; žádné formuláře/texty/ceny se nekopírují ani nepřesouvají. Společný styl checkout-images pro kroky 2/3, původní .cart-item-name a; bez vlastní vizuální třídy, 48 px / radius 8 / gap 16. Podrobnosti docs/objednavka-krok2.md, část Obrázky rekapitulace.
+
+Checkout-images.js převezme z prvního kroku jen URL obrázků a kombinaci microIdentifier+microSku (varianty); sessionStorage 15 minut, vždy úplný snímek při ShoptetDOMCartContentLoaded, žádné zákaznické údaje nebo ceny. Pokud cache chybí, jeden GET nativního košíku dle původního odkazu stejného originu, timeout 5 s. Z response se čtou jen URL obrázků; skripty ani markup se nevkládají. Observer obnoví obrázky po nativní výměně rekapitulace bez dalšího GET. Zakázané úložiště, síťová chyba, chybějící obrázek zachovají původní funkční text. Existující nativní img se nepřepíše/neduplikuje. Chybný přidaný obrázek se odstraní bez nekonečné smyčky observeru.
+
+Build a šest statických testů prošly, browserové regrese/audit/snapshots blokuje MachPortRendezvous (nejsou prošlé). In-app náhled prokázal 0 GET při normálním průchodu i po výměně rekapitulace, 1 GET při přímém vstupu/zakázaném úložišti, bezpečné selhání 503/404 bez opakování, zachované formuláře. Dvě varianty se stejným GUID a různým SKU mají odlišné správné obrázky, dlouhý název × 11 šířek 320–1920 bez přetékání a 48px obrázek. Původní pomocný diagnostický output přetékal dlouhou URL, opraven pouze v lokálním helperu (není změna šablony). Nasazení a živé ověření probíhá. Změna se nevztahuje na nastavení Blank nebo settings-app.
+
+---
+
 # Objednávka krok 2 a společná hlavička 2/3 (Codex)
 
 Figma 1645:8015, základ 3b3acc5, feature/responsive. Podrobnosti docs/objednavka-krok2.md. Nativní formuláře, inputy, label/for, data atributy a validace zachované; nový layout jen kroku 2 nad #checkoutContent/#checkoutSidebar/.radio-wrapper/.order-summary-item. Žádný nový fetch ani přepočet dopravy/platby. Nalezený nativní nedostatek (obsluha jen mousedown) řeší minimální js/checkout.js: change vybraného radia při neaktivním wrapperu předá stejné nativní obsluze, bez vlastních stavových tříd nebo cen; pointer aktivní wrapper podruhé nespouští. Hlavička nad původním topbarem a #header platí pro body.in-krok-1/in-krok-2 bez ohledu na variantu. EnhanceHeader zde nevytváří proxy účtu, rychlé odkazy ani katalog; mobilní sticky režim se v těchto krocích nepoužívá. Původní přihlášení a měna zůstávají nativní. Step 3 formuláře se neredesignují.

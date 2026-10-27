@@ -1,0 +1,16 @@
+// Jeden vzhled stejné rekapitulace v obou závěrečných krocích, pouze nad nativními třídami.
+.as-theme body:is(.in-krok-1, .in-krok-2) #summary-box .cart-item-name > a:has(> img) {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  > img {
+    display: block;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    max-width: none;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+}

@@ -3,6 +3,7 @@
 
 import { enhanceHeader } from './header';
 import { enhanceCheckout } from './checkout';
+import { enhanceCheckoutImages } from './checkout-images';
 import { enhanceMobileHeader } from './mobile-header';
 import { enhanceMobileMenu } from './mobile-menu';
 import { enhanceSearch } from './search';
@@ -130,6 +131,7 @@ function start() {
     setHomepageProductColumns(config);
     enhanceHeader(config);
     enhanceCheckout();
+    enhanceCheckoutImages();
     enhanceMobileHeader();
     enhanceMobileMenu(config);
     enhanceSearch(config);

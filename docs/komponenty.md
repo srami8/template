@@ -62,3 +62,5 @@ Společné CSS je pouze v `components/_free-shipping.scss`, nad původními `.ca
 První krok košíku podle Figmy 1642:5563: [nativní prvky, sdílené komponenty a ověření](kosik-krok1.md). Původní tabulka, související produkty a kupony, společné kroky objednávky; žádné kopírování formulářů.
 
 Objednávka: `tools/checkout` sdílí součty a navigaci s prvním krokem; `tools/radio` původní volby dopravy/platby; `components/checkout-header` společnou hlavičku kroků 2 a 3. Viz [objednavka-krok2.md](objednavka-krok2.md).
+
+Obrázky rekapitulace: jeden `components/checkout-images` pro nativní `.cart-item-name a > img` v krocích 2/3. Zdroj dat a minimální doplnění DOM: `js/checkout-images.js`, viz [objednavka-krok2.md](objednavka-krok2.md#obrázky-rekapitulace-bez-volby-v-administraci).

@@ -34,6 +34,7 @@
 @use "layout/header";
 @use "components/checkout-header";
 @use "components/checkout";
+@use "components/checkout-images";
 
 :root {
   // Ikony před tokeny: tokeny končí blokem @media (měřítko nadpisů na telefonu).
