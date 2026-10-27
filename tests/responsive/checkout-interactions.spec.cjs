@@ -5,7 +5,7 @@ const {test,expect}=require('@playwright/test');
 const dist=process.env.RESPONSIVE_THEME_DIST||path.join(__dirname,'../../theme/dist');
 const native=fs.readFileSync(path.join(__dirname,'fixtures/checkout-step2.html'),'utf8');
 const code=fs.readFileSync(path.join(__dirname,'../../theme/src/js/checkout.js'),'utf8').replace('export function','function');
-const contact=`<div class="contact-box"><img src="/avatar.svg" alt="Kontakt"><strong>Podpora</strong><ul><li><span class="mail"><a href="mailto:podpora@example.invalid">podpora@example.invalid</a></span></li><li><span class="tel"><a href="tel:+420000000000">+420 000 000 000</a></span></li></ul></div>`;
+const contact=`<div class="contact-box"><img src="https://shop.test/avatar.svg" alt="Kontakt"><strong>Podpora</strong><ul><li><span class="mail"><a href="mailto:podpora@example.invalid">podpora@example.invalid</a></span></li><li><span class="tel"><a href="tel:+420000000000">+420 000 000 000</a></span></li></ul></div>`;
 async function load(page,variant='v1'){
  const css=['base-blank','asteroid','header-'+variant].map(n=>fs.readFileSync(path.join(dist,n+'.css'),'utf8').replace(/<\/style/gi,'%3C/style')).join('\n');
  const html=native.replace(/<div class="contact-box"[^>]*>[\s\S]*?<\/div>/,contact).replace('<div class="top-navigation-tools">','<a class="as-topbar-phone" href="tel:+420000000000"><strong>+420 000 000 000</strong> (po–pá 9:00–17:00)</a><div class="top-navigation-tools">');

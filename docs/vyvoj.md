@@ -184,3 +184,5 @@ První krok košíku podle Figmy 1642:5563: [nativní prvky, sdílené komponent
 Společná hlavička posledních dvou kroků nezávisí na variantě z administrace; formuláře zůstávají Shoptetu. Popis, nativní třídy, sdílené komponenty a limity: [objednavka-krok2.md](objednavka-krok2.md).
 
 Rekapitulace kroků 2/3 nyní doplňuje pouze chybějící img z nativního košíku; administrace nevyžaduje novou volbu. Obrázky se párují podle identifikátoru i SKU a mají jeden společný styl. Zdroj, cache, fallback a ověření: [objednavka-krok2.md](objednavka-krok2.md#obrázky-rekapitulace-bez-volby-v-administraci).
+
+Aktualizace objednávky: kontakt nad rekapitulací opět viditelný, sdílí základ s patičkou (`tools/contact`). Hover regrese musí zahrnovat nativní `.desktop` a skutečný :hover, jinak se konflikt Disca neprojeví. Detaily a živé ověření: [objednavka-krok2.md](objednavka-krok2.md#oprava-hoveru-centrování-a-vrácení-kontaktu-podle-aktualizované-figmy).
