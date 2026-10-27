@@ -3,29 +3,32 @@
 @use "../tools/icon" as *;
 @use "../tools/breakpoints" as bp;
 
-.as-theme body.in-krok-1 {
+// Společný pravý panel a jeho sloupce; osobní formulář se níže nestyluje.
+.as-theme body:is(.in-krok-1, .in-krok-2) {
   #content-wrapper { width: 100%; max-width: none; margin: 0; padding: 0; }
   #content { width: 100%; padding: 0; }
   .cart-inner { width: calc(100% - 32px); max-width: 1180px; margin: 0 auto; padding: 0; }
   .cart-row { display: grid; grid-template-columns: minmax(0, 700fr) minmax(0, 432fr); gap: 48px; min-height: calc(100vh - 151px); margin: 0; &::before, &::after { content: none; } }
   #checkoutContent, #checkoutSidebar { float: none; width: auto; min-width: 0; margin: 0; padding: 48px 0; }
   #checkoutSidebar { padding-left: 40px; border-left: 1px solid var(--as-secondary-75); }
-  .cart-content { margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
-  .co-box { margin: 0 0 40px; padding: 0; border: 0; background: none; }
-  .co-box h2, #summary-box > h2 { display: block; margin: 0 0 24px; padding: 0; color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-h4); font-weight: 500; line-height: 1.2; &::before { content: none; } }
   #checkoutSidebar {
     .order-summary, .order-summary-inner { position: static; width: auto; margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
     .order-summary-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 24px; width: 100%; margin: 0; padding: 16px 0; border: 0; border-bottom: 1px solid var(--as-secondary-75); line-height: 1.2; }
-    .cart-item-name { grid-column: 1; grid-row: 1 / span 2; min-width: 0; padding: 0; a { color: var(--as-secondary-400); font-size: var(--as-font-size-small); font-weight: 400; overflow-wrap: anywhere; } }
+    .cart-item-name { grid-column: 1; grid-row: 1 / span 2; min-width: 0; padding: 0; :is(a, strong) { color: var(--as-secondary-400); font-size: var(--as-font-size-small); font-weight: 400; overflow-wrap: anywhere; } }
     .cart-item-amount { grid-column: 2; grid-row: 1; padding: 0; color: var(--as-secondary-300); font-size: var(--as-font-size-small); text-align: right; }
     .cart-item-price { grid-column: 2; grid-row: 2; padding: 0; color: var(--as-secondary-500); font-size: var(--as-font-size-body); font-weight: 600; text-align: right; }
+    // Krok 3 vypisuje dopravu/platbu stejnými buňkami jako produkt, množství je prázdné.
+    .order-summary-item:has(.cart-item-name > strong) { align-items: center; .cart-item-name, .cart-item-price { grid-row: 1; } .cart-item-amount { display: none; } }
     .order-summary-item.helper { align-items: center; border-bottom-color: var(--as-secondary-500); color: var(--as-secondary-500); font-size: var(--as-font-size-body); font-weight: 500; > :last-child { text-align: right; } strong { font-weight: inherit; } }
     .order-recapitulation { margin: 0; padding: 0; border: 0; }
-    .recapitulation-single { margin: 0; padding: 16px 0; border-color: var(--as-secondary-75); line-height: 1.2; > span { display: none; } > strong { display: flex; flex-direction: row-reverse; gap: 16px; width: 100%; font-size: var(--as-font-size-small); font-weight: 400; color: var(--as-secondary-400); > span { flex: 0 0 auto; color: var(--as-secondary-500); font-size: var(--as-font-size-body); font-weight: 600; text-align: right; } } }
+    .recapitulation-single { margin: 0; padding: 16px 0; border-color: var(--as-secondary-75); line-height: 1.2; > span { display: none; } > strong { display: flex; flex-direction: row-reverse; align-items: center; gap: 16px; width: 100%; font-size: var(--as-font-size-small); font-weight: 400; color: var(--as-secondary-400); > span { flex: 0 0 auto; color: var(--as-secondary-500); font-size: var(--as-font-size-body); font-weight: 600; text-align: right; } } }
     .order-summary-item.price { display: block; margin-top: 32px; padding: 0; border: 0; }
     .price-wrapper { @include checkout.price; }
     .next-step { position: static; display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; margin: 32px 0 0; padding: 0; background: none; }
-    .next-step-forward { @include checkout.forward; order: 0; }
+    :is(.next-step-forward, .next-step-finish) { @include checkout.forward; order: 0; }
+    // Původní závazné označení finálního tlačítka zůstává celé a může se zalomit.
+    .next-step-finish { display: grid; grid-template-columns: max-content minmax(0, 1fr) 20px; gap: 6px; white-space: normal; .order-button-text { font-size: inherit; line-height: inherit; } .order-button-suffix { margin: 0; padding: 0; height: auto; font-size: var(--as-font-size-small); line-height: 20px; text-align: left; white-space: normal; } }
+    .consents-first { margin-top: 24px; }
     .next-step-back { @include checkout.back; position: static; order: 1; }
   }
   @media (max-width: 991px) { .cart-row { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; } #checkoutSidebar { padding-left: 24px; } }
@@ -36,8 +39,14 @@
   }
 }
 
+.as-theme body.in-krok-1 .cart-content,
+.as-theme body.in-krok-2 #checkoutSidebar .cart-content { margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
+.as-theme body.in-krok-1 .co-box h2,
+.as-theme body:is(.in-krok-1, .in-krok-2) #summary-box > h2 { display: block; margin: 0 0 24px; padding: 0; color: var(--as-secondary-500); font-family: var(--as-font-family); font-size: var(--as-font-size-h4); font-weight: 500; line-height: 1.2; &::before { content: none; } }
+
 // Jen krok dopravy a platby; třetí krok zatím zachovává své nativní formulářové stavy.
 .as-theme body.in-krok-1 {
+  .co-box { margin: 0 0 40px; padding: 0; border: 0; background: none; }
   // Disco schovává tento nadpis pod 992 px selektorem s ID formuláře.
   #select-country-payment .order-information { display: block; }
   .co-basic-information .row { display: flex; flex-wrap: wrap; gap: 24px; margin: 0; &::before, &::after { content: none; } > div { flex: 1 1 200px; width: auto; min-width: 0; padding: 0; } }

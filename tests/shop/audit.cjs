@@ -27,6 +27,11 @@ const ITEMS = [
   ['Objednávka: radio', '/objednavka/krok-1/', '#order-shipping-methods label', null, { pseudo: '::before', props: ['width', 'height', 'borderRadius', 'borderColor', 'borderWidth', 'backgroundColor'] }],
   ['Objednávka: pokračovat', '/objednavka/krok-1/', '#orderFormButton', null, { size: true }],
   ['Objednávka: hlavní součet', '/objednavka/krok-1/', '#checkoutSidebar .price.price-primary', null, { size: true }],
+  ['Objednávka krok 3: nadpis kontaktu', '/objednavka/krok-2/', '.checkout-box .toggle-contacts', null, { size: true }],
+  ['Objednávka krok 3: telefon kontaktu', '/objednavka/krok-2/', '.checkout-box .contact-box .tel a', null, { size: true }],
+  ['Objednávka krok 3: název produktu', '/objednavka/krok-2/', '#summary-box .cart-item-name > a', null, { size: true }],
+  ['Objednávka krok 3: hlavní součet', '/objednavka/krok-2/', '#checkoutSidebar .price.price-primary', null, { size: true }],
+  ['Objednávka krok 3: objednat', '/objednavka/krok-2/', '#submit-order', null, { size: true }],
   // První krok – stejné ovladače a vizuální prvky na mobilu i desktopu.
   ['Košík: název produktu', '/kosik/', '.cart-table .main-link', null, { size: true }],
   ['Košík: cena řádku', '/kosik/', '.cart-table .p-total .price-final', null, { size: true }],

@@ -74,3 +74,12 @@ Nasazeno `1c15253` na GitHub feature/responsive a SFTP; původní složka synchr
 Živá kontrola: obě varianty při 9 šířkách 320–2560 bez přetékání/překryvů, desktopové středy všech prvků shodné (39,5 px), mobilní logo/tools shodné. Skutečný hover dopravy i platby má stále 76 px a obal bez borderu/stínu; všechny další karty zůstávají na místě. Nativní kontakt je vidět po změně měny i ve třetím kroku na mobilu a desktopu. Přihlášení na obou zařízeních otevřeno/zavřeno, přechod do kroku 3 funguje. Patička po extrakci společných stylů při 390/1920 bez přetékání a s původními rozměry fotografie. Vlastní testovací položka odebraná, původní prázdný košík obnovený, žádná objednávka nevznikla.
 
 Snímky v outputs: `checkout-header-contact-fixed-live.png`, `checkout-hover-fixed-live.png`, `checkout-contact-mobile-fixed-live.png`, `checkout-contact-step3-fixed-live.png`; měření `checkout-fixes-live-checks.json`. Dřívější pokyn o skrytém kontaktním bloku nahrazuje tento aktualizovaný návrh.
+
+
+## Společná rekapitulace kroků 2 a 3
+
+Pravý panel i rozložení sloupců nyní používají jeden blok `body:is(.in-krok-1, .in-krok-2)` v `_checkout.scss`. Nativní `#checkoutSidebar`, `.order-summary`, `.order-summary-item`, `.cart-item-*`, `.price-wrapper` a `.next-step` se nekopírují ani nepřesouvají. Kontakt už má společnou komponentu `_checkout-contact.scss`; sjednocení šířky a odsazení panelu sjednocuje i jeho umístění. Žádný nový JS, vizuální třídy ani volby administrace.
+
+Krok 3 vrací dopravu/platbu jako `.order-summary-item` s názvem ve `strong` a prázdným množstvím; cílené CSS pouze upraví rozložení těchto řádků. Ceny a jejich nativní formát zůstávají Shoptetu. Finální `.next-step-finish` používá stejný Sass základ jako pokračování; celé „Objednat s povinností platby“ se na úzké šířce může zalomit. Souhlasy, odkazy, jména polí, vazba na `#order-form` a submit zůstávají původní. Pravidla dopravních voleb a osobního formuláře zůstávají oddělená.
+
+Lokální kontrola skutečného HTML: oba kroky × 11 šířek 320–1920 px bez vodorovného přetékání; shodné písmo, barvy a řezy společných prvků. Třetí krok zachoval 29 pojmenovaných ovladačů / 36 položek `form.elements`, nativní action i celé finální tlačítko. Build a 7 statických testů prošly. Dvě browserové regrese, audit a snapshots blokuje start Chromia (MachPortRendezvous); nejsou označené za prošlé. Živé ověření a nasazení budou doplněny po publikaci. Externí Claude Docs nejsou tímto zápisem upravené.

@@ -63,7 +63,7 @@ test('cart and checkout compile the price breakdown into one shared rule',()=>{
  const rules=[...css.matchAll(/([^{}]+)\{([^{}]+)\}/g)].filter(([,s,d])=>s.includes('.price-wrapper')&&d.includes('grid-template-columns:minmax(0, 1fr) auto'));
  expect(rules).toHaveLength(1);
  expect(rules[0][1]).toContain('.in-kosik .summary .price-wrapper');
- expect(rules[0][1]).toContain('.in-krok-1 #checkoutSidebar .price-wrapper');
+ expect(rules[0][1]).toMatch(/body:is\(\.in-krok-1,\s*\.in-krok-2\) #checkoutSidebar \.price-wrapper/);
 });
 
 test('native footer and checkout contacts share one compiled link style',()=>{

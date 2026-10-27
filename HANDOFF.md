@@ -1,3 +1,11 @@
+# Společný pravý panel objednávky 2/3 (Codex)
+
+Základ 4a08a98, feature/responsive. Zadání: vzhled kontaktu a rekapitulace kroku 3 stejný jako krok 2, bez duplikace. Rozšířený jeden blok `_checkout.scss` nad nativními třídami; kontakt i součty/CTA dál využívají společné Sass komponenty. Žádné nové JS, třídy ani kopie/přesuny DOM. Nativní servisní řádky kroku 3 mají jen cílené CSS rozložení, finální tlačítko zachovává celý závazný text. Osobní pole, souhlasy, action, ceny a submit původní. Podrobnosti a ověření na konci docs/objednavka-krok2.md.
+
+Náhled: oba kroky × 11 šířek 320–1920 bez přetékání, společná typografie identická, finální tlačítko desktop 52px. Původní formulář stále 29 pojmenovaných ovladačů / 36 form.elements. Build + 7 statických testů prošly; 2 browserové regrese, audit a snapshots blokuje start Chromia. Měření outputs/checkout-step3-summary-preview-checks.json. Živé ověření/nasazení se doplní.
+
+---
+
 # Oprava hlavičky, hoveru a návrat kontaktu (Codex)
 
 Základ ac0d3c5, feature/responsive. Majitel dodal snímky špatného centrování hlavičky a hranatého/skákajícího hoveru; aktualizoval Figmu 1645:8015 o kontakt 1647:9627. Dokumentace docs/objednavka-krok2.md na konci.
