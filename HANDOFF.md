@@ -1,3 +1,20 @@
+# Košík na telefonu podle Figmy 1686:10094 a související produkty v panelu 1686:10386 (Claude)
+
+**Zadání:** první krok košíku v mobilní verzi a podobné (související) produkty jako vysouvací panel stejně jako menu nebo mini-košík; využít hotové a nepřidávat zbytečně třídy. Majitel během práce upravil hlavičku v návrhu (menu, logo, lupa, účet) a určil, že **takto bude vypadat hlavička i v dalších krocích košíku**; zaoblení karty zůstává všude 10 px.
+
+**Co se změnilo:**
+- `_mobile-header.scss`: v košíku (`.in-kosik`) je mobilní hlavička kompaktní hned od začátku (56 px). `js/header.js` neměří výšku při otevřeném hledání (pole se vysune přes obsah).
+- `_order-steps.scss` (všechny kroky): na telefonu jeden řádek, popisek jen u aktivního kroku, šipky 24 px.
+- `_cart.scss` (jen `bp.mobile`): rozložení karty podle návrhu (obrázek 48, dostupnost nad odkazem souvisejících, dole počítadlo, cena za kus nad součtem a křížek 16 px), shrnutí a „Zpět do obchodu“ na středu. Původní `tr.related` je na telefonu pravý panel přes `tools/drawer`; křížek se na počítači skrývá.
+- `js/cart-step.js`: křížek panelu (bez nové třídy), role dialogu, `inert`, fokus, Esc, Tab, klepnutí mimo panel; po přidání produktu z panelu se panel zavře (jinak by zakryl okno Shoptetu „Přidáno do košíku“).
+- Test `cart-step.spec.cjs`: rozměry z návrhu a chování panelu; skript se do stránky vkládá i s `drawer.js`.
+
+**Ověření:** živě 390 px s podstrčeným CSS/JS (headless, košík vyprázdněn, žádná objednávka): hlavička 56 px, panel, přidání z panelu, množství, krok 2. Desktop 1920 a tablet 768: košík po pixelech shodný (768: 1 px vyhlazení). Snímky před/po: mobilní hlavička košíku 104 → 56 px (záměr; snímky kroků 2/3 bez košíku přesměrují na košík), jinak jen data článků a vyhlazení štítku Tip na homepage. Audit 5/113 (dosavadní). Sada 173/173, settings-app 5/5.
+
+**Otevřené:** hlavička kroků 2 a 3 na telefonu má zatím vlastní objednávkovou hlavičku (logo, telefon, měna, účet); podle majitele má být jako v košíku. Velikost součtu „Celkem za zboží“ je token H2 (na telefonu 24 px), návrh má 26 px. Okno Shoptetu „Přidáno do košíku“ má zatím původní vzhled.
+
+---
+
 # Nekonečný posun stránky v objednávce (Claude)
 
 **Zadání:** ve třetím kroku objednávky stránka při posunu stále rostla, v levé části dole vznikalo prázdné místo a dalo se posouvat donekonečna.

@@ -30,6 +30,17 @@ Shrnutí ani formuláře se nepřesouvají a nekopírují. Nativní `.box` má v
 
 Nové lokální assety: `order-arrow.svg` (Figma `1642:5898`) a `percent.svg` (`1642:7848`). Ostatní ikony jsou existující stejné komponenty Figmy ve stávajícím systému masek. Ukázky kurzoru v návrhu jsou ilustrace hoveru, nikoli obsah stránky.
 
+## Telefon (Figma 1686:10094 a 1686:10386)
+
+- **Hlavička:** v košíku kompaktní od začátku (menu, logo, lupa, účet, 56 px), `components/_mobile-header.scss` přes `.in-kosik`. Ikonu košíku Shoptet na stránce košíku nevypisuje a návrh ji nemá. Majitel určil, že stejná hlavička bude i v dalších krocích objednávky.
+- **Kroky:** jeden řádek 56 px, kolečka 32 px, šipky 24 px, popisek (14 px) jen u aktivního kroku; ostatní popisky zůstávají pro čtečky. Sdílené všemi kroky (`_order-steps.scss`).
+- **Karta:** obrázek 48 px, vedle název, dostupnost a odkaz na související produkty po 4 px; o 20 px níž počítadlo a vpravo cena za kus nad součtem (2 px) a křížek 16 px s dotykovou plochou 32 × 36 px. Buňka `.p-total` má `display: contents`, cena a formulář odebrání jsou přímo v mřížce řádku. Zaoblení 10 px jako na počítači (rozhodnutí majitele, mobilní návrh má 12 px).
+- **Související produkty:** původní řádek `tr.related` je pravý vysouvací panel 300 px (`tools/drawer` jako menu, mini-košík a filtry). Otevírá ho původní odkaz Shoptetu (třída `.visible`), ztmavení `body:has(tr.related.visible)::before`, posouvá se jen seznam. Položka: obrázek 48, název, cena 16 px a tlačítko do košíku jako ikona v kolečku 36 px (text Shoptetu v `aria-label`). `js/cart-step.js` doplní křížek (bez vlastní třídy, `tr.related > td > button`), roli dialogu, `inert` zavřených panelů, fokus, Esc, Tab v panelu a zavření klepnutím mimo (`dismissDrawerOnBackdrop`). Po přidání produktu z panelu se panel zavře, aby bylo vidět okno Shoptetu „Přidáno do košíku“.
+- **Shrnutí:** „Celkem za zboží“ 14 px, tlačítko 16 px pod součty, „Zpět do obchodu“ 32 px pod shrnutím na středu. Odstupy obsahu od kroků a od kuponu 20 px.
+- Počítač (od 768 px) beze změny: košík na 1920 a 768 px po pixelech shodný se stavem před úpravou.
+
+Ověřeno živě s podstrčeným CSS/JS i po nasazení (390 px, headless, košík vyprázdněn): hlavička 56 px a obsah hned pod ní, otevřené hledání obsah neposune; panel 300 px s fokusem na křížku; přidání souvisejícího produktu (1 → 2 položky) zavře panel a ukáže okno Shoptetu; změna množství 1 → 2 (590 → 790 Kč); krok 2 má kroky v jednom řádku; žádná chyba JS. Test `cart-step.spec.cjs` „mobile cart follows Figma 1686:10094…“.
+
 ## Ověření a limity
 
 Build a 5 statických testů stylů prošly. Nová kontrola hlídá společný sestavený základ křížku a checkboxu. Dvě browserové regrese prvního kroku a aktualizovaná regrese motivací jsou připravené; jejich běh blokuje start Chromia v sandboxu (MachPortRendezvous), nikoli aserce. Nesmí se označit za prošlé.

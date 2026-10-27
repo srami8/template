@@ -187,7 +187,9 @@
     }
 
     // Kompaktní hlavička: bez pole hledání, s lupou. Pole se vrátí po klepnutí na lupu.
-    &.as-header-compact #header {
+    // V košíku je kompaktní hned od začátku (Figma 1686:10094, hlavička kroků objednávky).
+    &.as-header-compact #header,
+    & .in-kosik #header {
       .header-top-wrapper {
         padding-bottom: 8px;
       }
@@ -201,7 +203,8 @@
       }
     }
 
-    &.as-header-compact .search-window-visible #header .search {
+    &.as-header-compact .search-window-visible #header .search,
+    & .in-kosik.search-window-visible #header .search {
       display: block;
       margin-top: 8px;
     }

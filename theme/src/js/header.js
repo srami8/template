@@ -153,12 +153,14 @@ export function enhanceHeader(config) {
 
   // Mobilní Disco má pevnou hlavičku a ve .overall-wrapper rezervuje jen 50 / 80 px. Naše hlavička
   // s polem hledání je vyšší; obsah musí začínat až pod ní. Měříme jen plnou hlavičku: kompaktní
-  // (js/mobile-header.js) je nižší a obsah se při přepnutí posouvat nemá.
+  // (js/mobile-header.js) je nižší a obsah se při přepnutí posouvat nemá. Otevřené hledání také
+  // ne: v košíku je hlavička kompaktní od začátku a pole hledání se jen vysune přes obsah.
   const header = document.getElementById('header');
   if (header) {
     let previous;
     const syncHeight = () => {
       if (document.documentElement.classList.contains('as-header-compact')) return;
+      if (document.body.classList.contains('search-window-visible')) return;
       const height = header.getBoundingClientRect().height;
       if (height === previous) return;
       previous = height;

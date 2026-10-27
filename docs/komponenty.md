@@ -48,7 +48,7 @@ Barvy vždy z administrace e-shopu (tokeny `--as-primary-*`, `--as-conversion` z
 
 Data a nativní obsluhu Shoptetu zachováváme; vlastní JS doplňuje pouze sbalení/aria a mobilní spouštěč s původním data-unveil. Podrobnosti: [kategorie.md](kategorie.md).
 
-- `tools/_drawer.scss`: společná geometrie mobilního pravého panelu, overlay a zavření; používají `components/_cart-widget.scss` a `_category-filters.scss`. Obsah i akce zůstávají nativní. Mobilní rozbalení kategorií doplňuje `js/category-disclosure.js`, nepřesouvá původní obsah.
+- `tools/_drawer.scss`: společná geometrie mobilního pravého panelu, overlay a zavření; používají `components/_cart-widget.scss`, `_category-filters.scss` a související produkty v košíku (`_cart.scss`, původní řádek `tr.related`, Figma 1686:10386). Obsah i akce zůstávají nativní. Mobilní rozbalení kategorií doplňuje `js/category-disclosure.js`, nepřesouvá původní obsah.
 
 - Štítky našeptávače a aktivních filtrů: `tools/_tag.scss` (base/dismissible), `components/_search-whisperer.scss` a `_active-filters.scss`. Stav z nativních inputů doplňuje `js/active-filters.js`. Podrobnosti: [active-filters.md](active-filters.md).
 
@@ -60,7 +60,7 @@ Patička podle Figmy 1633:7416: [správa obsahu, nativní prvky a ověření](pa
 
 Společné CSS je pouze v `components/_free-shipping.scss`, nad původními `.cart-free-shipping` a `.extra.delivery`. Obsahuje text/strong, ikonu, průběh `.price-range > div` a plný stav po dosažení limitu. `cart-widget` určuje jen umístění ve svém footeru. Pokryté výskyty: mini-košík, `/kosik/`, `.advanced-order` po přidání a `.shipping-options-popup` v detailu. Slevové / dárkové motivace používají také `.price-range`, ale tento styl je nezasahuje. Podrobnosti a kontroly: [doprava-zdarma.md](doprava-zdarma.md).
 
-První krok košíku podle Figmy 1642:5563: [nativní prvky, sdílené komponenty a ověření](kosik-krok1.md). Původní tabulka, související produkty a kupony, společné kroky objednávky; žádné kopírování formulářů.
+První krok košíku podle Figmy 1642:5563, telefon 1686:10094: [nativní prvky, sdílené komponenty a ověření](kosik-krok1.md). Kroky objednávky (`components/_order-steps.scss`) mají na telefonu jeden řádek s popiskem jen u aktivního kroku ve všech třech krocích. Původní tabulka, související produkty a kupony, společné kroky objednávky; žádné kopírování formulářů.
 
 Objednávka: `tools/checkout` sdílí součty a navigaci s prvním krokem; kolečko voleb dopravy/platby je globální radio (`components/_choices.scss`), `_checkout.scss` mění jen jeho polohu v kartě; `components/checkout-header` společnou hlavičku kroků 2 a 3; pravý panel `#checkoutSidebar` stojí na místě i proti posouvání skriptem Shoptetu (`_checkout.scss`); formulář třetího kroku `components/_checkout-form.scss`. Viz [objednavka-krok2.md](objednavka-krok2.md).
 
