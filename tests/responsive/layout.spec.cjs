@@ -517,7 +517,10 @@ test('breadcrumbs: full-width bar with home icon on desktop, only the last link 
     const visible=[...bar.children].filter(el=>getComputedStyle(el).display!=='none').map(el=>el.textContent.trim().replace(/\s*\/$/,''));
     return {x:Math.round(r.x),width:Math.round(r.width),height:Math.round(r.height),visible,home:getComputedStyle(bar.querySelector('#navigation-first a'),'::before').maskImage.includes('svg'),viewport:document.documentElement.clientWidth};
   });
+  // Šířku okna pro pruh přes celou šířku přepočítá ResizeObserver až po vykreslení.
+  const settled=()=>page.waitForFunction(()=>{const r=document.documentElement;return getComputedStyle(r).getPropertyValue('--as-viewport-width').trim()===`${Math.min(r.clientWidth,r.getBoundingClientRect().width)}px`;});
   await page.setViewportSize({width:1440,height:900});
+  await settled();
   await add();
   const desktop=await read();
   expect(desktop.x).toBe(0);
@@ -526,6 +529,7 @@ test('breadcrumbs: full-width bar with home icon on desktop, only the last link 
   expect(desktop.home).toBe(true);
   expect(desktop.visible.length).toBe(4);
   await page.setViewportSize({width:375,height:800});
+  await settled();
   await add();
   const mobile=await read();
   expect(mobile.width).toBe(mobile.viewport);

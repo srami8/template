@@ -137,7 +137,6 @@
     --smart-labels-computed-height: 52px;
     --form-controls-border-radius: var(--as-radius-pill);
     --colors-forms-border: var(--as-secondary-100);
-    --colors-forms-activated: var(--as-primary-500);
     > fieldset {
       display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 0;
       min-width: 0; margin: 0; padding: 0; border: 0;

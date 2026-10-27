@@ -1,0 +1,103 @@
+// Textová pole, textarea a select v celém e-shopu (Figma 93:2578 „Inputs“): registrace, kontaktní
+// formulář, objednávka, hodnocení, diskuze, zákaznická sekce i formuláře v oknech. Disco (nový vzhled
+// formulářů Shoptetu, body.ums_forms_redesign--on) kreslí .form-control z proměnných --form-*,
+// proto základ nastavujeme jimi a doplňujeme jen stavy, které proměnné nemají.
+// Vlastní návrh mají a zůstávají: hledání v hlavičce, newsletter v patičce, kupon v košíku.
+@use "../tools/icon" as *;
+
+// Stejný prvek jako :root Disca (dopočítané --*-computed-* se počítají na něm), vyšší specificita.
+html.as-theme {
+  // Pole 52 px: řádek 20 + okraje 2 × 15 + rámeček 2.
+  --form-controls-font-size: var(--as-font-size-small);
+  --form-controls-line-height: 1.4286;
+  --form-controls-padding-y: 15px;
+  --form-controls-padding-x: 16px;
+  --form-controls-border-radius: var(--as-radius-pill);
+  --colors-forms-background: var(--as-white);
+  --colors-forms-border: var(--as-secondary-100);
+  --colors-forms-activated: var(--as-secondary-400);
+  --colors-forms-critical: var(--as-danger);
+  --colors-forms-disabled: var(--as-secondary-50);
+}
+
+.as-theme {
+  // Plovoucí popisek Shoptetu je v prázdném poli jako placeholder, po vyplnění se zmenší nahoru.
+  // Pole s ním má také 52 px: horní okraj dává místo popisku (řádek 20), spodní 10.
+  .smart-label-wrapper {
+    --form-controls-padding-y: 10px;
+    --smart-labels-computed-height: 52px;
+
+    > label {
+      color: var(--as-secondary-300);
+    }
+  }
+
+  // Hledání v hlavičce má vlastní pole bez rámečku (layout/_header.scss), jeho fokus zůstává.
+  .form-control:not(.query-input) {
+    color: var(--as-secondary-500);
+    font-family: var(--as-font-family);
+
+    &::placeholder {
+      color: var(--as-secondary-300);
+      opacity: 1;
+    }
+
+    // Fokus je tmavší rámeček a stín (Figma), obrys prohlížeče by se k němu přidal.
+    &:focus {
+      border-color: var(--as-secondary-400);
+      outline: none;
+      box-shadow: 0 0 5px rgb(114 114 114 / 39%);
+      color: var(--as-secondary-500);
+    }
+
+    &:disabled {
+      border-color: var(--as-secondary-100);
+      background-color: var(--as-secondary-50);
+      color: var(--as-secondary-400);
+    }
+
+    // Nativní validace Shoptetu.
+    &:is(.error-field, .js-error-field) {
+      border-color: var(--as-danger);
+      box-shadow: 0 0 5px color-mix(in srgb, var(--as-danger) 39%, transparent);
+      color: var(--as-danger);
+    }
+  }
+
+  // Víceřádkové pole: rohy se stejným zakřivením jako pole o výšce 52 px.
+  textarea.form-control {
+    border-radius: 26px;
+  }
+
+  // Select: text od 24 px, šipka v hlavní barvě 24 px od pravého okraje místo obrázku Disca.
+  // Šipku nese obal (select nemá ::after); svisle na středu pole, ne obalu (pod pole Shoptet
+  // vkládá hlášky validace).
+  :is(.form-group, .form-control-wrapper):has(> select.form-control) {
+    --form-controls-padding-x: 24px;
+    position: relative;
+
+    &::after {
+      @include icon(chevron-right, 20px);
+      position: absolute;
+      top: calc(var(--form-controls-computed-height) / 2);
+      right: 24px;
+      color: var(--as-primary-500);
+      transform: translateY(-50%) rotate(90deg);
+      pointer-events: none;
+    }
+
+    > select.form-control {
+      padding-right: 48px;
+      background-image: none;
+    }
+
+    &:has(> select.form-control:disabled)::after {
+      color: var(--as-secondary-300);
+    }
+  }
+
+  // Popisek nad selectem v obalu pole (.form-group > label + .form-control-wrapper > select).
+  .form-group:has(> .form-control-wrapper > select.form-control) {
+    --form-controls-padding-x: 24px;
+  }
+}

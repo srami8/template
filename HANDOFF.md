@@ -1,3 +1,20 @@
+# Textová pole a select v celém e-shopu (Claude)
+
+**Zadání:** Figma 93:2578 (styly inputů) – textová pole a select všude v e-shopu.
+
+**Co se změnilo:**
+- Nová globální komponenta `components/_fields.scss`. Shoptet má na e-shopu nový vzhled formulářů (`body.ums_forms_redesign--on`), který Disco kreslí z proměnných `--form-*` / `--colors-forms-*`; nastavují se na `html.as-theme`: pole 52 px, pilulka, 14 px, padding 16 px, rámeček `--as-secondary-100`. Pole s plovoucím popiskem Shoptetu má také 52 px (popisek jako placeholder v `--as-secondary-300`, po vyplnění zmenšený nahoře – stejně jako dříve v přihlášení).
+- Stavy podle Figmy: fokus rámeček `--as-secondary-400` + stín, chyba validace `--as-danger` rámeček, text a stín, zakázané pozadí `--as-secondary-50`. Textarea rádius 26 px (Figma ji nemá; zakřivení jako 52px pole). Select: text od 24 px, šipka `chevron-right` 20 px v hlavní barvě 24 px od kraje na obalu `:has(> select)`.
+- Nově podle Figmy: registrace, kontaktní formulář, kontaktní krok objednávky (vč. telefonu, firmy, poznámky), hodnocení obchodu/produktu, diskuze, zákaznická sekce a okna se stejným markupem. Přihlášení má fokus nově podle návrhu (dříve modrý rámeček). Hledání v hlavičce, newsletter a kupon mají vlastní návrh a zůstávají.
+- `_checkout.scss` krok 1: šipka selectu zdola (`top: auto`), protože popisek je nad polem.
+- Test drobečků (`layout.spec`) čekal nedostatečně na přepočet `--as-viewport-width` po změně okna a náhodně selhával (i před touto změnou); nově čeká.
+
+**Ověření:** před nasazením na živém e-shopu s podstrčeným CSS (registrace, kontakty, přihlášení, košík, krok 1 a 2 objednávky, 1920/390; testovací produkt jen v headless prohlížeči, košík vyprázdněn, žádná objednávka). Snímky před/po: změna jen registrace a kontaktů (pole 64 → 52 px), přihlášení a ostatní stejné; články/homepage 390 kolísají jako dřív. Audit 5 rozdílů ze 113 (dosavadní, nové „Pole“ prošly). Nový `fields.spec.cjs` (rozměry na 5 šířkách, popisek, šipka v barvě z administrace, fokus/chyba/zakázané, hledání beze změny). Sada 168/168 třikrát, settings-app 5/5.
+
+**Pozor:** 14 px podle Figmy znamená, že iOS Safari při fokusu pole stránku přiblíží (u 16 px ne). Platilo už pro přihlášení a newsletter.
+
+---
+
 # Checkbox a radio v celém e-shopu (Claude)
 
 **Zadání:** Figma 93:2578 (styly inputů): zjistit barvu checkboxu a radia a použít ji všude v e-shopu.
