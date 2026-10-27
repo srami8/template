@@ -22,7 +22,7 @@ Telefon je stále z nativní `.contact-box .tel a`; otevírací doba ze stávaj�
 
 - Původní `ol.cart-header` z prvního kroku: dokončené kroky nyní zobrazují přesnou ikonu `order-check.svg` z Figmy (20 × 20). Odkazy a číslování zůstávají nativní.
 - `tools/_checkout.scss` používá Sass placeholdery pro součty a navigační akce. První i druhý krok se sestaví do společných pravidel; první krok má lokálně jen jiné umístění odkazu zpět. Tlačítka dál používají existující button mixiny, barvy z administrace.
-- `tools/_radio.scss` je opakovatelný vzhled původního inputu a labelu, bez nového ovládání přes JS. Kolečka mají 22 px a checked 7px okraj; fokus zůstává viditelný.
+- `tools/_radio.scss` je opakovatelný vzhled původního inputu a labelu, bez náhradního ovladače. Kolečka mají 22 px a checked 7px okraj; fokus zůstává viditelný.
 - Telefon, měna, šipky, účet a ostatní masky jsou existující lokální assety. Loga dopravců/plateb i produktové obrázky jsou dynamická data Shoptetu, nikoli statické obrázky z návrhu.
 
 ## Podklady a limity ověření
@@ -30,3 +30,5 @@ Telefon je stále z nativní `.contact-box .tel a`; otevírací doba ze stávaj�
 Zachycené nativní HTML v `tests/responsive/fixtures/checkout-step2.html` neobsahuje skripty ani vyplněné skryté tokeny. Test kontroluje form kontrakty a geometrii s dlouhými názvy při 11 šířkách pro obě varianty hlavičky. Neimituje skutečné serverové přepočty. Statická regrese hlídá jediný sestavený základ součtů.
 
 Šablona stále používá přechodný kompatibilní CSS podklad Disca; nejde o dokončenou migraci bez snapshotu. Snapshot ani nastavení Blank se nemění.
+
+Nativní checkout při volbě metody poslouchá pouze `mousedown` na `.radio-wrapper`. Živě reprodukováno: mezerník změnil checked, ale součet zůstal u předchozí platby. `js/checkout.js` proto u nativního change vybraného radia předá událost stejné obsluze, jen pokud wrapper ještě není active. Pointer už active nastavuje sám, takže se obsluha nespouští podruhé. Disabled se ignoruje, žádné vlastní ceny, fetch ani stavové třídy. Regrese hlídá jednu nativní obsluhu při klávesnici i kliknutí.

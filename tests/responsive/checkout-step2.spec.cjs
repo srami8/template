@@ -11,7 +11,7 @@ for(const variant of ['v1','v2'])test(`native checkout fits both headers without
  await expect(page.locator('#order-form')).toHaveAttribute('action','/action/orderingProcess/Step1Validate/');
  await expect(page.locator('#orderFormButton')).toHaveAttribute('form','order-form');
  await expect(page.locator('#payment-currency')).toHaveAttribute('name','currency');
- await page.locator('#billingId-5').check();
+ await page.locator('label[for="billingId-5"]').click();
  await expect(page.locator('#billingId-5')).toBeChecked();
  for(const step of ['in-krok-1']){
   await page.evaluate(step=>{document.body.classList.remove('in-krok-1','in-krok-2');document.body.classList.add(step);},step);
@@ -26,4 +26,16 @@ for(const variant of ['v1','v2'])test(`native checkout fits both headers without
    expect(logo.x+logo.width).toBeLessThanOrEqual(tools.x);
   }
  }
+});
+
+// Stub představuje pouze dokumentovanou nativní mousedown vazbu, ne cenu ani AJAX.
+test('keyboard change reaches native wrapper exactly once and pointer change is not duplicated',async({page})=>{
+ const code=fs.readFileSync(path.join(__dirname,'../../theme/src/js/checkout.js'),'utf8').replace('export function','function');
+ await page.setContent('<body class="in-krok-1"><div class="shipping-billing-table"><div class="radio-wrapper active"><input type="radio" name="billingId" id="a" checked><label for="a">A</label></div><div class="radio-wrapper"><input type="radio" name="billingId" id="b"><label for="b">B</label></div><div class="radio-wrapper"><input type="radio" name="billingId" id="c" disabled><label for="c">C</label></div></div></body>');
+ await page.addScriptTag({content:`window.nativeCalls=0; document.querySelectorAll('.radio-wrapper').forEach(row=>row.addEventListener('mousedown',()=>{window.nativeCalls++;document.querySelectorAll('.radio-wrapper').forEach(r=>r.classList.remove('active'));row.classList.add('active');row.querySelector('input').checked=true;}));${code}\nenhanceCheckout();`});
+ await page.locator('#b').press('Space');
+ expect(await page.evaluate(()=>window.nativeCalls)).toBe(1);
+ await expect(page.locator('#b')).toBeChecked();
+ await page.locator('label[for=a]').click();
+ expect(await page.evaluate(()=>window.nativeCalls)).toBe(2);
 });
