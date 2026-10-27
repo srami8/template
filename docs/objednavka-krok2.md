@@ -22,7 +22,7 @@ Telefon je stále z nativní `.contact-box .tel a`; otevírací doba ze stávaj�
 
 - Původní `ol.cart-header` z prvního kroku: dokončené kroky nyní zobrazují přesnou ikonu `order-check.svg` z Figmy (20 × 20). Odkazy a číslování zůstávají nativní.
 - `tools/_checkout.scss` používá Sass placeholdery pro součty a navigační akce. První i druhý krok se sestaví do společných pravidel; první krok má lokálně jen jiné umístění odkazu zpět. Tlačítka dál používají existující button mixiny, barvy z administrace.
-- `tools/_radio.scss` je opakovatelný vzhled původního inputu a labelu, bez náhradního ovladače. Kolečka mají 22 px a checked 7px okraj; fokus zůstává viditelný.
+- Kolečko je globální radio celého e-shopu (`tools/_radio.scss`, zapnuté v `components/_choices.scss`), bez náhradního ovladače: 22 px, checked 7px okraj v hlavní barvě, fokus zůstává viditelný. `_checkout.scss` mění jen polohu v kartě (16 px od okraje, svisle na středu). Checkboxy kontaktního kroku (nákup na firmu, jiná adresa, poznámka, newsletter, registrace, souhlas s hodnocením) mají globální checkbox.
 - Telefon, měna, šipky, účet a ostatní masky jsou existující lokální assety. Loga dopravců/plateb i produktové obrázky jsou dynamická data Shoptetu, nikoli statické obrázky z návrhu.
 
 ## Podklady a limity ověření

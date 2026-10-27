@@ -1,3 +1,21 @@
+# Checkbox a radio v celém e-shopu (Claude)
+
+**Zadání:** Figma 93:2578 (styly inputů): zjistit barvu checkboxu a radia a použít ji všude v e-shopu.
+
+**Barva:** Figma `$-Primary-500` (#1E9FE8) = v šabloně `--as-primary-500` = hlavní barva z administrace (`--color-primary`). Rámeček `$-Secondary-100` = `--as-secondary-100`, popisek `$-Secondary-500`.
+
+**Co se změnilo:**
+- Nová globální komponenta `components/_choices.scss` (nad `.as-theme`) zapíná `tools/_checkbox.scss` a `tools/_radio.scss` pro každou původní dvojici `input + label`. Společný základ `tools/_choice.scss`: skrytý input (jen `:has(+ label)`), popisek 16 px / řádek 22 px jako `inline-block` (souhlasy s odkazy se nerozpadnou), prvek u prvního řádku, stavy focus / disabled / chyba validace.
+- Dosud ve vzhledu Disca a nově podle Figmy: registrace (typ zákazníka, newsletter), kontaktní krok objednávky (nákup na firmu, jiná adresa, poznámka, newsletter, registrace, souhlas s hodnocením); stejně i zákaznická sekce a formuláře v oknech se stejným markupem.
+- Filtry a karty dopravy/platby už vzhled měly; nově mění jen uspořádání (`_category-filters.scss` řádek s počtem a hover, `_checkout.scss` poloha kolečka v kartě). Výjimky: hvězdičky hodnocení (input uvnitř labelu), barevné vzorníky `label.advanced-parameter`.
+- Zakázané zaškrtnuté pole má šedý čtverec, aby bílá fajfka zůstala vidět.
+
+**Ověření:** před nasazením na živém e-shopu s podstrčeným CSS (registrace, filtry, krok 1 a 2 objednávky, 1920 a 390 px; testovací produkt v košíku jen v headless prohlížeči, košík vyprázdněn, žádná objednávka). Snímky před/po: změna jen registrace (o 8 px nižší, řádek 22 px místo 26 px); homepage/články kolísají načítáním obrázků jako dřív. Audit 5 rozdílů ze 110 (stejné jako dosud, nové položky „Volby“ prošly). Nový test `choices.spec.cjs` (barva z administrace, víceřádkový souhlas na 5 šířkách, výjimky), `styles.spec` upraven na nový selektor. Celá sada 166/166 (třikrát po sobě; `layout.spec` drobečky jednou předtím náhodně selhal, s volbami nesouvisí), settings-app 5/5. Dokumentace: komponenty.md, vyvoj.md, kategorie.md, objednavka-krok2.md, příručka pro obchodníka.
+
+**Otevřené:** textová pole a select ze stejného uzlu Figmy (výška 52, pilulka, focus se stínem, chybový stav) zatím nepřevedena – nebylo zadáno.
+
+---
+
 # Oprava (Claude): testy po předávce od Codexu
 
 **Zjištění:** Codex v sandboxu nemohl spustit prohlížeč, browserové testy proto od 25. 10. nikdo nespustil. Na `c75c31f` selhávalo 23 ze 163.

@@ -101,7 +101,7 @@ Ikony (`icon`) jsou soubory v `theme/src/icons` (`npm run build:icons` → `scss
 ### SCSS (`theme/src/scss`)
 
 - `tokens/`: barvy, písmo, tvary jako `--as-*`. Barvy a písmo z proměnných Shoptetu (`--color-primary`, `--template-font` …), Figma jen záloha. Odstíny hlavní barvy `color-mix` s bílou/černou. Nadpisy `--as-font-size-hN` = velikost × měřítko (telefon H1 0,78, H2 0,86, H3 0,84).
-- `tools/`: sdílené mixiny – `button`, `quantity`, `rating`, `flag`, `slider`, `dropdown`, `menu`, `submenu`, `category-card`, `category-intro`, `icon`, `breakpoints`.
+- `tools/`: sdílené mixiny – `button`, `quantity`, `rating`, `flag`, `slider`, `dropdown`, `menu`, `submenu`, `category-card`, `category-intro`, `choice` + `checkbox` + `radio`, `icon`, `breakpoints`.
 - `components/`: globální komponenty (tlačítka, nadpisy, prvky produktu, drobečky, kategorie, karta článku, hodnocení obchodu, hledání, přihlášení, košík, bannery, mobilní hlavička a menu).
 - `layout/`, `header/`: hlavička, úvodní stránka, informační lišta, šířka obsahu stránek (`_content-width.scss`: `#content-wrapper.container-narrow` Disca má šířku jako `.container`, běžný text článků a textových stránek max. 820 px); varianty hlavičky v1/v2.
 - `variants/`: soubory variant (viz výše).
@@ -116,6 +116,7 @@ Breakpointy (`tools/_breakpoints.scss`): `bp.desktop` od 768 px (jako Disco), `$
 - **Hodnocení obchodu bez vlastního serveru:** blok čte stránku hodnocení obchodu z `/cache/<adresa>/` (nedokumentovaná, ale funkční serverová mezipaměť Shoptetu, obsah shodný s běžnou adresou, odpověď ~20 ms; při chybě včetně HTTP 404 se zkusí běžná adresa). Adresa stránky z odkazu na stránce, jinak podle jazyka. Šetrnost pro stovky e-shopů: stahuje se až po přiblížení k patičce (IntersectionObserver, 800 px) a jednou za 30 minut návštěvy (`sessionStorage`, i prázdný výsledek). Markup se čte přes `data-testid` (`textRatingAverage`, `textRatingAuthor`, `textRating` …).
 - **Pásy přes celou šířku okna** používají `--as-viewport-width` (ne `100vw`, ten zahrnuje posuvník). `#content` má na desktopu `padding-top: 20px` (Disco), pásy navazující na drobečky ho vyrovnávají.
 - **Barvy jen z tokenů**, žádná pevná barva z Figmy tam, kde má Shoptet nastavení.
+- **Checkbox a radio jsou globální** (`components/_choices.scss` nad `.as-theme`): platí pro každou dvojici `input + label` v e-shopu, i pro formuláře, které se načítají později (okna, zákaznická sekce). Komponenta mění jen uspořádání řádku a polohu prvku (`::before`), vzhled ne. Popisek je `inline-block` s řádkem 22 px, ne flex: souhlasy obsahují odkazy a flex by text rozdělil na samostatné bloky. Input se skrývá jen s labelem hned za sebou (`:has(+ label)`), hvězdičky hodnocení mají input uvnitř labelu; barevné vzorníky `label.advanced-parameter` jsou vyloučené. Test `tests/responsive/choices.spec.cjs`, audit „Volby“.
 
 ## settings-app
 

@@ -1,0 +1,70 @@
+// Společný základ checkboxu a radia (Figma 93:2578 „Inputs“) nad původní dvojicí input + label
+// Shoptetu. Input zůstává v DOM (klávesnice, validace, vazba label/for), vzhled nese label::before.
+// Barva zaškrtnutí je --as-primary-500 = hlavní barva z administrace (Figma $-Primary-500).
+
+// Barevné vzorníky parametrů (label.advanced-parameter) mají vlastní vzhled Disca.
+$label: "label:not(.advanced-parameter)";
+
+// Jen input s labelem hned za sebou; hvězdičky hodnocení mají input uvnitř labelu a zůstávají.
+@mixin hidden-input($type) {
+  input[type="#{$type}"]:has(+ #{$label}) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+}
+
+// Text vedle volby: 16 px, mezera 8 px za 22px ovládacím prvkem. Řádek 22 px drží prvek u prvního
+// řádku i u víceřádkových souhlasů s odkazy (proto inline-block, ne flex).
+@mixin label {
+  position: relative;
+  display: inline-block;
+  min-height: 22px;
+  margin: 0;
+  padding: 0 0 0 30px;
+  color: var(--as-secondary-500);
+  font-family: var(--as-font-family);
+  font-size: var(--as-font-size-body);
+  font-weight: 400;
+  line-height: 22px;
+  // Disco odsazuje souhlasy (confirmations[]) přes text-indent místo paddingu.
+  text-indent: 0;
+  cursor: pointer;
+}
+
+// Poloha ovládacího prvku (label::before) u prvního řádku textu.
+@mixin mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  transform: none;
+}
+
+@mixin states($type) {
+  input[type="#{$type}"]:focus-visible + #{$label} {
+    outline: 2px solid var(--as-primary-500);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  input[type="#{$type}"]:disabled + #{$label} {
+    color: var(--as-secondary-300);
+    cursor: not-allowed;
+
+    &::before {
+      border-color: var(--as-secondary-100);
+      background: var(--as-secondary-50);
+    }
+  }
+
+  // Nativní validace Shoptetu (např. nezaškrtnutý povinný souhlas).
+  input[type="#{$type}"]:is(.error-field, .js-error-field) + #{$label}::before {
+    border-color: var(--as-danger);
+  }
+}

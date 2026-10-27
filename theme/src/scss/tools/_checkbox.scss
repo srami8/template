@@ -1,11 +1,13 @@
-// Společný vzhled checkboxu nad původní dvojicí input + label Shoptetu.
-// Používá původní input, takže zůstává funkční klávesnice, disabled i vazba label/for.
+// Checkbox (Figma 93:2578): čtverec 22 px, zaškrtnutý v hlavní barvě s bílou ikonou check.
+// Globálně ho zapíná components/_choices.scss; komponenty mění jen uspořádání řádku.
 @use "icon" as *;
+@use "choice";
 
 // Stejný čtverec také pro nativní tlačítko rozbalení kuponu.
 %as-checkbox-box {
   content: "";
   display: block;
+  box-sizing: border-box;
   width: 22px;
   height: 22px;
   border: 1px solid var(--as-secondary-100);
@@ -16,50 +18,22 @@
 @mixin box { @extend %as-checkbox-box; }
 
 @mixin control {
-  input[type="checkbox"] {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-  }
+  @include choice.hidden-input(checkbox);
 
-  input[type="checkbox"] + label {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 22px;
-    margin: 0;
-    padding: 0 0 0 30px;
-    color: var(--as-secondary-500);
-    font-family: var(--as-font-family);
-    font-size: var(--as-font-size-body);
-    font-weight: 400;
-    line-height: 1.2;
-    cursor: pointer;
+  input[type="checkbox"] + #{choice.$label} {
+    @include choice.label;
 
     &::before {
       @include box;
-      position: absolute;
-      top: 50%;
-      left: 0;
-      transform: translateY(-50%);
+      @include choice.mark;
     }
 
     &::after {
       content: none;
     }
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 
-  input[type="checkbox"]:checked + label {
+  input[type="checkbox"]:checked + #{choice.$label} {
     &::before {
       border-color: var(--as-primary-500);
       background: var(--as-primary-500);
@@ -68,28 +42,21 @@
     &::after {
       @include icon(check, 16px);
       position: absolute;
-      top: 50%;
+      top: 3px;
       left: 3px;
       margin: 0;
       border: 0;
       border-radius: 0;
       color: var(--as-white);
-      transform: translateY(-50%);
+      transform: none;
     }
   }
 
-  input[type="checkbox"]:focus-visible + label {
-    outline: 2px solid var(--as-primary-500);
-    outline-offset: 4px;
-    border-radius: 4px;
-  }
+  @include choice.states(checkbox);
 
-  input[type="checkbox"]:disabled + label {
-    color: var(--as-secondary-300);
-    cursor: not-allowed;
-
-    &::before {
-      background: var(--as-secondary-50);
-    }
+  // Bílá ikona musí zůstat vidět i na zakázaném zaškrtnutém poli.
+  input[type="checkbox"]:disabled:checked + #{choice.$label}::before {
+    border-color: var(--as-secondary-300);
+    background: var(--as-secondary-300);
   }
 }

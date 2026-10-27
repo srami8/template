@@ -1,0 +1,10 @@
+// Checkboxy a radia v celém e-shopu (Figma 93:2578): registrace, objednávka, filtry, zákaznická
+// sekce i formuláře v oknech. Platí pro každou původní dvojici input + label; komponenty s vlastním
+// uspořádáním (filtry, karty dopravy a platby) mění jen řádek a polohu prvku.
+@use "../tools/checkbox";
+@use "../tools/radio";
+
+.as-theme {
+  @include checkbox.control;
+  @include radio.control;
+}

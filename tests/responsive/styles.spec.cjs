@@ -55,7 +55,8 @@ test('cart removal and coupon reuse compiled primitives shared with the existing
   expect(removal[0][1]).toContain('.cart-table');
   const checkbox = rules.filter(([,selector,body]) => selector.includes('.toggle-coupon-input-button::before') && body.includes('border-radius:6px'));
   expect(checkbox).toHaveLength(1);
-  expect(checkbox[0][1]).toContain('input[type=checkbox]+label::before');
+  // Stejné pravidlo jako globální checkbox (components/_choices.scss).
+  expect(checkbox[0][1]).toContain('.as-theme input[type=checkbox]+label:not(.advanced-parameter)::before');
 });
 
 test('cart and checkout compile the price breakdown into one shared rule',()=>{
