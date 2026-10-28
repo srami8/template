@@ -1,3 +1,16 @@
+# Stavy tlačítek podle Figmy 1689:13982 všude (Claude)
+
+**Zadání:** výchozí stav, najetí a zakázané tlačítko podle návrhu, globálně v celé šabloně. Majitel během práce určil, že odstín po najetí se nemíchá, ale bere z nastavení barev Shoptetu.
+
+**Co se změnilo:**
+- `tools/_button.scss`: plné (`primary`, `conversion`) po najetí v hover barvě ze Shoptetu (`--as-primary-600` = `--color-primary-hover`, `--as-conversion-hover` = `--color-secondary-hover`) s textem podle kontrastu; obrysové po najetí plné v barvě rámečku; terciární po najetí tmavý rámeček a text na bílé; společný zakázaný stav (`:disabled`, `.disabled`, `[aria-disabled="true"]`): pozadí `--as-secondary-50`, text `--as-secondary-300`, obrysová s rámečkem `--as-secondary-100`, kurzor not-allowed, najetí ho nemění. Platí i pro `light`.
+- `components/_buttons.scss`: barvy a stavy pro všechny třídy Disca i bez vlastního návrhu (zákaznická sekce, okna Shoptetu, hodnocení, „Další článek“): `btn-conversion`, `btn-cart`, `btn-default` plné v barvě pro tlačítka nákupu, `btn-primary`, `btn-secondary` obrysové v hlavní barvě, `btn-special` plné v hlavní barvě. Místa s návrhem je přebíjejí vyšší specificitou.
+- Test `button-contrast.spec.cjs`: stavy pro všechny třídy (hover barva ze Shoptetu, obrysové po najetí plné, zakázané šedé i po najetí).
+
+**Poznámka:** na testovacím e-shopu je hover hlavní barvy v administraci #444444 (šedá), takže plné tlačítko v hlavní barvě (newsletter, `btn-special`) má po najetí šedé pozadí; tlačítka nákupu mají #1777AE jako v návrhu. Text plných tlačítek je podle dřívějšího rozhodnutí podle kontrastu (u #1E9FE8 tmavý, v návrhu bílý).
+
+---
+
 # Text tlačítek podle kontrastu s barvou obchodníka (Claude)
 
 **Zadání:** obchodník může mít hlavní nebo konverzní barvu světlou (např. žlutou) a text tlačítek v ní pak není čitelný. Majitel rozhodl: obrysové tlačítko má text vždy tmavý, po najetí se vyplní barvou rámečku a text je bílý, nebo tmavý podle kontrastu; plná tlačítka mají text vždy podle vyššího kontrastu (i u výchozí modré #1E9FE8, kde to znamená tmavý text místo bílého z Figmy).

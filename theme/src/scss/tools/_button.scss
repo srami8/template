@@ -1,7 +1,8 @@
 // Tlačítko (Figma Styleguide: „Button“): pilulka, písmo šablony, varianty a velikosti.
 // Stylují se tlačítka Disca/Shoptetu (.btn, .searchWhisperer__button…), mixiny se volají v jejich
 // selektoru: @include button.base; @include button.size(md); @include button.secondary;
-// Barvy jsou z administrace (hlavní a konverzní barva). Text na nich je bílý, nebo tmavý podle
+// Barvy jsou z administrace (hlavní a konverzní barva, při najetí jejich hover barvy z nastavení
+// Shoptetu, nemíchají se). Text na nich je bílý, nebo tmavý podle
 // vyššího kontrastu (--as-on-*, tokens); obrysová tlačítka mají text vždy tmavý a po najetí se
 // vyplní barvou rámečku, takže čitelnost nezávisí na barvě, kterou obchodník zvolí.
 
@@ -41,6 +42,17 @@ $sizes: (
   line-height: map.get($size, line-height);
 }
 
+// Zakázané tlačítko (Figma 1689:13982): šedé pozadí a text, obrysová i šedý rámeček. Za stavem
+// najetí, aby ho přebilo; platí pro :disabled i třídy Disca/Shoptetu (.disabled, aria-disabled).
+@mixin -disabled($border: var(--as-secondary-100)) {
+  &:is(:disabled, .disabled, [aria-disabled="true"]) {
+    border-color: $border;
+    background: var(--as-secondary-50);
+    color: var(--as-secondary-300);
+    cursor: not-allowed;
+  }
+}
+
 // Bílé s rámečkem v hlavní barvě (= .btn-primary Disca), po najetí plné.
 @mixin secondary {
   border-color: var(--as-primary-500);
@@ -53,6 +65,8 @@ $sizes: (
     background: var(--as-primary-500);
     color: var(--as-on-primary);
   }
+
+  @include -disabled;
 }
 
 // Plné v hlavní barvě (např. newsletter).
@@ -67,6 +81,8 @@ $sizes: (
     background: var(--as-primary-600);
     color: var(--as-on-primary-hover);
   }
+
+  @include -disabled(var(--as-secondary-50));
 }
 
 // Plné v konverzní barvě (košík, objednávka).
@@ -81,6 +97,8 @@ $sizes: (
     background: var(--as-conversion-hover);
     color: var(--as-on-conversion-hover);
   }
+
+  @include -disabled(var(--as-secondary-50));
 }
 
 // Bílé s rámečkem v konverzní barvě (nákupní tlačítka v kartách produktů), po najetí plné.
@@ -95,9 +113,12 @@ $sizes: (
     background: var(--as-conversion);
     color: var(--as-on-conversion);
   }
+
+  @include -disabled;
 }
 
-// Neutrální rámeček (Figma Tertiary): řazení, stránkování a ovládání výpisu.
+// Neutrální rámeček (Figma Tertiary): řazení, stránkování a ovládání výpisu. Po najetí tmavý
+// rámeček a text, pozadí zůstává bílé.
 @mixin tertiary {
   border-color: var(--as-secondary-100);
   background: var(--as-white);
@@ -106,9 +127,11 @@ $sizes: (
   &:hover,
   &:focus-visible {
     border-color: var(--as-secondary-500);
-    background: var(--as-secondary-50);
+    background: var(--as-white);
     color: var(--as-secondary-500);
   }
+
+  @include -disabled;
 }
 
 // Bílé s tmavým textem, na obrázku banneru (Figma: tlačítka v bannerech).
@@ -123,6 +146,8 @@ $sizes: (
     background: var(--as-secondary-50);
     color: var(--as-secondary-500);
   }
+
+  @include -disabled(var(--as-secondary-50));
 }
 
 // Šipka za textem („Pokračovat do košíku ›“).

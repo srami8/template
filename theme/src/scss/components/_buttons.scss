@@ -19,10 +19,19 @@
   border-radius: var(--as-radius-pill);
 }
 
-// Konverzní tlačítko (Do košíku, Pokračovat …) všude: konverzní barva z administrace e-shopu
-// (--as-conversion = --color-secondary Shoptetu, při najetí její odstín pro hover) a bílý text.
-// Disco text barví podle vlastního kontrastu (na detailu tmavý). Místa s jiným návrhem tlačítko
-// přebíjí vyšší specificitou (karta produktu: obrysové tlačítko, components/product-cards).
-.as-theme :is(body, .p-detail .p-to-cart-block) .btn-conversion {
+// Barvy a stavy (výchozí, najetí, zakázané) všech tlačítek Disca/Shoptetu podle Figmy 1689:13982,
+// i tam, kde nemáme vlastní návrh (zákaznická sekce, okna Shoptetu, hodnocení, „Načíst další“).
+// Plná v barvě pro tlačítka nákupu: btn-conversion, btn-cart, btn-default (Disco je kreslí plná);
+// obrysová v hlavní barvě: btn-primary, btn-secondary; btn-special plné v hlavní barvě. Text podle
+// kontrastu s barvou z administrace (tokens on-color). Místa s jiným návrhem (karta produktu,
+// přihlášení, filtry …) tlačítko přebíjí vyšší specificitou přes tools/button.
+.as-theme .btn {
+  &:is(.btn-conversion, .btn-cart, .btn-default) { @include button.conversion; }
+  &:is(.btn-primary, .btn-secondary) { @include button.secondary; }
+  &.btn-special { @include button.primary; }
+}
+
+// Disco na detailu barví „Do košíku“ vlastním pravidlem s vyšší specificitou.
+.as-theme .p-detail .p-to-cart-block .btn-conversion {
   @include button.conversion;
 }

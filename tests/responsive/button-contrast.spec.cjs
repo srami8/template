@@ -34,3 +34,34 @@ for(const color of colors)test(`button text follows the higher contrast on ${col
  expect(near(await rgb(page,outline,'backgroundColor'),bg)).toBe(true);
  expect(near(await rgb(page,outline,'color'),best),`obrysové po najetí ${color}`).toBe(true);
 });
+
+// Stavy podle Figmy 1689:13982 pro třídy Disca všude: plné po najetí v hover barvě ze Shoptetu,
+// obrysové po najetí plné, zakázané šedé (i po najetí). Hover barva je jiná než základní.
+test('button states follow the design for every Disco button class',async({page})=>{
+ await page.setContent(`<!doctype html><html class="as-theme" lang="cs"><head><style>:root{--color-primary:#1E9FE8;--color-primary-hover:#444444;--color-secondary:#1E9FE8;--color-secondary-hover:#1777AE}</style><style>${css}</style><style>*{transition:none!important}</style></head><body><div id="b">
+  <button class="btn btn-conversion">Koupit</button><button class="btn btn-cart">Do košíku</button><button class="btn btn-default">Další</button>
+  <button class="btn btn-primary">Odeslat</button><button class="btn btn-secondary">Načíst další</button>
+  <button class="btn btn-conversion" disabled>Zakázané</button><a class="btn btn-cart disabled" href="#">Zakázané</a><button class="btn btn-primary" disabled>Zakázané</button>
+ </div></body></html>`);
+ const nth=i=>`#b > :nth-child(${i})`;
+ for(const i of [1,2,3]){
+  expect(near(await rgb(page,nth(i),'backgroundColor'),hex('#1E9FE8')),`plné ${i}`).toBe(true);
+  await page.hover(nth(i));
+  expect(near(await rgb(page,nth(i),'backgroundColor'),hex('#1777AE')),`plné po najetí ${i}`).toBe(true);
+  expect(near(await rgb(page,nth(i),'color'),WHITE)).toBe(true);
+ }
+ for(const i of [4,5]){
+  expect(near(await rgb(page,nth(i),'backgroundColor'),WHITE),`obrysové ${i}`).toBe(true);
+  expect(near(await rgb(page,nth(i),'color'),DARK)).toBe(true);
+  await page.hover(nth(i));
+  expect(near(await rgb(page,nth(i),'backgroundColor'),hex('#1E9FE8')),`obrysové po najetí ${i}`).toBe(true);
+ }
+ // Zakázané: #F4F4F4, text #82868F; plné bez viditelného rámečku, obrysové s šedým #D5D7DA.
+ for(const [i,border] of [[6,'#F4F4F4'],[7,'#F4F4F4'],[8,'#D5D7DA']]){
+  await page.hover(nth(i),{force:true});
+  expect(near(await rgb(page,nth(i),'backgroundColor'),hex('#F4F4F4')),`zakázané ${i}`).toBe(true);
+  expect(near(await rgb(page,nth(i),'color'),hex('#82868F'))).toBe(true);
+  expect(near(await rgb(page,nth(i),'borderTopColor'),hex(border))).toBe(true);
+  expect(await page.locator(nth(i)).evaluate(e=>getComputedStyle(e).cursor)).toBe('not-allowed');
+ }
+});
