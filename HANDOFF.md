@@ -1,3 +1,11 @@
+# Písmo tlačítek Disca podle návrhu (Claude)
+
+**Zadání:** majitel schválil sjednotit i písmo tlačítek Shoptetu bez vlastního návrhu.
+
+**Co se změnilo:** `components/_buttons.scss` dává všem `.btn` písmo šablony, tučnost 500, bez verzálek a proložení, 16 px (`btn-sm` 14 px) podle komponenty Button ve Figmě. Nízká specificita (`.as-theme .btn`), takže místa s vlastním návrhem (tools/button) si velikost drží; Disco jinak psalo tlačítka velkými písmeny, nebo tučně 900. Test `button-contrast.spec.cjs` („Disco buttons use the design typography everywhere“).
+
+---
+
 # Stavy tlačítek podle Figmy 1689:13982 všude (Claude)
 
 **Zadání:** výchozí stav, najetí a zakázané tlačítko podle návrhu, globálně v celé šabloně. Majitel během práce určil, že odstín po najetí se nemíchá, ale bere z nastavení barev Shoptetu.

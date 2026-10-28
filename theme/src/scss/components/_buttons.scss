@@ -19,6 +19,21 @@
   border-radius: var(--as-radius-pill);
 }
 
+// Písmo tlačítek Disca všude podle Figmy („Button“: písmo šablony, Medium, bez verzálek; Medium
+// 16 px, Small 14 px). Disco je píše velkými písmeny, nebo tučně (900) podle nastavení Shoptetu.
+// Nízká specificita: místa s vlastním návrhem (tools/button) si velikost určují sama.
+.as-theme .btn {
+  font-family: var(--as-font-family);
+  font-size: var(--as-font-size-body);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+
+  &.btn-sm {
+    font-size: var(--as-font-size-small);
+  }
+}
+
 // Barvy a stavy (výchozí, najetí, zakázané) všech tlačítek Disca/Shoptetu podle Figmy 1689:13982,
 // i tam, kde nemáme vlastní návrh (zákaznická sekce, okna Shoptetu, hodnocení, „Načíst další“).
 // Plná v barvě pro tlačítka nákupu: btn-conversion, btn-cart, btn-default (Disco je kreslí plná);
