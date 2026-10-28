@@ -1,7 +1,9 @@
 // Tlačítko (Figma Styleguide: „Button“): pilulka, písmo šablony, varianty a velikosti.
 // Stylují se tlačítka Disca/Shoptetu (.btn, .searchWhisperer__button…), mixiny se volají v jejich
 // selektoru: @include button.base; @include button.size(md); @include button.secondary;
-// Barvy jsou z administrace (hlavní a konverzní barva).
+// Barvy jsou z administrace (hlavní a konverzní barva). Text na nich je bílý, nebo tmavý podle
+// vyššího kontrastu (--as-on-*, tokens); obrysová tlačítka mají text vždy tmavý a po najetí se
+// vyplní barvou rámečku, takže čitelnost nezávisí na barvě, kterou obchodník zvolí.
 
 @use "sass:map";
 @use "icon" as *;
@@ -39,17 +41,17 @@ $sizes: (
   line-height: map.get($size, line-height);
 }
 
-// Bílé s rámečkem v hlavní barvě (= .btn-primary Disca).
+// Bílé s rámečkem v hlavní barvě (= .btn-primary Disca), po najetí plné.
 @mixin secondary {
   border-color: var(--as-primary-500);
   background: var(--as-white);
-  color: var(--as-primary-500);
+  color: var(--as-secondary-500);
 
   &:hover,
   &:focus-visible {
     border-color: var(--as-primary-500);
-    background: var(--as-primary-50);
-    color: var(--as-primary-500);
+    background: var(--as-primary-500);
+    color: var(--as-on-primary);
   }
 }
 
@@ -57,13 +59,13 @@ $sizes: (
 @mixin primary {
   border-color: var(--as-primary-500);
   background: var(--as-primary-500);
-  color: var(--as-white);
+  color: var(--as-on-primary);
 
   &:hover,
   &:focus-visible {
     border-color: var(--as-primary-600);
     background: var(--as-primary-600);
-    color: var(--as-white);
+    color: var(--as-on-primary-hover);
   }
 }
 
@@ -71,27 +73,27 @@ $sizes: (
 @mixin conversion {
   border-color: var(--as-conversion);
   background: var(--as-conversion);
-  color: var(--as-white);
+  color: var(--as-on-conversion);
 
   &:hover,
   &:focus-visible {
     border-color: var(--as-conversion-hover);
     background: var(--as-conversion-hover);
-    color: var(--as-white);
+    color: var(--as-on-conversion-hover);
   }
 }
 
-// Bílé s rámečkem a textem v konverzní barvě (nákupní tlačítka v kartách produktů).
+// Bílé s rámečkem v konverzní barvě (nákupní tlačítka v kartách produktů), po najetí plné.
 @mixin conversion-outline {
   border-color: var(--as-conversion);
   background: var(--as-white);
-  color: var(--as-conversion);
+  color: var(--as-secondary-500);
 
   &:hover,
   &:focus-visible {
     border-color: var(--as-conversion);
-    background: color-mix(in srgb, var(--as-conversion) 10%, #fff);
-    color: var(--as-conversion);
+    background: var(--as-conversion);
+    color: var(--as-on-conversion);
   }
 }
 

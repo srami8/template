@@ -1,3 +1,16 @@
+# Text tlačítek podle kontrastu s barvou obchodníka (Claude)
+
+**Zadání:** obchodník může mít hlavní nebo konverzní barvu světlou (např. žlutou) a text tlačítek v ní pak není čitelný. Majitel rozhodl: obrysové tlačítko má text vždy tmavý, po najetí se vyplní barvou rámečku a text je bílý, nebo tmavý podle kontrastu; plná tlačítka mají text vždy podle vyššího kontrastu (i u výchozí modré #1E9FE8, kde to znamená tmavý text místo bílého z Figmy).
+
+**Co se změnilo:**
+- `tokens/_index.scss`: funkce `on-color` a tokeny `--as-on-primary`, `--as-on-primary-hover`, `--as-on-conversion`, `--as-on-conversion-hover`. Prohlížeč z relativního jasu barvy (kanál y v xyz-d65) vybere bílou, nebo `--as-secondary-500` podle vyššího kontrastu WCAG; hranice jasu 0,2497 je spočtená v Sassu z palety. Bez podpory relativních barev (@supports) zůstává bílý text.
+- `tools/_button.scss`: `primary` a `conversion` berou text z `--as-on-*`; `secondary` a `conversion-outline` mají text `--as-secondary-500`, po najetí/fokusu plné pozadí v barvě rámečku a text `--as-on-*`. Tlačítko „Katalog produktů“ (v2) má text také podle kontrastu.
+- Testy: nový `button-contrast.spec.cjs` (žlutá, modrá, tmavě modrá, červená, zelená u hranice; plné i obrysové po najetí; na dosavadním CSS padá), `layout.spec` převádí vypočtenou barvu na RGB.
+
+**Otevřené:** komponenta Button ve Figmě má stále bílý text na plném a modrý text na obrysovém tlačítku. Stejný problém mají i jiné prvky v barvě obchodníka mimo tlačítka (štítky, zaškrtnutý checkbox, aktivní krok objednávky, počet v košíku, informační lišta, odkazy a ikony v hlavní barvě); tokeny `--as-on-*` jsou na to připravené.
+
+---
+
 # Hlavička kroků 2 a 3 na telefonu jako v košíku (Claude)
 
 **Zadání:** majitel schválil použít mobilní hlavičku košíku (Figma 1686:10094: menu, logo, lupa, účet, 56 px) i v krocích 2 a 3 na telefonu.

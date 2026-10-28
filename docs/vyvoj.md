@@ -100,7 +100,7 @@ Ikony (`icon`) jsou soubory v `theme/src/icons` (`npm run build:icons` → `scss
 
 ### SCSS (`theme/src/scss`)
 
-- `tokens/`: barvy, písmo, tvary jako `--as-*`. Barvy a písmo z proměnných Shoptetu (`--color-primary`, `--template-font` …), Figma jen záloha. Odstíny hlavní barvy `color-mix` s bílou/černou. Nadpisy `--as-font-size-hN` = velikost × měřítko (telefon H1 0,78, H2 0,86, H3 0,84).
+- `tokens/`: barvy, písmo, tvary jako `--as-*`. Barvy a písmo z proměnných Shoptetu (`--color-primary`, `--template-font` …), Figma jen záloha. Odstíny hlavní barvy `color-mix` s bílou/černou. Text na barvě z administrace `--as-on-primary(-hover)`, `--as-on-conversion(-hover)`: bílý, nebo tmavý (`--as-secondary-500`) podle vyššího kontrastu WCAG, počítá prohlížeč z jasu (relativní barva `color(from … xyz-d65 …)`, funkce `on-color` v `tokens/_index.scss`); bez podpory zůstává bílý. Test `button-contrast.spec.cjs`. Nadpisy `--as-font-size-hN` = velikost × měřítko (telefon H1 0,78, H2 0,86, H3 0,84).
 - `tools/`: sdílené mixiny – `button`, `quantity`, `rating`, `flag`, `slider`, `dropdown`, `menu`, `submenu`, `category-card`, `category-intro`, `choice` + `checkbox` + `radio`, `field-font` (písmo počítadla na telefonu), `field-label` (popisek nad polem), `icon`, `breakpoints`.
 - `components/`: globální komponenty (tlačítka, nadpisy, prvky produktu, drobečky, kategorie, karta článku, hodnocení obchodu, hledání, přihlášení, košík, bannery, mobilní hlavička a menu).
 - `layout/`, `header/`: hlavička, úvodní stránka, informační lišta, šířka obsahu stránek (`_content-width.scss`: `#content-wrapper.container-narrow` Disca má šířku jako `.container`, běžný text článků a textových stránek max. 820 px); varianty hlavičky v1/v2.

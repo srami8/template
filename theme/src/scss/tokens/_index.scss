@@ -1,4 +1,8 @@
+@use "sass:color";
+@use "sass:list";
 @use "sass:map";
+@use "sass:math";
+@use "sass:string";
 @use "colors";
 @use "typography";
 @use "shape";
@@ -11,6 +15,28 @@
 // (např. primary-50 = 10 % #1E9FE8 + 90 % bílé), takže stejné poměry fungují s barvou z administrace.
 $primary-tints: (50: 10%, 100: 20%, 200: 40%, 300: 60%, 400: 80%);
 $primary-shades: (700: 50%, 800: 25%, 900: 10%);
+
+// Text na barvě z administrace: bílý, nebo tmavý (secondary-500) podle toho, co má s pozadím vyšší
+// kontrast (WCAG). Oba kontrasty se rovnají při relativním jasu pozadí $threshold; jas je kanál y
+// prostoru xyz-d65, takže prohlížeč vybere barvu sám i pro barvu, kterou obchodník změní později.
+$on-dark: color.to-space(map.get(colors.$secondary, 500), xyz-d65);
+$on-light: color.to-space(colors.$white, xyz-d65);
+
+@function -round($value) {
+  @return math.div(math.round($value * 10000), 10000);
+}
+
+@function on-color($background) {
+  $threshold: -round(math.sqrt(1.05 * (color.channel($on-dark, "y", $space: xyz-d65) + 0.05)) - 0.05);
+  $channels: ();
+  @each $axis in "x", "y", "z" {
+    $dark: -round(color.channel($on-dark, $axis, $space: xyz-d65));
+    $light: -round(color.channel($on-light, $axis, $space: xyz-d65));
+    // Krok 0/1: světlé pozadí → tmavý text, tmavé → bílý.
+    $channels: list.append($channels, "calc(#{$dark} + clamp(0, (#{$threshold} - y) * 100000, 1) * #{-round($light - $dark)})");
+  }
+  @return string.unquote("color(from #{$background} xyz-d65 #{$channels})");
+}
 
 // Tokeny jako CSS proměnné. Barvy a fonty se berou z administrace e-shopu (proměnné Shoptetu
 // --color-*, --template-*), hodnoty z Figmy jsou jen záloha, kdyby proměnná chyběla.
@@ -30,6 +56,13 @@ $primary-shades: (700: 50%, 800: 25%, 900: 10%);
   --as-conversion-hover: var(--color-secondary-hover, var(--as-primary-600));
   --as-tertiary: var(--color-tertiary, #{map.get(colors.$secondary, 500)});
   --as-tertiary-hover: var(--color-tertiary-hover, #{map.get(colors.$secondary, 400)});
+
+  // Text na plných tlačítkách (a obrysových po najetí). Bez relativních barev zůstává bílý,
+  // výpočet podle kontrastu je v @supports na konci (za deklaracemi kvůli mixed-decls).
+  --as-on-primary: #{colors.$white};
+  --as-on-primary-hover: #{colors.$white};
+  --as-on-conversion: #{colors.$white};
+  --as-on-conversion-hover: #{colors.$white};
 
   // Neutrální barvy Shoptet nenastavuje, zůstávají podle Figmy.
   @each $step, $value in colors.$secondary {
@@ -60,6 +93,14 @@ $primary-shades: (700: 50%, 800: 25%, 900: 10%);
 
   --as-radius-pill: #{shape.$radius-pill};
   --as-control-height: #{shape.$control-height};
+
+  // Text na barvě z administrace podle kontrastu (on-color výše).
+  @supports (color: color(from red xyz-d65 x y z)) {
+    --as-on-primary: #{on-color(var(--as-primary-500))};
+    --as-on-primary-hover: #{on-color(var(--as-primary-600))};
+    --as-on-conversion: #{on-color(var(--as-conversion))};
+    --as-on-conversion-hover: #{on-color(var(--as-conversion-hover))};
+  }
 
   // Měřítko nadpisů na telefonu (až za deklaracemi, Sass jinak hlásí mixed-decls).
   @media (max-width: 767px) {
