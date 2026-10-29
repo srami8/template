@@ -1,57 +1,90 @@
-// Karta produktu – výchozí vzhled (Figma: Homepage – „Produkt“). Platí pro výpisy Disca
-// .products-block (produktové sekce úvodní stránky, výpis kategorie) při .as-product-card-default
-// na <html> (nastavení šablony, další vzhledy karet budou vedle v product-cards/).
+// Karta produktu – výchozí vzhled (Figma „Produkt“ Type=1/4 112:5174, v úzké kartě Type=Mobile
+// 1696:6752). Jedna komponenta pro všechny výpisy Disca .products-block: výpis produktů (kategorie,
+// hledání), produktové sekce (carousely) úvodní stránky, související a podobné produkty v detailu.
+// Platí při .as-product-card-default na <html> (nastavení šablony, další vzhledy karet budou vedle
+// v product-cards/).
 //
 // Markup Disca: .p > a.image (img, .flags) + .p-in > .p-in-in (a.name, .ratings-wrapper: hvězdičky,
 // .availability) + .p-bottom > div[data-micro=offer] (.prices: .price-final, .price-standard,
-// .price-save; .p-tools: form.pr-action s .quantity a .btn). Návrh má jiné pořadí (obrázek,
-// hvězdičky, název, ceny, dostupnost, tlačítka): obaly mají display: contents a pořadí řídí order,
-// DOM se nemění.
+// .price-save; .p-tools: form.pr-action s .quantity a .btn; p.p-desc). Návrh má jiné pořadí (obrázek,
+// hvězdičky, název, popis, dostupnost s cenou, tlačítka): obaly mají display: contents a karta je
+// mřížka s oblastmi, DOM se nemění. Volný prostor bere řádek popisu, takže dostupnost, cena
+// a tlačítka jsou v řadě karet ve stejné výšce dole.
 
-@use "../../tools/breakpoints" as bp;
 @use "../../tools/button";
 @use "../../tools/quantity";
 @use "../../tools/flag";
 @use "../../tools/rating";
 @use "../../tools/icon" as *;
 
-// Vnitřní okraj karty: 20 px, v úzké kartě (6 produktů vedle sebe) 12 px, aby se počítadlo
-// a tlačítko vešly vedle sebe. Pozice příznaků a slevy z něj vycházejí.
-$padding-x: var(--as-card-padding-x);
 $image-inset: 12px;
+// Úzká karta (telefon 2 vedle sebe, víc sloupců vedle filtrů nebo v sekci úvodní stránky).
+$narrow: 259px;
 
 .as-theme.as-product-card-default .products-block {
   // Disco položce výpisu dává okraj a průhledný rámeček, v návrhu karty leží těsně vedle sebe.
   .product {
     padding: 0;
     border: 0;
-    // Šířka položky pro okraj karty (kontejnerový dotaz níže).
+    // Šířka položky pro rozložení karty (kontejnerové dotazy níže).
     container: product-card / inline-size;
   }
 
+  // Pravidla karty jsou vnořená pod .p: obal .products-block má i slider kategorií na úvodní stránce.
   .p {
     --as-card-padding-x: 20px;
+    // Obrázek: čtverec nejvýš 220 px (v kartě 284 px s okraji 2 × 12 px), v úzké kartě přes šířku.
+    --as-card-image: min(220px, calc(100cqw - #{$image-inset * 2}));
+    // Kolečko slevy přesahuje spodek obrázku a od pravého okraje obsahu karty je odsazené.
+    --as-card-discount-overlap: 34px;
+    --as-card-discount-right: 14px;
 
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto 1fr auto auto;
+    grid-template-areas:
+      "image image"
+      "stars stars"
+      "name name"
+      "desc desc"
+      "availability prices"
+      "tools tools";
+    align-items: start;
     height: 100%;
     margin: 0;
-    padding: 24px $padding-x;
+    padding: 20px var(--as-card-padding-x);
     border: 0;
     border-radius: 8px;
     background: var(--as-white);
     font-family: var(--as-font-family);
-    text-align: center;
-    // Šířka karty pro dopočet pozice kolečka se slevou (cqw).
+    text-align: left;
+    // Šířka obsahu karty pro velikost obrázku a polohu kolečka se slevou (cqw).
     container-type: inline-size;
 
-    @container product-card (max-width: 240px) {
+    // Úzká karta: Figma Type=Mobile – cena pod dostupností, obrázek přes šířku.
+    @container product-card (max-width: #{$narrow}) {
       --as-card-padding-x: 12px;
+      --as-card-image: min(220px, 100cqw);
+      --as-card-discount-overlap: 54px;
+      --as-card-discount-right: 6px;
+
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto auto 1fr auto auto auto;
+      grid-template-areas:
+        "image"
+        "stars"
+        "name"
+        "desc"
+        "availability"
+        "prices"
+        "tools";
     }
 
-    // Pravidla karty jsou vnořená pod .p: obal .products-block má i slider kategorií na úvodní stránce.
+    // Telefon 320 px: s menším okrajem se počítadlo a tlačítko vejdou vedle sebe.
+    @container product-card (max-width: 169px) {
+      --as-card-padding-x: 8px;
+    }
 
     .p-in,
     .p-in-in,
@@ -61,12 +94,13 @@ $image-inset: 12px;
       display: contents;
     }
 
-    // Obrázek: čtverec přes šířku karty (bez 2 × 12 px), produkt celý.
+    // Produkt celý; příznaky se měří od rohu karty, ne od obrázku (position: static).
     .image {
-      position: relative;
-      order: 1;
+      position: static;
+      grid-area: image;
+      justify-self: center;
       display: block;
-      width: calc(100% - #{$image-inset * 2});
+      width: var(--as-card-image);
       aspect-ratio: 1;
       margin: 0;
       padding: 0;
@@ -78,11 +112,12 @@ $image-inset: 12px;
       }
     }
 
-    // Příznaky (barvy z administrace) vlevo nahoře karty, pod sebou.
+    // Příznaky (barvy z administrace) vlevo nahoře karty, pod sebou. Vzhled štítků je společný
+    // (components/_product-elements.scss, tools/flag).
     .flags-default {
       position: absolute;
-      top: 16px - 24px;
-      left: calc(12px - #{$padding-x} - #{$image-inset});
+      top: 16px;
+      left: 12px;
       z-index: 1;
       display: flex;
       flex-direction: column;
@@ -91,12 +126,9 @@ $image-inset: 12px;
       margin: 0;
     }
 
-    // Vzhled štítků je společný (components/_product-flags.scss, tools/flag).
-
-    // Hvězdičky hodnocení (bez hodnocení zůstává místo, aby karty v řadě lícovaly).
-    .stars-wrapper,
-    .stars-placeholder {
-      order: 2;
+    .stars-wrapper {
+      grid-area: stars;
+      justify-self: start;
       height: 16px;
       margin: 24px 0 0;
       font-size: 16px;
@@ -105,16 +137,24 @@ $image-inset: 12px;
       @include rating.stars;
     }
 
+    // Bez hodnocení návrh místo pro hvězdičky nedrží.
+    .stars-placeholder {
+      display: none;
+    }
+
+    // Disco dává názvu pevnou výšku na dva řádky a vnitřní okraj.
     .name {
-      order: 3;
+      grid-area: name;
       display: -webkit-box;
       width: 100%;
-      min-height: 3 * 1.2em;
-      margin: 16px 0 0;
+      height: auto;
+      min-height: 0;
+      margin: 24px 0 0;
+      padding: 0;
       overflow: hidden;
       color: var(--as-secondary-500);
-      font-size: var(--as-font-size-small);
-      font-weight: 400;
+      font-size: var(--as-font-size-body);
+      font-weight: 500;
       line-height: 1.2;
       text-decoration: none;
       -webkit-box-orient: vertical;
@@ -125,19 +165,60 @@ $image-inset: 12px;
       }
     }
 
+    &:has(.stars-wrapper) .name {
+      margin-top: 8px;
+    }
+
+    // Krátký popis (vypisuje ho Shoptet, když ho produkt má), nejvýš 3 řádky.
+    .p-bottom .p-desc {
+      grid-area: desc;
+      display: -webkit-box;
+      // Disco dává popisu okraje s !important (nahoře 0, dole 22 px), návrh má 16 px nad popisem.
+      margin: 16px 0 0 !important;
+      padding: 0;
+      overflow: hidden;
+      color: var(--as-secondary-400);
+      font-size: var(--as-font-size-small);
+      line-height: 1.4;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+
+      @container product-card (max-width: #{$narrow}) {
+        font-size: var(--as-font-size-caption);
+      }
+    }
+
+    // Dostupnost (barvu nastavuje obchodník v administraci, inline styl).
+    .availability {
+      grid-area: availability;
+      align-self: baseline;
+      max-width: 100%;
+      margin: 16px 0 0;
+      font-size: var(--as-font-size-caption);
+      font-weight: 500;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
     // Ceny v řádku: původní přeškrtnutá, vedle aktuální. Disco výpis stylí selektory přes .p a
     // .p-bottom (vyšší specificita), proto i tady.
     .p-bottom .prices {
-      order: 4;
+      grid-area: prices;
+      align-self: baseline;
       display: flex;
       align-items: baseline;
-      justify-content: center;
+      justify-content: flex-end;
       // Disco ceny zalamuje pod sebe (aktuální cena má plnou šířku).
       flex-wrap: wrap;
       max-width: 100%;
-      gap: 12px;
-      margin: 12px 0 0;
+      gap: 8px;
+      margin: 16px 0 0 4px;
       line-height: 1.2;
+
+      @container product-card (max-width: #{$narrow}) {
+        justify-content: flex-start;
+        margin: 4px 0 0;
+      }
     }
 
     .p-bottom .price-final {
@@ -169,12 +250,13 @@ $image-inset: 12px;
     }
 
     // Sleva: červené kolečko 48 px přes pravý spodní roh obrázku. Disco ji vypisuje se závorkami
-    // „(–31 %)“, hodnotu bez nich doplňuje js/product-cards.js do data-as-discount.
-    .price-save {
+    // „(–31 %)“, hodnotu bez nich doplňuje js/product-cards.js do data-as-discount. Disco jí dává
+    // okraj 5 px (vyšší specificitou), poloha je podle návrhu od okraje karty.
+    .p-bottom .prices .price-save {
       position: absolute;
-      // 100cqw = šířka obsahu karty; obrázek je čtverec o 2 × 12 px užší, kolečko přesahuje 34 px nad jeho spodek.
-      top: calc(24px + 100cqw - #{$image-inset * 2} - 34px);
-      right: $padding-x;
+      top: calc(20px + var(--as-card-image) - var(--as-card-discount-overlap));
+      right: calc(var(--as-card-padding-x) + var(--as-card-discount-right));
+      margin: 0;
       @include flag.discount(48px);
       font-size: 0;
 
@@ -187,30 +269,31 @@ $image-inset: 12px;
       }
     }
 
-    // Dostupnost (barvu nastavuje obchodník v administraci, inline styl).
-    .availability {
-      order: 5;
-      margin: 12px 0 0;
-      font-size: var(--as-font-size-caption);
-      font-weight: 500;
-      line-height: 1.2;
-      max-width: 100%;
-      overflow-wrap: anywhere;
+    // Související a podobné produkty v detailu: Shoptet jim dává .no-buttons a Disco tlačítka skryje,
+    // formulář do košíku přitom vypisuje. Karta má vypadat všude stejně, proto je ukazujeme.
+    .p-bottom.no-buttons .p-tools {
+      display: flex;
     }
 
-    // Počítadlo a „Do košíku“ / „Detail“ dole v kartě.
+    // Počítadlo vlevo, tlačítko Small vpravo; samotné tlačítko (Detail u variant) vlevo, Disco ho
+    // staví na střed.
     .p-bottom .p-tools {
-      order: 6;
+      grid-area: tools;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
       width: 100%;
-      margin: 16px 0 0;
+      margin: 12px 0 0;
       padding: 0;
+      text-align: left;
 
-      // V úzké kartě (mobil, víc sloupců) se tlačítko zalomí pod počítadlo.
       form {
         display: flex;
+        flex: 1 1 auto;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         gap: 8px;
       }
 
@@ -225,176 +308,30 @@ $image-inset: 12px;
         max-width: 100%;
         white-space: normal;
         overflow-wrap: anywhere;
+      }
+    }
 
-        // Úzká karta: s menším okrajem se tlačítko vejde vedle počítadla.
-        @container product-card (max-width: 240px) {
-          padding-right: 14px;
-          padding-left: 14px;
+    // Úzká karta: do košíku tlačítkem s ikonou (Small, kruh 44 px), text zůstává pro čtečky.
+    @container product-card (max-width: #{$narrow}) {
+      .p-bottom .p-tools form {
+        column-gap: 4px;
+      }
+
+      // Přebíjí velikost .btn výše (proto i .p-bottom a .btn v selektoru).
+      .p-bottom .p-tools .btn.add-to-cart-button {
+        @include button.icon-only(sm);
+
+        &::before {
+          @include icon(add-shopping-cart, 20px);
         }
       }
     }
-  }
-}
 
-// Karta ve výpisu produktů (#products: kategorie, hledání …) podle Figmy „Produkt“ Type=1/4
-// (112:5174), v úzké kartě Type=Mobile (1696:6752). Úvodní stránka zůstává podle Type=1/6 výše
-// (rozhodnutí majitele). Zarovnání vlevo, krátký popis, dostupnost vedle ceny; mřížka s oblastmi
-// místo pořadí flexu, obaly Disca zůstávají display: contents. Volný prostor bere řádek popisu,
-// takže dostupnost, cena a tlačítka jsou v řadě karet ve stejné výšce dole.
-.as-theme.as-product-card-default #products .p {
-  // Obrázek: čtverec nejvýš 220 px (v kartě 284 px s okraji 2 × 12 px), na telefonu přes šířku.
-  --as-card-image: min(220px, calc(100cqw - #{$image-inset * 2}));
-  // Kolečko slevy přesahuje spodek obrázku a od pravého okraje obsahu karty je odsazené.
-  --as-card-discount-overlap: 34px;
-  --as-card-discount-right: 14px;
-
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto auto auto 1fr auto auto;
-  grid-template-areas:
-    "image image"
-    "stars stars"
-    "name name"
-    "desc desc"
-    "availability prices"
-    "tools tools";
-  align-items: start;
-  padding: 20px var(--as-card-padding-x);
-  text-align: left;
-
-  // Úzká karta (telefon 2 vedle sebe, 3–4 sloupce vedle filtrů): Figma Type=Mobile.
-  @container product-card (max-width: 259px) {
-    --as-card-padding-x: 12px;
-    --as-card-image: min(220px, 100cqw);
-    --as-card-discount-overlap: 54px;
-    --as-card-discount-right: 6px;
-
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto 1fr auto auto auto;
-    grid-template-areas:
-      "image"
-      "stars"
-      "name"
-      "desc"
-      "availability"
-      "prices"
-      "tools";
-  }
-
-  // Telefon 320 px: s menším okrajem se počítadlo a tlačítko vejdou vedle sebe.
-  @container product-card (max-width: 169px) {
-    --as-card-padding-x: 8px;
-  }
-
-  // Příznaky se měří od rohu karty (vlevo 12, nahoře 16 px), ne od obrázku.
-  .image {
-    position: static;
-    grid-area: image;
-    justify-self: center;
-    width: var(--as-card-image);
-  }
-
-  .flags-default {
-    top: 16px;
-    left: 12px;
-  }
-
-  .stars-wrapper {
-    grid-area: stars;
-    justify-self: start;
-  }
-
-  // Bez hodnocení návrh místo pro hvězdičky nedrží.
-  .stars-placeholder {
-    display: none;
-  }
-
-  // Disco dává názvu pevnou výšku na dva řádky a vnitřní okraj.
-  .name {
-    grid-area: name;
-    height: auto;
-    min-height: 0;
-    margin-top: 24px;
-    padding: 0;
-    font-size: var(--as-font-size-body);
-    font-weight: 500;
-  }
-
-  &:has(.stars-wrapper) .name {
-    margin-top: 8px;
-  }
-
-  // Krátký popis (vypisuje ho Shoptet, když ho produkt má), nejvýš 3 řádky.
-  .p-desc {
-    grid-area: desc;
-    display: -webkit-box;
-    margin: 16px 0 0;
-    overflow: hidden;
-    color: var(--as-secondary-400);
-    font-size: var(--as-font-size-small);
-    line-height: 1.4;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-
-    @container product-card (max-width: 259px) {
-      font-size: var(--as-font-size-caption);
-    }
-  }
-
-  .availability {
-    grid-area: availability;
-    align-self: baseline;
-    margin-top: 16px;
-  }
-
-  .p-bottom .prices {
-    grid-area: prices;
-    align-self: baseline;
-    justify-content: flex-end;
-    gap: 8px;
-    margin: 16px 0 0 4px;
-
-    @container product-card (max-width: 259px) {
-      justify-content: flex-start;
-      margin: 4px 0 0;
-    }
-  }
-
-  // Disco dává slevě okraj 5 px, poloha je podle návrhu od okraje karty.
-  .price-save {
-    top: calc(20px + var(--as-card-image) - var(--as-card-discount-overlap));
-    right: calc(var(--as-card-padding-x) + var(--as-card-discount-right));
-    margin: 0;
-  }
-
-  // Počítadlo vlevo, tlačítko vpravo; samotné tlačítko (Detail u variant) vlevo, Disco ho
-  // staví na střed.
-  .p-bottom .p-tools {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    grid-area: tools;
-    margin-top: 12px;
-    text-align: left;
-
-    form {
-      flex: 1 1 auto;
-      justify-content: space-between;
-    }
-  }
-
-  // Úzká karta: do košíku tlačítkem s ikonou (Small, kruh 44 px), text zůstává pro čtečky.
-  @container product-card (max-width: 259px) {
-    .p-tools form {
-      column-gap: 4px;
-    }
-
-    .p-tools .add-to-cart-button {
-      @include button.icon-only(sm);
-
-      &::before {
-        @include icon(add-shopping-cart, 20px);
+    // Telefon 320 px (karta v carouselu 150 px): počítadlo bez vnitřního okraje, bílá pilulka na
+    // bílé kartě ho nepotřebuje; jinak se tlačítko zalomí pod něj.
+    @container product-card (max-width: 169px) {
+      .p-bottom .p-tools .quantity {
+        padding: 0;
       }
     }
   }

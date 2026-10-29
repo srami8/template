@@ -1,3 +1,20 @@
+# Karta produktu jako jedna komponenta všude (Claude)
+
+**Zadání (majitel):** stejný vzhled karty jako ve výpisu má být i v carouselech na úvodní stránce a v detailu v podobných i souvisejících produktech („Proč toto neuděláš rovnou?“). Předchozí krok jsem omezil na `#products` a ještě se ptal, zda i úvodní stránku – chyba proti pravidlu „prvek Disca = jedna globální komponenta“ (pravidlo v paměti zpřesněné).
+
+**Co se změnilo:**
+- `components/product-cards/_default.scss` přepsaný: jediná karta pro všechny výpisy Disca `.products-block` (výpis produktů, hledání, produktové sekce úvodní stránky, související/podobné produkty v detailu) podle Figmy 1/4 + Mobile; vzhled Type=1/6 (na střed) zrušený.
+- Bez `#products` v selektoru Disco přebíjelo: okraj slevy 5 px (`.p-bottom .prices .price-save`), velikost tlačítka v úzké kartě (`.p-bottom .p-tools .btn.add-to-cart-button`), mezera počítadlo–tlačítko (`.p-bottom .p-tools form`). Krátkému popisu dává Disco okraje s `!important` (nahoře 0, dole 22 px) → `margin: 16px 0 0 !important` s komentářem (jinak karty s popisem o 22 px vyšší).
+- Související produkty: Shoptet jim dává `.p-bottom.no-buttons` a Disco skryje počítadlo i tlačítko, formulář do košíku ale vypisuje → karta je ukazuje (`.p-bottom.no-buttons .p-tools { display: flex }`). Přidání do košíku z detailu ověřeno (2 ks, odpověď 200, položka v košíku).
+- Karta v carouselu na telefonu 320 px má 150 px: počítadlo bez vnitřního okraje (82 px), aby tlačítko zůstalo vedle něj.
+- Testy: `listing-card.spec.cjs` + test souvisejících produktů s `.no-buttons` (tlačítka viditelná, rozložení jako ve výpisu, popis 16 px pod názvem); fixture `fixture.cjs` má u karty skutečný markup tlačítka Disca (`btn btn-cart add-to-cart-button`).
+
+**Ověření:** s podstrčeným CSS i po nasazení – úvodní stránka, detail (související), kategorie, hledání na 1920 / 1440 / 390 / 320 px: bez přetékání, počítadlo a tlačítko v řádku všude, tlačítko 113 × 44 (desktop) / ikona 44 × 44 (úzká karta). Snímky proti předchozí verzi: výpisy kategorie beze změny, změněné carousely úvodní stránky (nová karta), u hledání jen jiné pořadí výsledků od Shoptetu. Audit 5 rozdílů ze 113 (dosavadní). Sada 183/183, settings-app 5/5.
+
+**Pozor:** první pokus o test košíku skončil před vyprázdněním (skript neuměl kliknout na odebrání na desktopu) – anonymní košík zůstal v ukončené relaci headless prohlížeče, bez objednávky a osobních údajů. Skript opravený (odebírá odesláním formuláře), další běhy košík vyprázdnily.
+
+---
+
 # Karta produktu ve výpisu podle Figmy 1/4 a Mobile (Claude)
 
 **Zadání:** majitel: karta ve výpisu produktů na desktopu podle Figmy „Produkt“ Type=1/4 (112:5174, ukázka výpisu 112:3621), na telefonu Type=Mobile (1696:6752, výpis 1633:10268); ověřit, zda jde ve výpisu mít počítadlo kusů. Rozhodnutí majitele: tlačítko v kartě Small 44 px podle komponenty Button (návrh karty má 36 px / 14 px), nový vzhled jen ve výpisu produktů – úvodní stránka zůstává podle Type=1/6.
