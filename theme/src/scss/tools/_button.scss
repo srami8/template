@@ -9,11 +9,12 @@
 @use "sass:map";
 @use "icon" as *;
 
-// Výška = okraje + řádek + rámeček 2 × 1 px (md 52 px, sm 36 px, listing 48 px).
+// Velikosti komponenty Button ve Figmě (82:2334): Large 60, Medium 52, Small 44 px.
+// Výška = okraje + řádek + rámeček 2 × 1 px (Figma má rámeček uvnitř, proto okraje o 1 px menší).
 $sizes: (
-  md: (padding: 15px 31px, font-size: var(--as-font-size-body), line-height: 20px),
-  listing: (padding: 13px 19px, font-size: var(--as-font-size-body), line-height: 20px),
-  sm: (padding: 9px 23px, font-size: var(--as-font-size-caption), line-height: 16px),
+  lg: (padding: 19px 39px, font-size: var(--as-font-size-large), line-height: 20px, height: 60px),
+  md: (padding: 15px 31px, font-size: var(--as-font-size-body), line-height: 20px, height: 52px),
+  sm: (padding: 11px 19px, font-size: var(--as-font-size-body), line-height: 20px, height: 44px),
 );
 
 @mixin base {
@@ -40,6 +41,15 @@ $sizes: (
   padding: map.get($size, padding);
   font-size: map.get($size, font-size);
   line-height: map.get($size, line-height);
+}
+
+// Tlačítko jen s ikonou (Figma Icon only): kruh výšky dané velikosti, ikona 20 px uprostřed.
+@mixin icon-only($name) {
+  width: map.get(map.get($sizes, $name), height);
+  min-width: 0;
+  height: map.get(map.get($sizes, $name), height);
+  padding: 0;
+  font-size: 0;
 }
 
 // Zakázané tlačítko (Figma 1689:13982): šedé pozadí a text, obrysová i šedý rámeček. Za stavem

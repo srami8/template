@@ -44,7 +44,7 @@ test('bottom description stays after products and pagination with and without ac
   }
 });
 
-test('desktop: sidebar 262px, gap 22px, four product columns, 48px listing controls', async ({page}) => {
+test('desktop: sidebar 262px, gap 22px, four product columns, 44px listing controls (Button Small)', async ({page}) => {
   await page.setViewportSize({width: 1920, height: 1080});
   await page.setContent(html(true));
   const sidebar = await page.locator('.sidebar').boundingBox();
@@ -56,7 +56,7 @@ test('desktop: sidebar 262px, gap 22px, four product columns, 48px listing contr
   expect(items[4].y).toBeGreaterThan(items[0].y);
   for (const selector of ['.loadMore__button', '.goToTop__button', '.pagination__currentPage', '.pagination__link', '.pagination']) {
     const heights = await page.locator(selector).evaluateAll(els => els.map(e => e.getBoundingClientRect().height));
-    heights.forEach(height => expect(height).toBe(48));
+    heights.forEach(height => expect(height).toBe(44));
   }
   const [up, more, pages] = await Promise.all(['.goToTop', '.loadMore', '.pagination'].map(sel => page.locator(sel).boundingBox()));
   expect(up.y).toBe(more.y);

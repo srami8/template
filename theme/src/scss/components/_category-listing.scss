@@ -200,7 +200,7 @@
     .pagination__link,
     .pagination__currentPage {
       @include button.base;
-      @include button.size(listing);
+      @include button.size(sm);
       @include button.tertiary;
     }
 
@@ -237,14 +237,15 @@
       }
     }
 
+    // Čísla stránek jako kruh velikosti Small (44 px), delší číslo kruh rozšíří.
     .pagination__link,
     .pagination__currentPage {
       width: auto;
-      min-width: 48px;
-      height: 48px;
-      min-height: 48px;
+      min-width: 44px;
+      height: 44px;
+      min-height: 44px;
       aspect-ratio: auto;
-      padding: 12px;
+      padding: 11px;
     }
 
     .pagination__currentPage {

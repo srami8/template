@@ -29,8 +29,9 @@ $heading-mobile-scale: (
   h3: 0.84,
 );
 
-// Body/Default, Body/Small, Caption/Extra small.
+// Body/Large (písmo velkého tlačítka), Body/Default, Body/Small, Caption/Extra small.
 $font-sizes: (
+  large: 18px,
   body: 16px,
   small: 14px,
   caption: 13px,

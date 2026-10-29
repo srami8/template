@@ -225,12 +225,6 @@ $image-inset: 12px;
         white-space: normal;
         overflow-wrap: anywhere;
 
-        // Na dotykovém displeji větší plocha pro prst, na desktopu výška 36 px podle návrhu
-        // (stejná jako počítadlo vedle).
-        @include bp.mobile {
-          min-height: 44px;
-        }
-
         // Úzká karta: s menším okrajem se tlačítko vejde vedle počítadla.
         @container product-card (max-width: 240px) {
           padding-right: 14px;

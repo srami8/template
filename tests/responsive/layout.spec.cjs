@@ -320,15 +320,15 @@ test('cart controls share their visual style on mobile and desktop', async ({pag
   expect(snapshots[0].quantity.borderRadius).not.toBe('0px');
 });
 
-test('product card button keeps the design height on desktop and a touch target on mobile', async ({page}) => {
+test('product card button is the Small button of the component (44 px) on desktop and mobile', async ({page}) => {
   await load(page);
-  const minHeight=async width=>{
+  const height=async width=>{
     await page.setViewportSize({width,height:900});
-    return page.locator('.products-block .p .p-tools .btn').first().evaluate(el=>getComputedStyle(el).minHeight);
+    return page.locator('.products-block .p .p-tools .btn').first().evaluate(el=>Math.round(el.getBoundingClientRect().height));
   };
-  // Na desktopu 36 px jako počítadlo (bez vynucené minimální výšky), na mobilu aspoň 44 px.
-  expect(await minHeight(1280)).not.toBe('44px');
-  expect(await minHeight(390)).toBe('44px');
+  // Komponenta Button ve Figmě (82:2334): Small 44 px na všech šířkách.
+  expect(await height(1280)).toBe(44);
+  expect(await height(390)).toBe(44);
 });
 
 test('header icons are the same on mobile and desktop', async ({page}) => {

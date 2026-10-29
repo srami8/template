@@ -294,7 +294,7 @@
 
   .filters-unveil-button-wrapper .unveil-button {
     @include button.base;
-    @include button.size(listing);
+    @include button.size(sm);
     @include button.tertiary;
     width: 100%;
     margin-bottom: 16px;

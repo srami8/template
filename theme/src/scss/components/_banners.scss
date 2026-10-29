@@ -55,7 +55,6 @@
       @include button.size(sm);
       @include button.secondary;
       white-space: normal;
-      min-height: 44px;
     }
   }
 }
@@ -219,10 +218,6 @@
       font-size: 28px;
     }
 
-    .extended-banner-link {
-      min-height: 40px;
-      padding: 8px 32px;
-    }
   }
 
   // Telefon: obrázek je úzký, text může zabrat celou šířku banneru. Postranní bannery pod carouselem.

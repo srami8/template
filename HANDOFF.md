@@ -1,3 +1,17 @@
+# Velikosti tlačítek podle komponenty Button (Claude)
+
+**Zadání:** majitel rozhodl, že velikosti tlačítek budou podle komponenty Button ve Figmě (82:2334): Large 60, Medium 52, Small 44 px (dosud v kódu podle návrhů stránek 52 / 48 / 36 px).
+
+**Co se změnilo:**
+- `tools/_button.scss`: velikosti `lg` (60 px, odsazení 19 × 39, písmo 18 px – nový token `--as-font-size-large`), `md` (52, beze změny), `sm` (44 px, 11 × 19, písmo 16 px místo 13); `listing` (48) zrušená; nový mixin `icon-only($size)` (kruh výšky velikosti).
+- Přiřazení: karta produktu, „Detail“ u nejprodávanějších, související produkty v košíku, odkaz v banneru a newsletter → Small 44; „Načíst další“, „Nahoru“, stránkování a „Filtry“ → Small 44 (čísla stránek kruh 44); kupon → Medium 52 a jeho pole 52 jako ostatní pole; mobilní tlačítko do košíku v panelu souvisejících → `icon-only(sm)` 44. Newsletter: pole 52 (`--as-control-height`), tlačítko Small uvnitř s okrajem 4 px.
+- `components/_buttons.scss`: `btn-sm` už nemá 14 px – komponenta má u Small 16 px (opraven dřívější odhad).
+- Testy: karta 44 px na všech šířkách, ovládání výpisu 44, panel souvisejících 44, písmo `btn-sm` 16.
+
+**Ověření:** e-shop s podstrčeným CSS: karta 36 → 44, stránkování 48 → 44, nejprodávanější 36 → 44, newsletter 40 → 44 px. Snímky před/po nasazení: změna jen u tlačítek (karty, „Detail“, ovládání výpisu o 4 px nižší, výpisy tím o pár px vyšší), jinak známé kolísání data článků. Audit 5 rozdílů ze 113 (dosavadní). Sada 178/180 třikrát po sobě, pokaždé jiné 2 testy s vypršeným časem 30 s (bez chybného měření: rozložení 1199/1200, krok 2, rozložení 481/767); samostatně prošly všechny (krok 2 9/9 opakovaně). Settings-app 5/5.
+
+---
+
 # Blank mode = jen styly aSteroidu; měření bez CSS Disca (Claude)
 
 **Zadání:** majitel upřesnil, že Blank mode má zobrazit styly aSteroidu, ne kopii CSS Disca; změřit, co se bez CSS Disca rozbije, sepsat to jako plán převodu, volbu dočasně skrýt a přepsat dokumentaci.
@@ -20,7 +34,7 @@
 
 **Zadání:** majitel schválil sjednotit i písmo tlačítek Shoptetu bez vlastního návrhu.
 
-**Co se změnilo:** `components/_buttons.scss` dává všem `.btn` písmo šablony, tučnost 500, bez verzálek a proložení, 16 px (`btn-sm` 14 px) podle komponenty Button ve Figmě. Nízká specificita (`.as-theme .btn`), takže místa s vlastním návrhem (tools/button) si velikost drží; Disco jinak psalo tlačítka velkými písmeny, nebo tučně 900. Test `button-contrast.spec.cjs` („Disco buttons use the design typography everywhere“).
+**Co se změnilo:** `components/_buttons.scss` dává všem `.btn` písmo šablony, tučnost 500, bez verzálek a proložení, 16 px (`btn-sm` tehdy 14 px, později opraveno na 16 px podle komponenty – viz „Velikosti tlačítek“) podle komponenty Button ve Figmě. Nízká specificita (`.as-theme .btn`), takže místa s vlastním návrhem (tools/button) si velikost drží; Disco jinak psalo tlačítka velkými písmeny, nebo tučně 900. Test `button-contrast.spec.cjs` („Disco buttons use the design typography everywhere“).
 
 ---
 

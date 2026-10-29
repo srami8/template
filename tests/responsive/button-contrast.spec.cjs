@@ -66,9 +66,9 @@ test('button states follow the design for every Disco button class',async({page}
  }
 });
 
-// Písmo tlačítek Disca bez vlastního návrhu: písmo šablony, Medium, bez verzálek, 16 / 14 px.
+// Písmo tlačítek Disca bez vlastního návrhu: písmo šablony, Medium, bez verzálek, 16 px i u btn-sm.
 test('Disco buttons use the design typography everywhere',async({page})=>{
  await page.setContent(`<!doctype html><html class="as-theme" lang="cs"><head><style>${css}</style></head><body class="ums_discussion_rating_forms--off"><div id="b"><button class="btn btn-default">Další článek</button><button class="btn btn-primary btn-sm">Odeslat</button><a class="btn btn-secondary" href="#">Načíst další</a></div></body></html>`);
  const look=await page.locator('#b .btn').evaluateAll(els=>els.map(e=>{const s=getComputedStyle(e);return [s.fontWeight,s.textTransform,s.fontSize];}));
- expect(look).toEqual([['500','none','16px'],['500','none','14px'],['500','none','16px']]);
+ expect(look).toEqual([['500','none','16px'],['500','none','16px'],['500','none','16px']]);
 });

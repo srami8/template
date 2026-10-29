@@ -114,7 +114,7 @@ test('mobile cart follows Figma 1686:10094 and related products open in a drawer
  await expect.poll(()=>panel.evaluate(e=>{const r=e.getBoundingClientRect();return [Math.round(r.x),Math.round(r.width),Math.round(r.height)];})).toEqual([90,300,844]);
  expect(await page.evaluate(()=>({overlay:getComputedStyle(document.body,'::before').content,overflow:getComputedStyle(document.body).overflow}))).toEqual({overlay:'""',overflow:'hidden'});
  const item=await panel.locator('.cart-related-product').first().evaluate(e=>{const b=e.querySelector('.btn').getBoundingClientRect();return {button:[b.width,b.height],font:getComputedStyle(e.querySelector('.btn')).fontSize,label:e.querySelector('.btn').getAttribute('aria-label'),price:getComputedStyle(e.querySelector('.price-final')).fontSize};});
- expect(item).toMatchObject({button:[36,36],font:'0px',price:'16px'});
+ expect(item).toMatchObject({button:[44,44],font:'0px',price:'16px'});
  expect(item.label).toContain('Do košíku');
  // Tab zůstává v panelu, Esc zavře a vrátí fokus na odkaz.
  for(let i=0;i<8;i++){await page.keyboard.press('Tab');expect(await panel.evaluate(e=>e.contains(document.activeElement))).toBe(true);}
