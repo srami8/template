@@ -10,6 +10,7 @@ Pravidla práce a spolupráce: [AGENTS.md](../AGENTS.md). Zadání a principy: [
 | [kategorie.md](kategorie.md) | sidebar, filtry, řazení a stránkování kategorie |
 | [blank-mode.md](blank-mode.md) | zapnutí CSS-only Blank mode, návrat a správa kompatibilního základu |
 | [komponenty.md](komponenty.md) | prvky Disca, kde se vypisují a kde je jejich jediný zdroj vzhledu |
+| [komponenty-stav.md](komponenty-stav.md) | stav všech komponent Disca × aSteroid (hotovo / chybí), odkazy na Figmu a třídy; vizuálně ve styleguidu |
 | [responzivita.md](responzivita.md) | responzivní chování hlavičky a postup ověření |
 | [clanky-ke-kategoriim.md](clanky-ke-kategoriim.md) | články ke kategoriím: data, zveřejnění, provoz, převod ručních článků |
 | [../settings-app/README.md](../settings-app/README.md) | aplikace nastavení: cesty, spuštění, nastavení doplňku v Shoptetu |
