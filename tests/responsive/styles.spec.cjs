@@ -8,8 +8,10 @@ const dist = process.env.RESPONSIVE_THEME_DIST || path.join(__dirname, '../../th
 test('every variant style file is listed and every listed variant is built', async () => {
   const {VARIANT_STYLES, styleFiles} = await import('../../theme/src/js/styles.mjs');
   const listed = Object.values(VARIANT_STYLES).flatMap(({prefix, values}) => values.map((value) => `${prefix}-${value}.css`));
-  const built = fs.readdirSync(dist).filter((file) => file.endsWith('.css') && file !== 'asteroid.css');
+  // Kopie CSS Disca (base-blank.css) se staví jen pro testy, e-shop ji nenačítá (docs/blank-mode.md).
+  const built = fs.readdirSync(dist).filter((file) => file.endsWith('.css') && !['asteroid.css', 'base-blank.css'].includes(file));
   expect(listed.sort()).toEqual(built.sort());
+  for (const config of [{}, {styleMode: 'blank'}]) expect(styleFiles(config)).not.toContain('base-blank');
 
   expect(styleFiles({header: 'v2', banners: 'cards'})).toEqual(['asteroid', 'header-v2', 'banners-cards', 'product-card-default']);
   // Neznámá hodnota → výchozí varianta; výchozí vzhled kategorie je v základu (bez souboru).

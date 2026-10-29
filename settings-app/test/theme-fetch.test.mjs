@@ -40,7 +40,7 @@ test('preview styles use their own version rather than the script version', () =
   assert.equal(inserted[0].href, 'https://shop.test/header-v2.css?v=css-version');
 });
 
-test('blank fallback precedes the theme with both older and missing stylesheet snippets', () => {
+test('missing stylesheets are added once and after the theme base with older snippets', () => {
   const source = readFileSync(new URL('../../theme/src/js/main.js', import.meta.url), 'utf8');
   for (const initial of [[], ['asteroid'], ['header-v1']]) {
     const ordered = [];
@@ -58,13 +58,15 @@ test('blank fallback precedes the theme with both older and missing stylesheet s
         querySelectorAll: () => [...ordered], createElement: () => element(),
         head: { append: (link) => ordered.push(link) },
       },
-      styleFiles: () => ['base-blank', 'asteroid', 'header-v1'],
+      styleFiles: () => ['asteroid', 'header-v1', 'banners-default'],
     });
     runInContext(source.slice(source.indexOf('function ensureStyles('), source.indexOf('function start(')), context);
     context.ensureStyles({});
     context.ensureStyles({});
     const names = ordered.map((link) => link.dataset.asStyle);
-    assert.ok(names.indexOf('base-blank') < names.indexOf('asteroid'), initial.join(','));
-    assert.equal(names.filter((name) => name === 'base-blank').length, 1);
+    // Základ je ve vloženém kódu vždy; bez něj (jen u uměle neúplného kódu) se pořadí neověřuje.
+    if (!initial.length || initial.includes('asteroid')) assert.ok(names.indexOf('asteroid') < names.indexOf('header-v1'), initial.join(','));
+    for (const name of ['asteroid', 'header-v1', 'banners-default']) assert.equal(names.filter((n) => n === name).length, 1, name);
+    assert.ok(!names.includes('base-blank'));
   }
 });

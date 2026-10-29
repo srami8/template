@@ -33,7 +33,6 @@ const PRODUCT_COLUMNS = [4, 5, 6];
 const CATEGORY_LAYOUTS = ['default', 'background', 'image', 'image-wide'];
 
 const DEFAULTS = {
-  styleMode: 'disco',
   header: 'v1',
   categoryLayout: 'default',
   // Světlé pozadí pod popisem a obrázkem (jen vzhledy image a image-wide).
@@ -88,11 +87,9 @@ function ensureStyles(config) {
     const version = config.styleVersions?.[name] || Date.now();
     link.href = new URL(`${name}.css?v=${encodeURIComponent(version)}`, source).href;
     link.dataset.asStyle = name;
-    // Kompatibilní základ patří vždy před vzhled aSteroid (i se starším snippetem).
-    if (name === 'base-blank' && base) base.before(link);
-    else if (last) last.after(link);
+    if (last) last.after(link);
     else document.head.append(link);
-    if (name !== 'base-blank' || !base) last = link;
+    last = link;
   });
 }
 

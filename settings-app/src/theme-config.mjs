@@ -9,11 +9,6 @@ import { styleFiles, VARIANT_STYLES, BASE_STYLE } from '../../theme/src/js/style
 import { HEADING_SIZES, headingOverrides, headingStyle } from '../../theme/src/js/typography.mjs';
 import { assignmentsVersion, hasAssignments } from './category-articles.mjs';
 
-export const STYLE_MODES = [
-  { value: 'disco', label: 'Výchozí styly Disca', hint: 'Běžný režim: Shoptet načítá svůj CSS základ.' },
-  { value: 'blank', label: 'Blank mode – základ v aSteroid', hint: 'Nejdřív uložte tuto volbu. Potom v Shoptetu vypněte pouze výchozí CSS; JavaScript ponechte zapnutý. Šablona zůstává Disco.' },
-];
-
 export const HEADER_VARIANTS = [
   { value: 'v1', label: 'Kategorie v řádku pod hlavičkou' },
   { value: 'v2', label: 'Tlačítko „Katalog produktů“ + odkazy na stránky' },
@@ -110,7 +105,6 @@ export const MAX_HOME_CATEGORIES = 16;
 export const HOME_CATEGORIES_TITLE = 'Tohle u nás zrovna frčí';
 
 export const DEFAULT_THEME_CONFIG = {
-  styleMode: 'disco',
   header: 'v1',
   banners: 'default',
   phone: null,
@@ -250,9 +244,9 @@ export function themeConfigFromForm(form, { categories, previous } = {}) {
     title: text(form.get('shopReviewsTitle'), 80),
   };
 
-  const styleMode = STYLE_MODES.some((mode) => mode.value === form.get('styleMode'))
-    ? form.get('styleMode') : previous?.styleMode || DEFAULT_THEME_CONFIG.styleMode;
-  return { styleMode, header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, headings, categoryLayout, categoryTint, categoryTintColor, categoryTintDark, shopReviews };
+  // Volba Blank mode (styleMode) je skrytá, dokud aSteroid sám nenahradí CSS Disca (docs/blank-mode.md);
+  // dřívější uložená hodnota se proto do nastavení nepřenáší.
+  return { header, banners, phone, quickLinks, navLinks, homeCategories, productColumns, headings, categoryLayout, categoryTint, categoryTintColor, categoryTintDark, shopReviews };
 }
 
 function escapeAttribute(value) {

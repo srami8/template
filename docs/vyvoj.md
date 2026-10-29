@@ -8,7 +8,7 @@ Pravidla práce a spolupráce: [AGENTS.md](../AGENTS.md). Zadání a principy: [
 |---|---|
 | [cart-widget.md](cart-widget.md) | mobilní panel košíku, nativní ovládání a doprava zdarma |
 | [kategorie.md](kategorie.md) | sidebar, filtry, řazení a stránkování kategorie |
-| [blank-mode.md](blank-mode.md) | zapnutí CSS-only Blank mode, návrat a správa kompatibilního základu |
+| [blank-mode.md](blank-mode.md) | Blank mode = jen styly aSteroidu: stav, měření toho, co chybí bez CSS Disca, postup převodu |
 | [komponenty.md](komponenty.md) | prvky Disca, kde se vypisují a kde je jejich jediný zdroj vzhledu |
 | [komponenty-stav.md](komponenty-stav.md) | stav všech komponent Disca × aSteroid (hotovo / chybí), odkazy na Figmu a třídy; vizuálně ve styleguidu |
 | [responzivita.md](responzivita.md) | responzivní chování hlavičky a postup ověření |
@@ -38,11 +38,9 @@ E-shop (HTML šablony Disco)
 - **settings-app/**: Node.js 18+ bez závislostí. Instalace doplňku, stránka nastavení, zápis kódu do e-shopu, veřejný soubor článků.
 - Skript šablony je blokující v `<head>`: třídy na `<html>` se nastaví před prvním vykreslením (žádné přepnutí varianty po načtení) a jeho DOMContentLoaded běží před sliderem Shoptetu.
 
-## CSS-only Blank mode
+## Blank mode = jen styly aSteroidu
 
-`styleMode` je `disco` (výchozí, beze změny stávajících instalací) nebo `blank`. Ve druhém režimu snippet načte `base-blank.css` **před** `asteroid.css` a variantami. Základ je verzovaný snapshot Disca 13 v `theme/src/vendor/disco`, sestavený lokálně včetně fontu ikon. Build ověřuje SHA256 manifestu a kopíruje fonty do dist; deploy je nahraje spolu s CSS. Písmo obsahu a barevné proměnné nadále dodává Shoptet podle administrace. `styleVersions` obsahuje i otisk podkladu; JS umí podklad doplnit před existující asteroid.css u starého snippetu.
-
-Nejde o režim bez JS ani o migraci HTML na Classic. Používá se stále Disco a nativní JS. Úplný kompatibilní podklad se zatím záměrně neprořezává podle první stránky: obsahuje i tabulky, formuláře, nákup a otevřené stavy. Postup aktivace, návratu a následného čištění je v [blank-mode.md](blank-mode.md). Návod pro obchodníka je tam také; externí Claude Docs příručka nebyla upravena.
+E-shop načítá vždy CSS Shoptetu (Disco) a za ním `asteroid.css` s variantami. Blank mode (vypnuté CSS Shoptetu) má ukázat jen styly aSteroidu; volba je v nastavení skrytá, dokud je aSteroid sám nepokryje (dřívější uložené `styleMode` se ignoruje). Kopie CSS Disca 13 (`theme/src/vendor/disco` → `dist/base-blank.css` s fontem ikon) se do e-shopu nenačítá a nejde do vydání; build ji dál sestavuje pro testy se skutečným HTML a jako referenci. `npm run preview:blank` (port 8793) ukazuje e-shop s vypnutým CSS Shoptetu jen se styly aSteroidu. Měření a postup převodu: [blank-mode.md](blank-mode.md).
 
 ## Konfigurace (`window.asteroidConfig`)
 

@@ -2,9 +2,10 @@
 // (scss/variants/<název>.scss → dist/<název>.css). Jediný seznam pro šablonu i settings-app
 // (vkládaný kód). Nová varianta = nový soubor ve scss/variants a název tady. Hodnota v `base`
 // nemá vlastní soubor (vzhled je v základu), e-shop pro ni nic dalšího nenačítá.
+// Kopie CSS Disca (dist/base-blank.css) sem nepatří: e-shop ji nenačítá, slouží jen testům a
+// náhledu při převodu stylů Disca do aSteroidu (docs/blank-mode.md).
 
 export const VARIANT_STYLES = {
-  styleMode: { prefix: 'base', values: ['blank'], base: ['disco'], beforeBase: true },
   header: { prefix: 'header', values: ['v1', 'v2'] },
   banners: { prefix: 'banners', values: ['default', 'content', 'fullwidth', 'cards'] },
   productCard: { prefix: 'product-card', values: ['default'] },
@@ -14,15 +15,14 @@ export const VARIANT_STYLES = {
 export const BASE_STYLE = 'asteroid';
 
 // Varianta bez nastavení (nebo s neznámou hodnotou): stejné výchozí jako v js/main.js.
-const DEFAULTS = { styleMode: 'disco', header: 'v1', banners: 'default', productCard: 'default', categoryLayout: 'default' };
+const DEFAULTS = { header: 'v1', banners: 'default', productCard: 'default', categoryLayout: 'default' };
 
-// Názvy souborů (bez .css): kompatibilní podklad, základ aSteroid, varianty.
+// Názvy souborů (bez .css): základ aSteroid a za ním varianty.
 export function styleFiles(config = {}) {
-  const before = [];
   const files = [BASE_STYLE];
-  Object.entries(VARIANT_STYLES).forEach(([key, { prefix, values, beforeBase }]) => {
+  Object.entries(VARIANT_STYLES).forEach(([key, { prefix, values }]) => {
     const value = values.includes(config[key]) ? config[key] : DEFAULTS[key];
-    if (values.includes(value)) (beforeBase ? before : files).push(`${prefix}-${value}`);
+    if (values.includes(value)) files.push(`${prefix}-${value}`);
   });
-  return [...before, ...files];
+  return files;
 }

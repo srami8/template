@@ -6,23 +6,21 @@ import { rewriteHtml } from '../../tests/shop/blank-preview.mjs';
 process.env.SHOPTET_CLIENT_SECRET ||= 'test';
 const { themeConfigFromForm, buildHeaderSnippet, DEFAULT_THEME_CONFIG } = await import('../src/theme-config.mjs');
 
-test('blank foundation is opt-in and precedes all theme styles', () => {
-  assert.equal(styleFiles({}).includes('base-blank'), false);
-  assert.deepEqual(styleFiles({ styleMode: 'blank' }).slice(0, 2), ['base-blank', 'asteroid']);
+// Blank mode má ukázat jen styly aSteroidu: kopie CSS Disca se do e-shopu nikdy nenačítá.
+test('the Disco copy is never loaded by the shop code, not even with a saved blank mode', () => {
+  for (const config of [{}, { styleMode: 'blank' }]) assert.equal(styleFiles(config).includes('base-blank'), false);
+  assert.equal(styleFiles({})[0], 'asteroid');
   const html = buildHeaderSnippet({ ...DEFAULT_THEME_CONFIG, styleMode: 'blank' });
-  assert.ok(html.indexOf('data-as-style="base-blank"') < html.indexOf('data-as-style="asteroid"'));
-  assert.equal((html.match(/data-as-style="base-blank"/g) || []).length, 1);
+  assert.ok(!html.includes('base-blank'));
   assert.ok(html.length <= 8192);
 });
 
-test('settings preserve blank mode when an older form omits the new field', () => {
-  assert.equal(themeConfigFromForm(new URLSearchParams('styleMode=blank')).styleMode, 'blank');
-  assert.equal(themeConfigFromForm(new URLSearchParams('styleMode=invalid')).styleMode, 'disco');
-  assert.equal(themeConfigFromForm(new URLSearchParams(), { previous: { styleMode: 'blank' } }).styleMode, 'blank');
-  assert.equal(themeConfigFromForm(new URLSearchParams('styleMode=disco'), { previous: { styleMode: 'blank' } }).styleMode, 'disco');
+test('settings drop the hidden blank mode choice, including an older saved value', () => {
+  assert.equal(themeConfigFromForm(new URLSearchParams('styleMode=blank')).styleMode, undefined);
+  assert.equal(themeConfigFromForm(new URLSearchParams(), { previous: { styleMode: 'blank' } }).styleMode, undefined);
 });
 
-test('blank preview removes only native template CSS and keeps native JS and selected fonts', () => {
+test('blank preview removes only native template CSS, keeps native JS and fonts and adds no Disco copy', () => {
   const html = `<link href="https://cdn.myshoptet.com/prj/dist/master/shop/dist/main-13.less.hash.css" rel="stylesheet">
 <link href="https://cdn.myshoptet.com/prj/dist/master/shop/dist/font-shoptet-13.css.hash.css" rel="stylesheet">
 <link href="https://cdn.myshoptet.com/font-face/poppins.css" rel="stylesheet">
@@ -35,11 +33,13 @@ test('blank preview removes only native template CSS and keeps native JS and sel
   assert.ok(!blank.includes('main-13.less'));
   assert.ok(!blank.includes('font-shoptet-13.css'));
   assert.ok(blank.includes('poppins.css') && blank.includes('other-addon.css') && blank.includes('main-3g.js'));
-  assert.ok(blank.includes('/__as/base-blank.css'));
+  assert.ok(!blank.includes('base-blank'));
+  assert.ok(blank.includes('/__as/asteroid.css'));
   assert.ok(rewriteHtml(html, false).includes('main-13.less'));
 });
 
-test('blank foundation is self-contained and its icon fonts are deployed beside it', () => {
+// Kopie Disca zůstává jen pro testy a porovnání; musí být soběstačná i s fonty ikon.
+test('the Disco copy for tests is self-contained and its icon fonts sit beside it', () => {
   const css = readFileSync(new URL('../../theme/dist/base-blank.css', import.meta.url), 'utf8');
   assert.ok(!/@import\b/.test(css));
   const urls = [...css.matchAll(/url\(([^)]+)\)/g)].map((m) => m[1].replace(/^["']|["']$/g, '')).filter((u) => !u.startsWith('data:'));

@@ -1,3 +1,21 @@
+# Blank mode = jen styly aSteroidu; měření bez CSS Disca (Claude)
+
+**Zadání:** majitel upřesnil, že Blank mode má zobrazit styly aSteroidu, ne kopii CSS Disca; změřit, co se bez CSS Disca rozbije, sepsat to jako plán převodu, volbu dočasně skrýt a přepsat dokumentaci.
+
+**Co se změnilo:**
+- `theme/src/js/styles.mjs`: kopie Disca (`base-blank.css`) už není ve seznamu stylů; e-shop ji nenačítá ani s dříve uloženým `styleMode: blank` (testovací e-shop ji dosud načítal navíc ke CSS Shoptetu). `js/main.js` bez zvláštního zařazení kopie.
+- settings-app: karta „Základ stylů“ a `styleMode` odebrané z nastavení; uložená hodnota se ignoruje.
+- `tests/shop/blank-preview.mjs`: port 8793 = vypnuté CSS Shoptetu a jen styly aSteroidu (bez kopie Disca).
+- Testy settings-app přepsané na nové chování (kopie se nikdy nenačte, volba se ignoruje, náhled bez kopie, pořadí doplňovaných stylů).
+- Dokumentace a pokyny: `docs/blank-mode.md` přepsaný (stav, co dodává CSS Disca, postup převodu, kopie jen ve vývoji), `AGENTS.md`, `CLAUDE.md`, `docs/vyvoj.md`; `docs/komponenty-stav.md` se sloupcem „Bez CSS Disca“.
+- Styleguide (artefakt) má třetí sloupec „aSteroid bez CSS Disca“ a filtr podle výsledku.
+
+**Měření:** 48 komponent na 1440 a 390 px, CSS Shoptetu (`main-13`, `font-shoptet-13`) i kopie zablokované. Rozpadá se 41, drobné rozdíly 1 (karta produktu na počítači), 6 nejde nafotit. Hlavní příčiny: skryté prvky (přihlašovací formulář, mobilní menu, okna) se ukazují, chybí reset a mřížka, písmo ikon a základ velikostí nativních komponent.
+
+**Otevřené:** samotný převod (pořadí v `docs/blank-mode.md`); u obchodníků zůstává CSS Shoptetu zapnuté.
+
+---
+
 # Písmo tlačítek Disca podle návrhu (Claude)
 
 **Zadání:** majitel schválil sjednotit i písmo tlačítek Shoptetu bez vlastního návrhu.

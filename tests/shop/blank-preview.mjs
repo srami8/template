@@ -1,4 +1,5 @@
-// Lokální náhled skutečného HTML: port 8792 původní CSS, 8793 CSS-only Blank mode.
+// Lokální náhled skutečného HTML: port 8792 původní CSS, 8793 Blank mode: CSS Shoptetu (vzhled Disca
+// a písmo ikon) vypnuté, jen styly aSteroidu. Ukazuje, co aSteroid ještě sám nepokrývá.
 // Zachovává JS Shoptetu, font z administrace a ostatní doplňky. Nastavení e-shopu nemění.
 // Veřejné GET/HEAD a prázdný nativní POST pro dočtení produktů dvou testovacích kategorií.
 // Objednávku, košík ani jiné formuláře proxy neodešle.
@@ -23,7 +24,7 @@ export function rewriteHtml(html, blank) {
   const match = html.match(/window\.asteroidConfig\s*=\s*(\{[^\n]*\});/);
   // Nativní AJAX může vrátit jen HTML fragment, který nemá hlavičku s konfigurací.
   if (!match) return localLinks(html);
-  const config = { ...JSON.parse(match[1]), styleMode: blank ? 'blank' : 'disco' };
+  const config = JSON.parse(match[1]);
   let result = html.replace(match[0], `window.asteroidConfig = ${JSON.stringify(config).replace(/</g, '\\u003c')};`);
   result = result.replace(/<link\b[^>]*>/gi, (tag) => {
     const href = tag.match(/href=["']([^"']+)["']/i)?.[1];
