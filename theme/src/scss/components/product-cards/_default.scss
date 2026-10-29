@@ -13,6 +13,7 @@
 @use "../../tools/quantity";
 @use "../../tools/flag";
 @use "../../tools/rating";
+@use "../../tools/icon" as *;
 
 // Vnitřní okraj karty: 20 px, v úzké kartě (6 produktů vedle sebe) 12 px, aby se počítadlo
 // a tlačítko vešly vedle sebe. Pozice příznaků a slevy z něj vycházejí.
@@ -230,6 +231,170 @@ $image-inset: 12px;
           padding-right: 14px;
           padding-left: 14px;
         }
+      }
+    }
+  }
+}
+
+// Karta ve výpisu produktů (#products: kategorie, hledání …) podle Figmy „Produkt“ Type=1/4
+// (112:5174), v úzké kartě Type=Mobile (1696:6752). Úvodní stránka zůstává podle Type=1/6 výše
+// (rozhodnutí majitele). Zarovnání vlevo, krátký popis, dostupnost vedle ceny; mřížka s oblastmi
+// místo pořadí flexu, obaly Disca zůstávají display: contents. Volný prostor bere řádek popisu,
+// takže dostupnost, cena a tlačítka jsou v řadě karet ve stejné výšce dole.
+.as-theme.as-product-card-default #products .p {
+  // Obrázek: čtverec nejvýš 220 px (v kartě 284 px s okraji 2 × 12 px), na telefonu přes šířku.
+  --as-card-image: min(220px, calc(100cqw - #{$image-inset * 2}));
+  // Kolečko slevy přesahuje spodek obrázku a od pravého okraje obsahu karty je odsazené.
+  --as-card-discount-overlap: 34px;
+  --as-card-discount-right: 14px;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto auto 1fr auto auto;
+  grid-template-areas:
+    "image image"
+    "stars stars"
+    "name name"
+    "desc desc"
+    "availability prices"
+    "tools tools";
+  align-items: start;
+  padding: 20px var(--as-card-padding-x);
+  text-align: left;
+
+  // Úzká karta (telefon 2 vedle sebe, 3–4 sloupce vedle filtrů): Figma Type=Mobile.
+  @container product-card (max-width: 259px) {
+    --as-card-padding-x: 12px;
+    --as-card-image: min(220px, 100cqw);
+    --as-card-discount-overlap: 54px;
+    --as-card-discount-right: 6px;
+
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr auto auto auto;
+    grid-template-areas:
+      "image"
+      "stars"
+      "name"
+      "desc"
+      "availability"
+      "prices"
+      "tools";
+  }
+
+  // Telefon 320 px: s menším okrajem se počítadlo a tlačítko vejdou vedle sebe.
+  @container product-card (max-width: 169px) {
+    --as-card-padding-x: 8px;
+  }
+
+  // Příznaky se měří od rohu karty (vlevo 12, nahoře 16 px), ne od obrázku.
+  .image {
+    position: static;
+    grid-area: image;
+    justify-self: center;
+    width: var(--as-card-image);
+  }
+
+  .flags-default {
+    top: 16px;
+    left: 12px;
+  }
+
+  .stars-wrapper {
+    grid-area: stars;
+    justify-self: start;
+  }
+
+  // Bez hodnocení návrh místo pro hvězdičky nedrží.
+  .stars-placeholder {
+    display: none;
+  }
+
+  // Disco dává názvu pevnou výšku na dva řádky a vnitřní okraj.
+  .name {
+    grid-area: name;
+    height: auto;
+    min-height: 0;
+    margin-top: 24px;
+    padding: 0;
+    font-size: var(--as-font-size-body);
+    font-weight: 500;
+  }
+
+  &:has(.stars-wrapper) .name {
+    margin-top: 8px;
+  }
+
+  // Krátký popis (vypisuje ho Shoptet, když ho produkt má), nejvýš 3 řádky.
+  .p-desc {
+    grid-area: desc;
+    display: -webkit-box;
+    margin: 16px 0 0;
+    overflow: hidden;
+    color: var(--as-secondary-400);
+    font-size: var(--as-font-size-small);
+    line-height: 1.4;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+
+    @container product-card (max-width: 259px) {
+      font-size: var(--as-font-size-caption);
+    }
+  }
+
+  .availability {
+    grid-area: availability;
+    align-self: baseline;
+    margin-top: 16px;
+  }
+
+  .p-bottom .prices {
+    grid-area: prices;
+    align-self: baseline;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 16px 0 0 4px;
+
+    @container product-card (max-width: 259px) {
+      justify-content: flex-start;
+      margin: 4px 0 0;
+    }
+  }
+
+  // Disco dává slevě okraj 5 px, poloha je podle návrhu od okraje karty.
+  .price-save {
+    top: calc(20px + var(--as-card-image) - var(--as-card-discount-overlap));
+    right: calc(var(--as-card-padding-x) + var(--as-card-discount-right));
+    margin: 0;
+  }
+
+  // Počítadlo vlevo, tlačítko vpravo; samotné tlačítko (Detail u variant) vlevo, Disco ho
+  // staví na střed.
+  .p-bottom .p-tools {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    grid-area: tools;
+    margin-top: 12px;
+    text-align: left;
+
+    form {
+      flex: 1 1 auto;
+      justify-content: space-between;
+    }
+  }
+
+  // Úzká karta: do košíku tlačítkem s ikonou (Small, kruh 44 px), text zůstává pro čtečky.
+  @container product-card (max-width: 259px) {
+    .p-tools form {
+      column-gap: 4px;
+    }
+
+    .p-tools .add-to-cart-button {
+      @include button.icon-only(sm);
+
+      &::before {
+        @include icon(add-shopping-cart, 20px);
       }
     }
   }

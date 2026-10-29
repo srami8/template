@@ -132,7 +132,8 @@ const ITEMS = [
   ['Karta: štítek', '/sperky/', '.products-block .p .flag', null, { size: true }],
   ['Karta: sleva', '/sperky/', '.products-block .p .price-save', null, { pseudo: '::before', props: ['fontSize', 'fontWeight', 'color'] }],
   ['Karta: počítadlo', '/sperky/', '.products-block .p .quantity', null, {}],
-  ['Karta: tlačítko', '/sperky/', '.products-block .p .p-tools .btn', null, { size: true }],
+  // Na telefonu je do košíku tlačítko jen s ikonou (Figma Type=Mobile 1696:6752), písmo se neporovnává.
+  ['Karta: tlačítko', '/sperky/', '.products-block .p .p-tools .btn', null, {}],
   // Detail produktu
   ['Detail: štítek', DETAIL, '.p-image .flags-default .flag', null, { size: true }],
   ['Detail: sleva', DETAIL, '.flags-extra .flag-discount', null, { size: true }],

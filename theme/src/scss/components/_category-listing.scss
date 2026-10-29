@@ -41,13 +41,23 @@
   }
 
   // Čtyři sloupce se sidebarem na širokém desktopu; úzké karty se samy zalomí níže.
+  // Karty leží těsně vedle sebe, řádky 40 px od sebe (Figma 112:3621); na telefonu od okraje
+  // k okraji obrazovky a řádky těsně pod sebou (Figma 1633:10268).
   #products.products-block {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 0;
+    gap: 40px 0;
     width: 100%;
     margin: 0;
     padding: 0;
+
+    // Od okraje k okraji okna bez ohledu na okraj obsahu (na telefonu má Disco 16 px).
+    @include bp.mobile {
+      gap: 0;
+      width: auto;
+      margin-right: calc(50% - 50vw);
+      margin-left: calc(50% - 50vw);
+    }
 
     &::before,
     &::after {

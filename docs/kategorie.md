@@ -12,7 +12,7 @@ Sekce filtrů lze sbalit jejich nadpisem. Na telefonu se celé filtry otevíraj�
 
 ## Implementace
 
-- `components/_category-listing.scss`: grid stránky a výpisu, řazení a spodní ovládání. Sidebar 262 px + mezera 22 px v existujícím kontejneru. Výpis 2 / 3 / 4 sloupce podle dostupné šířky. Varianty karet a horní části kategorie dál zůstávají v dosavadních souborech; nekopírují se.
+- `components/_category-listing.scss`: grid stránky a výpisu, řazení a spodní ovládání. Sidebar 262 px + mezera 22 px v existujícím kontejneru. Výpis 2 / 3 / 4 sloupce podle dostupné šířky, karty těsně vedle sebe, řádky 40 px od sebe; na telefonu (pod 768 px) od okraje k okraji okna a řádky těsně pod sebou (Figma 112:3621, 1633:10268). Karta výpisu viz `docs/komponenty.md` (Karta produktu). Varianty karet a horní části kategorie dál zůstávají v dosavadních souborech; nekopírují se.
 - `components/_category-filters.scss`: karty filtrů s rámečkem, zaoblením 12 px a mezerou 14 px, počty v pilulkách, původní cenový slider. Flex `order` řadí štítky, cenu a parametry, bez přesunu formulářů v DOM. Pravidla platí i po nativním přesunu filtrů na mobil.
 - `tools/_button.scss`: neutrální `tertiary` + velikost `listing` 48 px; používají je řazení, tlačítko Filtry i stránkování. Stávající velikosti a varianty se nemění.
 - Checkbox je globální pro celý e-shop (`tools/_checkbox.scss`, zapnutý v `components/_choices.scss`: 22 px, rádius 6 px, check 16 px v hlavní barvě). `_category-filters.scss` mění jen řádek filtru: počet vpravo, prvek svisle na středu, podtržení při najetí.

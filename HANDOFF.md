@@ -1,3 +1,23 @@
+# Karta produktu ve výpisu podle Figmy 1/4 a Mobile (Claude)
+
+**Zadání:** majitel: karta ve výpisu produktů na desktopu podle Figmy „Produkt“ Type=1/4 (112:5174, ukázka výpisu 112:3621), na telefonu Type=Mobile (1696:6752, výpis 1633:10268); ověřit, zda jde ve výpisu mít počítadlo kusů. Rozhodnutí majitele: tlačítko v kartě Small 44 px podle komponenty Button (návrh karty má 36 px / 14 px), nový vzhled jen ve výpisu produktů – úvodní stránka zůstává podle Type=1/6.
+
+**Počítadlo kusů:** Shoptet ho ve výpisu vypisuje sám (Nastavení → Produkty → Zobrazení → „Tlačítko Košík“, jen u produktů bez variant; u variant je tlačítko Detail). Na testovacím e-shopu je zapnuté, karta ho už stylovala (`tools/quantity` `stepper`).
+
+**Co se změnilo:**
+- `components/product-cards/_default.scss`: nový blok `.as-theme.as-product-card-default #products .p` (výpis produktů – kategorie, hledání; úvodní stránka má `#products-N`, nejprodávanější `#productsTop`, ty se nemění). Mřížka s oblastmi místo pořadí flexu: obrázek nejvýš 220 px na střed, hvězdičky, název 16 px / 500 vlevo, krátký popis `.p-desc` 14 px max. 3 řádky, dostupnost vlevo a cena vpravo v řádku, počítadlo vlevo a tlačítko Small 44 px vpravo. Volné místo bere řádek popisu, takže spodní část karet v řadě lícuje. Příznaky od rohu karty (12 / 16 px), kolečko slevy 34 px přes spodek obrázku a 34 px od pravého okraje karty. Bez hodnocení se místo pro hvězdičky nedrží (jako v návrhu).
+- Karta užší než 260 px (telefon, 3–4 sloupce vedle filtrů od 768 do 1439 px): Type=Mobile – okraj 12 px, obrázek přes šířku, cena pod dostupností, popis 13 px, do košíku `button.icon-only(sm)` s novou ikonou `add-shopping-cart` (z Figmy, `theme/src/icons/`), text zůstává v `aria-label`. Pod 170 px (telefon 320) okraj 8 px, aby se počítadlo a tlačítko vešly vedle sebe.
+- Přebité hodnoty Disca: název má pevnou výšku a vnitřní okraj 16 px, sleva okraj 5 px, `.p-tools` staví tlačítko Detail na střed.
+- `components/_category-listing.scss`: řádky výpisu 40 px od sebe (dosud 24); na telefonu výpis od okraje k okraji okna (`calc(50% - 50vw)`, Disco má na telefonu okraj 16 px) a řádky těsně pod sebou.
+- `tests/shop/audit.cjs`: u „Karta: tlačítko“ se neporovnává velikost písma (na telefonu je jen ikona podle návrhu).
+- Nový test `tests/responsive/listing-card.spec.cjs` (zkrácený skutečný markup Disca + kompatibilní CSS): desktop zarovnání, řádek dostupnost/cena, počítadlo a tlačítko 44 px, lícování spodku karet, sleva a příznaky, Detail vlevo, mezera řádků 40 px; telefon 390/360/320 od okraje k okraji, cena pod dostupností, ikona 44 px, vše v kartě.
+
+**Vynecháno:** srdíčko (oblíbené) z návrhu – Shoptet ve výpisu oblíbené produkty nevypisuje. Stav po najetí je ve Figmě jen u Type=1/6.
+
+**Ověření:** e-shop s podstrčeným CSS i po nasazení (1920, 1440, 1280, 1024, 768, 390, 360, 320 px; kategorie i hledání): bez přetékání, název lícuje s dostupností, na 1920 karta 274 px s tlačítkem 113 × 44 px vpravo, na 390 px karty 2 × 195 px jako v návrhu. Úvodní stránka beze změny (na střed, název 14 px). Snímky před/po: změna jen výpisů kategorie a hledání (karty nižší o rezervu hvězdiček a pevnou výšku názvu, telefon přes celou šířku), ovládání pod výpisem posunuté o zlomek pixelu. Audit 5 rozdílů ze 113 (dosavadní). Sada 182/182, settings-app 5/5.
+
+---
+
 # Velikosti tlačítek podle komponenty Button (Claude)
 
 **Zadání:** majitel rozhodl, že velikosti tlačítek budou podle komponenty Button ve Figmě (82:2334): Large 60, Medium 52, Small 44 px (dosud v kódu podle návrhů stránek 52 / 48 / 36 px).
