@@ -33,6 +33,14 @@ $status: (
   rating: #ffba34,
 );
 
+// Pozadí hlášek (Figma 1738:67). Stavové barvy, v administraci Shoptetu nejsou.
+$message: (
+  success: #288555,
+  error: #c51717,
+  info: #1a52a7,
+  warning: #e06941,
+);
+
 $white: #fff;
 
 // Pozadí stránky (ve Figmě pozadí rámců, není jako proměnná).

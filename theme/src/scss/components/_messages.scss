@@ -1,0 +1,95 @@
+// Hlášky Shoptetu jako toast (Figma 1738:67, zadání majitele: nejvýš 600 px, dají se zavřít).
+// Markup a chování jsou nativní: JS Shoptetu (showMessage) vkládá do .messages
+// .msg.msg-<typ> > .container > span, klik kamkoli na hlášku ji zavře (křížek je ::after, není to
+// samostatný prvek) a po chvíli zmizí sama. Stejný vzhled má .msg i mimo .messages (hlídací pes).
+// Umístění podle zadání majitele: dole na středu, 20 px od spodní hrany okna, na všech zařízeních;
+// na užším okně 16 px od bočních okrajů.
+
+@use "../tools/icon" as *;
+
+$icons: (
+  success: check-circle,
+  error: error-outline,
+  info: info,
+  warning: warning-amber,
+);
+
+.as-theme .msg {
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 20px;
+  border: 0;
+  border-radius: 4px;
+  color: var(--as-white);
+  font-family: var(--as-font-family);
+  font-size: 12px;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: opacity 0.3s ease-out;
+
+  // Bez .hidden: zavíraná hláška musí zmizet podle .hidden z Disca, resp. ze základu ve vrstvě.
+  &:not(.hidden) {
+    display: flex;
+  }
+
+  &::after {
+    @include icon(close, 12px);
+  }
+
+  // Disco kontejneru dává šířku stránky, tady jen vyplní místo mezi ikonami. Dlouhý e-mail nebo adresa
+  // se zalomí, jinak by přetekly pod křížek.
+  .container {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    overflow-wrap: anywhere;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  @each $type, $name in $icons {
+    &.msg-#{$type} {
+      background-color: var(--as-message-#{$type});
+
+      &::before {
+        @include icon($name, 20px);
+      }
+    }
+  }
+
+  // Disco barví msg-notice stejně jako úspěch.
+  &.msg-notice {
+    background-color: var(--as-message-success);
+
+    &::before {
+      @include icon(check-circle, 20px);
+    }
+  }
+}
+
+// Toast: pás přes šířku okna nesmí blokovat klikání na stránku vedle hlášky.
+.as-theme .messages {
+  top: auto;
+  bottom: 20px;
+  // Nad cookie lištou Shoptetu (z-index 100000001, je u spodní hrany okna a hlášku by schovala).
+  z-index: 100000002;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 16px;
+  pointer-events: none;
+
+  // Na střed přes okraje hlášky, ne přes flex rodiče: poloha tak nezávisí na tom, kam ji JS vloží.
+  .msg {
+    max-width: 600px;
+    margin-right: auto;
+    margin-left: auto;
+    pointer-events: auto;
+  }
+}

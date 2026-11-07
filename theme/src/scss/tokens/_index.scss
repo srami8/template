@@ -71,6 +71,9 @@ $on-light: color.to-space(colors.$white, xyz-d65);
   @each $name, $value in colors.$status {
     --as-#{$name}: #{$value};
   }
+  @each $name, $value in colors.$message {
+    --as-message-#{$name}: #{$value};
+  }
   --as-white: #{colors.$white};
   --as-page-bg: #{colors.$page-bg};
   // Pozadí hlavičky z administrace (barva a případně obrázek).

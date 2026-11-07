@@ -1,3 +1,45 @@
+# Hlášky Shoptetu jako toast (Claude)
+
+**Zadání (majitel):** návrh Figma 1704:6158 / 1738:67; toast nejvýš 600 px, dá se zavřít; dole na středu, 20 px od spodní hrany okna.
+
+**Co se změnilo:**
+- `components/_messages.scss` nad nativním markupem `.messages > .msg.msg-<typ> > .container > span`: pozadí podle typu, ikona `::before`, křížek `::after`, zaoblení 4 px, 12 px písmo šablony. Zavírá nativní klik na hlášku (`hideMsg`), proto stačí pseudoprvek. `msg-notice` má vzhled success.
+- `.messages` je dole na středu (na užším okně 16 px od bočních okrajů), nad cookie lištou (`z-index` 100000002), prázdné místo vedle hlášky propouští kliknutí (`pointer-events`).
+- Tokeny `--as-message-*` (`tokens/_colors.scss`, `_index.scss`), ikony `check-circle`, `error-outline`, `info`, `warning-amber` v `theme/src/icons/`.
+- Test `tests/responsive/messages.spec.cjs`: s CSS Disca i bez něj; poloha, typy, ikony, zalomení včetně dlouhého e-mailu, proklikávání, skrytí.
+
+**Ověření:** živě na 8 šířkách 1920–320 v obou režimech: 20 px od spodku, na středu, nad cookie lištou, křížek zavírá.
+
+**Otevřené:**
+- Hlášení majitele „vlevo nahoře“ se v Chromiu nepodařilo zopakovat, Safari a Firefox neověřené. Poloha teď stojí na okrajích `.msg`, nezávisle na rodiči.
+- Bílá na warning `#e06941` má kontrast asi 3,35:1 (pod AA). Text v návrhu je Inter 12 px (nevypadá jako styl souboru), použito písmo šablony.
+- Na telefonu může spodní toast při chybě formuláře zakrýt klávesnice a posun Shoptetu na chybu počítá s hláškou nahoře.
+- V okně hlídacího psa leží křížek pod zavíracím tlačítkem okna (klik na hlášku ji i tak zavře). Stav odkazu a dlouhého textu a telefon nejsou v návrhu, jsou odvozené.
+
+---
+
+# Základ pro Blank mode ve vrstvě `as-foundation` (Claude)
+
+**Zadání (majitel):** bez CSS Shoptetu má e-shop vypadat jako dnes jen ze stylů aSteroidu, s CSS Disca nesmí být žádná změna. Popis a pravidla: `docs/blank-mode.md`.
+
+**Co se změnilo:**
+- `theme/src/scss/foundation/` (`_reset`, `_grid`, `_visibility`), vše v `@layer as-foundation`: reset, `body`, odkazy, mřížka, kostra obsahu, viditelnost, zavřené a otevřené stavy oken a nabídek, mobilní fixní hlavička, vlajky předvolby telefonu, `.cart-inner`, odkazy v textu z administrace.
+- `theme/src/js/template-fonts.js`: bez CSS Shoptetu dočte písmo z administrace podle `shoptet.config.fonts.google.urls`, s CSS Shoptetu nedělá nic.
+- Nástroje přesunuté do repozitáře: `tests/shop/styleguide/` (focení, porovnání, stránka, `docs/komponenty-stav.md`), `tests/shop/foundation-noop.cjs`, `tests/responsive/theme-css.cjs` (`withoutFoundation` pro testy, které Disco emulují ručně). Skripty `npm run foundation:noop`, `blank:measure`, `styleguide*`.
+- Z anonymizace: `tests/responsive/fixtures/footer.html` měla skutečný e-mail a telefon (stejné údaje jsou veřejně v patičce testovacího e-shopu), nově `example.invalid` a nuly. V historii gitu zůstávají; případný přepis je na majiteli.
+
+**Nezávislá kontrola (agenti, jen čtení) našla a je opraveno:** `:is()` v odkazech zvedl specificitu a výjimky v Blank mode neplatily (rozepsaný seznam jako Disco); chybělo `.form-legend` zarovnání vpravo; `foundation:noop` měl nefunkční pojistku proti chybějící vrstvě (BOM), neměřil kroky objednávky a tiše zahazoval šum; `diff.cjs` bral výšku z oříznutého snímku, práh 48 nepoznal světlé rámečky a zmizelou komponentu hlásil jako „Neměřeno“.
+
+**Ověření:** `foundation:noop` 136 měření včetně košíku a kroků 2 a 3 × 4 šířky: 0 rozdílů, košíky vyprázdněné. Bez Disca: krok 3 na telefonu 2 270 px (dříve 40 000 px), hlavička fixní 56 px, vlajky zavřené. 146 z 348 selektorů vrstvy na měřených stránkách prvek nenašlo (hlavně stavy a obsah z administrace): pro ně kontrola nic nedokládá, zrcadlí se přesně podle Disca.
+
+**Čísla z měření se po zpřísnění porovnání nedají srovnávat se staršími** (práh 8 místo 48, skutečná výška, oříznuté snímky bez „Funguje“). Aktuální stav: `docs/komponenty-stav.md`.
+
+**Čeká na rozhodnutí majitele:** obrácené pořadí u `.description p` a `.category-perex p` proti `#content p` (viz `docs/blank-mode.md`): (a) zvýšit selektory aSteroidu, což změní dnešní vzhled, nebo (b) dát `#content p` mimo vrstvu.
+
+**Další části Blank mode (zatím ne):** ikony, základ tlačítek a polí, carousel, colorbox, tabulky, detail, šipky seznamů v obsahu.
+
+---
+
 # Karta produktu jako jedna komponenta všude (Claude)
 
 **Zadání (majitel):** stejný vzhled karty jako ve výpisu má být i v carouselech na úvodní stránce a v detailu v podobných i souvisejících produktech („Proč toto neuděláš rovnou?“). Předchozí krok jsem omezil na `#products` a ještě se ptal, zda i úvodní stránku – chyba proti pravidlu „prvek Disca = jedna globální komponenta“ (pravidlo v paměti zpřesněné).
