@@ -1,0 +1,970 @@
+// Skryté a otevřené stavy pro Blank mode (docs/blank-mode.md): pomocné třídy viditelnosti a prvky,
+// které Disco skrývá stylem a JS Shoptetu je otevírá třídou (okna v hlavičce, menu, „Více“, nabídky,
+// záložky, hlášky, překryvy). Vrstva as-foundation prohrává s každým pravidlem bez vrstvy: s CSS Disca
+// platí jeho pravidla (beze změny), bez Disca tento základ a komponenty aSteroidu ho dál přepisují.
+// Proto jen selektory a vlastnosti, které Disco nastavuje, s jeho výslednými hodnotami, a jen třídy,
+// které jsou v HTML e-shopu nebo je přidává JS. Bez !important (ve vrstvě by přebilo Disco), takže
+// display, který prvku dá komponenta, má přednost i před .hidden a .no-display.
+// Odkazy L2:…/L52:… jsou řádek:sloupec v theme/src/vendor/disco/main.css.
+
+@use "../tools/breakpoints" as bp;
+
+@layer as-foundation {
+  // Proměnné z :root Disca (L1:1), které čtou pravidla níže. První dvě definuje se stejnou hodnotou
+  // i foundation/reset.
+  :root {
+    --colors-surface-primary: #fff;
+    --colors-foregrounds-content-primary: #1f1f1f;
+    --colors-surface-white: #fff;
+    --colors-surface-black: #000;
+    --colors-foregrounds-borders-secondary: #dadada;
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Pomocné třídy
+
+  // Text jen pro čtečky (L2:2438): „Množství“, „Hledat“, nadpisy patičky, past na roboty v přihlášení.
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  // „Přejít na obsah“ (a.skip-link.sr-only) se ukáže po fokusu (L52:46905, L52:46932). Barvy jsou
+  // výsledné: bílé pozadí a černý text vnucuje .sr-only Disca přes !important.
+  .skip-link {
+    transition: none;
+  }
+
+  .skip-link:focus {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 9999999;
+    width: auto;
+    height: auto;
+    margin: inherit;
+    padding: 8px 16px;
+    overflow: auto;
+    clip: auto;
+    border: none;
+    border-radius: 3px;
+    background-color: #fff;
+    color: #000;
+    font-size: 18px;
+  }
+
+  // Skryté prvky (L2:19187, L52:13529, L2:19370, L2:19246): SKU v kartách, meze cenového filtru,
+  // past na roboty v registraci; .hide a .hidden přepíná JS (regiony, hlídací pes, hlášky, záložky).
+  .hidden,
+  .hide,
+  .no-display {
+    display: none;
+  }
+
+  .invisible {
+    visibility: hidden;
+  }
+
+  // Sdílení na detailu: zavřené zůstává ve flexu průhledné pod ikonami, aby se tlačítka sítí
+  // stihla načíst; .js-share-buttons-trigger přepíná .no-display (L52:233693–234348, L52:183318,
+  // L52:318082).
+  .social-buttons-wrapper {
+    position: relative;
+  }
+
+  .social-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--colors-surface-primary);
+  }
+
+  .social-buttons-wrapper .social-buttons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    align-items: center;
+    min-width: 100%;
+    min-height: 100%;
+    padding: 22px 0;
+  }
+
+  .social-buttons.no-display {
+    display: flex;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  // Cena v tlačítku košíku (span.cart-price) až od 1200 px (L2:19423, L2:21107). Jiné třídy .visible-*
+  // a .hidden-* e-shop nepoužívá.
+  .visible-lg-inline-block {
+    display: none;
+  }
+
+  @media (min-width: bp.$wide) {
+    .visible-lg-inline-block { display: inline-block; }
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Rozbalování z JS: formuláře hodnocení a diskuse, údaje v objednávce, kupon
+
+  // Zavřené .js-hidden, JS přidá .visible / .visible-permanent (L52:13660–14156).
+  .js-hidden {
+    position: absolute;
+    max-width: 0;
+    max-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transform: scaleY(0) scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+  }
+
+  .js-hidden.visible,
+  .js-hidden.visible-permanent {
+    position: inherit;
+    max-width: none;
+    max-height: none;
+    overflow: visible;
+    visibility: visible;
+    transform: scaleY(1) scaleX(1);
+    transform-origin: center;
+    transition: all 0.3s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js-hidden,
+    .js-hidden.visible,
+    .js-hidden.visible-permanent {
+      transition: none;
+    }
+  }
+
+  // Druhý popisek země v objednávce (L52:69183).
+  .js-location--hidden {
+    display: none;
+  }
+
+  // Nedostupná kombinace dopravy a platby v objednávce (L52:129644, L52:129676).
+  .not-possible-info {
+    display: none;
+  }
+
+  .inactive .not-possible-info {
+    display: inherit;
+  }
+
+  // Předvolba telefonu v objednávce: zavřená jen vybraná vlajka, po kliknutí seznam (L52:150025–151960).
+  .country-flags {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 48px;
+    cursor: pointer;
+  }
+
+  .country-flags-inner {
+    position: relative;
+    border: 1px solid transparent;
+  }
+
+  .country-flags.active .country-flags-inner {
+    position: absolute;
+    top: -1px;
+    left: -5px;
+    z-index: 10;
+    width: 300px;
+    height: 360px;
+    padding: 48px 5px 5px;
+    overflow: auto;
+    border-color: var(--colors-foregrounds-borders-secondary);
+    background-color: #fff;
+  }
+
+  .country-flags.active.turned .country-flags-inner {
+    top: auto;
+    bottom: 0;
+  }
+
+  .country-flag {
+    display: none;
+    align-items: center;
+    height: 48px;
+  }
+
+  .country-flag.selected,
+  .country-flags.active .country-flag {
+    display: flex;
+    margin-left: -5px;
+    padding-right: 5px;
+    padding-left: 5px;
+    transition: all 0.3s ease-out;
+  }
+
+  .country-flags.active .country-flag.selected {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    left: 5px;
+    display: flex;
+  }
+
+  .shp-flag-name {
+    display: none;
+    padding-right: 5px;
+  }
+
+  .country-flags.active .shp-flag-name {
+    display: inline-block;
+  }
+
+  .shp-flag,
+  .shp-flag-label {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  .shp-flag {
+    width: 24px;
+    height: 24px;
+  }
+
+  .shp-flag-label {
+    position: relative;
+    display: flex;
+    justify-self: flex-end;
+    width: calc(100% - 24px);
+    padding-right: 3px;
+    padding-left: 16px;
+    text-align: right;
+  }
+
+  .shp-flag-label::before {
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    width: 0;
+    height: 0;
+    margin-top: -3px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: var(--colors-foregrounds-content-primary) transparent transparent;
+    content: "";
+  }
+
+  .country-flags.active .shp-flag-label {
+    width: calc(100% - 24px);
+    text-align: left;
+  }
+
+  .country-flags.active .shp-flag-label::before {
+    display: none;
+  }
+
+  .phone-combined-input {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  :where(.ums_forms_redesign--on) .phone-combined-input {
+    width: 100%;
+  }
+
+  .phone-combined-input select {
+    display: none;
+  }
+
+  .phone-combined-input .country-flags,
+  .phone-combined-input input {
+    flex-grow: 0;
+  }
+
+  .phone-combined-input input {
+    width: 100%;
+  }
+
+  // Prvky pro jinou šířku nebo jiný kontext (L52:322129, L52:309883, L52:311238 a zapnutí níže):
+  // náhled produktu v hodnocení, stránkování nad výpisem jen na počítači, nadpis detailu jednou.
+  .vote-pic,
+  .category-header-pagination,
+  .p-detail-inner .p-detail-inner-header {
+    display: none;
+  }
+
+  @include bp.desktop {
+    .category-header-pagination { display: block; }
+    .itemsTotal { display: none; }
+  }
+
+  @media (min-width: bp.$large) {
+    .wide .p-detail-inner-header-mobile { display: none; }
+    .wide .p-detail-inner .p-detail-inner-header { display: block; }
+  }
+
+  @media (min-width: bp.$wide) {
+    .narrow .p-detail-inner-header-mobile { display: none; }
+    .narrow .p-detail-inner .p-detail-inner-header { display: block; }
+  }
+
+  // Na střed (L52:14277): „další / předchozí článek“.
+  .text-center {
+    text-align: center;
+  }
+
+  // Diskuse a hodnocení na detailu (L52:105003, L52:98148, L52:98239): obal formuláře diskuse je
+  // skrytý, JS formulář přesune za tlačítko; po odhalení (.unveiled) zmizí tlačítko „Přidat“.
+  :where(.ums_forms_redesign--on) #discussion-form {
+    display: none;
+  }
+
+  .discussion-wrapper.unveiled .add-comment,
+  .rate-wrapper.unveiled .add-comment {
+    display: none;
+  }
+
+  .discussion-wrapper.unveiled .vote-content .add-comment,
+  .rate-wrapper.unveiled .vote-content .add-comment {
+    display: inline-block;
+  }
+
+  // Slevový kupon v košíku je zavřený, otevírá ho slideToggle() z JS (L52:273319).
+  .toggle-coupon-input .discount-coupon {
+    display: none;
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Záložky a akordeon detailu
+
+  // Záložky na desktopu: vidět je jen .active, Bootstrap přepíná .active a .in (L52:21611, L52:21698,
+  // L2:10721, L2:10768). V akordeonu na mobilu je .fade vždy vidět a obsah otevírá JS (L52:210042,
+  // L52:210412).
+  .tab-content > .tab-pane {
+    display: none;
+  }
+
+  .tab-content > .active {
+    display: block;
+  }
+
+  .fade {
+    opacity: 0;
+    transition: opacity 0.15s linear;
+  }
+
+  .fade.in {
+    opacity: 1;
+  }
+
+  #accordion-content .shp-accordion .fade {
+    opacity: 1;
+  }
+
+  #accordion-content .shp-accordion .shp-accordion-content {
+    display: none;
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Mobilní menu před spuštěním JS aSteroidu (components/_mobile-menu.scss platí až pod .as-theme):
+  // na telefonu zavřený panel zprava, otevírá ho .navigation-window-visible (L52:24910–25467,
+  // L52:298215–298450).
+  #navigation {
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+  }
+
+  @include bp.mobile {
+    #navigation {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 1000;
+      width: 0;
+      height: 100%;
+      padding-bottom: 0;
+    }
+
+    .navigation-window-visible #navigation {
+      width: 100%;
+    }
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Okna v hlavičce (.user-action): přihlášení a mini-košík
+
+  // Zavřená okna; otevírá je třída na <body> (L52:234435, L52:234481, L52:234657). Polohu, vzhled
+  // a mobilní panel košíku má aSteroid (components/_login.scss, _cart-widget.scss).
+  .user-action .user-action-in > div {
+    display: none;
+  }
+
+  .login-window-visible .user-action .user-action-in > div.user-action-login,
+  .cart-window-visible .user-action .user-action-in > div.user-action-cart {
+    display: block;
+  }
+
+  // Bílé okno a barva textu (L2:56494, L2:56336); aSteroid na ně spoléhá.
+  .cart-widget,
+  .cart-widget-button,
+  .popup-widget-inner {
+    background-color: var(--colors-surface-white);
+  }
+
+  .popup-widget-inner {
+    color: var(--colors-foregrounds-content-primary);
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Ztmavení stránky a hledání
+
+  // Ztmavení body::before (L52:302410): neviditelné pod stránkou. Hledání a najetí na menu ho
+  // zapínají (L52:190809, L52:302318, L52:302634, L52:302689); barvu a vrstvu pro přihlášení, košík
+  // a katalog nastavují komponenty aSteroidu.
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    transition: all 0.2s ease;
+  }
+
+  .navigation-hovered::before,
+  .search-focused::before {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .search-focused::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1002;
+  }
+
+  body.search-focused::before {
+    opacity: 1;
+  }
+
+  @include bp.desktop {
+    body.navigation-hovered::before {
+      z-index: 1002;
+      opacity: 1;
+    }
+  }
+
+  // Pole hledání nad ztmavením (L52:301098, L52:302276, L52:297725).
+  .search-form {
+    position: relative;
+    transition: color 0.3s;
+  }
+
+  .search-focused .search-form {
+    z-index: 1003;
+  }
+
+  @include bp.mobile {
+    .search-focused #header { z-index: 1002; }
+  }
+
+  // Našeptávač vkládá JS za pole; prázdný je zavřený, s .active otevřený přes obsah (L52:223300,
+  // L52:223438). Rozložení a polohu pod polem má components/_search-whisperer.scss.
+  .searchWhisperer {
+    position: absolute;
+    right: 0;
+    left: 0;
+    z-index: 1003;
+    display: none;
+    flex-wrap: wrap;
+    width: 100%;
+    text-align: left;
+  }
+
+  .searchWhisperer.active {
+    display: flex;
+  }
+
+  // Zámek posunu stránky pod otevřeným oknem nebo menu; pod „Více“, při hledání a od 992 px se
+  // stránka posouvá dál (L52:15071, L52:15112, L52:15196, L52:333750).
+  body.user-action-visible {
+    overflow: hidden;
+  }
+
+  body.user-action-visible.menu-helper-visible {
+    overflow: auto;
+  }
+
+  @media (min-width: bp.$large) {
+    body.user-action-visible { overflow: visible; }
+  }
+
+  body.user-action-visible.search-window-visible {
+    position: relative;
+    overflow: auto;
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Překryvy z JS, hlášky, colorbox
+
+  // div.overlay (menu, hláška, showSpinner), .loader-overlay v prázdném mini-košíku a ztmavení prvku
+  // při AJAXu (L2:33685, L2:38460, L52:86008, L52:136769–137371). Točící kolečko .loader sem nepatří.
+  .ajax-pending-element::after,
+  .loader-overlay,
+  .loader-wrapper::after,
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.65);
+  }
+
+  .loader-overlay,
+  .overlay.visible {
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .overlay.visible {
+    position: fixed;
+    z-index: 1002;
+  }
+
+  // Zavíraná hláška: .hidden musí přebít .overlay.visible (Disco to má přes !important u .hidden).
+  .overlay.visible.hidden {
+    display: none;
+  }
+
+  .loader-overlay {
+    position: absolute;
+    z-index: 0;
+  }
+
+  body.msg-visible .overlay,
+  body.spinner-visible .overlay,
+  body.user-action-visible .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    -webkit-overflow-scrolling: touch;
+    transition: opacity 0.3s ease-out;
+  }
+
+  body.msg-visible .overlay.invisible,
+  body.spinner-visible .overlay.invisible,
+  body.user-action-visible .overlay.invisible {
+    opacity: 0;
+  }
+
+  body.msg-visible .overlay,
+  body.user-action-visible .overlay {
+    z-index: 0;
+  }
+
+  body.spinner-visible .overlay {
+    z-index: 1002;
+  }
+
+  .ajax-pending .loader-wrapper::after,
+  .ajax-pending-element::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    -webkit-overflow-scrolling: touch;
+    transition: opacity 0.3s ease-out;
+  }
+
+  // Hlášky Shoptetu: JS je vkládá do div.messages na konci stránky, ukážou se nahoře přes obsah;
+  // zavíraná hláška nejdřív zprůhlední (L52:92728, L52:92790, L52:69346). Vzhled .msg sem nepatří.
+  .messages {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1003;
+  }
+
+  .msg.hidden {
+    opacity: 0;
+  }
+
+  // Hláška ve formuláři hlídacího psa (okno na detailu, L52:70369 a dál).
+  .watchdog-messages .msg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    width: 100%;
+  }
+
+  .watchdog-messages .msg .cancel-action {
+    float: right;
+    font-weight: 700;
+  }
+
+  // Colorbox (galerie, okna Shoptetu): než se otevře, skrývá ho JS inline stylem. Otevřený leží
+  // přes stránku nad ztmavením (L52:72208, L52:72332, L2:46375); vzhled okna sem nepatří.
+  #cboxOverlay,
+  #cboxWrapper,
+  #colorbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1002;
+    overflow: hidden;
+  }
+
+  #cboxOverlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: var(--colors-surface-black);
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Horní lišta: na mobilu skrytá, nabídka měny a „Více“
+
+  // Na telefonu je obsah lišty v menu a v hlavičce (L52:242909, L52:242967).
+  .top-navigation-bar {
+    display: none;
+  }
+
+  @include bp.desktop {
+    .top-navigation-bar { display: block; }
+  }
+
+  // Seznamy lišty a jejich nabídek bez odrážek a okrajů (L52:244214, L52:244357, L52:245217,
+  // L52:245253).
+  .dropdown-menu,
+  .top-navigation-bar-menu,
+  .top-navigation-bar-menu-helper,
+  .top-navigation-tools {
+    top: 25px;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  .dropdown-menu a,
+  .top-navigation-bar-menu a,
+  .top-navigation-bar-menu-helper a,
+  .top-navigation-tools a {
+    display: block;
+    margin: 0;
+    padding: 4px 20px;
+  }
+
+  .top-navigation-bar-menu {
+    float: left;
+  }
+
+  .top-navigation-bar-menu li {
+    display: inline-block;
+  }
+
+  // „Více“: JS (topMenuFits) čte padding-right, označí odkazy, které se nevejdou, jako li.cropped,
+  // zkopíruje je do ul.top-navigation-bar-menu-helper a <body> dá .top-menu-trigger-visible;
+  // klik přepne .top-navigation-menu-visible (L52:243904–246884).
+  .top-navigation-menu {
+    position: relative;
+    display: none;
+    height: 25px;
+    padding-right: 105px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  @include bp.desktop {
+    .top-navigation-menu { display: block; }
+  }
+
+  .top-navigation-menu-visible .top-navigation-menu {
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .top-navigation-bar-menu li.cropped {
+    display: none;
+  }
+
+  .top-navigation-menu-trigger {
+    display: none;
+    float: left;
+    align-items: center;
+    margin-right: -105px;
+    padding: 4px 20px;
+    cursor: pointer;
+  }
+
+  .top-menu-trigger-visible .top-navigation-menu-trigger {
+    display: flex;
+  }
+
+  // Zavřené nabídky lišty (L52:245408, L52:179795): výběr měny vzhledem a polohou upravuje
+  // layout/_header.scss, seznam „Více“ ne.
+  .dropdown-menu,
+  .top-navigation-bar-menu-helper {
+    position: absolute;
+    z-index: 1100;
+    display: none;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--colors-foregrounds-borders-secondary);
+    border-radius: 0;
+    background: var(--colors-surface-white);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.16);
+    text-align: left;
+  }
+
+  .top-navigation-menu-visible .top-navigation-bar-menu-helper {
+    right: 0;
+    left: auto;
+    display: block;
+  }
+
+  // Nabídka Bootstrapu: .open na .dropdown ji otevře, na dotykových zařízeních klepnutí vedle zavře
+  // přes .dropdown-backdrop (L2:11259, L2:12630, L2:12877).
+  .dropdown {
+    position: relative;
+  }
+
+  .open > .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 990;
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // Menu kategorií (#navigation) a „Více“ (.menu-helper)
+
+  // Seznamy menu a kopie v „Více“ (L52:25468–25591).
+  .menu-helper ul,
+  .navigation-in ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  .menu-helper ul li,
+  .navigation-in ul li {
+    display: block;
+    list-style: none;
+  }
+
+  .menu-helper ul li a,
+  .navigation-in ul li a {
+    display: block;
+  }
+
+  // Zavřená podmenu (kategorie, měna a jazyk v .navigationActions). JS otevře položku třídou li.exp
+  // a <body> dá .submenu-visible (L52:25738, L52:25805). Mobilní panel otevírá aSteroid sám
+  // (components/_mobile-menu.scss).
+  .menu-helper > ul > li.ext > ul,
+  .navigation-in > ul > li.ext > ul {
+    display: none;
+  }
+
+  .submenu-visible .menu-helper > ul > li.ext.exp > ul,
+  .submenu-visible .navigation-in > ul > li.ext.exp > ul {
+    display: block;
+  }
+
+  // Křížek Disca v menu, aSteroid má vlastní (L52:300630).
+  .navigation-close {
+    display: none;
+  }
+
+  // Řádek menu ořízne položky, které se nevejdou (L52:24910).
+  #navigation {
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+  }
+
+  // Na mobilu je 3. úroveň a obrázky podkategorií skrytá (L52:26822).
+  @include bp.mobile {
+    .navigation-in .has-third-level ul,
+    .navigation-in a.menu-image {
+      display: none;
+    }
+  }
+
+  // Desktop (hlavička v1, katalog v2): seznam je široký 9999em, JS (splitMenu) změří, které položky
+  // přesahují k „Více“, označí je li.splitted a #navigation dá .fitted, když se vejdou všechny.
+  // Otevřené podmenu leží přes obsah pod řádkem (L52:25307–25356, L52:27159–27545, L52:29893,
+  // L52:30095, L52:25940, L52:302548). Vzhled podmenu má header/_v1.scss a components/_catalog.scss.
+  @include bp.desktop {
+    #navigation {
+      position: relative;
+      left: 0;
+      height: 68px;
+    }
+
+    .submenu-visible #navigation {
+      overflow: visible;
+    }
+
+    .navigation-in {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 9999em;
+    }
+
+    .fitted .navigation-in,
+    .submenu-visible .navigation-in {
+      width: 100%;
+    }
+
+    .navigation-in ul {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .navigation-in ul li.splitted {
+      visibility: hidden;
+    }
+
+    .submenu-visible .navigation-in ul li.splitted {
+      display: none;
+    }
+
+    .navigation-in ul.menu-level-2 {
+      position: absolute;
+      top: calc(100% - 12.5px);
+      left: 0;
+      z-index: 1001;
+      width: 100%;
+      margin-left: 0;
+    }
+
+    .navigation-in > ul > li.exp > ul {
+      top: 100%;
+    }
+
+    .submenu-visible .navigation-in > ul > li.ext.exp > ul {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    // Měna, jazyk a přihlášení jsou na desktopu v liště.
+    .navigation-in .navigationActions {
+      display: none;
+    }
+
+    // Menu a „Více“ nad ztmavením při najetí.
+    body.navigation-hovered #navigation,
+    body.navigation-hovered .menu-helper {
+      z-index: 1003;
+    }
+  }
+
+  // Obal řádku menu, k němu se měří „Více“ (L52:296255).
+  #header .header-bottom {
+    position: relative;
+  }
+
+  // „Více“: JS do něj kopíruje celé menu. Na desktopu musí zůstat v rozložení (visibility, ne display),
+  // jinak splitMenu změří nulovou polohu. JS přidá .visible, když některá položka přetéká, a <body>
+  // .menu-helper-visible, když se seznam otevře (L52:152417–153814, L2:35321, L2:35487).
+  .menu-helper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -1;
+    display: none;
+    flex: 0 0 auto;
+    align-items: center;
+    height: 68px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 18px;
+    text-transform: none;
+    visibility: hidden;
+    cursor: pointer;
+  }
+
+  .menu-helper.visible {
+    z-index: 1;
+    visibility: visible;
+  }
+
+  .menu-helper > ul {
+    position: absolute;
+    top: calc(50% + 34px);
+    right: 0;
+    z-index: 1;
+    display: none;
+    width: 280px;
+    max-height: 340px;
+    overflow: auto;
+    border-style: solid;
+    border-width: 1px;
+    text-align: right;
+    text-transform: none;
+  }
+
+  .menu-helper-visible .menu-helper > ul {
+    display: block;
+  }
+
+  // Položky, které jsou vidět v řádku, obrázky a 3. úroveň v seznamu „Více“ nejsou.
+  .menu-helper > ul > li.splitted,
+  .menu-helper > ul > li a.menu-image,
+  .menu-helper .has-third-level ul {
+    display: none;
+  }
+
+  .menu-helper > ul > li > a {
+    padding: 1.5rem 20px;
+  }
+
+  .menu-helper .menu-level-2 a {
+    padding: 0.75rem 40px;
+    font-weight: 400;
+  }
+
+  .menu-helper > ul > li a b {
+    font-weight: 400;
+  }
+
+  @include bp.desktop {
+    .menu-helper {
+      display: flex;
+    }
+
+    .menu-helper > ul {
+      border-color: transparent;
+      background-color: var(--colors-surface-white);
+    }
+
+    .menu-helper > ul > li a {
+      color: var(--colors-foregrounds-content-primary);
+    }
+  }
+
+  @media (min-width: bp.$large) and (min-height: 600px) {
+    .menu-helper > ul { max-height: 480px; }
+  }
+
+  @media (min-width: bp.$large) and (min-height: 800px) {
+    .menu-helper > ul { max-height: 680px; }
+  }
+}

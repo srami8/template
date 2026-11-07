@@ -20,7 +20,8 @@ test('settings drop the hidden blank mode choice, including an older saved value
   assert.equal(themeConfigFromForm(new URLSearchParams(), { previous: { styleMode: 'blank' } }).styleMode, undefined);
 });
 
-test('blank preview removes only native template CSS, keeps native JS and fonts and adds no Disco copy', () => {
+// Blank mode nestahuje žádné CSS Shoptetu, ani @font-face písma z administrace (dočítá ho js/template-fonts.js).
+test('blank preview removes all Shoptet CSS including the font-face file, keeps native JS and other add-ons and adds no Disco copy', () => {
   const html = `<link href="https://cdn.myshoptet.com/prj/dist/master/shop/dist/main-13.less.hash.css" rel="stylesheet">
 <link href="https://cdn.myshoptet.com/prj/dist/master/shop/dist/font-shoptet-13.css.hash.css" rel="stylesheet">
 <link href="https://cdn.myshoptet.com/font-face/poppins.css" rel="stylesheet">
@@ -32,7 +33,9 @@ test('blank preview removes only native template CSS, keeps native JS and fonts 
   const blank = rewriteHtml(html, true);
   assert.ok(!blank.includes('main-13.less'));
   assert.ok(!blank.includes('font-shoptet-13.css'));
-  assert.ok(blank.includes('poppins.css') && blank.includes('other-addon.css') && blank.includes('main-3g.js'));
+  assert.ok(!blank.includes('poppins.css'));
+  assert.ok(blank.includes('other-addon.css') && blank.includes('main-3g.js'));
+  assert.ok(rewriteHtml(html, false).includes('poppins.css'));
   assert.ok(!blank.includes('base-blank'));
   assert.ok(blank.includes('/__as/asteroid.css'));
   assert.ok(rewriteHtml(html, false).includes('main-13.less'));

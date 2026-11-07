@@ -2,10 +2,12 @@
 // články, přihlášení) je stejně široký jako na úvodní stránce; běžný text nejvýš 820 px.
 const fs = require('node:fs');
 const path = require('node:path');
+const {withoutFoundation} = require('./theme-css.cjs');
 const {test, expect} = require('@playwright/test');
 
 const dist = process.env.RESPONSIVE_THEME_DIST || path.join(__dirname, '../../theme/dist');
-const css = fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8');
+// Bez vrstvy základu pro Blank mode: stránka napodobuje Disco ručně (tests/responsive/theme-css.cjs).
+const css = withoutFoundation(fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8'));
 const image = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1600" height="400"%3E%3C/svg%3E';
 const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '.repeat(12);
 

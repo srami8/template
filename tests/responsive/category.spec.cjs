@@ -4,10 +4,12 @@
 // (data ze settings-app podle GUID kategorie v dataLayer, tady podstrčená přes page.route).
 const fs = require('node:fs');
 const path = require('node:path');
+const {withoutFoundation} = require('./theme-css.cjs');
 const {test, expect} = require('@playwright/test');
 
 const dist = process.env.RESPONSIVE_THEME_DIST || path.join(__dirname, '../../theme/dist');
-const css = fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8');
+// Bez vrstvy základu pro Blank mode: stránka napodobuje Disco ručně (tests/responsive/theme-css.cjs).
+const css = withoutFoundation(fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8'));
 const js = fs.readFileSync(path.join(dist, 'asteroid.js'), 'utf8');
 const image = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect width="100" height="100" fill="%23e6e8eb"/%3E%3C/svg%3E';
 const long = 'Velmi dlouhý název produktu, který se do karty nevejde na jeden řádek';

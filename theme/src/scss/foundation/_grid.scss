@@ -1,0 +1,316 @@
+// Mřížka a kostra stránky z CSS Disca (Bootstrap 3 + rozložení obsahu Disca 13) pro Blank mode.
+// Stejné selektory, vlastnosti a hodnoty jako Disco, jen pro třídy, které Shoptet v HTML e-shopu
+// vypisuje. S CSS Disca se proto nic nemění (pravidla bez vrstvy mají přednost) a komponenty aSteroidu
+// mřížku dál přepisují (patička, kategorie, košík, objednávka, úvod, šířka obsahu).
+// Počítá s box-sizing: border-box ze základu (foundation/reset), jinak se sloupce s odsazením zalomí.
+// Odkazy L2:…/L52:… jsou řádek:sloupec v theme/src/vendor/disco/main.css.
+
+@use "../tools/breakpoints" as bp;
+
+// Sloupce .col-xl-* a poslední šířku .container přidává Disco k Bootstrapu od 1440 px.
+$xl: 1440px;
+
+@layer as-foundation {
+  // Kontejner (L2:2634, šířky L2:2742–2841 a L52:21586): na střed, 20 px po stranách,
+  // od 768 px pevná šířka 747/972/1178/1418 px.
+  .container {
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: bp.$container-padding;
+    padding-left: bp.$container-padding;
+  }
+
+  @each $breakpoint, $width in bp.$container-widths {
+    @media (min-width: $breakpoint) {
+      .container { width: $width; }
+    }
+  }
+
+  // Řádky hlavičky jsou kontejnery bez odsazení po stranách (L52:212982), na telefonu všechny
+  // kontejnery v hlavičce (L52:240515, např. rychlé odkazy z js/header.js). Zbytek jejich rozložení
+  // (flex, výšky) patří hlavičce.
+  .container.navigation-wrapper {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  @include bp.mobile {
+    #header .container {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
+
+  // Řádek (L2:2955): záporný okraj vyrovná odsazení krajních sloupců.
+  .row {
+    margin-right: -20px;
+    margin-left: -20px;
+  }
+
+  // Clearfix (L2:18816, L2:18980): .container, .row a .clearfix uzavřou plovoucí sloupce. Kde je
+  // kontejner flex nebo grid, ruší ho komponenty aSteroidu (content: none).
+  .clearfix,
+  .container,
+  .row {
+    &::before,
+    &::after {
+      display: table;
+      content: " ";
+    }
+
+    &::after {
+      clear: both;
+    }
+  }
+
+  // Sloupce (L2:2997): jen třídy, které Shoptet vypisuje. Patička .col-sm-6.col-lg-3, podkategorie
+  // s obrázkem .col-xs-6.col-sm-6.col-lg-3.col-xl-3, úvodní text .col-sm-6, bannery v zápatí
+  // .col-sm-12.col-lg-2, záložky detailu .col-sm-12, košík a objednávka .col-md-4/6/8.
+  .col-xs-6,
+  .col-sm-6,
+  .col-sm-12,
+  .col-md-4,
+  .col-md-6,
+  .col-md-8,
+  .col-lg-2,
+  .col-lg-3,
+  .col-xl-3 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  // Float a šířka N/12 (na 8 desetinných míst jako Disco): xs vždy (L2:3682), sm od 768 px (L2:5447),
+  // md od 992 px (L2:7213), lg od 1200 px (L2:8980), xl od 1440 px (L52:11788).
+  .col-xs-6 { float: left; width: 50%; }
+
+  @include bp.desktop {
+    .col-sm-12 { float: left; width: 100%; }
+    .col-sm-6 { float: left; width: 50%; }
+  }
+
+  @media (min-width: bp.$large) {
+    .col-md-8 { float: left; width: 66.66666667%; }
+    .col-md-6 { float: left; width: 50%; }
+    .col-md-4 { float: left; width: 33.33333333%; }
+  }
+
+  @media (min-width: bp.$wide) {
+    .col-lg-3 { float: left; width: 25%; }
+    .col-lg-2 { float: left; width: 16.66666667%; }
+  }
+
+  @media (min-width: $xl) {
+    .col-xl-3 { float: left; width: 25%; }
+  }
+
+  // Kostra stránky: .overall-wrapper > #content-wrapper.container.content-wrapper > .content-wrapper-in
+  // > main#content.content, v kategorii (HTML pro počítač) uvnitř ještě aside.sidebar.sidebar-left.
+
+  // Místo pod pevnou mobilní hlavičkou (L52:294972, L52:295054). Po spuštění JS ho počítá
+  // components/_mobile-header.scss.
+  @include bp.mobile {
+    .overall-wrapper { padding-top: 50px; }
+
+    // Hlavička je na telefonu pevná (L52:297168); odsazení shora řídí components/_mobile-header.scss.
+    #header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 56;
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 480px) and (max-width: (bp.$desktop - 1px)) {
+    .overall-wrapper { padding-top: 80px; }
+  }
+
+  // Obal obsahu (L52:23466, L52:303160, L52:263932): bez vlastního odsazení po stranách (na počítači ho
+  // dává .content), nahoře 10 px jen na telefonu. Košík a objednávka nahoře 0, dole 44 px.
+  .content-wrapper.container {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .content-wrapper {
+    padding-top: 10px;
+  }
+
+  .ordering-process .content-wrapper {
+    padding-top: 0;
+    padding-bottom: 44px;
+  }
+
+  // Telefon (L52:23549–23980): obsah 10 px od okraje a řádky v něm s mezerou 2 × 10 px, sloupce pod
+  // sebou přes celou šířku (body má vždy .ums_forms_redesign--on). Košík bez odsazení.
+  @include bp.mobile {
+    .content-wrapper.container {
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+
+    .content-wrapper.container .row {
+      margin-right: -10px;
+      margin-left: -10px;
+    }
+
+    .content-wrapper.container .row > div {
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+
+    :where(.ums_forms_redesign--on) .content-wrapper.container .row > div {
+      width: 100%;
+    }
+
+    .content-wrapper.container .row.cart-row {
+      margin-right: 0;
+      margin-left: 0;
+    }
+
+    .content-wrapper.container .row.cart-row > div {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    .ordering-process .content-wrapper.container {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
+
+  // Obsah a sloupec vedle něj (L52:24082–24519, L52:303072–303301): od 768 px flex řádek, obsah 20 px
+  // po stranách a 20 px nahoře, sidebar 250 px (od 992 px 340 px) a 20 px od výpisu.
+  .content {
+    min-width: 0;
+  }
+
+  .sidebar-inner {
+    padding-right: 20px;
+    padding-left: 0;
+  }
+
+  // Nahoře a dole 20 px (L52:195755, body má vždy .ums_page_element_headings--on).
+  :where(body.ums_page_element_headings--on) .sidebar-inner {
+    padding-block: 20px;
+  }
+
+  @include bp.desktop {
+    .content-wrapper {
+      padding-top: 0;
+    }
+
+    .content-wrapper-in {
+      display: flex;
+    }
+
+    .content {
+      flex-grow: 1;
+      flex-shrink: 1;
+      width: 100%;
+      min-width: 0;
+      padding-right: 20px;
+      padding-left: 20px;
+    }
+
+    #content {
+      padding-top: 20px;
+    }
+
+    #content h1 {
+      margin-top: 0;
+    }
+
+    .sidebar {
+      flex-grow: 0;
+      flex-shrink: 0;
+      width: 250px;
+    }
+  }
+
+  @media (min-width: bp.$large) {
+    .sidebar { width: 340px; }
+  }
+
+  // Text obsahu (L52:303251, L52:303353): řádkování 1,7 a odstavce 22 px. Počítá s tím např.
+  // components/_active-filters.scss.
+  #content {
+    line-height: 1.7;
+  }
+
+  #content p {
+    margin: 0 0 22px;
+  }
+
+  :where(.ums_forms_redesign--on) .form-legend {
+    text-align: right;
+  }
+
+  :where(.ums_forms_redesign--on) #content .form-legend {
+    margin: 0;
+  }
+
+  // Košík a objednávka (L52:22066, L52:264196): obal bez odsazení výše nahrazuje .cart-inner.
+  .cart-inner {
+    padding: 10px;
+  }
+
+  @media (max-width: (bp.$large - 1px)) {
+    .cart-inner { padding: 0 20px 20px; }
+  }
+
+  // Filtry v sidebaru Disco na telefonu skrývá (L52:24311), zobrazí je až třída .visible.
+  @include bp.mobile {
+    .sidebar.sidebar-left .sidebar-inner { display: none; }
+    .sidebar.sidebar-left .sidebar-inner.visible { display: block; }
+  }
+
+  // Kategorie se sidebarem (.aside-indented > .sidebar-indented, L52:24566–24840, L52:308724): popis
+  // kategorie přes celou šířku, nejvýš 1178 px na střed, pod ním sidebar a výpis vedle sebe.
+  // Rozložení přepisuje components/_category-listing.scss (grid na #content).
+  @include bp.desktop {
+    .sidebar-indented .content {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .sidebar-indented .content .category-top {
+      width: 100%;
+    }
+
+    .sidebar-indented .content .sidebar {
+      margin-right: 20px;
+      margin-left: -20px;
+    }
+
+    .sidebar-indented .category-content-wrapper {
+      width: calc(100% - 250px);
+    }
+
+    .aside-indented .category-top {
+      max-width: 1178px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+
+  @media (min-width: bp.$large) {
+    .sidebar-indented .category-content-wrapper { width: calc(100% - 340px); }
+  }
+
+  // Užší obsah (L52:308595, L52:308653): textové stránky, přihlášení, registrace, články a úvodní text.
+  // Od 992 px 1178 px na střed, nejvýš přes šířku rodiče; musí být za šířkami .container.
+  // Šířku přepisují layout/_content-width.scss, layout/_homepage.scss a components/_article-card.scss.
+  .container-narrow {
+    max-width: 100%;
+  }
+
+  @media (min-width: bp.$large) {
+    .container-narrow {
+      width: 1178px;
+      margin: 0 auto;
+    }
+  }
+}

@@ -11,7 +11,8 @@ import { styleFiles } from '../../theme/src/js/styles.mjs';
 
 const SHOP = 'https://313980.myshoptet.com';
 const dist = new URL('../../theme/dist/', import.meta.url);
-const nativeStyle = /\/shop\/dist\/(?:main-\d+\.less|font-shoptet-\d+\.css)[^/]*\.css(?:\?.*)?$/;
+// Blank mode nestahuje žádné CSS Shoptetu: vzhled Disca, písmo ikon ani @font-face písma z administrace.
+const isShoptetCss = (url) => url.hostname === 'cdn.myshoptet.com' && /\.css$/.test(url.pathname);
 
 function localLinks(html) {
   return html.replace(/(data-url|href)=(["'])https:\/\/313980\.myshoptet\.com\//g, '$1=$2/')
@@ -29,7 +30,7 @@ export function rewriteHtml(html, blank) {
   result = result.replace(/<link\b[^>]*>/gi, (tag) => {
     const href = tag.match(/href=["']([^"']+)["']/i)?.[1];
     if (/data-as-style=/.test(tag)) return '';
-    if (blank && href && nativeStyle.test(new URL(href, SHOP).pathname)) return '';
+    if (blank && href && isShoptetCss(new URL(href, SHOP))) return '';
     return tag;
   });
   const styles = styleFiles(config).map((name) => `<link rel="stylesheet" href="/__as/${name}.css" data-as-style="${name}">`).join('\n');

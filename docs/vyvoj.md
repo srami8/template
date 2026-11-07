@@ -84,6 +84,7 @@ Ikony (`icon`) jsou soubory v `theme/src/icons` (`npm run build:icons` → `scss
 | `main.js` | vstup: konfigurace, náhled, třídy na `<html>`, dočtení stylů, volání modulů na DOMContentLoaded, ochrana proti dvojímu spuštění (`window.asteroidStarted`) |
 | `styles.mjs`, `typography.mjs` | seznam variant stylů; výchozí velikosti nadpisů (sdílí settings-app) |
 | `viewport.js` | `--as-viewport-width` bez posuvníku (pásy přes celou šířku okna) |
+| `template-fonts.js` | Blank mode: dočte `@font-face` písma z administrace podle `shoptet.config.fonts.google.urls`, když soubor na stránce chybí (s CSS Shoptetu nic nedělá), viz [blank-mode.md](blank-mode.md) |
 | `header.js`, `catalog.js` | úpravy hlavičky (účet vedle košíku, telefon, odkazy); „Katalog produktů“ v2/v3 nad menu Disca |
 | `mobile-header.js`, `mobile-menu.js` | mobilní hlavička (schování při posunu, pod informační lištou); menu jako panel zleva |
 | `search.js`, `contact.js` | našeptávač („nic nenalezeno“ + kontakt z e-shopu) |
@@ -99,9 +100,10 @@ Ikony (`icon`) jsou soubory v `theme/src/icons` (`npm run build:icons` → `scss
 
 ### SCSS (`theme/src/scss`)
 
+- `foundation/`: základ stránky místo CSS Disca pro Blank mode (`_reset.scss`, `_grid.scss`, `_visibility.scss`) ve vrstvě `@layer as-foundation` – s CSS Disca se neuplatní nic, bez něj platí jako Disco. Pravidla a kontrola `npm run foundation:noop` v [blank-mode.md](blank-mode.md#základ-ve-vrstvě-as-foundation).
 - `tokens/`: barvy, písmo, tvary jako `--as-*`. Barvy a písmo z proměnných Shoptetu (`--color-primary`, `--template-font` …), Figma jen záloha. Odstíny hlavní barvy `color-mix` s bílou/černou. Text na barvě z administrace `--as-on-primary(-hover)`, `--as-on-conversion(-hover)`: bílý, nebo tmavý (`--as-secondary-500`) podle vyššího kontrastu WCAG, počítá prohlížeč z jasu (relativní barva `color(from … xyz-d65 …)`, funkce `on-color` v `tokens/_index.scss`); bez podpory zůstává bílý. Test `button-contrast.spec.cjs`. Nadpisy `--as-font-size-hN` = velikost × měřítko (telefon H1 0,78, H2 0,86, H3 0,84).
 - `tools/`: sdílené mixiny – `button` (barvy a velikosti komponenty Button: `lg` 60, `md` 52, `sm` 44 px, `icon-only`), `quantity`, `rating`, `flag`, `slider`, `dropdown`, `menu`, `submenu`, `category-card`, `category-intro`, `choice` + `checkbox` + `radio`, `field-font` (písmo počítadla na telefonu), `field-label` (popisek nad polem), `icon`, `breakpoints`.
-- `components/`: globální komponenty (tlačítka, nadpisy, prvky produktu, drobečky, kategorie, karta článku, hodnocení obchodu, hledání, přihlášení, košík, bannery, mobilní hlavička a menu).
+- `components/`: globální komponenty (tlačítka, hlášky, nadpisy, prvky produktu, drobečky, kategorie, karta článku, hodnocení obchodu, hledání, přihlášení, košík, bannery, mobilní hlavička a menu).
 - `layout/`, `header/`: hlavička, úvodní stránka, informační lišta, šířka obsahu stránek (`_content-width.scss`: `#content-wrapper.container-narrow` Disca má šířku jako `.container`, běžný text článků a textových stránek max. 820 px); varianty hlavičky v1/v2.
 - `variants/`: soubory variant (viz výše).
 

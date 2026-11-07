@@ -22,6 +22,7 @@ import { renderShopReviews } from './shop-reviews';
 import { enhanceArticleCards } from './article-cards';
 import { enhanceFooter } from './footer';
 import { trackViewportWidth } from './viewport';
+import { loadTemplateFonts } from './template-fonts';
 import { styleFiles } from './styles.mjs';
 
 const HEADER_VARIANTS = ['v1', 'v2', 'v3'];
@@ -122,6 +123,8 @@ function start() {
   const categoryArticles = loadCategoryArticles(config);
 
   const init = () => {
+    // Blank mode: písmo z administrace (konfigurace Shoptetu je ve stránce až kolem DOMContentLoaded).
+    loadTemplateFonts();
     // Před spuštěním slideru Shoptetu (ten běží na DOMContentLoaded po nás). Bannery k sekcím
     // nejdřív, sekce vedle banneru má méně produktů.
     placeHomepageBanners();

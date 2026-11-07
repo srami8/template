@@ -1,7 +1,16 @@
 // Vstupní bod CSS šablony aSteroid (dist/asteroid.css): základ společný všem e-shopům. Načítá se nad
 // CSS šablony Disco. Varianty (hlavička, bannery, karty produktů) jsou samostatné soubory
 // scss/variants/*.scss → dist/<varianta>.css, e-shop načte jen zvolené (js/styles.mjs).
+//
+// foundation/: základ stránky, který dnes dodává CSS Disca (reset, mřížka, skryté stavy oken a nabídek)
+// pro Blank mode (vypnuté CSS Shoptetu, docs/blank-mode.md). Je ve vrstvě @layer as-foundation:
+// pravidla bez vrstvy mají vždy přednost, takže CSS Disca ho přebíjí celé (s Discem se nic nemění)
+// a stejně tak komponenty aSteroidu níže. V základu proto nepoužívat !important (ve vrstvě by
+// naopak vyhrálo nad Discem).
 
+@use "foundation/reset";
+@use "foundation/grid";
+@use "foundation/visibility";
 @use "tokens";
 @use "tools/icon";
 @use "components/icon" as icon-component;

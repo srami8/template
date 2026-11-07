@@ -14,7 +14,13 @@
     "tunnel": "npm run tunnel -w settings-app",
     "snapshots": "NODE_PATH=node_modules npx -y node@20 tests/shop/snapshots.cjs",
     "preview:blank": "npm run build && node tests/shop/blank-preview.mjs",
-    "audit": "NODE_PATH=node_modules npx -y node@20 tests/shop/audit.cjs"
+    "audit": "NODE_PATH=node_modules npx -y node@20 tests/shop/audit.cjs",
+    "styleguide:capture": "NODE_PATH=node_modules npx -y node@20 tests/shop/styleguide/capture.cjs",
+    "styleguide:diff": "NODE_PATH=node_modules npx -y node@20 tests/shop/styleguide/diff.cjs",
+    "styleguide:build": "NODE_PATH=node_modules npx -y node@20 tests/shop/styleguide/build.cjs",
+    "styleguide": "npm run styleguide:capture -- disco,asteroid,blank && npm run styleguide:diff && npm run styleguide:build",
+    "blank:measure": "npm run build && npm run styleguide:capture -- asteroid,blank --local && npm run styleguide:diff -- --local",
+    "foundation:noop": "NODE_PATH=node_modules npx -y node@20 tests/shop/foundation-noop.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1"

@@ -1,0 +1,347 @@
+// Reset a základ stránky pro Blank mode (docs/blank-mode.md): to, co dnes všem prvkům dává CSS Disca
+// (normalize 3.0.3, scaffolding Bootstrapu a vlastní základ Disca). Vrstva as-foundation prohrává
+// s každým pravidlem bez vrstvy, takže s CSS Disca platí jeho pravidla a vzhled se nemění; bez Disca
+// platí tento základ. Proto jen selektory a vlastnosti, které Disco nastavuje, s jeho výslednými
+// hodnotami. Co Disco nenastavuje (okraje ul, ol, h2, h3, resize textarea), zůstává podle prohlížeče.
+// Odkazy „ř. X:Y“ míří na řádek a sloupec v theme/src/vendor/disco/main.css.
+
+@layer as-foundation {
+  // Proměnné z :root Disca (ř. 1:1), které čte aSteroid (pole v objednávce, přihlášení, šipka selectu)
+  // nebo tento základ. S Discem je přebije jeho :root, html.as-theme (components/_fields.scss) přepisuje
+  // vstupní hodnoty a dopočítané *-computed-* z nich vycházejí stejně jako v Disku.
+  :root {
+    --colors-surface-primary: #fff;
+    --colors-foregrounds-content-primary: #1f1f1f;
+    --colors-foregrounds-headlines-primary: #1f1f1f;
+    --colors-focus-primary: #09367e;
+    --colors-focus-secondary: #fff;
+    --colors-foregrounds-borders-secondary: #dadada;
+    --hyperlinks-underline-offset: 0.14em;
+    --hyperlinks-underline-thickness: 0.0625em;
+    --hyperlinks-underline-thickness-hover: 0.1em;
+    // Výšku lepicí hlavičky zapisuje JS Shoptetu do --scroll-offset-runtime.
+    --scroll-offset: var(--scroll-offset-override, var(--scroll-offset-runtime, 0px));
+    --scroll-extra-offset: 0px;
+    --form-controls-font-size: 16px;
+    --form-controls-line-height: 1.625;
+    --form-controls-border-width: 1px;
+    --form-controls-padding-y: 10px;
+    --form-controls-computed-line-height: calc(var(--form-controls-font-size) * var(--form-controls-line-height));
+    --form-controls-computed-box-insets-y: calc(var(--form-controls-border-width) * 2 + var(--form-controls-padding-y) * 2);
+    --form-controls-computed-height: calc(var(--form-controls-computed-line-height) + var(--form-controls-computed-box-insets-y));
+    --smart-labels-computed-height: calc(var(--form-controls-computed-height) + var(--form-controls-computed-line-height) - var(--form-controls-padding-y));
+  }
+
+  // Rozměry včetně paddingu a rámečku (ř. 2:1902, 2:1926).
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+
+  // Výjimky jako v Disku: colorbox (galerie, okna Shoptetu) počítá inline rozměry pro content-box
+  // (ř. 52:72889), hr podle normalize (ř. 2:831).
+  #colorbox,
+  #cboxContent,
+  #cboxLoadedContent,
+  hr {
+    box-sizing: content-box;
+  }
+
+  hr {
+    height: 0;
+  }
+
+  // Kořen 10 px: rem v obsahu z administrace a v doplňcích psaných pro Disco (aSteroid rem nepoužívá).
+  // Kotvy zastaví pod lepicí hlavičkou, místo pro posuvník se drží i při zamčeném posunu stránky
+  // (ř. 2:77, 2:1963, 52:14804).
+  html {
+    height: 100%;
+    font-family: sans-serif;
+    font-size: 10px;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+    scroll-padding-top: max(var(--scroll-offset, 0px), var(--scroll-extra-offset));
+    scrollbar-gutter: stable;
+
+    @media (prefers-reduced-motion: reduce) {
+      scroll-behavior: auto;
+    }
+  }
+
+  // Písmo z administrace (inline :root v HTML), velikost a barvy Disca (ř. 2:161, 2:2025, 2:45137,
+  // 2:45695, 52:15010).
+  body {
+    min-height: 100%;
+    margin: 0;
+    background-color: var(--colors-surface-primary);
+    color: var(--colors-foregrounds-content-primary);
+    font-family: var(--template-font), sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.384615;
+  }
+
+  // Nadpisy a třídy .h1–.h6 (ř. 2:45214, 2:45603, 52:15239–15536). Písmo, velikost, váhu a výšku
+  // řádku přebíjí components/_headings.scss pod .as-theme; tady zůstávají hodnoty Disca pro stav před
+  // spuštěním JS a barva, okraje a zalamování dlouhých slov, které aSteroid nenastavuje.
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6 {
+    color: var(--colors-foregrounds-headlines-primary);
+    font-family: var(--template-headings-font), sans-serif;
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: none;
+    overflow-wrap: break-word;
+  }
+
+  // Okraj h1 z normalize (ř. 2:570), h2 a h3 Disco nechává prohlížeči.
+  h1 {
+    margin: 0.67em 0;
+  }
+
+  h4,
+  h5,
+  h6,
+  .h4,
+  .h5,
+  .h6 {
+    margin-top: 11px;
+    margin-bottom: 11px;
+  }
+
+  // Velikosti Disca; pod .as-theme je nahrazují tokeny --as-font-size-hN.
+  $heading-sizes: (1: 34px, 2: 24px, 3: 20px, 4: 18px, 5: 16px, 6: 14px);
+
+  @each $level, $size in $heading-sizes {
+    h#{$level},
+    .h#{$level} {
+      font-size: $size;
+    }
+  }
+
+  p {
+    margin: 0 0 11px;
+  }
+
+  // Drobná typografie z normalize (ř. 2:523, 2:634–746): tučné písmo i v tučném rodiči 700, horní
+  // a dolní index (např. m² v popisu z administrace) bez zvětšení výšky řádku.
+  b,
+  strong {
+    font-weight: 700;
+  }
+
+  small {
+    font-size: 80%;
+  }
+
+  sub,
+  sup {
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+  }
+
+  sup {
+    top: -0.5em;
+  }
+
+  sub {
+    bottom: -0.25em;
+  }
+
+  // Odkazy v barvě z administrace bez podtržení, barva se mění s přechodem (ř. 2:2176, 2:45999,
+  // 2:46039, 52:15576–15747). Při stisknutí bez obrysu fokusu (ř. 2:459, 2:48604).
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: all 0.3s ease-out, text-decoration-thickness 0s;
+
+    &:hover,
+    &:focus {
+      color: var(--color-primary-hover);
+    }
+
+    &:active {
+      outline: 0;
+    }
+  }
+
+  // Odkazy v textu z administrace jsou podtržené (L52:289988, L52:290677, výjimky L52:293007),
+  // v souhlasech tučné (L52:286030). Rozepsaný seznam jako v Discu: :is() by všem dal specificitu
+  // #footer a výjimky níž by přestaly platit.
+  #footer .banner p a,
+  #footer .banner-wrapper p a,
+  .banner p a,
+  .banner-category p a,
+  .banner-wrapper p a,
+  .basic-description a,
+  .brand-wrapper-manufacturer-name a,
+  .carousel-inner p a,
+  .category-perex a,
+  .category__secondDescription a,
+  .form-group label a,
+  .glossaryDetail a,
+  .helpNote a,
+  .manufacturerDescription a,
+  .manufacturerDetail a,
+  .news-item-detail a,
+  .p-desc a,
+  .p-short-description a,
+  .pageArticleDetail a,
+  .sectionDescription a,
+  .site-agreement-inner a,
+  .site-msg a,
+  .site-msg-custom a,
+  .siteCookies__text a,
+  .welcome-wrapper a,
+  .xyDiscount__conditions a {
+    text-decoration: underline;
+    text-decoration-thickness: var(--hyperlinks-underline-thickness);
+    text-underline-offset: var(--hyperlinks-underline-offset);
+
+    &:hover,
+    &:focus-visible {
+      text-decoration-thickness: var(--hyperlinks-underline-thickness-hover);
+    }
+  }
+
+  .basic-description .rateAverage__link,
+  .category-perex a.btn,
+  .news-item-detail a.btn,
+  .site-agreement-inner a.btn {
+    text-decoration: none;
+  }
+
+  .xyDiscount__conditions a,
+  .xyDiscount__conditions a:hover {
+    color: var(--colors-foregrounds-content-primary);
+  }
+
+  .consents a {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  :where(.ums_forms_redesign--on) label {
+    cursor: pointer;
+  }
+
+  // Fokus z klávesnice: obrys 3 px s bílým lemem (ř. 2:48136). U skrytých voleb patří k popisku;
+  // třídu .focus-visible dává JS Shoptetu radiím v hodnocení při ovládání šipkami. Jedno pravidlo
+  // i se selektory :has jako v Discu: prohlížeč bez :has (např. Firefox ESR 115) zahodí celé pravidlo
+  // Disca, a kdyby část základu přežila zvlášť, projevila by se i s Discem.
+  :focus-visible,
+  input[type="checkbox"]:focus-visible + label,
+  input[type="radio"]:focus-visible + label,
+  input[type="radio"].focus-visible + label,
+  label:has(input[type="radio"]:focus-visible),
+  label:has(input[type="radio"].focus-visible) {
+    outline: 3px solid var(--colors-focus-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 8px var(--colors-focus-secondary);
+  }
+
+  // Okno colorboxu dostává fokus po otevření, obrys nemá (ř. 52:73013, 2:48685).
+  #colorbox {
+    outline: 0;
+
+    &:focus-visible {
+      box-shadow: none;
+    }
+  }
+
+  // Obrázky a vložená videa z obsahu nepřetečou sloupec a zachovají poměr stran (ř. 2:2301,
+  // 52:15839, 52:15855).
+  img,
+  iframe {
+    max-width: 100%;
+  }
+
+  img {
+    height: auto;
+    vertical-align: middle;
+  }
+
+  // Tabulky bez mezer mezi buňkami (ř. 2:1838, 2:1886), např. parametry na detailu produktu.
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  td,
+  th {
+    padding: 0;
+  }
+
+  // Fieldset bez rámečku a odsazení: hledání, newsletter, registrace, kontakty, objednávka
+  // (ř. 52:59405, stejně ve větvi --off ř. 52:50681).
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  // Pole a tlačítka v písmu a barvě okolí místo systémového písma (ř. 2:939, 2:2089).
+  button,
+  input,
+  select,
+  textarea {
+    margin: 0;
+    color: inherit;
+    font: inherit;
+  }
+
+  // Kurzor ruky u tlačítek, i bez vlastního návrhu (+/− počítadla, zavírací křížky); u zakázaných
+  // šipka (ř. 2:1071, 2:1180, 2:2605).
+  button,
+  input[type="button"],
+  input[type="reset"],
+  input[type="submit"],
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  button[disabled],
+  input[disabled] {
+    cursor: default;
+  }
+
+  // Firefox: vnitřní rámeček a odsazení obsahu tlačítek (ř. 2:1233).
+  button::-moz-focus-inner,
+  input::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+  }
+
+  // Textová pole bez nativního vzhledu (vnitřní stín na iOS) a hledání bez nativního křížku a lupy
+  // (ř. 52:66382, 2:1572; stejně ve větvi --off ř. 52:57753).
+  input[type="email"],
+  input[type="search"],
+  input[type="text"] {
+    appearance: none;
+  }
+
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  // Atribut hidden (ř. 2:397), např. p.rating-star-description na detailu. Ve vrstvě přebije jen styly
+  // prohlížeče a základu; komponenta, která prvku dává display, si [hidden] ošetří sama (_category.scss).
+  [hidden] {
+    display: none;
+  }
+}

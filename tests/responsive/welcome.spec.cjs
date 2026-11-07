@@ -3,10 +3,12 @@
 // z editoru (Bootstrap .col-sm-6, odsazení 20 px) lícovat s nadpisy sekcí.
 const fs = require('node:fs');
 const path = require('node:path');
+const {withoutFoundation} = require('./theme-css.cjs');
 const {test, expect} = require('@playwright/test');
 
 const dist = process.env.RESPONSIVE_THEME_DIST || path.join(__dirname, '../../theme/dist');
-const css = fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8');
+// Bez vrstvy základu pro Blank mode: stránka napodobuje Disco ručně (tests/responsive/theme-css.cjs).
+const css = withoutFoundation(fs.readFileSync(path.join(dist, 'asteroid.css'), 'utf8'));
 
 const page = () => `<!doctype html><html lang="cs" class="as-theme"><head><meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1"><style>
