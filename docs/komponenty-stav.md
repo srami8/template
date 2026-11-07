@@ -18,13 +18,13 @@ Přehled stavu komponent; vizuální srovnání: [styleguide Disco × aSteroid](
 | Hlavička a patička | Našeptávač hledání | Hotovo | Neměřeno | 49:4880, 82:2453 (nenalezeno) | `components/_search-whisperer.scss` | `.search-whisperer` | hotovo |
 | Hlavička a patička | Okno přihlášení | Hotovo | Neměřeno | 93:2242 | `components/_login.scss` | `#login, .popup-widget` | chyba přihlášení, přihlášený zákazník (menu účtu) |
 | Hlavička a patička | Výhody obchodu (USP) | Návrh bez kódu | Rozpadá se (11,9 %) | 1487:3722 (USPs) | `—` | `.benefitBanner__item, __picture, __content` | na telefonu, 2–4 položky |
-| Hlavička a patička | Patička | Hotovo | Rozpadá se (15,6 %) | 1487:3720 | `components/_footer.scss` | `#footer, .custom-footer, .contact-box` | telefon (dnes odvozený) |
+| Hlavička a patička | Patička | Hotovo | Rozpadá se (14,9 %) | 1487:3720 | `components/_footer.scss` | `#footer, .custom-footer, .contact-box` | telefon (dnes odvozený) |
 | Hlavička a patička | Cookie lišta | Chybí | Neměřeno | — | `jen tvar tlačítek` | `.siteCookies, .cookiesSetting` | lišta, podrobné nastavení |
-| Úvodní stránka | Bannery | Hotovo | Drobné rozdíly (0,3 %) | Homepage 0:3 | `components/_banners.scss, variants/banners-*` | `.banners-row, #carousel, .extended-banner` | čtyři vzhledy v nastavení; telefon odvozený |
+| Úvodní stránka | Bannery | Hotovo | Drobné rozdíly (0,3 %) | Homepage 0:3, 1739:7153 (telefon) | `components/_banners.scss, variants/banners-*, js/banners.js` | `.banners-row, #carousel, .extended-banner` | čtyři vzhledy v nastavení; na telefonu společný pás |
 | Úvodní stránka | Kategorie na úvodu | Hotovo | Rozpadá se (50,8 %) | Homepage 0:3, 1633:10482 (Category button) | `components/_home-categories.scss` | `vlastní blok aSteroidu` | hotovo |
-| Úvodní stránka | Produktová sekce | Hotovo | Rozpadá se (32,1 %) | Homepage 0:3 | `components/product-cards/*, js/homepage-products.js` | `.products-wrapper .products-block` | hotovo |
-| Úvodní stránka | Karta článku | Hotovo | Rozpadá se (7,4 %) | 1627:5345 (Article) | `components/_article-card.scss` | `.news-item` | hotovo |
-| Úvodní stránka | Hodnocení obchodu nad patičkou | Hotovo | Drobné rozdíly (1,5 %) | 15:6029 (Reviews) | `components/_shop-reviews.scss` | `vlastní blok aSteroidu` | hotovo |
+| Úvodní stránka | Produktová sekce | Hotovo | Rozpadá se (31,2 %) | Homepage 0:3 | `components/product-cards/*, js/homepage-products.js` | `.products-wrapper .products-block` | hotovo |
+| Úvodní stránka | Karta článku | Hotovo | Rozpadá se (7,7 %) | 1627:5345 (Article) | `components/_article-card.scss` | `.news-item` | hotovo |
+| Úvodní stránka | Hodnocení obchodu nad patičkou | Hotovo | Drobné rozdíly (3 %) | 15:6029 (Reviews) | `components/_shop-reviews.scss` | `vlastní blok aSteroidu` | hotovo |
 | Kategorie a výpis | Drobečková navigace | Hotovo | Drobné rozdíly (4,2 %) | 1483:5174, 1484:5186 (mobil) | `components/_breadcrumbs.scss` | `.breadcrumbs` | hotovo |
 | Kategorie a výpis | Popis kategorie a podkategorie | Hotovo | Rozpadá se (11,8 %) | 1487:3697, 112:3621 | `components/_category.scss, variants/category-*` | `.category-top, .subcategories, .category-perex` | hotovo |
 | Kategorie a výpis | Nejprodávanější | Hotovo | Drobné rozdíly (0,9 %) | 112:6726 (Best seller) | `components/_category.scss` | `.products-top` | hotovo |
@@ -41,7 +41,7 @@ Přehled stavu komponent; vizuální srovnání: [styleguide Disco × aSteroid](
 | Obsah a účet | Kontakt a formulář | Kód bez návrhu | Rozpadá se (2,1 %) | — | `globální pole a tlačítka` | `.contact-box, #formContact` | formulář, odesláno, chyba, mapa |
 | Obsah a účet | Registrace | Kód bez návrhu | Rozpadá se (3,5 %) | — | `globální pole a tlačítka` | `#register-form` | nakupuji na firmu, chyby, souhlasy |
 | Obsah a účet | Přihlášení (stránka) | Kód bez návrhu | Rozpadá se (2,4 %) | podle okna 93:2242 | `components/_login.scss` | `.login-wrapper` | zapomenuté heslo, chyba |
-| Obsah a účet | Výsledky hledání | Kód bez návrhu | Rozpadá se (13,3 %) | — | `karta produktu` | `.search-results, #content` | produkty, kategorie, články; nic nenalezeno |
+| Obsah a účet | Výsledky hledání | Kód bez návrhu | Rozpadá se (16,4 %) | — | `karta produktu` | `.search-results, #content` | produkty, kategorie, články; nic nenalezeno |
 | Obsah a účet | Hledání bez výsledků | Kód bez návrhu | Drobné rozdíly (1,2 %) | — | `—` | `#content` | prázdný stav s radou |
 | Obsah a účet | Stránka hodnocení obchodu | Chybí | Rozpadá se (3,5 %) | 15:6029 jako podklad | `—` | `.rate-wrapper, .vote-wrap` | souhrn, seznam, formulář |
 | Obsah a účet | Stránka 404 | Chybí | Rozpadá se (6,1 %) | — | `—` | `#content` | prázdný stav s hledáním a odkazy |

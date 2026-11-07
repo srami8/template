@@ -1,3 +1,24 @@
+# Pás bannerů na telefonu podle Figmy (Claude)
+
+**Zadání (majitel):** Figma 1704:6412 / 1739:7153: mobilní verze multibanner carouselu, vidět je jeden banner a vždy kousek druhého. Podle řádku „Bannery – telefon“ na stránce K dodání platí pro všechny 4 vzhledy.
+
+**Co se změnilo:**
+- `components/_banners.scss`: pod 768 px společný pás nad původním `#carousel`: karta 320 × 375 px, mezera 16 px, od okraje 16 px, vpravo 38 px další karty při šířce 390. Pod 390 px se karta zužuje (`100vw − 70 px`), jediný banner má celou šířku a výšku 375 px, šipky nejsou. Texty z administrace na středu: nadpis 28 px a text nahoře, tlačítko Small 44 px 32 px od spodku. Pod řádkem s pásem 48 px (dosud 20 px u tří vzhledů, 48 px u „Na výšku“ a na počítači). Pravidla pásu jsou omezená na `#carousel`, postranní bannery a bannery v zápatí se nemění.
+- `variants/banners-cards.scss`: vlastní pás a texty mimo telefon (`not all and (max-width: 767px)`, přesný doplněk, aby šířka 767,2 px při škálování okna nezůstala bez pásu), na telefonu platí společný (dosud 78 % šířky, poměr 3 : 4, texty dole na přechodu).
+- `js/banners.js`: na telefonu u všech vzhledů vypne přepínání snímků a klávesy a načte obrázky; od 768 px (otočení telefonu) přepínání i klávesy obnoví, posun vynuluje. Bootstrap váže klávesy jen při vytvoření instance, proto se odvazují a znovu navazují ručně.
+- Testy: `banner-strip.spec.cjs` (s CSS Disca i bez něj, 4 vzhledy, skutečný markup), `layout.spec.cjs` (pás, 320 a 767 px, jediný banner včetně telefonu naležato, otočení, postranní a zápatí beze změny). Bootstrap v těchto testech není, přepínání a klávesy ověřené živě.
+
+**Nezávislá kontrola (agenti, jen čtení) našla a je opraveno:** pravidla pásu zasahovala postranní bannery a zápatí (`.banners-row`); jediný banner naležato byl přes dvě obrazovky; pás „Na výšku“ mizel na šířce 767,2 px; šipky klávesnice po otočení nefungovaly a na telefonu přepínaly snímek; obrys fokusu na kartě byl celý oříznutý; test měřil dřív, než se nastavila `--as-viewport-width`.
+
+**Ověření:** místní build na e-shopu, User-Agent iPhonu, 4 vzhledy × s CSS Shoptetu i bez něj: rozměry podle návrhu, skutečné gesto posune pás přesně o kartu (336 px), aktivní snímek se nemění, bez chyb JS, bez vodorovného přetékání. Od 768 px mezi předchozí a novou verzí na 5 šířkách × 4 vzhledy 0 rozdílů (vypočítané styly a rozměry). Reálné iOS Safari neověřené (WKWebView na macOS v pořádku).
+
+**Otevřené (majitel):**
+- V návrhu jsou texty součástí obrázku, u textů z administrace je rozmístění odvozené z obrázku (nadpis nahoře, tlačítko dole). Bez ztmavení se bílý text na světlé fotce špatně čte; vzhled „Na výšku“ měl dosud na telefonu tmavý přechod.
+- Banner bez obrázku pro telefon dostane od Shoptetu obrázek z počítače a ten se do karty ořízne (text v obrázku se usekne). Doporučený rozměr pro telefon 640 × 750 px je v příručce.
+- Postranní bannery zůstávají pod pásem jako dosud; nejsou součástí pásu.
+
+---
+
 # Hlášky Shoptetu jako toast (Claude)
 
 **Zadání (majitel):** návrh Figma 1704:6158 / 1738:67; toast nejvýš 600 px, dá se zavřít; dole na středu, 20 px od spodní hrany okna.

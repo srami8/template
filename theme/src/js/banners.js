@@ -1,23 +1,29 @@
-// Bannery na výšku (varianta „cards“). Bannery i jejich texty zadává obchodník v administraci
-// Shoptetu jako bannery carouselu. Pás karet je původní #carousel Disca: CSS ukáže všechny
-// snímky (.item) vedle sebe ve vodorovně posuvném .carousel-inner. JS jen vypne přepínání snímků
-// a šipky .carousel-control přesměruje na posun pásu. DOM carouselu se nemění.
-// Ostatní varianty (default / content / fullwidth) řeší jen CSS.
+// Pás bannerů. Bannery i jejich texty zadává obchodník v administraci Shoptetu jako bannery carouselu.
+// Pás je původní #carousel Disca: CSS ukáže všechny snímky (.item) vedle sebe ve vodorovně posuvném
+// .carousel-inner, DOM carouselu se nemění. Na telefonu ho mají všechny vzhledy (components/_banners.scss):
+// JS vypne přepínání snímků a načte obrázky, od 768 px (otočení telefonu) přepínání zase obnoví. Vzhled
+// „cards“ má pás na všech šířkách a od 768 px navíc přesměruje šipky .carousel-control na posun pásu.
 
 const AT_START = 'as-cards-at-start';
 const AT_END = 'as-cards-at-end';
+const PHONE = '(max-width: 767px)';
+// Výchozí interval Bootstrapu, když ho Shoptet v atributu neuvádí.
+const DEFAULT_INTERVAL = 5000;
 
 // Bootstrap carousel (Disco ho spouští přes data-ride po načtení stránky) by snímky dál přepínal
 // a šipkami posouval aktivní snímek. Nastavíme mu interval a klávesy přes data atributy, a když
 // už běží, i do jeho instance.
+// Klávesy Bootstrap váže jen při vytvoření instance, proto je odvážeme i z běžící.
 function stopCycling(carousel) {
   carousel.dataset.interval = 'false';
   carousel.dataset.keyboard = 'false';
-  const instance = window.jQuery?.(carousel).data('bs.carousel');
+  const $carousel = window.jQuery?.(carousel);
+  const instance = $carousel?.data('bs.carousel');
   if (!instance) return;
   instance.options.interval = false;
   instance.options.keyboard = false;
   instance.pause();
+  $carousel.off('keydown.bs.carousel');
 }
 
 // Neaktivní snímky Shoptet načítá líně (obrázek v data-src), v pásu jsou vidět hned.
@@ -33,13 +39,54 @@ function updateEnds(carousel, track) {
   carousel.classList.toggle(AT_END, track.scrollLeft >= max);
 }
 
-export function enhanceBanners(config) {
-  if (config.banners !== 'cards') return;
+// Vzhledy default, content a fullwidth: pás jen na telefonu, jinak původní přepínání snímků.
+function enhancePhoneStrip(carousel, track) {
+  const phone = window.matchMedia(PHONE);
+  const { interval, keyboard } = carousel.dataset;
 
+  const restoreCycling = () => {
+    track.scrollLeft = 0;
+    if (interval === undefined) delete carousel.dataset.interval;
+    else carousel.dataset.interval = interval;
+    if (keyboard === undefined) delete carousel.dataset.keyboard;
+    else carousel.dataset.keyboard = keyboard;
+    const $carousel = window.jQuery?.(carousel);
+    const instance = $carousel?.data('bs.carousel');
+    if (!instance) return;
+    instance.options.interval = interval === undefined ? DEFAULT_INTERVAL : interval !== 'false' && Number(interval);
+    instance.options.keyboard = keyboard !== 'false';
+    // Instance mohla vzniknout na telefonu bez kláves; off zabrání dvojímu navázání.
+    $carousel.off('keydown.bs.carousel');
+    if (instance.options.keyboard) $carousel.on('keydown.bs.carousel', instance.keydown.bind(instance));
+    instance.cycle();
+  };
+  const apply = () => {
+    if (!phone.matches) {
+      restoreCycling();
+      return;
+    }
+    stopCycling(carousel);
+    loadImages(carousel);
+  };
+
+  phone.addEventListener('change', apply);
+  // Disco spouští carousel až po načtení stránky.
+  window.addEventListener('load', () => {
+    if (phone.matches) stopCycling(carousel);
+  }, { once: true });
+  if (phone.matches) apply();
+}
+
+export function enhanceBanners(config) {
   // Karty jsou jen z bannerů pozice Carousel, ostatní pozice bannerů do pásu nepatří (skryje CSS).
   const carousel = document.querySelector('.banners-row #carousel');
   const track = carousel?.querySelector(':scope > .carousel-inner');
   if (!track) return;
+
+  if (config.banners !== 'cards') {
+    enhancePhoneStrip(carousel, track);
+    return;
+  }
 
   // Měříme původní sloupec, nikoli roztažený carousel; změna šířky pásu tak nemění měření.
   const column = carousel.parentElement;

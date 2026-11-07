@@ -398,7 +398,6 @@ test('default carousel banner keeps its look on mobile', async ({page}) => {
         return Object.fromEntries(['backgroundColor','borderRadius','color','fontFamily','fontWeight','position'].map(key=>[key,style[key]]));
       };
       return {
-        carousel:read('#carousel'),
         title:read('#carousel .item.active .extended-banner-title'),
         text:read('#carousel .item.active .extended-banner-text'),
         link:read('#carousel .item.active .extended-banner-link'),
@@ -407,6 +406,134 @@ test('default carousel banner keeps its look on mobile', async ({page}) => {
   }
   expect(snapshots[0]).toEqual(snapshots[1]);
   expect(snapshots[0].link.borderRadius).not.toBe('0px');
+});
+
+// Telefon: pás karet podle Figmy 1739:7153, stejný pro všechny vzhledy.
+for(const banners of ['default','content','fullwidth','cards']) {
+  test(`banner strip on phone: one card and a part of the next (${banners})`,async({page})=>{
+    await page.setViewportSize({width:390,height:844});
+    await load(page,{banners});
+    const read=()=>page.evaluate(()=>{
+      const cards=[...document.querySelectorAll('#carousel .carousel-inner > .item')].map(item=>{
+        const r=item.getBoundingClientRect();
+        return {x:r.x,right:r.right,width:r.width,height:r.height,display:getComputedStyle(item).display,radius:getComputedStyle(item).borderTopLeftRadius};
+      });
+      const texts=document.querySelector('#carousel .item.active .extended-banner-texts');
+      const box=texts.getBoundingClientRect();
+      const card=texts.closest('.item').getBoundingClientRect();
+      const link=texts.querySelector('.extended-banner-link').getBoundingClientRect();
+      const title=texts.querySelector('.extended-banner-title');
+      return {
+        cards,
+        textsInCard:[box.x-card.x,box.y-card.y,box.width,box.height],
+        titleAlign:getComputedStyle(title).textAlign,
+        titleSize:getComputedStyle(title).fontSize,
+        linkHeight:link.height,
+        linkFromBottom:card.bottom-link.bottom,
+        linkCentered:Math.abs((link.x+link.right)/2-(card.x+card.right)/2),
+        arrows:[...document.querySelectorAll('#carousel .carousel-control')].map(a=>getComputedStyle(a).display),
+        interval:document.querySelector('#carousel').dataset.interval,
+      };
+    });
+    const m=await read();
+    expect(m.cards[0]).toMatchObject({x:16,width:320,height:375,display:'block',radius:'4px'});
+    expect(m.cards[1].x).toBe(352);
+    expect(390-m.cards[1].x).toBe(38);
+    expect(m.textsInCard).toEqual([0,0,320,375]);
+    expect(m.titleAlign).toBe('center');
+    expect(m.titleSize).toBe('28px');
+    expect(m.linkHeight).toBe(44);
+    expect(m.linkFromBottom).toBe(32);
+    expect(m.linkCentered).toBeLessThan(1);
+    expect(new Set(m.arrows)).toEqual(new Set(['none']));
+    expect(m.interval).toBe('false');
+    await noPageOverflow(page);
+
+    // Pás se posouvá a poslední karta dojede k okraji s odsazením 16 px.
+    const last=await page.evaluate(()=>{
+      const track=document.querySelector('#carousel .carousel-inner');
+      track.style.scrollSnapType='none';
+      track.scrollLeft=track.scrollWidth;
+      return 390-track.querySelector(':scope > .item:last-child').getBoundingClientRect().right;
+    });
+    expect(last).toBe(16);
+
+    // --as-viewport-width nastavuje ResizeObserver až po změně šířky okna.
+    const resize=async(width,height)=>{
+      await page.setViewportSize({width,height});
+      await page.waitForFunction(w=>getComputedStyle(document.documentElement).getPropertyValue('--as-viewport-width')===`${w}px`,width);
+    };
+
+    // Užší telefon: karta se zúží, kousek další zůstává.
+    await resize(320,700);
+    await page.evaluate(()=>{const track=document.querySelector('#carousel .carousel-inner');track.scrollLeft=0;});
+    const narrow=await read();
+    expect(narrow.cards[0].width).toBe(250);
+    expect(narrow.cards[1].x).toBe(282);
+    await noPageOverflow(page);
+
+    // Široký telefon a malý tablet: karta má dál 320 px.
+    await resize(767,900);
+    expect((await read()).cards[0].width).toBe(320);
+    await noPageOverflow(page);
+  });
+}
+
+test('single banner on phone takes the full width with the height from the design',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await load(page,{banners:'default'});
+  const measure=()=>page.evaluate(()=>{
+    document.querySelectorAll('#carousel .carousel-inner > .item:not(.active)').forEach(item=>item.remove());
+    const r=document.querySelector('#carousel .item').getBoundingClientRect();
+    return {x:r.x,width:r.width,height:r.height};
+  });
+  expect(await measure()).toEqual({x:16,width:358,height:375});
+  // Telefon naležato: nadpis i tlačítko se vejdou na obrazovku.
+  await page.setViewportSize({width:740,height:360});
+  await page.waitForFunction(()=>getComputedStyle(document.documentElement).getPropertyValue('--as-viewport-width')==='740px');
+  expect(await measure()).toEqual({x:16,width:708,height:375});
+});
+
+test('phone strip rules stay on the carousel: side and footer banners keep their look',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await load(page,{banners:'default'});
+  const read=(selector)=>page.locator(selector).first().evaluate(texts=>{
+    const css=getComputedStyle(texts);
+    return {align:css.alignItems,justify:css.justifyContent,text:css.textAlign,maxWidth:css.maxWidth};
+  });
+  const row=await page.evaluate(()=>{
+    document.querySelector('#carousel').insertAdjacentHTML('afterend','<div class="as-test-side"><div class="next-to-carousel-banners"><div class="banner-wrapper"><a href="/s"><span class="extended-banner-texts"><span class="extended-banner-title">Boční</span></span></a></div></div></div>');
+    document.querySelector('.banners-row').insertAdjacentHTML('afterend','<div class="row banners-row footer-banners as-test-footer"><div class="footer-banner"><a href="/f"><span class="extended-banner-texts"><span class="extended-banner-title">Zápatí</span></span></a></div></div>');
+    return getComputedStyle(document.querySelector('.as-test-footer')).marginBottom;
+  });
+  for (const selector of ['.as-test-side .extended-banner-texts','.as-test-footer .extended-banner-texts']) {
+    const texts=await read(selector);
+    expect(texts.align).toBe('flex-start');
+    expect(texts.justify).toBe('center');
+    expect(texts.text).not.toBe('center');
+    expect(texts.maxWidth).toBe('100%');
+  }
+  expect(row).not.toBe('48px');
+  expect(await read('#carousel .item.active .extended-banner-texts')).toMatchObject({align:'center',justify:'flex-start',text:'center',maxWidth:'none'});
+});
+
+test('turning the phone to landscape restores the carousel slides',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await load(page,{banners:'default'});
+  await page.evaluate(()=>{document.querySelector('#carousel .carousel-inner').scrollLeft=200;});
+  await page.setViewportSize({width:844,height:390});
+  await page.waitForFunction(()=>document.querySelector('#carousel').dataset.interval!=='false');
+  const state=await page.evaluate(()=>{
+    const track=document.querySelector('#carousel .carousel-inner');
+    return {
+      scroll:track.scrollLeft,
+      visible:[...track.querySelectorAll(':scope > .item')].filter(item=>getComputedStyle(item).display!=='none').length,
+      arrows:[...document.querySelectorAll('#carousel .carousel-control')].map(a=>getComputedStyle(a).display),
+    };
+  });
+  expect(state.scroll).toBe(0);
+  expect(state.visible).toBe(1);
+  expect(new Set(state.arrows)).toEqual(new Set(['flex']));
 });
 
 test('mobile menu is a left drawer and its extras stay off the desktop', async ({page}) => {
